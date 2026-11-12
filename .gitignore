@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+
+# Source papers and generated pages stay local unless a licence record says otherwise
+sources/
+output/
+*.pdf
