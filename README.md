@@ -7,8 +7,8 @@ repeatable process for the middle step: **read the paper, pull out what it actua
 claims, find the story in it, and hand a structured storyboard to a renderer.**
 
 > **Status: early skeleton.** The storyboard schema and its validator work and are
-> tested, and one example has a fully checked draft storyboard. The renderers and
-> skills do not exist yet. See
+> tested, one example has a fully checked draft storyboard, and an xkcd-style renderer turns it
+> into A4 pages. The skills do not exist yet. See
 > [the design](docs/superpowers/specs/2026-11-13-science-comic-pipeline-design.md).
 
 ## The idea
@@ -34,6 +34,7 @@ paper ──> claims ledger ──> story spine ──> storyboard.yaml ──> 
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/validate_storyboard.py examples/akam-2026-cartooning/storyboard.yaml
 .venv/bin/python -m pytest tests -q
+.venv/bin/python renderers/xkcd/render.py examples/akam-2026-cartooning/storyboard.yaml -o output/xkcd
 ```
 
 The example is a draft storyboard of an open-access paper about students learning
@@ -51,7 +52,7 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 | `scripts/layout.py` | Packs panels into rows, left to right then down: no blanks, at most 3 across, looks ahead |
 | `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
 | `examples/` | Example papers, each with its licence record and a storyboard |
-| `renderers/` | One folder per drawing style (none yet; interface in its README) |
+| `renderers/` | One folder per drawing style. `xkcd/` draws stick-figure A4 pages from a panel's `staging` |
 | `skills/` | Agent skills for the judgement steps (planned; list in its README) |
 | `docs/superpowers/` | Design and plans |
 

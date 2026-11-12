@@ -50,7 +50,7 @@ def test_number_without_claim_is_an_error(doc):
     panel["claim_ids"] = []
     panel["speech"] = [{"speaker": "narrator", "text": "Seventy-nine, no, 79 students."}]
     errors, _ = validate(doc)
-    assert any("contains a number but the panel cites no claim" in e for e in errors)
+    assert any("contain a number but the panel cites no claim" in e for e in errors)
 
 
 def test_unused_claim_is_a_warning(doc):
@@ -130,3 +130,36 @@ def test_cli_exit_codes(tmp_path, capsys):
     bad = tmp_path / "bad.yaml"
     bad.write_text("version: 1\n")
     assert main([str(bad)]) == 1
+
+
+def test_chart_numbers_need_a_claim(doc):
+    panel = next(p for b in doc["beats"] for p in b["panels"] if p["id"] == "B3.1")
+    panel["claim_ids"] = []
+    panel["speech"] = []
+    errors, _ = validate(doc)
+    assert any("B3.1" in e and "contain a number" in e for e in errors)
+
+
+def test_chart_values_hidden_from_view_need_no_claim(doc):
+    panel = next(p for b in doc["beats"] for p in b["panels"] if p["id"] == "B3.3")
+    panel["claim_ids"], panel["speech"] = [], []
+    errors, _ = validate(doc)
+    assert not any("B3.3" in e for e in errors)
+
+
+def test_staged_character_must_be_in_the_cast_or_extra(doc):
+    doc["beats"][0]["panels"][0]["staging"]["characters"].append({"id": "ghost"})
+    errors, _ = validate(doc)
+    assert any("staged character 'ghost' is not in the cast" in e for e in errors)
+
+
+def test_speaker_missing_from_staging_is_a_warning(doc):
+    doc["beats"][0]["panels"][0]["staging"]["characters"] = []
+    _, warnings = validate(doc)
+    assert any("sam speaks but is not in the staging" in w for w in warnings)
+
+
+def test_unknown_prop_kind_is_a_schema_error(doc):
+    doc["beats"][0]["panels"][0]["staging"]["props"][0]["kind"] = "spaceship"
+    errors, _ = validate(doc)
+    assert any(e.startswith("schema:") for e in errors)

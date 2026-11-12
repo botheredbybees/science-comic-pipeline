@@ -130,6 +130,27 @@
           "look": {
             "type": "string",
             "description": "A short visual description renderers can use."
+          },
+          "appearance": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Hints for renderers that draw characters from structure.",
+            "properties": {
+              "hair": {
+                "enum": [
+                  "none",
+                  "ponytail",
+                  "bun",
+                  "spiky"
+                ]
+              },
+              "glasses": {
+                "type": "boolean"
+              },
+              "lanyard": {
+                "type": "boolean"
+              }
+            }
           }
         }
       }
@@ -336,7 +357,210 @@
                     "interdependent"
                   ],
                   "description": "How words and picture combine in this panel (McCloud's categories)."
+                },
+                "staging": {
+                  "$ref": "#/$defs/staging"
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "staging": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional drawing instructions for renderers that draw from structure (positions are fractions of the panel's scene area; x runs left to right, y top to bottom). A renderer that cannot use it falls back to the scene text.",
+      "properties": {
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "A cast id, or 'extra' for an unnamed figure."
+              },
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Where the feet stand; default 0.94."
+              },
+              "pose": {
+                "enum": [
+                  "stand",
+                  "point",
+                  "hold",
+                  "think",
+                  "shrug",
+                  "sip",
+                  "up"
+                ]
+              },
+              "face": {
+                "enum": [
+                  "neutral",
+                  "smile",
+                  "worry",
+                  "deadpan",
+                  "surprised"
+                ]
+              },
+              "facing": {
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "holding": {
+                "enum": [
+                  "marker",
+                  "mug",
+                  "paper"
+                ]
+              },
+              "scale": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 3
+              }
+            }
+          }
+        },
+        "props": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "board",
+                  "slide",
+                  "bars",
+                  "paper",
+                  "phone",
+                  "bowl",
+                  "wall",
+                  "sign",
+                  "picture",
+                  "desk",
+                  "label",
+                  "arrow",
+                  "box"
+                ]
+              },
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "w": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "h": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "x2": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y2": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "label": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "size": {
+                "enum": [
+                  "small",
+                  "normal",
+                  "large"
+                ]
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "label"
+                  ],
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "covered": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              },
+              "bars": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value"
+                  ],
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    },
+                    "style": {
+                      "enum": [
+                        "solid",
+                        "hollow"
+                      ]
+                    }
+                  }
+                }
+              },
+              "max": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "show_values": {
+                "type": "boolean"
+              },
+              "staging": {
+                "$ref": "#/$defs/staging"
               }
             }
           }

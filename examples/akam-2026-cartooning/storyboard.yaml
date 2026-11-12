@@ -30,10 +30,12 @@ cast:
     name: "Sam"
     role: "A second-year biology student"
     look: "Stick figure with a messy ponytail and a lanyard"
+    appearance: { hair: ponytail, lanyard: true }
   - id: dr_okoye
     name: "Dr Okoye"
     role: "A lecturer who has run out of slides"
     look: "Stick figure with round glasses and a mug"
+    appearance: { glasses: true, hair: none }
 
 claims:
   - id: C1
@@ -126,6 +128,11 @@ beats:
         weight: standard
         word_picture: additive
         scene: "A lecture hall. Sam stares at a slide of a cell-signalling pathway that is mostly arrows."
+        staging:
+          characters:
+            - { id: sam, x: 0.2, pose: think, face: worry, facing: right }
+          props:
+            - { kind: slide, x: 0.4, y: 0.04, w: 0.56, h: 0.64, title: "Simplified" }
         speech:
           - { speaker: sam, kind: think, text: "Complex terms, abstract ideas, steps on steps on steps." }
         claim_ids: [C1]
@@ -138,6 +145,21 @@ beats:
         word_picture: duo-specific
         frame: borderless
         scene: "Dr Okoye holds up a cartoon of two people waiting at a bus stop, one holding a sign that reads 'receptor'."
+        staging:
+          characters:
+            - { id: dr_okoye, x: 0.16, pose: point, face: smile, facing: right }
+          props:
+            - kind: picture
+              x: 0.36
+              y: 0.06
+              w: 0.6
+              h: 0.7
+              staging:
+                characters:
+                  - { id: extra, x: 0.28, face: smile }
+                  - { id: extra, x: 0.5, face: neutral }
+                props:
+                  - { kind: sign, x: 0.74, y: 0.12, w: 0.2, h: 0.55, label: "receptor" }
         speech:
           - { speaker: dr_okoye, text: "Concept cartoons date from the late 1990s. They start discussions." }
         claim_ids: [C2]
@@ -146,6 +168,10 @@ beats:
         transition: action-to-action
         word_picture: additive
         scene: "Dr Okoye hands Sam a marker instead of a slide clicker. Sam looks at it as though it were a live animal."
+        staging:
+          characters:
+            - { id: dr_okoye, x: 0.34, pose: hold, holding: marker, face: smile, facing: right }
+            - { id: sam, x: 0.62, pose: stand, face: surprised, facing: left }
         speech:
           - { speaker: narrator, kind: caption, text: "Usually the teacher draws them. What if the students did?" }
 
@@ -158,6 +184,17 @@ beats:
         transition: scene-to-scene
         word_picture: parallel
         scene: "A whiteboard with five subtopic cards pinned up, two covered with sheets of paper. Teams of different sizes crowd around the other three."
+        staging:
+          props:
+            - { kind: board, x: 0.05, y: 0.02, w: 0.9, h: 0.46, cards: [{ label: "A" }, { label: "B" }, { label: "C" }, { label: "D", covered: true }, { label: "E", covered: true }] }
+          characters:
+            - { id: extra, x: 0.1, scale: 0.7, face: smile }
+            - { id: extra, x: 0.19, scale: 0.7 }
+            - { id: extra, x: 0.42, scale: 0.7, face: smile }
+            - { id: extra, x: 0.5, scale: 0.7 }
+            - { id: extra, x: 0.58, scale: 0.7, face: smile }
+            - { id: extra, x: 0.81, scale: 0.7 }
+            - { id: extra, x: 0.9, scale: 0.7, face: smile }
         speech:
           - { speaker: narrator, kind: caption, text: "Three modules. 79 students. Teams of 2 to 6. Five subtopics, only three on offer." }
         claim_ids: [C3, C4, C5]
@@ -167,6 +204,12 @@ beats:
         word_picture: duo-specific
         frame: borderless
         scene: "Teams pin finished cartoons to a wall and score each other's with a pencil. A bowl of chocolate sits in the foreground, guarded."
+        staging:
+          props:
+            - { kind: wall, x: 0.04, y: 0.04, w: 0.5, h: 0.62 }
+            - { kind: bowl, x: 0.6, y: 0.66, w: 0.2, h: 0.18, label: "chocolate" }
+          characters:
+            - { id: sam, x: 0.9, pose: stand, face: deadpan, facing: left, scale: 0.9 }
         speech:
           - { speaker: narrator, kind: caption, text: "A friendly competition. Teams ranked each other's work. The prize was chocolate." }
         claim_ids: [C6]
@@ -178,6 +221,13 @@ beats:
         transition: scene-to-scene
         word_picture: word-specific
         scene: "Sam, at a desk, between a quiz paper and a phone showing a survey form."
+        staging:
+          characters:
+            - { id: sam, x: 0.5, pose: stand, face: neutral, facing: right, scale: 0.95 }
+          props:
+            - { kind: desk, y: 0.66, h: 0.34 }
+            - { kind: paper, x: 0.08, y: 0.5, w: 0.24, h: 0.26, label: "quiz" }
+            - { kind: phone, x: 0.68, y: 0.44, w: 0.18, h: 0.32, label: "survey" }
         speech:
           - { speaker: narrator, kind: caption, text: "Then a 10-question quiz: 6 questions on cartooned subtopics, 4 on the rest. And an anonymous 18-question survey." }
         claim_ids: [C7, C8]
@@ -191,6 +241,9 @@ beats:
         transition: scene-to-scene
         word_picture: interdependent
         scene: "A hand-drawn chart with two bars: a tall one labelled 'cartooned' and a shorter one labelled 'not cartooned'."
+        staging:
+          props:
+            - { kind: bars, x: 0.12, y: 0.04, w: 0.76, h: 0.92, max: 100, unit: "%", bars: [{ label: "cartooned", value: 82 }, { label: "not cartooned", value: 51, style: hollow }] }
         speech:
           - { speaker: narrator, kind: caption, text: "Quiz median: cartooned 82 percent correct, not cartooned 51. Significant: p = 0.004." }
         claim_ids: [C9, C10]
@@ -200,6 +253,9 @@ beats:
         word_picture: picture-specific
         frame: borderless
         scene: "Dr Okoye, in close-up, looks at the chart. Says nothing. Sips from the mug."
+        staging:
+          characters:
+            - { id: dr_okoye, x: 0.5, pose: sip, holding: mug, face: deadpan, facing: right, scale: 1.25 }
         humour:
           note: "A silent beat before the deflation: the small, empty panel is the pause."
           keeps_claims_intact: true
@@ -209,6 +265,12 @@ beats:
         word_picture: interdependent
         frame: borderless
         scene: "Dr Okoye lowers the mug and points to a tiny footnote under the chart."
+        staging:
+          characters:
+            - { id: dr_okoye, x: 0.18, pose: point, face: deadpan, facing: right }
+          props:
+            - { kind: bars, x: 0.46, y: 0.08, w: 0.4, h: 0.62, max: 100, show_values: false, bars: [{ label: "", value: 82 }, { label: "", value: 51, style: hollow }] }
+            - { kind: label, x: 0.66, y: 0.86, label: "*footnote", size: small }
         speech:
           - { speaker: dr_okoye, text: "Significant, yes. But that's 20 question averages, not 79 students." }
         claim_ids: [C11, C4]
@@ -220,6 +282,9 @@ beats:
         transition: scene-to-scene
         word_picture: parallel
         scene: "Hand-drawn bars: 'organised' tallest, then 'engaging', 'understanding', and a much shorter bar for 'learned from other groups'."
+        staging:
+          props:
+            - { kind: bars, x: 0.06, y: 0.04, w: 0.88, h: 0.92, max: 5, unit: "/5", bars: [{ label: "organised", value: 4.8 }, { label: "engaging", value: 4.5 }, { label: "understanding", value: 4.2 }, { label: "learned from other groups", value: 3.3, style: hollow }] }
         speech:
           - { speaker: narrator, kind: caption, text: "Ratings out of 5: organised 4.8, engaging 4.5, understanding 4.2. Learning from other groups' cartoons: 3.3. 68 percent preferred it to question and answer." }
         claim_ids: [C12, C13]
@@ -233,6 +298,12 @@ beats:
         transition: scene-to-scene
         word_picture: duo-specific
         scene: "Sam, marker in hand, hesitates over a blank page headed 'REVISION'. A teammate is already drawing next to them."
+        staging:
+          characters:
+            - { id: sam, x: 0.2, pose: hold, holding: marker, face: worry, facing: right }
+            - { id: extra, x: 0.86, pose: hold, holding: marker, face: smile, facing: left }
+          props:
+            - { kind: paper, x: 0.42, y: 0.08, w: 0.3, h: 0.7, label: "REVISION" }
         speech:
           - { speaker: narrator, kind: caption, text: "Would they use it to revise? 44 percent said yes and 20 percent said no. In 120 comments, the themes were learning, engagement, working together, and skills." }
           - { speaker: sam, text: "Mixed. But I did meet everyone in my group." }

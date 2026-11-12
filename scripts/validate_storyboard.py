@@ -33,6 +33,21 @@ def _dupes(ids):
     return dupes
 
 
+def _staging_texts(staging):
+    """Every string and number a renderer would draw as text from a staging block."""
+    out = []
+    for prop in (staging or {}).get("props", []):
+        for key in ("label", "title", "unit"):
+            if key in prop:
+                out.append(str(prop[key]))
+        out += [c["label"] for c in prop.get("cards", [])]
+        for b in prop.get("bars", []):
+            out += [b.get("label", ""), str(b["value"])] if prop.get("show_values", True) else [b.get("label", "")]
+        if "staging" in prop:
+            out += _staging_texts(prop["staging"])
+    return out
+
+
 def validate(doc):
     """Return (errors, warnings) for a parsed storyboard."""
     errors, warnings = [], []
@@ -75,9 +90,16 @@ def validate(doc):
                 errors.append(f"{p['id']}: cites unknown claim {cid}")
             else:
                 used.add(cid)
-        text = " ".join(line["text"] for line in p.get("speech", []))
+        text = " ".join([line["text"] for line in p.get("speech", [])] + _staging_texts(p.get("staging")))
         if HAS_NUMBER.search(text) and not cited:
-            errors.append(f"{p['id']}: dialogue contains a number but the panel cites no claim")
+            errors.append(f"{p['id']}: text or chart values contain a number but the panel cites no claim")
+        staged = {c["id"] for c in p.get("staging", {}).get("characters", [])}
+        for c in staged - cast_ids - {"extra"}:
+            errors.append(f"{p['id']}: staged character '{c}' is not in the cast")
+        if "staging" in p:
+            for line in p.get("speech", []):
+                if line.get("kind", "say") != "caption" and line["speaker"] not in staged:
+                    warnings.append(f"{p['id']}: {line['speaker']} speaks but is not in the staging, so no speech line can point at them")
         if "humour" in p and cited and not p["humour"].get("keeps_claims_intact"):
             warnings.append(f"{p['id']}: joke on a panel that cites {', '.join(cited)}; a reviewer must confirm it keeps the claims intact")
 

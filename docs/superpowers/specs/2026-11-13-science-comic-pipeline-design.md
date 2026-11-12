@@ -35,7 +35,9 @@ So: separate the storyboard from the renderers, and make accuracy something a sc
    Validated by `scripts/validate_storyboard.py`.
 4. **Humour pass.** Jokes are drafted separately, attached to panels as a `humour` block,
    and flagged. If a joke would change a claim, the claim wins.
-5. **Render.** One renderer per style, reading only the storyboard.
+5. **Stage and render.** A sentence cannot be drawn by a program, so each panel can carry a
+   `staging` block (characters, poses, props). The agent writes it as the "artist" step; one renderer
+   per style draws it, reading only the storyboard.
 6. **Visual QA.** Render, screenshot, and check for overflow, overlaps and unreadable text.
 
 ## Accuracy rules (enforced by the validator)
@@ -105,6 +107,18 @@ style and does not reuse xkcd artwork.
   that keep every panel closest to its preferred width (least squares, like line-breaking in
   typesetting). A standard and a wide panel in one row become 5/12 and 7/12. A `full` panel is
   always alone.
+
+## xkcd renderer (built 2026-11-13)
+
+`renderers/xkcd/render.py` draws stick figures with seeded, jittered geometry (not an SVG filter, so
+PDF converters keep it), outlined and borderless panels, speech joined to the speaker by a line,
+and a small prop library (boards, slides, bar charts, papers, a phone, a bowl, a wall, signs, nested
+pictures, a desk). The example renders as 2 A4 pages. Pagination tries panels at several heights and
+keeps the tallest setting that needs the fewest pages, so a last page is not left nearly empty. The
+attribution a CC BY source requires is printed on the last page from `meta.source`.
+
+Open points: text is wrapped by an average glyph width, not measured; figures stay small in wide,
+short panels; the staging vocabulary is small and fixed, with `box` as the fallback.
 
 ## Licensing policy
 
