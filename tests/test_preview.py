@@ -53,7 +53,7 @@ def test_standalone_wraps_in_a_document():
 
 def test_weight_sets_panel_units_and_all_layouts_are_offered():
     html = build(_doc())
-    assert 'style="--u:3"' in html and 'style="--u:1"' in html and 'style="--u:4"' in html
+    assert "--s:8;" in html and "--s:4;" in html and "--s:12;" in html
     for layout in ("strip", "rows", "stack"):
         assert f'data-set-layout="{layout}"' in html
 
@@ -62,3 +62,15 @@ def test_transition_and_word_picture_are_shown():
     html = build(_doc())
     assert "from previous: scene-to-scene" in html
     assert "words and picture: interdependent" in html
+
+
+def test_each_panel_row_fills_twelve_units():
+    import re
+    html = build(_doc())
+    rows = []
+    for m in re.finditer(r'<div class="row">|--u:(\d+)', html):
+        if m.group(1) is None:
+            rows.append(0)
+        else:
+            rows[-1] += int(m.group(1))
+    assert rows and all(total == 12 for total in rows)

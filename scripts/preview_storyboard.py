@@ -2,7 +2,7 @@
 """Turn a storyboard YAML file into a readable HTML page.
 
 The page shows the panels in order (as a sideways strip, printed-style rows packed by panel
-weight, or a vertical stack, switchable), each with its scene, dialogue, joke note and the claims it relies on, then the claims
+weight (no blanks), or a vertical stack, switchable), each with its scene, dialogue, joke note and the claims it relies on, then the claims
 ledger and the list of what the comic leaves out. It is a reading aid, not a renderer.
 
     python scripts/preview_storyboard.py examples/akam-2026-cartooning/storyboard.yaml -o output/preview.html
@@ -86,7 +86,7 @@ header { display: grid; gap: 14px; }
 .flow[data-layout="stack"] .beattitle, .flow[data-layout="rows"] .beattitle { border-bottom: 1px solid var(--line); padding: 14px 0 6px; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid;
   gap: 12px; align-content: start; scroll-snap-align: start; min-width: 0; }
-.flow[data-layout="strip"] .panel { flex: 0 0 min(calc(var(--u) * 170px), 84vw); }
+.flow[data-layout="strip"] .panel { flex: 0 0 min(calc(var(--s) * 55px), 84vw); }
 .phead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .pid { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
 .ptags { font-size: .74rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 10px; }
@@ -159,8 +159,8 @@ def _tags(p):
     return f'<div class="ptags">{"".join(bits)}</div>' if bits else ""
 
 
-def _panel(p, claims):
-    parts = [f'<article class="panel" id="panel-{e(p["id"])}" style="--u:{units(p)}">',
+def _panel(p, claims, row_units):
+    parts = [f'<article class="panel" id="panel-{e(p["id"])}" style="--s:{units(p)};--u:{row_units}">',
              f'<div class="phead"><span class="pid">{e(p["id"])}</span><span class="wt">{e(p.get("weight", "standard"))}</span></div>',
              _tags(p),
              f'<div class="frame {e(p.get("frame", "outlined"))}"><p class="scene">{e(p["scene"])}</p></div>']
@@ -219,7 +219,7 @@ def build(doc, standalone=False):
     for beat in doc["beats"]:
         out.append(f'<div class="beat"><div class="beattitle">{e(beat["id"])} \u00b7 {e(beat.get("title", beat["act"]))}</div>')
         for row in pack_rows(beat["panels"]):
-            out.append('<div class="row">' + "".join(_panel(p, claims) for p in row) + "</div>")
+            out.append('<div class="row">' + "".join(_panel(p, claims, u) for p, u in row) + "</div>")
         out.append("</div>")
     out.append("</div>")
 

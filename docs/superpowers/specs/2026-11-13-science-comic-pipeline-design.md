@@ -90,8 +90,21 @@ style and does not reuse xkcd artwork.
   transitions (moment-to-moment, action-to-action, subject-to-subject, scene-to-scene,
   aspect-to-aspect, non-sequitur); the modes of word and picture combination; and the five
   choices (moment, frame, image, word, flow) as the per-panel checklist. Implemented per-panel
-  fields (schema version 2): `weight` (small, standard, wide, full: 1 to 4 units of a four-unit
-  row), `transition` (not allowed on the first panel) and `word_picture`.
+  fields (schema version 2): `weight` (small, standard, wide, full: a third, a half, two thirds or all
+  of a row, as a preference), `transition` (not allowed on the first panel) and `word_picture`.
+
+## Row packing (decided 2026-11-13)
+
+- Printed rows are the most effective view, so the PDF and the print layout use them.
+- **No blanks.** Every row is filled exactly; a gap is never an acceptable way to absorb a mismatch.
+- **At most 3 panels across by default** (a parameter; 4 suits a wider page). On A4 portrait that
+  leaves about 63 mm for the narrowest panel (a third of the row), enough for a caption. The
+  figures for real comics (Western pages mostly 1 to 3 across, about three tiers; Franco-Belgian
+  albums 2 to 4 across; manga 1 to 3) are from general knowledge, not measured.
+- **The packer looks ahead.** `scripts/layout.py` finds the row breaks and widths for a whole beat
+  that keep every panel closest to its preferred width (least squares, like line-breaking in
+  typesetting). A standard and a wide panel in one row become 5/12 and 7/12. A `full` panel is
+  always alone.
 
 ## Licensing policy
 
@@ -109,9 +122,8 @@ style and does not reuse xkcd artwork.
 - Whether the `painted` renderer is worth building, or needs an image model.
 - How to check a joke automatically, if at all.
 - Output formats beyond the strip and the PDF (slides, per-panel images).
-- How the row packer treats a panel that ends up alone in a row: today it stretches to the full
-  width, so its weight stops meaning anything there. Options: allow rows of up to five units, let
-  the packer look ahead, or keep lone panels at their proportional width.
+- Whether packing should run across beat boundaries. Today each beat starts a new row, so a beat
+  that ends on an odd panel leaves one panel alone at full width.
 
 ## Next steps
 

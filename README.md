@@ -48,7 +48,7 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 |---|---|
 | `schema/storyboard.schema.json` | The storyboard format (JSON Schema): beats of panels, each with a weight, an optional transition and word-picture mode |
 | `scripts/validate_storyboard.py` | Schema check plus the accuracy-ledger rules; no limit on panel count |
-| `scripts/layout.py` | Packs panels into rows, left to right then down, by weight |
+| `scripts/layout.py` | Packs panels into rows, left to right then down: no blanks, at most 3 across, looks ahead |
 | `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
 | `examples/` | Example papers, each with its licence record and a storyboard |
 | `renderers/` | One folder per drawing style (none yet; interface in its README) |
