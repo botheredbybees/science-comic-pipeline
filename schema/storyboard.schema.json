@@ -372,6 +372,15 @@
                 },
                 "staging": {
                   "$ref": "#/$defs/staging"
+                },
+                "height": {
+                  "enum": [
+                    "short",
+                    "standard",
+                    "tall"
+                  ],
+                  "default": "standard",
+                  "description": "How much of a page's spare height this panel's row asks for: a quick beat is short, a significant one is tall. Layout may also vary row heights on its own."
                 }
               }
             }

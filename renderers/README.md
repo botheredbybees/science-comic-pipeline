@@ -37,6 +37,13 @@ It writes `page-1.svg` ... (A4, 1000 units wide) and `sheet.html`, a page to loo
 wobble is seeded geometry, so the output is identical on every run and survives PDF converters.
 It tries panels at several heights and keeps the tallest setting that needs the fewest pages.
 
+**Row heights.** Once the pages are split, each page's spare height is shared out among its rows, so
+pages end at the bottom margin and rows differ in height. The richest rows (charts, a full-width panel,
+many props) get the most room, and the plainest conversational rows give a little up. A panel may say
+`height: tall` for a significant beat or `height: short` for a quick one, which scales its row's share
+(a row is tall if any of its panels is, and short only if all are). A sparse last page is left alone
+instead of being stretched to fill the sheet.
+
 Known limits:
 - Text is wrapped with an average glyph width, not measured, so a different font may need a
   small margin. The face is Patrick Hand (SIL Open Font Licence); the SVG falls back to

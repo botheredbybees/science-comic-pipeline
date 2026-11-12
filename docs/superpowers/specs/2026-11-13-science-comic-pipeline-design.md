@@ -136,6 +136,15 @@ swapped; the agents flagged about 90 statements in the earlier comic that overst
 from, or mis-cited the guide, so a comic made without this step is likely to carry errors a reader
 would repeat.
 
+## Row heights (built 2026-11-13)
+
+Rows were all as tall as their tallest panel, which left whitespace at the bottom of most pages and made
+every row look alike. After pagination the renderer now shares each page's spare height among its rows
+unevenly: by how much is in them (charts, a full-width panel, props), by an optional per-panel `height`
+hint (`short`, `standard`, `tall`), and within limits (a row may grow by about half, a plain row may
+shrink a little unless its speech needs the headroom). A sparse last page is not stretched. This also
+uses panel height as emphasis, as McCloud describes.
+
 ## Licensing policy
 
 - Code and schema: MIT. Docs: CC BY 4.0. Rendered output carries the licence of its source: an

@@ -349,10 +349,13 @@ def plan_panel(panel, w, k=0.55, cast=None):
     # Speech sits just above its speaker's head; the scene only needs extra headroom when the head is too low.
     need = sum(block_h(li, fs) + SPEECH_GAP for _, li in near)
     free = min((_head_offset(staged[s["speaker"]], cast, inner, scene_nat) for s, _ in near), default=0)
-    talk_h = max(0.0, need - free) + sum(block_h(li, fs) + 22 for _, li in far)
+    extra = max(0.0, need - free)
+    talk_h = extra + sum(block_h(li, fs) + 22 for _, li in far)
+    # Heads sit roughly in proportion to the scene's height, so a shorter scene lowers the room for speech.
+    shrink_ok = float("inf") if not near else (0.0 if extra > 0 else 2.0 * (free - need))
     cap_h = sum(block_h(c, fs) + 16 for c in captions) + (6 if captions else 0)
     return {"fs": fs, "captions": captions, "talk": talk, "cap_h": cap_h, "talk_h": talk_h,
-            "scene_nat": scene_nat, "nat_h": PAD + cap_h + talk_h + scene_nat + PAD}
+            "scene_nat": scene_nat, "nat_h": PAD + cap_h + talk_h + scene_nat + PAD, "shrink_ok": shrink_ok}
 
 
 def draw_panel(panel, plan, w, h, cast):
@@ -396,7 +399,8 @@ def draw_panel(panel, plan, w, h, cast):
         placed.append((cx - tw / 2, cx + tw / 2, top, bottom))
         o.append(text(cx, top, lines, fs, anchor="middle", halo=True))
         dash = "3 5" if s.get("kind") == "think" else None
-        o.append(pen.line((cx + (head[0] - cx) * 0.2, bottom + 3), (head[0], head[1] - 8), 2.0, dash=dash))
+        start = clamp(head[0], cx - tw / 2 + 8, cx + tw / 2 - 8)  # the point of the text's lower edge nearest the speaker
+        o.append(pen.line((start, bottom + 3), (head[0], head[1] - 8), 2.0, dash=dash))
     cid = "clip-" + pid.replace(".", "-")
     alt = esc(panel["scene"])
     alt_attr = escape(str(panel["scene"]), quote=True)
@@ -429,11 +433,8 @@ def build_items(doc, cast, k=0.55):
             rh = max(pl["nat_h"] for pl in plans)
             label = (beat.get("title") or beat["act"]) if first else None
             items.append({"kind": "row", "h": rh + (30 if label else 0), "label": label, "beat": beat["id"],
-                          "draw": (lambda y, row=row, widths=widths, plans=plans, rh=rh, label=label: (
-                              (text(MARGIN, y, [label], 18, fill=MID, weight="bold") if label else "") +
-                              "".join(f'<g transform="translate({MARGIN + sum(widths[:i]) + GUTTER * i:.1f} {y + (30 if label else 0):.1f})">'
-                                      + draw_panel(p, plans[i], widths[i], rh, cast) + "</g>"
-                                      for i, (p, _) in enumerate(row))))})
+                          "label_h": 30 if label else 0, **_row_limits(row, plans, rh),
+                          "draw": _row_drawer(row, widths, plans, rh, label, cast)})
             first = False
     note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
             + (f', doi {src["doi"]}' if src.get("doi") else "") + f'. Licence: {src["licence"]}. '
@@ -442,6 +443,89 @@ def build_items(doc, cast, k=0.55):
     items.append({"kind": "colophon", "h": block_h(colo, 15) + 12,
                   "draw": lambda y, c=colo: text(MARGIN, y + 6, c, 15, fill=MID)})
     return items
+
+
+HEIGHT_HINTS = {"short": 0.35, "standard": 1.0, "tall": 2.2}  # how much of a page's spare height a row asks for
+GROW_CAP = {"short": 0.1, "standard": 0.5, "tall": 1.0}  # most a row may grow, as a fraction of its natural height
+CHART_KINDS = {"bars", "plot", "axis", "pie", "flow", "steps", "stack"}  # props that scale up well with a taller scene
+
+
+def _row_limits(row, plans, rh):
+    """What a row asks of its page: a hint-based appetite, and how rich its content is."""
+    hints = [p.get("height", "standard") for p, _ in row]
+    hint = "tall" if "tall" in hints else ("short" if all(h == "short" for h in hints) else "standard")
+    props = [pr for p, _ in row for pr in (p.get("staging") or {}).get("props", [])]
+    chars = [c for p, _ in row for c in (p.get("staging") or {}).get("characters", [])]
+    rich = (2.0 * sum(pr["kind"] in CHART_KINDS for pr in props) + 0.7 * len(props) + 0.4 * len(chars)
+            + (1.5 if any(p.get("weight") == "full" for p, _ in row) else 0.0)
+            + (0.8 if any(p.get("frame", "outlined") == "outlined" for p, _ in row) else 0.0))
+    return {"flex": HEIGHT_HINTS[hint], "hint": hint, "rich": rich, "grow": GROW_CAP[hint],
+            "scene_nat": max(pl["scene_nat"] for pl in plans), "nat_row": rh,
+            "shrink_ok": min(pl["shrink_ok"] for pl in plans)}
+
+
+def _row_drawer(row, widths, plans, rh, label, cast):
+    def draw(y, h=None):
+        h = rh if h is None else h
+        top = y + (30 if label else 0)
+        head = text(MARGIN, y, [label], 18, fill=MID, weight="bold") if label else ""
+        return head + "".join(
+            f'<g transform="translate({MARGIN + sum(widths[:i]) + GUTTER * i:.1f} {top:.1f})">'
+            + draw_panel(p, plans[i], widths[i], h, cast) + "</g>" for i, (p, _) in enumerate(row))
+    return draw
+
+
+def _share_out(rows, avail):
+    """Heights for the rows of one page so that they fill `avail`.
+
+    Rows are ranked by richness: the richest ask for the most room and the plainest give a little up,
+    so the rows on a page differ in height. A row's own height hint scales its share."""
+    rich = [r["rich"] for r in rows]
+    lo_r, hi_r = min(rich), max(rich)
+    norm = [(x - lo_r) / (hi_r - lo_r) if hi_r > lo_r else 0.5 for x in rich]
+    flex = [r["flex"] * (0.35 + 1.65 * n) for r, n in zip(rows, norm)]
+    lo = [r["h"] - (min(0.22 * r["scene_nat"], r["shrink_ok"])
+                    if (n < 0.3 and r["hint"] != "tall") or r["hint"] == "short" else 0.0)
+          for r, n in zip(rows, norm)]
+    hi = [r["h"] + r["nat_row"] * r["grow"] * (0.5 + n) for r, n in zip(rows, norm)]
+    h = lo[:]
+    slack = avail - sum(h)
+    for _ in range(25):
+        active = [i for i in range(len(h)) if h[i] < hi[i] - 1e-6]
+        if slack < 1e-6 or not active:
+            break
+        total = sum(flex[i] for i in active)
+        used = 0.0
+        for i in active:
+            d = min(slack * flex[i] / total, hi[i] - h[i])
+            h[i] += d
+            used += d
+        slack -= used
+    return h
+
+
+def settle(pages):
+    """Re-measure each page: spread its spare height over its rows unevenly, so pages fill and rows differ."""
+    top, bottom = MARGIN, PAGE_H - MARGIN - FOOTER_H
+    out = []
+    for n, page in enumerate(pages):
+        items = [it for _, it in page]
+        rows = [it for it in items if it["kind"] == "row"]
+        fixed = sum(it["h"] for it in items if it["kind"] != "row") + GUTTER * (len(items) - 1)
+        natural = fixed + sum(r["h"] for r in rows)
+        sparse_last = n == len(pages) - 1 and natural < 0.6 * (bottom - top)
+        heights = [r["h"] for r in rows] if (not rows or sparse_last) else _share_out(rows, bottom - top - fixed)
+        y, k, placed = top, 0, []
+        for it in items:
+            if it["kind"] == "row":
+                h = heights[k]
+                k += 1
+            else:
+                h = it["h"]
+            placed.append((y, it, h))
+            y += h + GUTTER
+        out.append(placed)
+    return out
 
 
 def paginate(items):
@@ -466,13 +550,13 @@ def render_pages(doc):
     cast = {c["id"]: c for c in doc["cast"]}
     # Try slightly shorter panels and keep the tallest setting that needs the fewest pages.
     tries = [paginate(build_items(doc, cast, k)) for k in FIT_FACTORS]
-    pages = min(tries, key=lambda pg: len(pg))
+    pages = settle(min(tries, key=lambda pg: len(pg)))
     svgs, placements = [], []
     for n, page in enumerate(pages, 1):
         body = []
-        for y, it in page:
-            body.append(it["draw"](y))
-            placements.append({"page": n, "y": y, "h": it["h"], "kind": it["kind"], "beat": it.get("beat")})
+        for y, it, h in page:
+            body.append(it["draw"](y, h - it["label_h"]) if it["kind"] == "row" else it["draw"](y))
+            placements.append({"page": n, "y": y, "h": h, "kind": it["kind"], "beat": it.get("beat")})
         foot = text(PAGE_W / 2, PAGE_H - MARGIN - 8, [f'{doc["meta"]["title"]} · page {n} of {len(pages)}'], 14, anchor="middle", fill=MID)
         svgs.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {PAGE_W} {PAGE_H}" width="210mm" height="297mm" '
                     f'font-family=\'{FONT}\' role="group" aria-label="Page {n} of {len(pages)}">'

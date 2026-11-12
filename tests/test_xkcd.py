@@ -128,3 +128,51 @@ def test_a_diatom_draws_for_every_pose_and_both_directions():
             svg, head = R.figure(pen, 100, 200, 1.0, pose, "smile", facing, "paper", {"body": "diatom"})
             ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
             assert head[0] == 100 and head[1] < 200
+
+
+def _page_rows(doc):
+    _, placements = R.render_pages(doc)
+    pages = {}
+    for p in placements:
+        pages.setdefault(p["page"], []).append(p)
+    return pages
+
+
+def test_pages_are_filled_to_the_bottom_margin(doc):
+    limit = R.PAGE_H - R.MARGIN - R.FOOTER_H
+    pages = _page_rows(doc)
+    for n, items in pages.items():
+        end = max(p["y"] + p["h"] for p in items)
+        assert end <= limit + 1e-6
+        if n < len(pages):  # a sparse last page may be left unstretched
+            assert limit - end < 1.0
+
+
+def test_rows_on_a_full_page_differ_in_height(doc):
+    rows = [p["h"] for p in _page_rows(doc)[2] if p["kind"] == "row"]
+    assert max(rows) / min(rows) > 1.2
+
+
+def test_a_tall_hint_gives_a_row_more_height(doc):
+    plain = [p["h"] for p in _page_rows(doc)[1] if p["kind"] == "row"]
+    hinted = copy.deepcopy(doc)
+    hinted["beats"][0]["panels"][0]["height"] = "tall"
+    tall = [p["h"] for p in _page_rows(hinted)[1] if p["kind"] == "row"]
+    assert tall[0] > plain[0]
+
+
+def test_a_short_hint_makes_a_row_shorter(doc):
+    plain = [p["h"] for p in _page_rows(doc)[1] if p["kind"] == "row"]
+    hinted = copy.deepcopy(doc)
+    for p in hinted["beats"][0]["panels"]:
+        p["height"] = "short"
+    short = [p["h"] for p in _page_rows(hinted)[1] if p["kind"] == "row"]
+    assert short[0] < plain[0]
+
+
+def test_a_sparse_last_page_is_not_stretched_to_fill_the_sheet(doc):
+    tiny = copy.deepcopy(doc)
+    tiny["beats"] = tiny["beats"][:1]
+    tiny["beats"][0]["panels"] = tiny["beats"][0]["panels"][:2]
+    rows = [p["h"] for p in _page_rows(tiny)[1] if p["kind"] == "row"]
+    assert sum(rows) < 0.7 * (R.PAGE_H - 2 * R.MARGIN)
