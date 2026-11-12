@@ -154,7 +154,10 @@
               "body": {
                 "enum": [
                   "stick",
-                  "diatom"
+                  "diatom",
+                  "krill",
+                  "penguin",
+                  "whale"
                 ]
               }
             }

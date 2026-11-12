@@ -45,6 +45,24 @@ cast:
   look: Stick figure with spiky hair
   appearance:
     hair: spiky
+- id: krill
+  name: Krill
+  role: An Antarctic krill, worried about the warming
+  look: A curved, banded shrimp with a big dark eye
+  appearance:
+    body: krill
+- id: penguin
+  name: Penguin
+  role: A penguin, also worried
+  look: Black with a white belly
+  appearance:
+    body: penguin
+- id: whale
+  name: Whale
+  role: A whale, worried on a larger scale
+  look: A long body with flukes and a spout
+  appearance:
+    body: whale
 claims:
 - id: C1
   text: Net community production (NCP) is gross primary production minus community respiration.
@@ -780,40 +798,33 @@ beats:
     - C8
     staging:
       characters:
-      - id: extra
-        x: 0.1
-        scale: 0.55
+      - id: krill
+        x: 0.17
+        scale: 1.5
         face: worry
-      - id: extra
-        x: 0.28
-        scale: 0.7
+      - id: penguin
+        x: 0.5
+        scale: 0.9
         face: worry
-      - id: extra
-        x: 0.46
-        scale: 0.85
+      - id: whale
+        x: 0.77
+        scale: 0.65
         face: worry
-      - id: extra
-        x: 0.64
-        scale: 1.0
-        face: worry
-      - id: extra
-        x: 0.84
-        scale: 1.2
-        face: worry
+        facing: left
       props:
       - kind: label
-        x: 0.1
-        y: 0.2
+        x: 0.17
+        y: 0.5
         label: krill
         size: small
       - kind: label
-        x: 0.46
-        y: 0.2
+        x: 0.5
+        y: 0.42
         label: penguin
         size: small
       - kind: label
-        x: 0.84
-        y: 0.2
+        x: 0.77
+        y: 0.5
         label: whale
         size: small
 - id: B2
@@ -1926,7 +1937,7 @@ beats:
     frame: borderless
     transition: scene-to-scene
     word_picture: picture-specific
-    scene: Night on deck. Ines looks at the sea. Beside her Dot sits, glowing slightly, still convinced he is important.
+    scene: Night on deck. Ines looks at the sea. Dot, glowing slightly, is still convinced he is important, while a penguin, a krill and a whale look on.
     speech:
     - speaker: dot
       text: Most abundant. Best predictor. Surely.
@@ -1937,13 +1948,26 @@ beats:
       keeps_claims_intact: true
     staging:
       characters:
+      - id: penguin
+        x: 0.1
+        scale: 0.85
+        face: smile
       - id: dot
         x: 0.3
         pose: up
         face: smile
         facing: right
+      - id: krill
+        x: 0.5
+        scale: 1.3
+        face: smile
       - id: ines
         x: 0.7
         pose: shrug
+        face: smile
+        facing: left
+      - id: whale
+        x: 0.86
+        scale: 0.4
         face: smile
         facing: left

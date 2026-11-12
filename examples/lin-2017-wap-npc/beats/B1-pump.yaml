@@ -96,12 +96,10 @@
         claim_ids: [C8]
         staging:
           characters:
-            - { id: extra, x: 0.1, scale: 0.55, face: worry }
-            - { id: extra, x: 0.28, scale: 0.7, face: worry }
-            - { id: extra, x: 0.46, scale: 0.85, face: worry }
-            - { id: extra, x: 0.64, scale: 1.0, face: worry }
-            - { id: extra, x: 0.84, scale: 1.2, face: worry }
+            - { id: krill, x: 0.17, scale: 1.5, face: worry }
+            - { id: penguin, x: 0.5, scale: 0.9, face: worry }
+            - { id: whale, x: 0.77, scale: 0.65, face: worry, facing: left }
           props:
-            - { kind: label, x: 0.1, y: 0.2, label: "krill", size: small }
-            - { kind: label, x: 0.46, y: 0.2, label: "penguin", size: small }
-            - { kind: label, x: 0.84, y: 0.2, label: "whale", size: small }
+            - { kind: label, x: 0.17, y: 0.5, label: "krill", size: small }
+            - { kind: label, x: 0.5, y: 0.42, label: "penguin", size: small }
+            - { kind: label, x: 0.77, y: 0.5, label: "whale", size: small }

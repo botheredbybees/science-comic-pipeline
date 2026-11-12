@@ -214,3 +214,38 @@ def test_a_long_chart_label_is_never_cut_short():
     words = re.sub(r"<[^>]+>", " ", svg).split()
     for word in label.split():
         assert word in words
+
+
+def test_every_animal_draws_for_every_face_pose_and_direction():
+    from animals import ANIMALS
+    pen = R.Pen("animals")
+    for name in ANIMALS:
+        for face in ("neutral", "smile", "worry", "deadpan", "surprised"):
+            for facing in ("left", "right"):
+                for pose in ("stand", "up", "shrug"):
+                    svg, head = R.figure(pen, 100, 200, 1.0, pose, face, facing, None, {"body": name})
+                    ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+                    assert head[1] < 200 and abs(head[0] - 100) < 80
+
+
+def test_animals_work_as_cast_members_in_a_panel(doc):
+    animal_doc = copy.deepcopy(doc)
+    animal_doc["cast"] += [{"id": "krill", "name": "Krill", "appearance": {"body": "krill"}},
+                           {"id": "penguin", "name": "Penguin", "appearance": {"body": "penguin"}},
+                           {"id": "whale", "name": "Whale", "appearance": {"body": "whale"}}]
+    panel = animal_doc["beats"][0]["panels"][0]
+    panel["staging"]["characters"] += [{"id": "krill", "x": 0.2, "scale": 1.6}, {"id": "penguin", "x": 0.5, "face": "smile"},
+                                      {"id": "whale", "x": 0.85, "scale": 0.6, "facing": "left"}]
+    panel["speech"].append({"speaker": "whale", "text": "Hello."})
+    from validate_storyboard import validate
+    assert validate(animal_doc)[0] == []
+    for svg in R.render_pages(animal_doc)[0]:
+        ET.fromstring(svg)
+
+
+def test_board_card_labels_shrink_to_fit_their_cards():
+    pen = R.Pen("board")
+    spec = {"kind": "board", "cards": [{"label": "diazotrophs"}, {"label": "pico"}, {"label": "calcifiers"}, {"label": "silicifiers"}]}
+    svg = R.prop(pen, 0, 0, 220, 120, spec, {}, 18)
+    sizes = [float(m) for m in re.findall(r'font-size="([\d.]+)"', svg)]
+    assert sizes and min(sizes) < 18 and min(sizes) >= 9

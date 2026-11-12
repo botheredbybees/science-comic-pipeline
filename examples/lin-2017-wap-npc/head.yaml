@@ -35,3 +35,18 @@ cast:
     role: "A dinoflagellate with a taste for diatoms"
     look: "Stick figure with spiky hair"
     appearance: { hair: spiky }
+  - id: krill
+    name: "Krill"
+    role: "An Antarctic krill, worried about the warming"
+    look: "A curved, banded shrimp with a big dark eye"
+    appearance: { body: krill }
+  - id: penguin
+    name: "Penguin"
+    role: "A penguin, also worried"
+    look: "Black with a white belly"
+    appearance: { body: penguin }
+  - id: whale
+    name: "Whale"
+    role: "A whale, worried on a larger scale"
+    look: "A long body with flukes and a spout"
+    appearance: { body: whale }

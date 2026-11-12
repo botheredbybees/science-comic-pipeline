@@ -23,6 +23,7 @@ from layout import pack_rows  # noqa: E402
 
 from draw import (CHAR_W, FONT, INK, MID, PAPER, SOFT, Pen, block_h, clamp, esc, text, wrap)  # noqa: E402
 from props import EXTRA, extra_prop  # noqa: E402
+from animals import ANIMALS  # noqa: E402
 
 PAGE_W, PAGE_H, MARGIN, GUTTER = 1000, 1414, 40, 16  # A4 at 1000 units wide
 FOOTER_H = 30
@@ -119,6 +120,8 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     app = app or {}
     if app.get("body") == "diatom":
         return _diatom(pen, cx, base, s, pose, face, facing, holding, app)
+    if app.get("body") in ANIMALS:
+        return ANIMALS[app["body"]](pen, cx, base, s, pose, face, facing, holding, app)
     R, BODY, LEG = 15 * s, 46 * s, 48 * s
     cy, neck, hip = base - LEG - BODY - R, base - LEG - BODY, base - LEG
     sh = neck + 9 * s
@@ -209,7 +212,8 @@ def prop(pen, x, y, w, h, p, cast, fs):
                     o += [pen.line((cx0 + cw * t, top + ch), (cx0 + cw * t + ch * 0.5, top), 1.4, amp=0.4) for t in (0.1, 0.4, 0.7)]
                 else:
                     o.append(pen.rect(cx0, top, cw, ch, 2, fill=PAPER, over=1))
-                    o.append(text(cx0 + cw / 2, top + ch / 2 - fs * 0.55, [c["label"]], fs, anchor="middle"))
+                    fc = clamp((cw - 8) / (max(len(c["label"]), 1) * CHAR_W), 9.0, fs)  # shrink a label to fit its card
+                    o.append(text(cx0 + cw / 2, top + ch / 2 - fc * 0.55, [c["label"]], fc, anchor="middle"))
     elif k == "slide":
         sh = h * 0.86
         o += [pen.line((x + w / 2, y + sh), (x + w * 0.35, y + h), 2.2), pen.line((x + w / 2, y + sh), (x + w * 0.65, y + h), 2.2)]
@@ -322,9 +326,10 @@ def panel_font(w):
 
 def _head_offset(c, cast, w, h):
     """How far below the top of the scene a staged character's head sits."""
-    diatom = (cast.get(c["id"], {}).get("appearance") or {}).get("body") == "diatom"
+    body = (cast.get(c["id"], {}).get("appearance") or {}).get("body")
     s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3) * c.get("scale", 1)
-    return c.get("y", 0.94) * h - (108 if diatom else 128) * s
+    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52}.get(body, 128)  # head height above the feet, at s = 1
+    return c.get("y", 0.94) * h - rise * s
 
 
 def plan_panel(panel, w, k=0.55, cast=None):
