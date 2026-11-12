@@ -691,6 +691,10 @@
               },
               "y_label": {
                 "type": "string"
+              },
+              "show_max": {
+                "type": "boolean",
+                "description": "Print the chart's axis maximum. Turn it off when the maximum is only a drawing choice and not a number from the source."
               }
             }
           }

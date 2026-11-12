@@ -1,0 +1,193 @@
+  - id: B3
+    title: "The suspects"
+    act: result
+    panels:
+      - id: B3.1
+        weight: standard
+        transition: scene-to-scene
+        scene: "A bar as tall as a building labelled 'diatoms'. Dot stands proudly beside it."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Diatoms dominated the community, an average of 41% of all reads." }
+          - { speaker: dot, text: "Forty-one percent. Take note." }
+        claim_ids: [C20]
+        staging:
+          characters:
+            - { id: dot, x: 0.8, pose: up, face: smile, facing: left, scale: 0.85 }
+          props:
+            - { kind: bars, x: 0.08, y: 0.04, w: 0.5, h: 0.9, max: 100, unit: "%", bars: [{ label: "diatoms", value: 41 }] }
+      - id: B3.2
+        weight: standard
+        frame: borderless
+        transition: subject-to-subject
+        scene: "A scatter plot with a rising line, and a small label giving the correlation."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Diatom abundance correlated positively with NCP (r2 = 0.35, p = 0.005), but not significantly with NCP/POC." }
+        claim_ids: [C21]
+        staging:
+          props:
+            - { kind: plot, x: 0.04, y: 0.04, w: 0.92, h: 0.92, x_label: "diatoms", y_label: "NCP", series: [{ points: [[0.05, 0.1], [0.3, 0.3], [0.55, 0.45], [0.8, 0.65], [0.95, 0.75]], style: dashed }], notes: [{ x: 0.3, y: 0.7, label: "r2 = 0.35" }] }
+      - id: B3.3
+        weight: wide
+        transition: scene-to-scene
+        word_picture: parallel
+        scene: "Two plots side by side: centric diatoms rise with NCP; pennate diatoms form a shapeless cloud."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Centric diatoms correlated with NCP (r2 = 0.47, p = 0.0006). Surprisingly, pennate diatoms were not significantly correlated with NCP or NCP/POC." }
+        claim_ids: [C22, C23]
+        staging:
+          props:
+            - { kind: plot, x: 0.03, y: 0.05, w: 0.45, h: 0.9, title: "centric: r2 = 0.47", series: [{ points: [[0.05, 0.1], [0.4, 0.4], [0.7, 0.65], [0.95, 0.85]], style: dashed }] }
+            - { kind: plot, x: 0.52, y: 0.05, w: 0.45, h: 0.9, title: "pennate: no correlation", series: [{ points: [[0.05, 0.5], [0.5, 0.45], [0.95, 0.5]], style: dotted }] }
+      - id: B3.4
+        weight: standard
+        frame: borderless
+        transition: scene-to-scene
+        scene: "Twenty figures in a tight group, with a huge crowd of other figures behind them."
+        speech:
+          - { speaker: narrator, kind: caption, text: "The top 20 OTUs, 4.3% of the diversity, made up 78% of all sequence reads." }
+        claim_ids: [C24]
+        staging:
+          props:
+            - { kind: pie, x: 0.15, y: 0.05, w: 0.7, h: 0.9, items: [{ label: "top 20 OTUs: 78%", value: 78 }, { label: "everything else", value: 22 }] }
+      - id: B3.5
+        weight: wide
+        transition: scene-to-scene
+        scene: "Four bars: bulk diatoms against a few chosen OTUs, for NCP and for NCP/POC. The chosen OTUs are much taller."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Three OTUs explained 92% of the variance in NCP and two OTUs 76% of the variance in NCP/POC. Bulk diatoms explained only 35% and 16%." }
+        claim_ids: [C25, C26, C27]
+        staging:
+          props:
+            - { kind: bars, x: 0.04, y: 0.04, w: 0.92, h: 0.92, max: 100, unit: "%", bars: [{ label: "diatoms, NCP", value: 35, style: hollow }, { label: "3 OTUs, NCP", value: 92 }, { label: "diatoms, NCP/POC", value: 16, style: hollow }, { label: "2 OTUs, NCP/POC", value: 76 }] }
+      - id: B3.6
+        weight: standard
+        frame: borderless
+        transition: subject-to-subject
+        scene: "Dot, arms wide, announces he is the most abundant. Ines holds up a chart that says his r-squared is 0.12."
+        speech:
+          - { speaker: narrator, kind: caption, text: "The most dominant OTU, the pennate diatom Fragilariopsis, was not a good predictor of NCP (r2 = 0.12, p > 0.1)." }
+          - { speaker: dot, text: "I'm the most abundant." }
+          - { speaker: ines, text: "Not the same as important." }
+        claim_ids: [C28]
+        humour:
+          note: "Abundance is not importance."
+          keeps_claims_intact: true
+        staging:
+          characters:
+            - { id: ines, x: 0.15, pose: point, face: deadpan, facing: right }
+            - { id: dot, x: 0.85, pose: up, face: smile, facing: left }
+      - id: B3.7
+        weight: standard
+        transition: moment-to-moment
+        scene: "Dot, looking suspicious, with ice crystals on his shell."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Many Fragilariopsis species are ice algae, so high abundance in some areas may be due to sea ice melt seeding and not new cell growth." }
+        claim_ids: [C29]
+        staging:
+          characters:
+            - { id: dot, x: 0.5, pose: shrug, face: worry }
+          props:
+            - { kind: label, x: 0.18, y: 0.3, label: "melting ice", size: small }
+      - id: B3.8
+        weight: wide
+        transition: scene-to-scene
+        scene: "Ines gestures at three cells, all filed under one tidy label, all quite different."
+        speech:
+          - { speaker: narrator, kind: caption, text: "So PFTs may not predict NCP well in some regions, and variability within a PFT may exceed variability between PFTs." }
+          - { speaker: ines, text: "Tidy boxes, untidy ocean." }
+        claim_ids: [C30]
+        humour:
+          note: "Ines, on the PFT box."
+          keeps_claims_intact: true
+        staging:
+          characters:
+            - { id: ines, x: 0.15, pose: shrug, face: deadpan, facing: right }
+            - { id: extra, x: 0.5, scale: 0.5, face: smile }
+            - { id: extra, x: 0.65, scale: 0.9, face: smile }
+            - { id: extra, x: 0.85, scale: 1.35, face: smile }
+          props:
+            - { kind: label, x: 0.67, y: 0.07, label: "one functional type: 'diatoms'", size: small }
+      - id: B3.9
+        weight: standard
+        transition: scene-to-scene
+        scene: "Two diatoms on a map: one up near the station, one by the southern ice edge. Both walk towards the 'NCP' sign."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Stellarima in a northern bloom near Palmer Station and Proboscia in the southern ice-edge bloom each correlated with NCP but not NCP/POC: high production, but relatively less efficient export." }
+        claim_ids: [C31, C32]
+        staging:
+          characters:
+            - { id: extra, x: 0.2, scale: 0.8, face: smile }
+            - { id: extra, x: 0.55, scale: 0.8, face: smile }
+          props:
+            - { kind: label, x: 0.2, y: 0.12, label: "Stellarima", size: small }
+            - { kind: label, x: 0.55, y: 0.12, label: "Proboscia", size: small }
+            - { kind: sign, x: 0.82, y: 0.2, w: 0.14, h: 0.5, label: "NCP" }
+      - id: B3.10
+        weight: standard
+        frame: borderless
+        transition: scene-to-scene
+        scene: "A colony of Phaeocystis, drawn as a cluster of small round cells, with a bar chart showing only a small share of the reads."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Phaeocystis correlated with NCP/POC, not NCP. It averaged only 9.0% of reads, but at the station with the highest NCP/POC it co-dominated at 34.4% with diatoms at 36.1%." }
+        claim_ids: [C33, C34]
+        staging:
+          characters:
+            - { id: extra, x: 0.3, scale: 0.5, face: smile }
+            - { id: extra, x: 0.45, scale: 0.5, face: smile }
+            - { id: extra, x: 0.6, scale: 0.5, face: smile }
+          props:
+            - { kind: label, x: 0.45, y: 0.15, label: "Phaeocystis", size: small }
+      - id: B3.11
+        weight: standard
+        transition: moment-to-moment
+        scene: "The Phaeocystis colony tips over the edge of a cliff and sinks as one lump."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Phaeocystis forms massive aggregates at the colony stage that sink rapidly, and is considered a more efficient exporter of carbon than diatoms." }
+        claim_ids: [C35]
+        staging:
+          characters:
+            - { id: extra, x: 0.3, y: 0.7, scale: 0.5, face: smile }
+            - { id: extra, x: 0.42, y: 0.7, scale: 0.5, face: smile }
+          props:
+            - { kind: arrow, x: 0.7, y: 0.15, x2: 0.7, y2: 0.85 }
+      - id: B3.12
+        weight: wide
+        transition: scene-to-scene
+        scene: "Gyrodinium, a spiky-haired grazer, looms over a diatom twice its size, napkin tucked in."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Two dinoflagellate OTUs were key negative contributors to NCP and NCP/POC. Microzooplankton like these are more likely to reduce carbon export than large grazers with fast-sinking faecal pellets." }
+          - { speaker: gyro, text: "I eat diatoms bigger than me." }
+        claim_ids: [C36, C37, C39]
+        humour:
+          note: "Gyrodinium, tucking in; the paper says it ingests diatoms much larger than itself."
+          keeps_claims_intact: true
+        staging:
+          characters:
+            - { id: gyro, x: 0.25, pose: hold, face: smile, facing: right }
+            - { id: dot, x: 0.65, pose: shrug, face: worry, facing: left, scale: 1.3 }
+      - id: B3.13
+        weight: standard
+        frame: borderless
+        transition: scene-to-scene
+        scene: "A second dinoflagellate wearing a stolen green apron, a chloroplast, with Phaeocystis in its other hand."
+        speech:
+          - { speaker: narrator, kind: caption, text: "One dinoflagellate OTU belongs to a kleptoplastic group known to prey on Phaeocystis and keep its chloroplasts." }
+        claim_ids: [C38]
+        staging:
+          characters:
+            - { id: gyro, x: 0.35, pose: hold, holding: paper, face: deadpan, facing: right }
+          props:
+            - { kind: label, x: 0.75, y: 0.5, label: "stolen chloroplast", size: small }
+      - id: B3.14
+        weight: standard
+        transition: scene-to-scene
+        scene: "A pigment-free amoeboid shape that HPLC cannot see, with a magnifying glass pointed straight past it."
+        speech:
+          - { speaker: narrator, kind: caption, text: "NCP and NCP/POC were also negatively correlated with Rhizaria (r2 = 0.29, p = 0.01 and r2 = 0.20, p = 0.04). Rhizaria are not detected by HPLC pigment analyses because they lack pigments." }
+        claim_ids: [C40, C41]
+        staging:
+          characters:
+            - { id: extra, x: 0.3, scale: 0.7, face: smile }
+          props:
+            - { kind: label, x: 0.3, y: 0.12, label: "Rhizaria", size: small }
+            - { kind: box, x: 0.55, y: 0.35, w: 0.35, h: 0.3, label: "HPLC" }

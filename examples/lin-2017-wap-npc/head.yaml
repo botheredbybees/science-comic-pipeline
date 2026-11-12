@@ -1,0 +1,37 @@
+version: 2
+meta:
+  title: "Who Sank the Carbon?"
+  audience: "Marine science students, and anyone who has wondered which plankton move carbon out of the surface ocean"
+  left_out:
+    - "The statistics behind the variable selection (stochastic search variable selection and stepwise regression) and the full OTU tables."
+    - "The details of the DNA extraction, the PCR primers and the bioinformatics pipeline."
+    - "The conversion of oxygen production to carbon, which assumes a photosynthetic quotient the paper discusses as a caveat."
+    - "Which OTUs matched which taxa in the supplementary tables, and the network layouts themselves."
+  source:
+    title: "Specific eukaryotic plankton are good predictors of net community production in the Western Antarctic Peninsula"
+    authors: ["Yajuan Lin", "Nicolas Cassar", "Adrian Marchetti", "Carly Moreno", "Hugh Ducklow", "Zuchuan Li"]
+    year: 2017
+    doi: "10.1038/s41598-017-14109-1"
+    url: "https://www.nature.com/articles/s41598-017-14109-1"
+    licence: "CC BY 4.0"
+    licence_checked: "The article's own licence statement (Europe PMC full-text XML, PMC5665988), 2026-11-13"
+  spine:
+    and: "Plankton decide whether the carbon they make is recycled at the surface or exported to depth, and models sort them into a few broad functional types."
+    but: "Nobody knew which organisms actually matter for export at the Western Antarctic Peninsula, where the ocean is changing fast."
+    therefore: "The authors paired underway oxygen/argon productivity with 18S DNA from the same seawater line, and found that two or three organisms explain most of the variation, while the most abundant diatom explains none."
+cast:
+  - id: ines
+    name: "Ines"
+    role: "A scientist on the ship"
+    look: "Stick figure in a woolly hat and a parka"
+    appearance: { hair: beanie }
+  - id: dot
+    name: "Dot"
+    role: "A diatom, here playing Fragilariopsis, the most abundant OTU"
+    look: "A pill-shaped glass shell with ridges and a face"
+    appearance: { body: diatom }
+  - id: gyro
+    name: "Gyrodinium"
+    role: "A dinoflagellate with a taste for diatoms"
+    look: "Stick figure with spiky hair"
+    appearance: { hair: spiky }

@@ -18,6 +18,20 @@ from jsonschema import Draft202012Validator
 
 SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schema" / "storyboard.schema.json"
 HAS_NUMBER = re.compile(r"\d")
+NUMBER = re.compile(r"\d+(?:\.\d+)?")
+PLAIN_NUMBER = re.compile(r"(?<![A-Za-z0-9.])\d+(?:\.\d+)?")  # skips formulas and labels such as O2 and L0
+WORDS = {"one": "1", "single": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6",
+         "seven": "7", "eight": "8", "nine": "9", "ten": "10"}
+
+
+def _supported_numbers(text):
+    """Numbers a cited claim supports: its digits, its number words, and rounded forms of its decimals."""
+    out = set(NUMBER.findall(text))
+    out |= {WORDS[w] for w in re.findall(r"[a-z]+", text.lower()) if w in WORDS}
+    for n in list(out):
+        if "." in n:
+            out |= {str(round(float(n))), f"{float(n):.1f}"}
+    return out
 
 
 def load_schema():
@@ -46,7 +60,8 @@ def _staging_texts(staging):
             if prop.get("show_values"):
                 out.append(str(it.get("value", "")))
         out += [n["label"] for n in prop.get("notes", [])]
-        if prop.get("kind") == "bars" and "max" in prop and prop.get("show_values", True):
+        if prop.get("kind") == "bars" and "max" in prop and prop.get("show_values", True) and prop.get("show_max", True) \
+                and not (prop.get("unit") == "%" and prop["max"] == 100):
             out.append(str(prop["max"]))
         for b in prop.get("bars", []):
             out += [b.get("label", ""), str(b["value"])] if prop.get("show_values", True) else [b.get("label", "")]
@@ -100,6 +115,14 @@ def validate(doc):
         text = " ".join([line["text"] for line in p.get("speech", [])] + _staging_texts(p.get("staging")))
         if HAS_NUMBER.search(text) and not cited:
             errors.append(f"{p['id']}: text or chart values contain a number but the panel cites no claim")
+        if cited:  # a number drawn on the panel should come from one of its cited claims, not from the artist
+            allowed = set()
+            for cid in cited:
+                if cid in claims:
+                    allowed |= _supported_numbers(claims[cid]["text"] + " " + claims[cid]["source"].get("quote", ""))
+            invented = sorted(set(PLAIN_NUMBER.findall(text)) - allowed)
+            if invented:
+                warnings.append(f"{p['id']}: number(s) {', '.join(invented)} appear on the panel but in none of its cited claims")
         staged = {c["id"] for c in p.get("staging", {}).get("characters", [])}
         for c in staged - cast_ids - {"extra"}:
             errors.append(f"{p['id']}: staged character '{c}' is not in the cast")

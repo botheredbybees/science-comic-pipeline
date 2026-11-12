@@ -162,7 +162,7 @@ def _bars(pen, x, y, w, h, spec, fs):
     pct = "%" if spec.get("unit") == "%" else ""
     show = spec.get("show_values", True)
     fsb = max(11.0, fs * 0.85)
-    tick = f"{mx:g}{pct}" if show else ""
+    tick = f"{mx:g}{pct}" if show and spec.get("show_max", True) else ""
     ax = x + max(14, len(tick) * fsb * CHAR_W + 8)
     slot = (x + w - ax - 4) / n
     labs = [wrap(b.get("label", ""), slot - 4, fsb) for b in bars]

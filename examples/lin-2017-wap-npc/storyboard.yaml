@@ -1,0 +1,1949 @@
+version: 2
+meta:
+  title: Who Sank the Carbon?
+  audience: Marine science students, and anyone who has wondered which plankton move carbon out of the surface ocean
+  left_out:
+  - The statistics behind the variable selection (stochastic search variable selection and stepwise regression) and the full OTU tables.
+  - The details of the DNA extraction, the PCR primers and the bioinformatics pipeline.
+  - The conversion of oxygen production to carbon, which assumes a photosynthetic quotient the paper discusses as a caveat.
+  - Which OTUs matched which taxa in the supplementary tables, and the network layouts themselves.
+  source:
+    title: Specific eukaryotic plankton are good predictors of net community production in the Western Antarctic Peninsula
+    authors:
+    - Yajuan Lin
+    - Nicolas Cassar
+    - Adrian Marchetti
+    - Carly Moreno
+    - Hugh Ducklow
+    - Zuchuan Li
+    year: 2017
+    doi: 10.1038/s41598-017-14109-1
+    url: https://www.nature.com/articles/s41598-017-14109-1
+    licence: CC BY 4.0
+    licence_checked: The article's own licence statement (Europe PMC full-text XML, PMC5665988), 2026-11-13
+  spine:
+    and: Plankton decide whether the carbon they make is recycled at the surface or exported to depth, and models sort them into a few broad functional types.
+    but: Nobody knew which organisms actually matter for export at the Western Antarctic Peninsula, where the ocean is changing fast.
+    therefore: The authors paired underway oxygen/argon productivity with 18S DNA from the same seawater line, and found that two or three organisms explain most of the variation, while the most abundant
+      diatom explains none.
+cast:
+- id: ines
+  name: Ines
+  role: A scientist on the ship
+  look: Stick figure in a woolly hat and a parka
+  appearance:
+    hair: beanie
+- id: dot
+  name: Dot
+  role: A diatom, here playing Fragilariopsis, the most abundant OTU
+  look: A pill-shaped glass shell with ridges and a face
+  appearance:
+    body: diatom
+- id: gyro
+  name: Gyrodinium
+  role: A dinoflagellate with a taste for diatoms
+  look: Stick figure with spiky hair
+  appearance:
+    hair: spiky
+claims:
+- id: C1
+  text: Net community production (NCP) is gross primary production minus community respiration.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 2
+    quote: NCP is equal to gross primary production minus community respiration
+  status: verified
+- id: C2
+  text: Plankton communities regulate NCP through the fate of organic matter production, which can be either recycled or exported to depth depending on phytoplankton size and density.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 2
+    quote: Plankton communities regulate NCP through their influence on the fate of organic matter production, which can be either recycled or exported to depth depending on phytoplankton size and
+  status: verified
+- id: C3
+  text: Export is generally predicted and modelled as a function of plankton functional types (PFTs).
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 2
+    quote: predicted and modeled to be a function of Plankton Functional Types
+  status: verified
+- id: C4
+  text: Conventional PFTs include picoautotrophs, diazotrophs, calcifiers and silicifiers such as diatoms.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 2
+    quote: Conventional PFTs include picoautotrophs, diazotrophs (N2-fixers), calcifiers (e.g., coccolithophorids), and silicifiers (e.g., diatoms)
+  status: verified
+- id: C5
+  text: Most diatoms are believed to be efficient carbon exporters because of their large size and heavy silica shells.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 2
+    quote: most diatoms are believed to be efficient carbon exporters to depth because of their large size and heavy silica shells
+  status: verified
+- id: C6
+  text: There is little understanding of how plankton biodiversity influences the carbon pump beyond broad paradigms such as diatoms contributing disproportionally to export.
+  kind: background
+  source:
+    locator: Abstract
+    page: 1
+    quote: we have little understanding of how this biodiversity influences the biological carbon pump other than broad paradigms such as diatoms contributing disproportionally to carbon export
+  status: verified
+- id: C7
+  text: The Western Antarctic Peninsula (WAP) may be the 'canary in a coal mine' of the Southern Ocean.
+  kind: background
+  source:
+    locator: Introduction, paragraph 2
+    page: 3
+    quote: the WAP may represent the “canary in a coal mine” of the Southern Ocean
+  status: verified
+- id: C8
+  text: Production at the base of the food chain, and upper trophic levels such as krill, fish, penguins, seals and whales, are likely to be affected by the rapid warming and sea ice loss.
+  kind: background
+  source:
+    locator: Introduction, paragraph 2
+    page: 3
+    quote: Community production at the bottom of the food chain, and local and remote upper trophic levels (e.g., krill, fish, penguins and other seabirds, seals, and whales) are likely to be affected by
+      this rapid warming and associated sea ice
+  status: verified
+- id: C9
+  text: The study combines high-resolution underway O2/Ar, which estimates net community production, with high-throughput 18S ribosomal DNA sequencing.
+  kind: method
+  source:
+    locator: Abstract
+    page: 1
+    quote: Here we combine high-resolution underway O2/Ar, which provides an estimate of net community production, with high-throughput 18 S ribosomal DNA sequencing
+  status: verified
+- id: C10
+  text: Biological O2 supersaturation can be estimated from O2/Ar because oxygen and argon have similar solubility.
+  kind: method
+  source:
+    locator: Materials and Methods, paragraph 1
+    page: 13
+    quote: The biological O2 supersaturation can be estimated from O2/Ar because O2 and Ar have similar solubility properties
+  status: verified
+- id: C11
+  text: The O2 residence time in the mixed layer was 8 to 19 days, averaging 11 days.
+  kind: method
+  source:
+    locator: Materials and Methods, paragraph 1
+    page: 13
+    quote: the O2 residence time in the mixed layer of 8 to 19 days (average of 11 days)
+  status: verified
+- id: C12
+  text: That residence time falls within the 1 week to 1 month range of phytoplankton community succession.
+  kind: method
+  source:
+    locator: Materials and Methods, paragraph 1
+    page: 13
+    quote: is within the 1 week-1 month range of phytoplankton community succession time span
+  status: verified
+- id: C13
+  text: Samples were collected on the annual Palmer LTER cruise from January to early February 2014 aboard the R/V Laurence M. Gould.
+  kind: method
+  source:
+    locator: Sampling
+    page: 14
+    quote: During the annual Palmer LTER cruise from Jan to early Feb in 2014 aboard the R/V Laurence M. Gould
+  status: verified
+- id: C14
+  text: Surface seawater from the vessel's seawater supply line was gently vacuum filtered through 0.2 µm filters for DNA.
+  kind: method
+  source:
+    locator: Sampling
+    page: 14
+    quote: Surface seawater from the vessel seawater supply line was gently vacuum filtered through a 0.2 µm pore size Millipore Supor filters
+  status: verified
+- id: C15
+  text: Temperature, salinity, oxygen, fluorescence and NCP were measured underway from the ship's clean flow-through seawater line.
+  kind: method
+  source:
+    locator: Sampling
+    page: 14
+    quote: Surface seawater temperature, salinity, oxygen, fluorescence, transmissometer beam Cp and NCP were measured underway from the ship’s clean flow-through seawater line system
+  status: verified
+- id: C16
+  text: DNA was extracted from 21 stations, and the V4 region of the 18S gene was amplified and sequenced.
+  kind: method
+  source:
+    locator: Materials and Methods, paragraph 1
+    page: 13
+    quote: We extracted total DNA from 21 stations; PCR amplified and sequenced the hypervariable V4 region of the 18 S marker gene
+  status: verified
+- id: C17
+  text: To account for biomass, NCP was normalised to particulate organic carbon (POC) in the mixed layer.
+  kind: method
+  source:
+    locator: Results, paragraph 2
+    page: 4
+    quote: In order to account for the influence of biomass on NCP, we normalized NCP to Particulate Organic Carbon (POC) concentration in the mixed layer
+  status: verified
+- id: C18
+  text: POC-normalised NCP may, under some conditions, indicate the apparent sinking rate and turnover time of the organic carbon inventory in the mixed layer.
+  kind: background
+  source:
+    locator: Results, paragraph 2
+    page: 4
+    quote: the POC-normalized NCP may, under some conditions, provide insight into the apparent sinking rate and turn over time of the organic carbon inventory in the mixed layer
+  status: verified
+- id: C19
+  text: At 464 operational taxonomic units (OTUs), defined at a 97% DNA similarity threshold, the community was characterised at roughly species-to-genus level.
+  kind: method
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: at the OTU level (i.e., species to genus) based on a 97% DNA similarity threshold (Fig. 2). In total, 464 OTUs were defined in the surveyed region
+  status: verified
+- id: C20
+  text: Diatoms were the dominant group, accounting for an average of 41% of the total reads.
+  kind: result
+  source:
+    locator: Results, paragraph 2
+    page: 4
+    quote: diatoms were the dominant components of the plankton population during our survey, accounting for an average of 41% of the total reads
+  status: verified
+- id: C21
+  text: The relative abundance of diatoms correlated positively with NCP (r2 = 0.35, p = 0.005) but not significantly with NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 2
+    page: 4
+    quote: the relative abundance of diatoms was positively correlated with NCP (r2 = 0.35, p = 0.005) but that there was no significant correlation with NCP/POC
+  status: verified
+- id: C22
+  text: Centric diatoms correlated positively with NCP (r2 = 0.47, p = 0.0006).
+  kind: result
+  source:
+    locator: Results, paragraph 2
+    page: 4
+    quote: A positive correlation was observed between the relative abundance of centric diatoms and NCP (r2 = 0.47, p = 0.0006)
+  status: verified
+- id: C23
+  text: Surprisingly, pennate diatoms were not significantly correlated with NCP or NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 2
+    page: 4
+    quote: Surprisingly, the relative abundance of pennate diatoms was not significantly correlated with NCP or NCP/POC
+  status: verified
+- id: C24
+  text: The top 20 OTUs, 4.3% of the diversity, made up 78% of all sequence reads.
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: The top 20 OTUs, a small portion (4.3%) of the total diversity, accounted for 78% of the overall sequence read abundance
+  status: verified
+- id: C25
+  text: Three OTUs accounted for 92% of the variance in NCP.
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: three OTUs accounted for 92% of the NCP variance
+  status: verified
+- id: C26
+  text: Only two OTUs explained 76% of the variance in NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: only two OTUs explained 76% of the NCP/POC variance
+  status: verified
+- id: C27
+  text: Bulk diatoms explained only 35% of the variance in NCP and 16% of the variance in NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: bulk diatoms explained 35% and 16% of the NCP and NCP/POC variances, respectively
+  status: verified
+- id: C28
+  text: The most dominant OTU, a pennate diatom of the genus Fragilariopsis, was not a good predictor of NCP (r2 = 0.12, p > 0.1).
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: a pennate diatom belonging to the genus Fragilariopsis, was not a good predictor of the geographic variability of NCP (r2 = 0.12, p > 0.1)
+  status: verified
+- id: C29
+  text: Many Fragilariopsis species are ice algae, so their abundance in some areas may be due to sea ice melt seeding rather than new cell growth.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: Many Fragilariopsis species are ice algae and the high abundance in some areas may be due to sea ice melt seeding rather than new cell growth
+  status: verified
+- id: C30
+  text: PFTs may not predict NCP well in some regions, and variability within a PFT may exceed variability between PFTs.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 3
+    page: 5
+    quote: Our results suggest that PFTs may not be good predictors of NCP in some regions and that the intra-PFT variability may be greater than inter-PFT in terms of NCP
+  status: verified
+- id: C31
+  text: Two diatoms with distinct biogeography, Stellarima in a northern bloom near Palmer Station and Proboscia in the southern ice-edge bloom, were each positively correlated with NCP but not NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 6
+    quote: Stellarima (OTU_8) in a north bloom near Palmer Station and Proboscia (OTU_6) dominating the south ice edge bloom
+  status: verified
+- id: C32
+  text: This suggests these OTUs are associated with high production but relatively less efficient export systems.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 4
+    page: 6
+    quote: were both positively correlated with NCP but not NCP/POC. This suggests that these OTUs are associated with high production but relatively less efficient export systems
+  status: verified
+- id: C33
+  text: The haptophyte Phaeocystis was not correlated with NCP but was positively correlated with NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 6
+    quote: the haptophyte Phaeocystis (OTU_3) was not correlated with NCP, but positively correlated with NCP/POC
+  status: verified
+- id: C34
+  text: Phaeocystis averaged only 9.0% of reads, but at the station with the highest NCP/POC it co-dominated at 34.4% alongside diatoms at 36.1%.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 6
+    quote: Phaeocystis accounted for only 9.0% of the total 18 S reads on average, but co-dominated (34.4%) with diatoms (36.1%) at station (600.040) that had the highest NCP/POC
+  status: verified
+- id: C35
+  text: Phaeocystis forms massive aggregates at the colony stage that sink rapidly, and is considered a more efficient exporter of carbon than diatoms.
+  kind: background
+  source:
+    locator: Results, paragraph 4
+    page: 6
+    quote: form massive aggregates at the colony stage and sink rapidly out of the ocean surface and thus has been considered to be a more efficient exporter of carbon compared to
+  status: verified
+- id: C36
+  text: Two mixotrophic or phagotrophic dinoflagellate OTUs were key negative contributors to the spatial variability of NCP and of NCP/POC.
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 7
+    quote: Two mixotrophic/phagotrophic dinoflagellate OTUs were identified as key negative contributors to the geographical variability of NCP (OTU_238) and NCP/POC (OTU_318)
+  status: verified
+- id: C37
+  text: In contrast to large grazers packing matter into fast-sinking faecal pellets, unicellular microzooplankton are more likely to reduce carbon export.
+  kind: background
+  source:
+    locator: Results, paragraph 5
+    page: 7
+    quote: In contrast to large grazers enhancing NCP by packing organic matter into rapidly-sinking fecal pellets, unicellular protistan microzooplankton are more likely to reduce carbon export
+  status: verified
+- id: C38
+  text: One of the dinoflagellate OTUs belongs to a kleptoplastic group known to prey on Phaeocystis and keep its chloroplasts.
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 7
+    quote: known to prey on Phaeocystis and retain their chloroplasts for
+  status: verified
+- id: C39
+  text: The other dinoflagellate, of the genus Gyrodinium, has been observed to ingest diatoms much larger than itself and may curtail diatom blooms.
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 7
+    quote: Gyrodinium have been observed to ingest diatoms much larger than their own body size and may curtail diatom
+  status: verified
+- id: C40
+  text: NCP and NCP/POC were also negatively correlated with Rhizaria (r2 = 0.29, p = 0.01 and r2 = 0.20, p = 0.04).
+  kind: result
+  source:
+    locator: Results, paragraph 6
+    page: 8
+    quote: NCP and NCP/POC were also negatively correlated with Rhizaria (r2 = 0.29, p = 0.01; r2 = 0.20, p = 0.04, respectively)
+  status: verified
+- id: C41
+  text: Rhizaria are not detected by traditional HPLC pigment analyses because they lack pigments.
+  kind: background
+  source:
+    locator: Results, paragraph 6
+    page: 8
+    quote: are not detected by traditional HPLC analyses due to their lack of pigments
+  status: verified
+- id: C42
+  text: F. cylindrus does not correlate with NCP, yet in culture its maximum growth rate is significantly higher than that of Proboscia alata and Actinocyclus actinochilus (P < 0.05).
+  kind: result
+  source:
+    locator: Results, paragraph 7
+    page: 9
+    quote: The distribution of F. cylindrus does not correlate to NCP or NCP/POC, yet its maximum growth rate in culture is significantly higher (P < 0.05) than Proboscia alata and Actinocyclus actinochilus
+  status: verified
+- id: C43
+  text: Cell biovolume of P. alata and A. actinochilus is more than two orders of magnitude larger than that of F. cylindrus.
+  kind: result
+  source:
+    locator: Results, paragraph 7
+    page: 9
+    quote: The biovolume per cell for P. alata and A. actinochilus are more than two orders of magnitude larger than that of F. cylindrus
+  status: verified
+- id: C44
+  text: Growth rates of the three diatoms under the tested conditions varied by less than 2-fold.
+  kind: result
+  source:
+    locator: Results, paragraph 7
+    page: 9
+    quote: the cellular growth rates under the examined conditions were comparable between the three diatoms (i.e., varied by less than 2-fold)
+  status: verified
+- id: C45
+  text: Large size could directly raise sinking rates and export, or uncouple cells from their slow-growing grazers.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 7
+    page: 9
+    quote: Large size could directly enhance the sinking rates of phytoplankton cells and lead to higher export, or uncouple them from their slow-growing grazers
+  status: verified
+- id: C46
+  text: Boom-and-bust species with high growth rates can outpace grazer growth when conditions turn favourable, and contribute to more efficient export.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 7
+    page: 9
+    quote: once the environment becomes favorable, boom-and-bust species with high growth rates can quickly outpace grazer growth and contribute to more efficient export
+  status: verified
+- id: C47
+  text: Persistent species are better at stress tolerance.
+  kind: background
+  source:
+    locator: Results, paragraph 7
+    page: 9
+    quote: Species with a persistent life strategy are better at stress tolerance
+  status: verified
+- id: C48
+  text: Low NCP/POC communities had almost double the number of network edges of high NCP/POC communities, 496 against 262.
+  kind: result
+  source:
+    locator: Results, paragraph 8
+    page: 10
+    quote: the low NCP/POC communities, compared to the high NCP/POC communities, are characterized by almost double the number of edges (496 vs. 262)
+  status: verified
+- id: C49
+  text: These features suggest that low NCP/POC communities are more tightly coupled than high NCP/POC communities.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 8
+    page: 10
+    quote: All these features suggest that the low NCP/POC communities are more tightly coupled than the high NCP/POC communities
+  status: verified
+- id: C50
+  text: Each network was built from only 11 stations.
+  kind: caveat
+  source:
+    locator: Results, paragraph 8
+    page: 10
+    quote: Although the sample size is relatively small (i.e., 11 stations for each group)
+  status: verified
+- id: C51
+  text: This may support the paradigm that more tightly coupled ecosystems are less efficient exporters of carbon.
+  kind: interpretation
+  source:
+    locator: Results, paragraph 8
+    page: 10
+    quote: This may support the general paradigm that more tightly coupled ecosystems (e.g., coupling between microzookplankton grazers and phytoplankton), are less efficient exporters of carbon
+  status: verified
+- id: C52
+  text: NCP(O2/Ar) in this region correlates highly (r2 = 0.83) with NCP calculated from seasonal DIC drawdown.
+  kind: method
+  source:
+    locator: Materials and Methods, paragraph 3
+    page: 16
+    quote: is highly correlated (r2 = 0.83) with the NCP calculated from the seasonal DIC
+  status: verified
+- id: C53
+  text: The estimated change in POC inventory over the preceding days averaged 18% of the NCP measurements.
+  kind: method
+  source:
+    locator: Materials and Methods, steady state
+    page: 17
+    quote: The estimated time-derivative of the POC inventory over the days prior to ship sampling was on average 18% of the NCP measurements
+  status: verified
+- id: C54
+  text: That steady-state check had only 4 comparisons because of cloud cover and should be interpreted with caution.
+  kind: caveat
+  source:
+    locator: Materials and Methods, steady state
+    page: 17
+    quote: This analysis resulted in only 4 comparisons because of cloud cover and should therefore be interpreted with caution
+  status: verified
+- id: C55
+  text: A lack of steady state in the mixed-layer carbon budget may blur some of the relationships.
+  kind: caveat
+  source:
+    locator: Results, caveats
+    page: 11
+    quote: A lack of steady-state in the mixed-layer carbon budget may blur some of the relationships
+  status: verified
+- id: C56
+  text: 16S and 18S reads differ from taxon-specific cell counts, partly because rDNA copy numbers vary per cell.
+  kind: caveat
+  source:
+    locator: Results, caveats
+    page: 11
+    quote: the 16 S and 18 S reads are different from taxa-specific cell counts especially considering the variability of rDNA copy numbers per cell
+  status: verified
+- id: C57
+  text: The network and correlation analyses do not necessarily reflect direct causal ecological relationships.
+  kind: caveat
+  source:
+    locator: Results, caveats
+    page: 11
+    quote: Our network and correlation analyses should also be interpreted with caution because 1) they do not necessarily reflect direct causal ecological relationships
+  status: verified
+- id: C58
+  text: It will be important to validate these results with estimates of in situ growth rates, photophysiology, microzooplankton growth and grazing rates.
+  kind: interpretation
+  source:
+    locator: Results, caveats
+    page: 11
+    quote: it will be important to further investigate these results and validate them with estimates of in situ growth rates, photophysiology, microzooplankon growth and grazing rates
+  status: verified
+- id: C59
+  text: Within the diverse WAP communities, as few as 2 to 3 key OTUs explain a significant proportion of the spatial variability in carbon export potential.
+  kind: result
+  source:
+    locator: Conclusion
+    page: 12
+    quote: as few as 2 to 3 key OTUs can explain a significant proportion of the spatial variability in carbon export potential
+  status: verified
+- id: C60
+  text: Using specific OTUs instead of broad functional groups raised the variance explained from 35% to 92% for NCP and from 16% to 76% for NCP/POC.
+  kind: result
+  source:
+    locator: Conclusion
+    page: 12
+    quote: Using specific OTUs, as opposed to broad functional groups, substantially improved our ability to explain NCP variance from 35% to 92%, and NCP/POC variance from 16% to 76%
+  status: verified
+- id: C61
+  text: The PFT currency needs to be adjusted to the biogeochemical process or element under study.
+  kind: interpretation
+  source:
+    locator: Conclusion
+    page: 12
+    quote: These results suggest that the PFT currency needs to be adjusted based on the biogeochemical process or element under study
+  status: verified
+- id: C62
+  text: Functional-group studies should be interpreted with caution, as the relation of carbon fluxes to taxonomy is more nuanced than currently depicted.
+  kind: interpretation
+  source:
+    locator: Conclusion
+    page: 12
+    quote: functional group level studies should be interpreted with caution as the relation of organic carbon fluxes to taxonomy is more nuanced than currently depicted
+  status: verified
+- id: C63
+  text: Microzooplankton (dinoflagellates and Rhizaria) arose as important negative predictors of carbon export potential.
+  kind: result
+  source:
+    locator: Conclusion
+    page: 12
+    quote: Microzooplankton (i.e., dinoflagellates and Rhizaria) also arose as important negative predictors of carbon export potential
+  status: verified
+- id: C64
+  text: Ecosystems with lower export potential have more tightly coupled communities.
+  kind: result
+  source:
+    locator: Abstract
+    page: 1
+    quote: ecosystems with lower export potential have more tightly coupled communities
+  status: verified
+- id: C65
+  text: Normalising NCP to POC gives a qualitative measure of how productive the ecosystem is for a given amount of surface biomass.
+  kind: method
+  source:
+    locator: Results, caveats
+    page: 11
+    quote: Normalizing NCP to POC provides us with a qualitative approach to evaluate how productive the ecosystem is for a given amount of biomass at the ocean surface
+  status: verified
+- id: C66
+  text: The O2/Ar method suits relating NCP to plankton assemblages because the O2 residence time is comparable to the plankton community turnover time.
+  kind: method
+  source:
+    locator: Materials and Methods, paragraph 1
+    page: 13
+    quote: The O2/Ar method is suitable to explore the relation of NCP to plankton assemblages because the O2 residence time in this study is comparable to plankton community turnover time
+  status: verified
+beats:
+- id: B1
+  title: The pump
+  act: problem
+  panels:
+  - id: B1.1
+    weight: wide
+    scene: The ship on a grey sea. Ines, in her woolly hat, writes an equation on a clipboard.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Net community production, NCP, is gross primary production minus community respiration.
+    claim_ids:
+    - C1
+    staging:
+      characters:
+      - id: ines
+        x: 0.25
+        pose: hold
+        holding: paper
+        face: neutral
+        facing: right
+      props:
+      - kind: ship
+        x: 0.5
+        y: 0.25
+        w: 0.42
+        h: 0.6
+  - id: B1.2
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: A cell at the surface. One arrow loops back up to the sunlit layer, another heads down into the dark.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: What the plankton make is either recycled or exported to depth, depending on their size and density.
+    claim_ids:
+    - C2
+    staging:
+      props:
+      - kind: box
+        x: 0.3
+        y: 0.32
+        w: 0.4
+        h: 0.2
+        label: plankton
+      - kind: arrow
+        x: 0.5
+        y: 0.3
+        x2: 0.5
+        y2: 0.14
+      - kind: label
+        x: 0.5
+        y: 0.1
+        label: recycled
+        size: small
+      - kind: arrow
+        x: 0.5
+        y: 0.54
+        x2: 0.5
+        y2: 0.84
+      - kind: label
+        x: 0.5
+        y: 0.97
+        label: exported
+        size: small
+  - id: B1.3
+    weight: standard
+    transition: subject-to-subject
+    scene: Four tidy boxes on a board. Ines taps them. Dot looks unconvinced.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Export is modelled as a function of plankton functional types: picoautotrophs, diazotrophs, calcifiers and silicifiers such as diatoms.'
+    - speaker: ines
+      text: Models like tidy boxes.
+    claim_ids:
+    - C3
+    - C4
+    humour:
+      note: Ines, on tidy boxes.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: ines
+        x: 0.13
+        pose: point
+        face: smile
+        facing: right
+        scale: 0.85
+      props:
+      - kind: board
+        x: 0.3
+        y: 0.15
+        w: 0.68
+        h: 0.6
+        cards:
+        - label: pico
+        - label: diazo
+        - label: calc
+        - label: silic
+  - id: B1.4
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: Dot, in a heavy glass shell, sinks like a stone and looks pleased about it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Most diatoms are believed to be efficient exporters because of their large size and heavy silica shells.
+    - speaker: dot
+      text: Heavy shell. Down I go.
+    claim_ids:
+    - C5
+    staging:
+      characters:
+      - id: dot
+        x: 0.5
+        y: 0.7
+        pose: up
+        face: smile
+      props:
+      - kind: arrow
+        x: 0.82
+        y: 0.25
+        x2: 0.82
+        y2: 0.88
+      - kind: label
+        x: 0.82
+        y: 0.15
+        label: sinks
+        size: small
+  - id: B1.5
+    weight: standard
+    transition: scene-to-scene
+    scene: Ines shrugs at a chart with a large question mark where the organisms should be.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: But there is little understanding of how biodiversity influences the carbon pump beyond broad paradigms such as diatoms contributing disproportionally to export.
+    - speaker: ines
+      text: We mostly assume.
+    claim_ids:
+    - C6
+    staging:
+      characters:
+      - id: ines
+        x: 0.25
+        pose: shrug
+        face: deadpan
+        facing: right
+      props:
+      - kind: label
+        x: 0.55
+        y: 0.5
+        label: '?'
+        size: large
+  - id: B1.6
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    scene: A map of the Antarctic Peninsula with a small canary sitting on it. Ines points.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The Western Antarctic Peninsula may be the canary in a coal mine of the Southern Ocean.
+    claim_ids:
+    - C7
+    staging:
+      characters:
+      - id: ines
+        x: 0.2
+        pose: point
+        face: smile
+        facing: right
+      - id: extra
+        x: 0.86
+        y: 0.9
+        scale: 0.4
+        face: worry
+      props:
+      - kind: label
+        x: 0.86
+        y: 0.45
+        label: canary
+        size: small
+      - kind: box
+        x: 0.4
+        y: 0.1
+        w: 0.3
+        h: 0.6
+        label: WAP
+  - id: B1.7
+    weight: wide
+    transition: subject-to-subject
+    scene: 'A line of animals along the bottom of the panel: krill, a fish, a penguin, a seal, a whale. They look at the thermometer.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Production at the base of the food chain, and upper levels such as krill, fish, penguins, seals and whales, are likely to be affected by rapid warming and sea ice loss.
+    claim_ids:
+    - C8
+    staging:
+      characters:
+      - id: extra
+        x: 0.1
+        scale: 0.55
+        face: worry
+      - id: extra
+        x: 0.28
+        scale: 0.7
+        face: worry
+      - id: extra
+        x: 0.46
+        scale: 0.85
+        face: worry
+      - id: extra
+        x: 0.64
+        scale: 1.0
+        face: worry
+      - id: extra
+        x: 0.84
+        scale: 1.2
+        face: worry
+      props:
+      - kind: label
+        x: 0.1
+        y: 0.2
+        label: krill
+        size: small
+      - kind: label
+        x: 0.46
+        y: 0.2
+        label: penguin
+        size: small
+      - kind: label
+        x: 0.84
+        y: 0.2
+        label: whale
+        size: small
+- id: B2
+  title: The method
+  act: method
+  panels:
+  - id: B2.1
+    weight: wide
+    transition: scene-to-scene
+    scene: 'Two pipes from the same seawater line: one carries oxygen and argon to a mass spectrometer, the other carries DNA to a sequencer.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The study combines underway O2/Ar, which estimates net community production, with 18S ribosomal DNA sequencing.
+    claim_ids:
+    - C9
+    - C10
+    staging:
+      props:
+      - kind: flow
+        x: 0.02
+        y: 0.08
+        w: 0.96
+        h: 0.38
+        items:
+        - label: seawater line
+        - label: O2/Ar
+        - label: NCP
+      - kind: flow
+        x: 0.02
+        y: 0.55
+        w: 0.96
+        h: 0.38
+        items:
+        - label: seawater line
+        - label: 18S DNA
+        - label: who is there
+  - id: B2.2
+    weight: standard
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: 'Two bars on a scale of days: how long oxygen stays in the mixed layer, and how long a plankton community takes to change.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Oxygen stays in the mixed layer 8 to 19 days, 11 on average, within the 1 week to 1 month it takes the plankton community to change. So the two can be compared.
+    claim_ids:
+    - C11
+    - C12
+    - C66
+    staging:
+      props:
+      - kind: axis
+        x: 0.02
+        y: 0.1
+        w: 0.96
+        h: 0.8
+        items:
+        - at: 0.2
+          to: 0.5
+          label: 'O2 residence: 8-19 days'
+        - at: 0.18
+          to: 0.8
+          label: 'community change: 1 week to 1 month'
+          row: 1
+          style: hollow
+  - id: B2.3
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: Ines on the deck of the R/V Laurence M. Gould, in the cold, holding a bottle.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Samples were collected on the annual Palmer LTER cruise, January to early February 2014, aboard the R/V Laurence M. Gould.
+    claim_ids:
+    - C13
+    staging:
+      characters:
+      - id: ines
+        x: 0.25
+        pose: hold
+        holding: mug
+        face: neutral
+        facing: right
+      props:
+      - kind: ship
+        x: 0.5
+        y: 0.3
+        w: 0.45
+        h: 0.55
+  - id: B2.4
+    weight: wide
+    transition: scene-to-scene
+    scene: The ship's seawater line runs past a filter holder and a row of sensors.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Seawater from the ship's supply line was gently filtered through 0.2 µm filters for DNA, while temperature, salinity, oxygen, fluorescence and NCP were measured underway from the same clean
+        flow-through line.
+    claim_ids:
+    - C14
+    - C15
+    staging:
+      props:
+      - kind: flow
+        x: 0.02
+        y: 0.1
+        w: 0.96
+        h: 0.45
+        items:
+        - label: seawater line
+        - label: 0.2 µm filter
+        - label: DNA
+      - kind: label
+        x: 0.5
+        y: 0.82
+        label: temperature, salinity, oxygen, fluorescence, NCP
+        size: small
+  - id: B2.5
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: A row of 21 little filters in a rack. Ines holds the last one up to the light.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: DNA was extracted from 21 stations and the V4 region of the 18S gene was sequenced.
+    claim_ids:
+    - C16
+    staging:
+      characters:
+      - id: ines
+        x: 0.2
+        pose: up
+        face: smile
+        facing: right
+      props:
+      - kind: box
+        x: 0.45
+        y: 0.3
+        w: 0.5
+        h: 0.4
+        label: 21 stations
+  - id: B2.6
+    weight: standard
+    transition: subject-to-subject
+    scene: 'A fraction on the board: NCP over POC. Dot asks what it is for.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: To account for biomass, NCP was normalised to particulate organic carbon, POC. That may indicate how fast the carbon inventory sinks and turns over.
+    - speaker: dot
+      text: Per unit of me, please.
+    claim_ids:
+    - C17
+    - C18
+    - C65
+    humour:
+      note: Dot is the biomass.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: dot
+        x: 0.82
+        pose: shrug
+        face: smile
+        facing: left
+        scale: 0.85
+      props:
+      - kind: label
+        x: 0.35
+        y: 0.5
+        label: NCP / POC
+        size: large
+  - id: B2.7
+    weight: standard
+    transition: scene-to-scene
+    scene: A crowd of small, different organisms, far too many to count. A sign reads '464'.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: At a 97% DNA similarity threshold, roughly species to genus, there were 464 operational taxonomic units, OTUs.
+    claim_ids:
+    - C19
+    staging:
+      characters:
+      - id: extra
+        x: 0.12
+        scale: 0.55
+        face: smile
+      - id: extra
+        x: 0.26
+        scale: 0.55
+      - id: extra
+        x: 0.4
+        scale: 0.55
+        face: worry
+      - id: extra
+        x: 0.54
+        scale: 0.55
+        face: smile
+      - id: extra
+        x: 0.68
+        scale: 0.55
+      - id: extra
+        x: 0.82
+        scale: 0.55
+        face: surprised
+      props:
+      - kind: sign
+        x: 0.38
+        y: 0.02
+        w: 0.24
+        h: 0.4
+        label: 464 OTUs
+  - id: B2.8
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    scene: Ines checks her sums on the back of a clipboard.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Checks: NCP from O2/Ar correlates highly with NCP from seasonal DIC drawdown (r2 = 0.83). The estimated change in POC averaged 18% of NCP, though that used only 4 comparisons because of cloud
+        cover.'
+    claim_ids:
+    - C52
+    - C53
+    - C54
+    staging:
+      characters:
+      - id: ines
+        x: 0.25
+        pose: think
+        face: neutral
+        facing: right
+      props:
+      - kind: paper
+        x: 0.55
+        y: 0.1
+        w: 0.3
+        h: 0.75
+        label: check
+- id: B3
+  title: The suspects
+  act: result
+  panels:
+  - id: B3.1
+    weight: standard
+    transition: scene-to-scene
+    scene: A bar as tall as a building labelled 'diatoms'. Dot stands proudly beside it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Diatoms dominated the community, an average of 41% of all reads.
+    - speaker: dot
+      text: Forty-one percent. Take note.
+    claim_ids:
+    - C20
+    staging:
+      characters:
+      - id: dot
+        x: 0.8
+        pose: up
+        face: smile
+        facing: left
+        scale: 0.85
+      props:
+      - kind: bars
+        x: 0.08
+        y: 0.04
+        w: 0.5
+        h: 0.9
+        max: 100
+        unit: '%'
+        bars:
+        - label: diatoms
+          value: 41
+  - id: B3.2
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: A scatter plot with a rising line, and a small label giving the correlation.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Diatom abundance correlated positively with NCP (r2 = 0.35, p = 0.005), but not significantly with NCP/POC.
+    claim_ids:
+    - C21
+    staging:
+      props:
+      - kind: plot
+        x: 0.04
+        y: 0.04
+        w: 0.92
+        h: 0.92
+        x_label: diatoms
+        y_label: NCP
+        series:
+        - points:
+          - - 0.05
+            - 0.1
+          - - 0.3
+            - 0.3
+          - - 0.55
+            - 0.45
+          - - 0.8
+            - 0.65
+          - - 0.95
+            - 0.75
+          style: dashed
+        notes:
+        - x: 0.3
+          y: 0.7
+          label: r2 = 0.35
+  - id: B3.3
+    weight: wide
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: 'Two plots side by side: centric diatoms rise with NCP; pennate diatoms form a shapeless cloud.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Centric diatoms correlated with NCP (r2 = 0.47, p = 0.0006). Surprisingly, pennate diatoms were not significantly correlated with NCP or NCP/POC.
+    claim_ids:
+    - C22
+    - C23
+    staging:
+      props:
+      - kind: plot
+        x: 0.03
+        y: 0.05
+        w: 0.45
+        h: 0.9
+        title: 'centric: r2 = 0.47'
+        series:
+        - points:
+          - - 0.05
+            - 0.1
+          - - 0.4
+            - 0.4
+          - - 0.7
+            - 0.65
+          - - 0.95
+            - 0.85
+          style: dashed
+      - kind: plot
+        x: 0.52
+        y: 0.05
+        w: 0.45
+        h: 0.9
+        title: 'pennate: no correlation'
+        series:
+        - points:
+          - - 0.05
+            - 0.5
+          - - 0.5
+            - 0.45
+          - - 0.95
+            - 0.5
+          style: dotted
+  - id: B3.4
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: Twenty figures in a tight group, with a huge crowd of other figures behind them.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The top 20 OTUs, 4.3% of the diversity, made up 78% of all sequence reads.
+    claim_ids:
+    - C24
+    staging:
+      props:
+      - kind: pie
+        x: 0.15
+        y: 0.05
+        w: 0.7
+        h: 0.9
+        items:
+        - label: 'top 20 OTUs: 78%'
+          value: 78
+        - label: everything else
+          value: 22
+  - id: B3.5
+    weight: wide
+    transition: scene-to-scene
+    scene: 'Four bars: bulk diatoms against a few chosen OTUs, for NCP and for NCP/POC. The chosen OTUs are much taller.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Three OTUs explained 92% of the variance in NCP and two OTUs 76% of the variance in NCP/POC. Bulk diatoms explained only 35% and 16%.
+    claim_ids:
+    - C25
+    - C26
+    - C27
+    staging:
+      props:
+      - kind: bars
+        x: 0.04
+        y: 0.04
+        w: 0.92
+        h: 0.92
+        max: 100
+        unit: '%'
+        bars:
+        - label: diatoms, NCP
+          value: 35
+          style: hollow
+        - label: 3 OTUs, NCP
+          value: 92
+        - label: diatoms, NCP/POC
+          value: 16
+          style: hollow
+        - label: 2 OTUs, NCP/POC
+          value: 76
+  - id: B3.6
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: Dot, arms wide, announces he is the most abundant. Ines holds up a chart that says his r-squared is 0.12.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The most dominant OTU, the pennate diatom Fragilariopsis, was not a good predictor of NCP (r2 = 0.12, p > 0.1).
+    - speaker: dot
+      text: I'm the most abundant.
+    - speaker: ines
+      text: Not the same as important.
+    claim_ids:
+    - C28
+    humour:
+      note: Abundance is not importance.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: ines
+        x: 0.15
+        pose: point
+        face: deadpan
+        facing: right
+      - id: dot
+        x: 0.85
+        pose: up
+        face: smile
+        facing: left
+  - id: B3.7
+    weight: standard
+    transition: moment-to-moment
+    scene: Dot, looking suspicious, with ice crystals on his shell.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Many Fragilariopsis species are ice algae, so high abundance in some areas may be due to sea ice melt seeding and not new cell growth.
+    claim_ids:
+    - C29
+    staging:
+      characters:
+      - id: dot
+        x: 0.5
+        pose: shrug
+        face: worry
+      props:
+      - kind: label
+        x: 0.18
+        y: 0.3
+        label: melting ice
+        size: small
+  - id: B3.8
+    weight: wide
+    transition: scene-to-scene
+    scene: Ines gestures at three cells, all filed under one tidy label, all quite different.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: So PFTs may not predict NCP well in some regions, and variability within a PFT may exceed variability between PFTs.
+    - speaker: ines
+      text: Tidy boxes, untidy ocean.
+    claim_ids:
+    - C30
+    humour:
+      note: Ines, on the PFT box.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: ines
+        x: 0.15
+        pose: shrug
+        face: deadpan
+        facing: right
+      - id: extra
+        x: 0.5
+        scale: 0.5
+        face: smile
+      - id: extra
+        x: 0.65
+        scale: 0.9
+        face: smile
+      - id: extra
+        x: 0.85
+        scale: 1.35
+        face: smile
+      props:
+      - kind: label
+        x: 0.67
+        y: 0.07
+        label: 'one functional type: ''diatoms'''
+        size: small
+  - id: B3.9
+    weight: standard
+    transition: scene-to-scene
+    scene: 'Two diatoms on a map: one up near the station, one by the southern ice edge. Both walk towards the ''NCP'' sign.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Stellarima in a northern bloom near Palmer Station and Proboscia in the southern ice-edge bloom each correlated with NCP but not NCP/POC: high production, but relatively less efficient export.'
+    claim_ids:
+    - C31
+    - C32
+    staging:
+      characters:
+      - id: extra
+        x: 0.2
+        scale: 0.8
+        face: smile
+      - id: extra
+        x: 0.55
+        scale: 0.8
+        face: smile
+      props:
+      - kind: label
+        x: 0.2
+        y: 0.12
+        label: Stellarima
+        size: small
+      - kind: label
+        x: 0.55
+        y: 0.12
+        label: Proboscia
+        size: small
+      - kind: sign
+        x: 0.82
+        y: 0.2
+        w: 0.14
+        h: 0.5
+        label: NCP
+  - id: B3.10
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: A colony of Phaeocystis, drawn as a cluster of small round cells, with a bar chart showing only a small share of the reads.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Phaeocystis correlated with NCP/POC, not NCP. It averaged only 9.0% of reads, but at the station with the highest NCP/POC it co-dominated at 34.4% with diatoms at 36.1%.
+    claim_ids:
+    - C33
+    - C34
+    staging:
+      characters:
+      - id: extra
+        x: 0.3
+        scale: 0.5
+        face: smile
+      - id: extra
+        x: 0.45
+        scale: 0.5
+        face: smile
+      - id: extra
+        x: 0.6
+        scale: 0.5
+        face: smile
+      props:
+      - kind: label
+        x: 0.45
+        y: 0.15
+        label: Phaeocystis
+        size: small
+  - id: B3.11
+    weight: standard
+    transition: moment-to-moment
+    scene: The Phaeocystis colony tips over the edge of a cliff and sinks as one lump.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Phaeocystis forms massive aggregates at the colony stage that sink rapidly, and is considered a more efficient exporter of carbon than diatoms.
+    claim_ids:
+    - C35
+    staging:
+      characters:
+      - id: extra
+        x: 0.3
+        y: 0.7
+        scale: 0.5
+        face: smile
+      - id: extra
+        x: 0.42
+        y: 0.7
+        scale: 0.5
+        face: smile
+      props:
+      - kind: arrow
+        x: 0.7
+        y: 0.15
+        x2: 0.7
+        y2: 0.85
+  - id: B3.12
+    weight: wide
+    transition: scene-to-scene
+    scene: Gyrodinium, a spiky-haired grazer, looms over a diatom twice its size, napkin tucked in.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Two dinoflagellate OTUs were key negative contributors to NCP and NCP/POC. Microzooplankton like these are more likely to reduce carbon export than large grazers with fast-sinking faecal pellets.
+    - speaker: gyro
+      text: I eat diatoms bigger than me.
+    claim_ids:
+    - C36
+    - C37
+    - C39
+    humour:
+      note: Gyrodinium, tucking in; the paper says it ingests diatoms much larger than itself.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: gyro
+        x: 0.25
+        pose: hold
+        face: smile
+        facing: right
+      - id: dot
+        x: 0.65
+        pose: shrug
+        face: worry
+        facing: left
+        scale: 1.3
+  - id: B3.13
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: A second dinoflagellate wearing a stolen green apron, a chloroplast, with Phaeocystis in its other hand.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: One dinoflagellate OTU belongs to a kleptoplastic group known to prey on Phaeocystis and keep its chloroplasts.
+    claim_ids:
+    - C38
+    staging:
+      characters:
+      - id: gyro
+        x: 0.35
+        pose: hold
+        holding: paper
+        face: deadpan
+        facing: right
+      props:
+      - kind: label
+        x: 0.75
+        y: 0.5
+        label: stolen chloroplast
+        size: small
+  - id: B3.14
+    weight: standard
+    transition: scene-to-scene
+    scene: A pigment-free amoeboid shape that HPLC cannot see, with a magnifying glass pointed straight past it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: NCP and NCP/POC were also negatively correlated with Rhizaria (r2 = 0.29, p = 0.01 and r2 = 0.20, p = 0.04). Rhizaria are not detected by HPLC pigment analyses because they lack pigments.
+    claim_ids:
+    - C40
+    - C41
+    staging:
+      characters:
+      - id: extra
+        x: 0.3
+        scale: 0.7
+        face: smile
+      props:
+      - kind: label
+        x: 0.3
+        y: 0.12
+        label: Rhizaria
+        size: small
+      - kind: box
+        x: 0.55
+        y: 0.35
+        w: 0.35
+        h: 0.3
+        label: HPLC
+- id: B4
+  title: Why these suspects?
+  act: result
+  panels:
+  - id: B4.1
+    weight: wide
+    transition: scene-to-scene
+    scene: Dot, tiny, stands next to two huge diatoms. They tower over him.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Cultured isolates showed F. cylindrus has a significantly higher maximum growth rate (P < 0.05) than Proboscia alata and Actinocyclus actinochilus, yet it does not correlate with NCP.
+    - speaker: dot
+      text: I grow faster.
+    claim_ids:
+    - C42
+    humour:
+      note: Dot's growth rate does not buy him a prediction.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: dot
+        x: 0.2
+        pose: up
+        face: smile
+        scale: 0.45
+      - id: extra
+        x: 0.55
+        scale: 1.4
+        face: neutral
+      - id: extra
+        x: 0.85
+        scale: 1.4
+        face: neutral
+      props:
+      - kind: label
+        x: 0.2
+        y: 0.12
+        label: F. cylindrus
+        size: small
+      - kind: label
+        x: 0.55
+        y: 0.07
+        label: P. alata
+        size: small
+      - kind: label
+        x: 0.85
+        y: 0.07
+        label: A. actinochilus
+        size: small
+  - id: B4.2
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: 'A scale with two pans: growth rate on one side, nearly level; cell volume on the other, hugely lopsided.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Growth rates of the three diatoms varied by less than 2-fold, but the biovolume of P. alata and A. actinochilus is more than two orders of magnitude larger.
+    claim_ids:
+    - C43
+    - C44
+    staging:
+      props:
+      - kind: bars
+        x: 0.1
+        y: 0.04
+        w: 0.8
+        h: 0.9
+        max: 120
+        show_values: false
+        bars:
+        - label: growth rate
+          value: 40
+          style: hollow
+        - label: growth rate, big diatom
+          value: 60
+          style: hollow
+        - label: cell volume, small
+          value: 4
+        - label: cell volume, big
+          value: 110
+  - id: B4.3
+    weight: standard
+    transition: scene-to-scene
+    scene: A large, heavy diatom sinks fast past a slow grazer that cannot keep up.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Large size could directly raise sinking rates and export, or uncouple cells from slow-growing grazers.
+    claim_ids:
+    - C45
+    staging:
+      characters:
+      - id: extra
+        x: 0.3
+        y: 0.7
+        scale: 1.1
+        face: smile
+      - id: gyro
+        x: 0.78
+        y: 0.9
+        scale: 0.7
+        pose: shrug
+        face: worry
+        facing: left
+      props:
+      - kind: arrow
+        x: 0.55
+        y: 0.1
+        x2: 0.55
+        y2: 0.8
+  - id: B4.4
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: 'A tortoise and a hare of the plankton world: one stays put and tolerates stress; one booms and then busts.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Persistent species are better at stress tolerance. When conditions turn favourable, boom-and-bust species can outpace grazer growth and contribute to more efficient export.
+    claim_ids:
+    - C46
+    - C47
+    staging:
+      characters:
+      - id: dot
+        x: 0.25
+        pose: stand
+        face: deadpan
+        scale: 0.85
+      - id: extra
+        x: 0.75
+        pose: up
+        face: surprised
+        facing: left
+      props:
+      - kind: label
+        x: 0.25
+        y: 0.1
+        label: persistent
+        size: small
+      - kind: label
+        x: 0.75
+        y: 0.1
+        label: boom and bust
+        size: small
+  - id: B4.5
+    weight: wide
+    transition: scene-to-scene
+    scene: 'Two networks of nodes and lines: one dense and tangled, one sparse. A bar chart compares their edges.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Low NCP/POC communities had almost double the network edges of high NCP/POC communities, 496 against 262, each built from only 11 stations. That suggests tighter coupling.
+    claim_ids:
+    - C48
+    - C49
+    - C50
+    staging:
+      props:
+      - kind: bars
+        x: 0.15
+        y: 0.04
+        w: 0.7
+        h: 0.9
+        max: 520
+        show_max: false
+        bars:
+        - label: low NCP/POC
+          value: 496
+        - label: high NCP/POC
+          value: 262
+          style: hollow
+  - id: B4.6
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: A knot of organisms holding hands, all tangled together, labelled 'tightly coupled'. Beside it, a spread-out line labelled 'loose'.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: This may support the paradigm that more tightly coupled ecosystems are less efficient exporters of carbon.
+    claim_ids:
+    - C51
+    - C64
+    staging:
+      characters:
+      - id: extra
+        x: 0.1
+        scale: 0.6
+        face: worry
+      - id: extra
+        x: 0.2
+        scale: 0.6
+        face: worry
+      - id: extra
+        x: 0.3
+        scale: 0.6
+        face: worry
+      - id: extra
+        x: 0.62
+        scale: 0.6
+        face: smile
+      - id: extra
+        x: 0.92
+        scale: 0.6
+        face: smile
+      props:
+      - kind: label
+        x: 0.2
+        y: 0.12
+        label: tightly coupled
+        size: small
+      - kind: label
+        x: 0.77
+        y: 0.12
+        label: loose
+        size: small
+- id: B5
+  title: Caveats, and what next
+  act: discussion
+  panels:
+  - id: B5.1
+    weight: standard
+    transition: scene-to-scene
+    scene: A wobbly chart. Ines squints at it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: A lack of steady state in the mixed-layer carbon budget may blur some of the relationships.
+    claim_ids:
+    - C55
+    staging:
+      characters:
+      - id: ines
+        x: 0.25
+        pose: think
+        face: deadpan
+        facing: right
+      props:
+      - kind: plot
+        x: 0.5
+        y: 0.1
+        w: 0.46
+        h: 0.8
+        series:
+        - points:
+          - - 0
+            - 0.3
+          - - 0.2
+            - 0.6
+          - - 0.4
+            - 0.4
+          - - 0.6
+            - 0.7
+          - - 0.8
+            - 0.5
+          - - 1
+            - 0.8
+          style: dotted
+  - id: B5.2
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: A sequencer printout next to a hand counter. They disagree.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 16S and 18S reads differ from taxon-specific cell counts, partly because rDNA copy numbers vary per cell.
+    claim_ids:
+    - C56
+    staging:
+      props:
+      - kind: box
+        x: 0.08
+        y: 0.25
+        w: 0.38
+        h: 0.4
+        label: reads
+      - kind: box
+        x: 0.54
+        y: 0.25
+        w: 0.38
+        h: 0.4
+        label: cell counts
+  - id: B5.3
+    weight: standard
+    transition: moment-to-moment
+    scene: Ines holds up a finger. Dot, in a deerstalker hat, has already named a culprit.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The network and correlation analyses do not necessarily reflect direct causal ecological relationships.
+    - speaker: ines
+      text: Correlation, Dot.
+    claim_ids:
+    - C57
+    humour:
+      note: A reminder to the detective.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: ines
+        x: 0.2
+        pose: point
+        face: deadpan
+        facing: right
+      - id: dot
+        x: 0.8
+        pose: shrug
+        face: smile
+        facing: left
+  - id: B5.4
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    scene: Ines, on the next voyage, carrying a small instrument with a flash lamp. Dot backs away.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The authors say it will be important to validate the results with in situ growth rates, photophysiology, and microzooplankton growth and grazing rates.
+    - speaker: ines
+      text: Photophysiology? I know a flash for that.
+    - speaker: dot
+      text: Please don't.
+    claim_ids:
+    - C58
+    humour:
+      note: A cross-reference to the fluorescence comic; the paper itself does not mention that instrument.
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: ines
+        x: 0.25
+        pose: up
+        face: smile
+        facing: right
+      - id: dot
+        x: 0.8
+        pose: shrug
+        face: worry
+        facing: left
+      props:
+      - kind: flash
+        x: 0.45
+        y: 0.15
+        w: 0.2
+        h: 0.4
+        label: FLASH
+  - id: B5.5
+    weight: wide
+    transition: scene-to-scene
+    scene: 'Two bar pairs, before and after: broad groups against specific OTUs, for NCP and NCP/POC.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: As few as 2 to 3 key OTUs explain a significant share of the spatial variability in carbon export potential. Using OTUs instead of broad groups raised the variance explained from 35% to 92%
+        for NCP and from 16% to 76% for NCP/POC.
+    claim_ids:
+    - C59
+    - C60
+    staging:
+      props:
+      - kind: bars
+        x: 0.04
+        y: 0.04
+        w: 0.92
+        h: 0.92
+        max: 100
+        unit: '%'
+        bars:
+        - label: groups, NCP
+          value: 35
+          style: hollow
+        - label: OTUs, NCP
+          value: 92
+        - label: groups, NCP/POC
+          value: 16
+          style: hollow
+        - label: OTUs, NCP/POC
+          value: 76
+  - id: B5.6
+    weight: standard
+    transition: scene-to-scene
+    scene: Ines relabels the tidy boxes. Gyrodinium reads over her shoulder, interested.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The PFT currency needs adjusting to the process under study. Microzooplankton, dinoflagellates and Rhizaria, emerged as important negative predictors, and functional-group studies should be
+        read with caution.
+    claim_ids:
+    - C61
+    - C62
+    - C63
+    staging:
+      characters:
+      - id: ines
+        x: 0.2
+        pose: point
+        face: smile
+        facing: right
+      - id: gyro
+        x: 0.8
+        pose: hold
+        face: smile
+        facing: left
+        scale: 0.9
+      props:
+      - kind: board
+        x: 0.35
+        y: 0.15
+        w: 0.4
+        h: 0.5
+        cards:
+        - label: PFT
+  - id: B5.7
+    weight: full
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: picture-specific
+    scene: Night on deck. Ines looks at the sea. Beside her Dot sits, glowing slightly, still convinced he is important.
+    speech:
+    - speaker: dot
+      text: Most abundant. Best predictor. Surely.
+    - speaker: ines
+      text: Surely not.
+    humour:
+      note: 'Back to the punchline: abundance is not prediction.'
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - id: dot
+        x: 0.3
+        pose: up
+        face: smile
+        facing: right
+      - id: ines
+        x: 0.7
+        pose: shrug
+        face: smile
+        facing: left

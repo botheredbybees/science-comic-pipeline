@@ -163,3 +163,39 @@ def test_unknown_prop_kind_is_a_schema_error(doc):
     doc["beats"][0]["panels"][0]["staging"]["props"][0]["kind"] = "spaceship"
     errors, _ = validate(doc)
     assert any(e.startswith("schema:") for e in errors)
+
+
+def _with_chart(doc, show_max):
+    panel = copy.deepcopy(next(p for b in doc["beats"] for p in b["panels"] if p["id"] == "B3.1"))
+    panel["claim_ids"], panel["speech"] = [], []
+    panel["staging"] = {"props": [{"kind": "bars", "max": 520, "show_max": show_max, "bars": [{"label": "low", "value": 5, "style": "hollow"}], "show_values": False}]}
+    doc["beats"] = [{"id": "B1", "act": "result", "panels": [{**panel, "id": "B1.1"}]}]
+    doc["claims"] = []
+    return validate(doc)
+
+
+def test_a_visible_axis_maximum_is_a_number_that_needs_a_claim(doc):
+    # show_values False hides the maximum too, so nothing is printed and nothing needs a claim
+    errors, _ = _with_chart(doc, True)
+    assert not any("contain a number" in e for e in errors)
+
+
+def test_the_axis_maximum_counts_as_printed_text_only_when_it_is_shown():
+    from validate_storyboard import _staging_texts
+    bars = {"kind": "bars", "max": 520, "bars": [{"label": "x", "value": 5}]}
+    assert "520" in _staging_texts({"props": [bars]})
+    assert "520" not in _staging_texts({"props": [{**bars, "show_max": False}]})
+    assert "520" not in _staging_texts({"props": [{**bars, "show_values": False}]})
+
+
+def test_a_number_not_in_any_cited_claim_is_a_warning(doc):
+    panel = doc["beats"][0]["panels"][0]
+    panel["claim_ids"] = ["C1"]
+    panel["speech"] = [{"speaker": "narrator", "kind": "caption", "text": "In 1999 and 77 cases."}]
+    _, warnings = validate(doc)
+    assert any("B1.1" in w and "appear on the panel but in none of its cited claims" in w for w in warnings)
+
+
+def test_numbers_that_come_from_the_cited_claims_do_not_warn(doc):
+    _, warnings = validate(doc)
+    assert not any("none of its cited claims" in w for w in warnings)
