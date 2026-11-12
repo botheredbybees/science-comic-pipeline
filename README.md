@@ -59,7 +59,9 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 ## Licences
 
 - **Code and schema:** [MIT](LICENSE).
-- **Examples, docs and anything rendered from them:** [CC BY 4.0](LICENSE-CONTENT-CC-BY-4.0.txt).
+- **Docs, and the example outputs:** [CC BY 4.0](LICENSE-CONTENT-CC-BY-4.0.txt) where the example's own source is CC BY.
+  A comic adapted from a source inherits that source's licence: an adaptation of a ShareAlike
+  source (CC BY-SA) must be released under the same licence, not under plain CC BY.
 - **Source papers are not copied here.** Only papers with a licence that allows
   adaptation (CC BY or CC0) are used as examples, and each records where and when
   the licence was checked. See [ATTRIBUTION.md](ATTRIBUTION.md).

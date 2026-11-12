@@ -138,9 +138,11 @@ would repeat.
 
 ## Licensing policy
 
-- Code and schema: MIT. Examples, docs and rendered output: CC BY 4.0.
-- Source papers are never copied into the repo. Only CC BY or CC0 papers are used as
-  examples, and each records where and when the licence was checked (Europe PMC's
+- Code and schema: MIT. Docs: CC BY 4.0. Rendered output carries the licence of its source: an
+  adaptation of a CC BY paper is CC BY; an adaptation of a CC BY-SA paper must be CC BY-SA (ShareAlike).
+  A source with no stated licence is not used until it is confirmed.
+- Source papers are never copied into the repo. Only CC BY, CC BY-SA or CC0 papers are used as
+  examples (with ShareAlike carried through), and each records where and when the licence was checked (Europe PMC's
   `license` field is a good source for anything in PMC).
 - A NoDerivatives licence (CC BY-NC-ND, or older Journal of Science Communication
   articles) rules a paper out as an adaptation source.
