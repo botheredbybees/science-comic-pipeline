@@ -72,6 +72,26 @@ style and does not reuse xkcd artwork.
   The spine step has to find the conflict, and sometimes a paper has little. The first
   example (a study whose headline is that a difference exists) is a test of that.
 
+## Layout and delivery (decided 2026-11-13)
+
+- **No limit or guideline on panel count.** A comic has as many panels as the story needs.
+  xkcd's short strips inform the look, not the length.
+- **The sideways strip is the primary reading flow on the web.** It suits a story that moves
+  through time. It needs visible arrows, keyboard support, a progress cue, and a vertical
+  fallback on phones, because mouse wheels scroll vertically.
+- **PDF reads like a printed comic:** left to right across the page, then down.
+- **Panels vary in size**, as in printed comics. Size and shape carry time and emphasis: a wide,
+  quiet panel reads as a pause, which is also a timing tool for deadpan humour.
+- **The storyboard holds no pages.** It is an ordered sequence of beats of panels. A separate
+  layout step decides how they flow (one strip, or rows packed to the page width), so one
+  storyboard serves the web, a PDF and slides.
+- **Reference:** Scott McCloud, *Understanding Comics* (1993) and *Making Comics* (2006).
+  Ideas to use, from memory and still to be checked against the books: the six panel-to-panel
+  transitions (moment-to-moment, action-to-action, subject-to-subject, scene-to-scene,
+  aspect-to-aspect, non-sequitur); the modes of word and picture combination; and the five
+  choices (moment, frame, image, word, flow) as the per-panel checklist. Planned per-panel
+  fields: `weight`, `transition`, `word_picture`.
+
 ## Licensing policy
 
 - Code and schema: MIT. Examples, docs and rendered output: CC BY 4.0.
@@ -87,7 +107,8 @@ style and does not reuse xkcd artwork.
 - Which model-independent form the skills take (plain Markdown prompts, plus a CLI?).
 - Whether the `painted` renderer is worth building, or needs an image model.
 - How to check a joke automatically, if at all.
-- Page format for output (SVG per page, PDF, or both).
+- Output formats beyond the strip and the PDF (slides, per-panel images).
+- The exact `weight` scale, and how the PDF packer chooses rows.
 
 ## Next steps
 
