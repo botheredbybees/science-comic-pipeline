@@ -37,10 +37,17 @@ def _staging_texts(staging):
     """Every string and number a renderer would draw as text from a staging block."""
     out = []
     for prop in (staging or {}).get("props", []):
-        for key in ("label", "title", "unit"):
+        for key in ("label", "title", "unit", "x_label", "y_label"):
             if key in prop:
                 out.append(str(prop[key]))
         out += [c["label"] for c in prop.get("cards", [])]
+        for it in prop.get("items", []):
+            out += [it.get("label", ""), it.get("caption", "")]
+            if prop.get("show_values"):
+                out.append(str(it.get("value", "")))
+        out += [n["label"] for n in prop.get("notes", [])]
+        if prop.get("kind") == "bars" and "max" in prop and prop.get("show_values", True):
+            out.append(str(prop["max"]))
         for b in prop.get("bars", []):
             out += [b.get("label", ""), str(b["value"])] if prop.get("show_values", True) else [b.get("label", "")]
         if "staging" in prop:

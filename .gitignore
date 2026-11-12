@@ -9,3 +9,6 @@ __pycache__/
 sources/
 output/
 *.pdf
+
+# Work on sources whose licence has not been checked stays local
+private/

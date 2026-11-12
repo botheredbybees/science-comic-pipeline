@@ -90,3 +90,41 @@ def test_every_figure_pose_and_face_draws():
 def test_cli_writes_pages_and_a_sheet(tmp_path):
     assert R.main([str(EXAMPLE), "-o", str(tmp_path)]) == 0
     assert list(tmp_path.glob("page-*.svg")) and (tmp_path / "sheet.html").exists()
+
+
+def _demo_doc():
+    kinds = {
+        "cups": {"items": [{"value": 0.3}, {"value": 1}]},
+        "plot": {"series": [{"points": [[0, 0.1], [1, 0.9]], "style": "dashed"}], "notes": [{"x": 0.5, "y": 0.5, "label": "n"}], "x_label": "t", "y_label": "y"},
+        "axis": {"items": [{"at": 0.1, "to": 0.4, "label": "a"}, {"at": 0.6, "label": "b", "style": "mark"}, {"at": 0.8, "label": "c"}]},
+        "pie": {"items": [{"label": "a", "value": 1}, {"label": "b", "value": 2}]},
+        "flow": {"items": [{"label": "a"}, {"label": "b"}]},
+        "steps": {"items": [{"label": "a", "caption": "x"}, {"label": "b"}]},
+        "stack": {"items": [{"label": "a", "value": 1}, {"label": "b", "value": 2, "style": "solid"}]},
+        "ship": {}, "bottle": {"label": "b"}, "jar": {"label": "j"}, "flash": {"label": "f"},
+        "board": {"cards": [{"label": "a"}, {"label": "b", "covered": True}]},
+        "bars": {"bars": [{"label": "a", "value": 1}], "show_values": False},
+    }
+    props = [{"kind": k, "x": 0.1, "y": 0.1, "w": 0.5, "h": 0.5, **spec} for k, spec in kinds.items()]
+    panels = [{"id": f"B1.{i}", "scene": "s", "weight": "wide", "staging": {"props": [p], "characters": [
+        {"id": "dot", "x": 0.8, "pose": "shrug", "face": "smile"}, {"id": "ines", "x": 0.9, "facing": "left"}]}}
+        for i, p in enumerate(props, 1)]
+    return {"version": 2, "cast": [{"id": "ines", "name": "Ines"}, {"id": "dot", "name": "Dot", "appearance": {"body": "diatom"}}],
+            "meta": {"title": "T", "source": {"title": "s", "authors": ["a"], "year": 2026, "licence": "x"}},
+            "beats": [{"id": "B1", "act": "result", "panels": panels}]}
+
+
+def test_every_prop_kind_draws_to_valid_svg():
+    svgs, _ = R.render_pages(_demo_doc())
+    for svg in svgs:
+        ET.fromstring(svg)
+    assert len(re.findall(r'<g id="panel-', "".join(svgs))) == 13
+
+
+def test_a_diatom_draws_for_every_pose_and_both_directions():
+    pen = R.Pen("d")
+    for pose in R.ARMS:
+        for facing in ("left", "right"):
+            svg, head = R.figure(pen, 100, 200, 1.0, pose, "smile", facing, "paper", {"body": "diatom"})
+            ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+            assert head[0] == 100 and head[1] < 200

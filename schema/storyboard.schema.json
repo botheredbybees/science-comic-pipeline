@@ -149,6 +149,12 @@
               },
               "lanyard": {
                 "type": "boolean"
+              },
+              "body": {
+                "enum": [
+                  "stick",
+                  "diatom"
+                ]
               }
             }
           }
@@ -199,6 +205,11 @@
               },
               "quote": {
                 "type": "string"
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page of the source (PDF page index) where the quote is found; scripts/check_quotes.py checks it."
               }
             }
           },
@@ -462,7 +473,18 @@
                   "desk",
                   "label",
                   "arrow",
-                  "box"
+                  "box",
+                  "axis",
+                  "plot",
+                  "pie",
+                  "flow",
+                  "steps",
+                  "stack",
+                  "ship",
+                  "bottle",
+                  "jar",
+                  "flash",
+                  "cups"
                 ]
               },
               "x": {
@@ -561,6 +583,107 @@
               },
               "staging": {
                 "$ref": "#/$defs/staging"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "caption": {
+                      "type": "string"
+                    },
+                    "at": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "to": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "value": {
+                      "type": "number"
+                    },
+                    "style": {
+                      "enum": [
+                        "solid",
+                        "hollow",
+                        "mark"
+                      ]
+                    }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "points"
+                  ],
+                  "properties": {
+                    "points": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      }
+                    },
+                    "style": {
+                      "enum": [
+                        "solid",
+                        "dashed",
+                        "dotted"
+                      ]
+                    }
+                  }
+                }
+              },
+              "notes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "x",
+                    "y",
+                    "label"
+                  ],
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "y": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "x_label": {
+                "type": "string"
+              },
+              "y_label": {
+                "type": "string"
               }
             }
           }

@@ -12,7 +12,6 @@ Nothing here is copied from xkcd; only the ideas about style are borrowed.
 """
 import argparse
 import math
-import random
 import sys
 from html import escape
 from pathlib import Path
@@ -22,112 +21,12 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from layout import pack_rows  # noqa: E402
 
-INK, PAPER, SOFT, MID = "#17191e", "#ffffff", "#eceef2", "#8a909b"
-FONT = '"Patrick Hand", "Comic Neue", "Comic Sans MS", cursive'
+from draw import (CHAR_W, FONT, INK, MID, PAPER, SOFT, Pen, block_h, clamp, esc, text, wrap)  # noqa: E402
+from props import EXTRA, extra_prop  # noqa: E402
+
 PAGE_W, PAGE_H, MARGIN, GUTTER = 1000, 1414, 40, 16  # A4 at 1000 units wide
-CHAR_W = 0.46  # average glyph width as a fraction of the font size, for wrapping
 FOOTER_H = 30
 FIT_FACTORS = (0.55, 0.5, 0.45, 0.4, 0.36)  # scene height as a fraction of panel width, tallest first
-
-
-def esc(s):
-    return escape(str(s), quote=False)
-
-
-def clamp(v, lo, hi):
-    return max(lo, min(hi, v))
-
-
-# ---------------------------------------------------------------- drawing primitives
-def smooth(pts, closed=False):
-    """A smooth path through the points (Catmull-Rom converted to cubic curves)."""
-    n = len(pts)
-    d = f"M{pts[0][0]:.1f} {pts[0][1]:.1f}"
-    if n == 2 and not closed:
-        return d + f"L{pts[1][0]:.1f} {pts[1][1]:.1f}"
-    ext = (pts[-1:] + pts + pts[:2]) if closed else ([pts[0]] + pts + [pts[-1]])
-    for i in range(n if closed else n - 1):
-        p0, p1, p2, p3 = ext[i], ext[i + 1], ext[i + 2], ext[i + 3]
-        c1 = (p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6)
-        c2 = (p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6)
-        d += f"C{c1[0]:.1f} {c1[1]:.1f} {c2[0]:.1f} {c2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
-    return d + ("Z" if closed else "")
-
-
-class Pen:
-    """Draws wobbly strokes. One Pen per panel, seeded from the panel id."""
-
-    def __init__(self, seed):
-        self.r = random.Random(seed)
-
-    def n(self, a):
-        return self.r.gauss(0, a)
-
-    def stroke(self, pts, w=2.4, closed=False, fill="none", color=INK, dash=None):
-        extra = f' stroke-dasharray="{dash}"' if dash else ""
-        return (f'<path d="{smooth(pts, closed)}" fill="{fill}" stroke="{color}" stroke-width="{w:.1f}" '
-                f'stroke-linecap="round" stroke-linejoin="round"{extra}/>')
-
-    def line(self, a, b, w=2.4, amp=0.9, **kw):
-        (x1, y1), (x2, y2) = a, b
-        length = math.hypot(x2 - x1, y2 - y1) or 1
-        px, py = -(y2 - y1) / length, (x2 - x1) / length
-        steps = max(2, round(length / 22))
-        pts = []
-        for i in range(steps + 1):
-            t = i / steps
-            off = self.n(amp * 0.5 if i in (0, steps) else amp)
-            pts.append((x1 + (x2 - x1) * t + px * off, y1 + (y2 - y1) * t + py * off))
-        return self.stroke(pts, w, **kw)
-
-    def rect(self, x, y, w, h, sw=2.4, fill="none", over=3):
-        out = []
-        if fill != "none":
-            jit = [(x + self.n(0.8), y + self.n(0.8)), (x + w + self.n(0.8), y + self.n(0.8)),
-                   (x + w + self.n(0.8), y + h + self.n(0.8)), (x + self.n(0.8), y + h + self.n(0.8))]
-            out.append(f'<path d="M{" L".join(f"{a:.1f} {b:.1f}" for a, b in jit)}Z" fill="{fill}" stroke="none"/>')
-        o = lambda: self.r.uniform(0, over)  # noqa: E731
-        out += [self.line((x - o(), y), (x + w + o(), y), sw), self.line((x + w, y - o()), (x + w, y + h + o()), sw),
-                self.line((x + w + o(), y + h), (x - o(), y + h), sw), self.line((x, y + h + o()), (x, y - o()), sw)]
-        return "".join(out)
-
-    def ellipse(self, cx, cy, rx, ry, sw=2.4, fill="none"):
-        k = 12
-        a0 = self.r.uniform(0, math.tau)
-        pts = [(cx + rx * (1 + self.n(0.03)) * math.cos(a0 + math.tau * i / k),
-                cy + ry * (1 + self.n(0.03)) * math.sin(a0 + math.tau * i / k)) for i in range(k)]
-        return self.stroke(pts, sw, closed=True, fill=fill)
-
-    def arrow(self, a, b, w=2.4, head=9):
-        ang = math.atan2(b[1] - a[1], b[0] - a[0])
-        tips = [(b[0] - head * math.cos(ang + s * 0.5), b[1] - head * math.sin(ang + s * 0.5)) for s in (-1, 1)]
-        return self.line(a, b, w) + self.line(tips[0], b, w, amp=0.3) + self.line(tips[1], b, w, amp=0.3)
-
-
-# ---------------------------------------------------------------- text
-def wrap(text, width, fs):
-    per = max(4, int(width / (fs * CHAR_W)))
-    lines, cur = [], ""
-    for word in str(text).split():
-        if cur and len(cur) + 1 + len(word) > per:
-            lines.append(cur)
-            cur = word
-        else:
-            cur = f"{cur} {word}".strip()
-    return lines + ([cur] if cur else [])
-
-
-def text(x, y, lines, fs, anchor="start", fill=INK, lh=1.2, weight="normal"):
-    """SVG text with one tspan per line; y is the top of the block."""
-    if not lines:
-        return ""
-    spans = "".join(f'<tspan x="{x:.1f}" dy="{(fs if i == 0 else fs * lh):.1f}">{esc(t)}</tspan>' for i, t in enumerate(lines))
-    return (f'<text x="{x:.1f}" y="{y:.1f}" font-size="{fs:.1f}" text-anchor="{anchor}" fill="{fill}" '
-            f'font-weight="{weight}">{spans}</text>')
-
-
-def block_h(lines, fs, lh=1.2):
-    return len(lines) * fs * lh
 
 
 # ---------------------------------------------------------------- stick figures
@@ -142,9 +41,84 @@ ARMS = {  # (back arm, front arm): points relative to the shoulder, for a figure
 }
 
 
+def _holding(pen, holding, hx, hy, s, w):
+    if holding == "marker":
+        return pen.line((hx - 2 * s, hy + 3 * s), (hx + 13 * s, hy - 9 * s), 4.2 * s)
+    if holding == "mug":
+        return (pen.rect(hx - 5 * s, hy - 13 * s, 18 * s, 20 * s, w * 0.8, fill=PAPER, over=0)
+                + pen.stroke([(hx + 13 * s, hy - 9 * s), (hx + 20 * s, hy - 5 * s), (hx + 13 * s, hy + 1 * s)], w * 0.8))
+    if holding == "paper":
+        return pen.rect(hx - 2 * s, hy - 15 * s, 16 * s, 21 * s, w * 0.8, fill=PAPER, over=0)
+    return ""
+
+
+def _face(pen, cx, cy, s, face, w, glasses=False):
+    """Eyes, optional glasses and a mouth, for a face centred near (cx, cy), looking right."""
+    o = []
+    ex, ey = (cx - 1 * s, cx + 8.5 * s), cy - 3 * s
+    if face == "deadpan":
+        o += [pen.line((x - 3 * s, ey), (x + 3 * s, ey), w * 0.8, amp=0.2) for x in ex]
+    elif face == "surprised":
+        o += [pen.ellipse(x, ey, 2.4 * s, 2.8 * s, w * 0.6) for x in ex]
+    else:
+        o += [f'<circle cx="{x:.1f}" cy="{ey:.1f}" r="{1.7 * s:.1f}" fill="{INK}"/>' for x in ex]
+    if glasses:
+        o += [pen.ellipse(x, ey, 4.8 * s, 4.8 * s, w * 0.7) for x in ex]
+        o.append(pen.line((ex[0] + 4.8 * s, ey), (ex[1] - 4.8 * s, ey), w * 0.7, amp=0.1))
+    mx = cx + 4 * s
+    mouth = {
+        "neutral": [(mx - 5 * s, cy + 7 * s), (mx + 5 * s, cy + 7 * s)],
+        "deadpan": [(mx - 4 * s, cy + 8 * s), (mx + 4 * s, cy + 8 * s)],
+        "smile": [(mx - 6 * s, cy + 5 * s), (mx, cy + 10.5 * s), (mx + 6 * s, cy + 5 * s)],
+        "worry": [(mx - 6 * s, cy + 10 * s), (mx, cy + 5.5 * s), (mx + 6 * s, cy + 10 * s)],
+    }
+    if face == "surprised":
+        o.append(pen.ellipse(mx, cy + 8 * s, 2.6 * s, 3.2 * s, w * 0.7))
+    else:
+        o.append(pen.stroke(mouth.get(face, mouth["neutral"]), w * 0.8))
+    return o
+
+
+def _flip(svg, cx, facing):
+    if facing == "left":
+        return f'<g transform="translate({cx:.1f} 0) scale(-1 1) translate({-cx:.1f} 0)">{svg}</g>'
+    return svg
+
+
+def _diatom(pen, cx, base, s, pose, face, facing, holding, app):
+    """A diatom: a pill-shaped glass shell with ridges, a face, stubby arms and legs."""
+    W, H, LEG = 44 * s, 86 * s, 18 * s
+    top, bot = base - LEG - H, base - LEG
+    w = clamp(2.3 * s, 1.5, 3.0)
+    mid = (top + bot) / 2
+    pts = []
+    for i in range(20):  # a squarish ellipse, hand-jittered
+        t = math.tau * i / 20
+        c, sn = math.cos(t), math.sin(t)
+        pts.append((cx + W / 2 * math.copysign(abs(c) ** 0.55, c) * (1 + pen.n(0.015)),
+                    mid + H / 2 * math.copysign(abs(sn) ** 0.75, sn) * (1 + pen.n(0.015))))
+    o = [pen.line((cx - 9 * s, bot), (cx - 11 * s, base), w), pen.line((cx + 9 * s, bot), (cx + 11 * s, base), w)]
+    back, front = ARMS.get(pose, ARMS["stand"])
+    sh = mid - 4 * s
+    for arm, side in ((back, -1), (front, 1)):
+        x0 = cx + side * W / 2
+        o.append(pen.stroke([(x0, sh)] + [(x0 + (dx - side * 13) * s, sh + dy * s) for dx, dy in arm], w))
+    hx, hy = cx + W / 2 + (front[-1][0] - 13) * s, sh + front[-1][1] * s
+    o.append(_holding(pen, holding, hx, hy, s, w))
+    o.append(pen.stroke(pts, w, closed=True, fill=PAPER))
+    for i in range(5):  # the ridges (striae) of the shell
+        yy = top + H * (0.52 + 0.1 * i)
+        o.append(pen.line((cx - W / 2 + 2 * s, yy), (cx - W / 2 + 9 * s, yy), w * 0.6, amp=0.3))
+        o.append(pen.line((cx + W / 2 - 9 * s, yy), (cx + W / 2 - 2 * s, yy), w * 0.6, amp=0.3))
+    o += _face(pen, cx, top + 0.3 * H, s * 1.1, face, w, False)
+    return _flip("".join(o), cx, facing), (cx, top - 4 * s)
+
+
 def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
-    """Draw one stick figure; return (svg, (head_x, head_top_y))."""
+    """Draw one figure (a stick figure, or a diatom if appearance.body is 'diatom'); return (svg, head point)."""
     app = app or {}
+    if app.get("body") == "diatom":
+        return _diatom(pen, cx, base, s, pose, face, facing, holding, app)
     R, BODY, LEG = 15 * s, 46 * s, 48 * s
     cy, neck, hip = base - LEG - BODY - R, base - LEG - BODY, base - LEG
     sh = neck + 9 * s
@@ -154,14 +128,7 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     back, front = ARMS.get(pose, ARMS["stand"])
     for arm in (back, front):
         o.append(pen.stroke([(cx, sh)] + [(cx + dx * s, sh + dy * s) for dx, dy in arm], w))
-    hx, hy = cx + front[-1][0] * s, sh + front[-1][1] * s
-    if holding == "marker":
-        o.append(pen.line((hx - 2 * s, hy + 3 * s), (hx + 13 * s, hy - 9 * s), 4.2 * s))
-    elif holding == "mug":
-        o.append(pen.rect(hx - 5 * s, hy - 13 * s, 18 * s, 20 * s, w * 0.8, fill=PAPER, over=0))
-        o.append(pen.stroke([(hx + 13 * s, hy - 9 * s), (hx + 20 * s, hy - 5 * s), (hx + 13 * s, hy + 1 * s)], w * 0.8))
-    elif holding == "paper":
-        o.append(pen.rect(hx - 2 * s, hy - 15 * s, 16 * s, 21 * s, w * 0.8, fill=PAPER, over=0))
+    o.append(_holding(pen, holding, cx + front[-1][0] * s, sh + front[-1][1] * s, s, w))
     if app.get("lanyard"):
         o.append(pen.stroke([(cx - 6 * s, neck + 1 * s), (cx, neck + 22 * s), (cx + 6 * s, neck + 1 * s)], w * 0.6))
         o.append(pen.rect(cx - 4.5 * s, neck + 22 * s, 9 * s, 10 * s, w * 0.6, fill=PAPER, over=0))
@@ -176,32 +143,8 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     elif hair == "spiky":
         for dx in (-7, 0, 7):
             o.append(pen.line((cx + dx * s, cy - R + 1 * s), (cx + dx * 1.3 * s, cy - R - 8 * s), w))
-    ex = (cx - 1 * s, cx + 8.5 * s)
-    ey = cy - 3 * s
-    if face == "deadpan":
-        o += [pen.line((x - 3 * s, ey), (x + 3 * s, ey), w * 0.8, amp=0.2) for x in ex]
-    elif face == "surprised":
-        o += [pen.ellipse(x, ey, 2.4 * s, 2.8 * s, w * 0.6) for x in ex]
-    else:
-        o += [f'<circle cx="{x:.1f}" cy="{ey:.1f}" r="{1.7 * s:.1f}" fill="{INK}"/>' for x in ex]
-    if app.get("glasses"):
-        o += [pen.ellipse(x, ey, 4.8 * s, 4.8 * s, w * 0.7) for x in ex]
-        o.append(pen.line((ex[0] + 4.8 * s, ey), (ex[1] - 4.8 * s, ey), w * 0.7, amp=0.1))
-    mx = cx + 4 * s
-    mouth = {
-        "neutral": [(mx - 5 * s, cy + 7 * s), (mx + 5 * s, cy + 7 * s)],
-        "deadpan": [(mx - 4 * s, cy + 8 * s), (mx + 4 * s, cy + 8 * s)],
-        "smile": [(mx - 6 * s, cy + 5 * s), (mx, cy + 10.5 * s), (mx + 6 * s, cy + 5 * s)],
-        "worry": [(mx - 6 * s, cy + 10 * s), (mx, cy + 5.5 * s), (mx + 6 * s, cy + 10 * s)],
-    }
-    if face == "surprised":
-        o.append(pen.ellipse(mx, cy + 8 * s, 2.6 * s, 3.2 * s, w * 0.7))
-    else:
-        o.append(pen.stroke(mouth.get(face, mouth["neutral"]), w * 0.8))
-    svg = "".join(o)
-    if facing == "left":
-        svg = f'<g transform="translate({cx:.1f} 0) scale(-1 1) translate({-cx:.1f} 0)">{svg}</g>'
-    return svg, (cx, cy - R - 4 * s)
+    o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
+    return _flip("".join(o), cx, facing), (cx, cy - R - 4 * s)
 
 
 # ---------------------------------------------------------------- props
@@ -237,6 +180,8 @@ def prop(pen, x, y, w, h, p, cast, fs):
     k = p["kind"]
     lab = p.get("label", "")
     o = []
+    if k in EXTRA:
+        return extra_prop(pen, x, y, w, h, p, fs)
     if k == "bars":
         return _bars(pen, x, y, w, h, p, fs)
     if k == "board":
@@ -343,7 +288,7 @@ def stage(pen, x, y, w, h, st, cast, fs):
 
     for p in props[:split]:
         draw(p)
-    base_s = 0.00476 * h
+    base_s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3)  # wide, short boxes get bigger figures
     for c in st.get("characters", []):
         app = cast.get(c["id"], {}).get("appearance")
         svg, head = figure(pen, x + c.get("x", 0.5) * w, y + c.get("y", 0.94) * h, base_s * c.get("scale", 1),
