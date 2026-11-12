@@ -3,6 +3,7 @@
 
 Errors stop a storyboard from being rendered. Warnings are things a reviewer must
 look at before publishing. Exit code: 0 clean, 1 errors (or warnings with --strict).
+There is no limit on the number of beats or panels.
 
     python scripts/validate_storyboard.py examples/akam-2026-cartooning/storyboard.yaml
 """
@@ -45,16 +46,23 @@ def validate(doc):
 
     cast_ids = {c["id"] for c in doc["cast"]}
     claims = {c["id"]: c for c in doc["claims"]}
-    panels = [p for page in doc["pages"] for p in page["panels"]]
+    panels = [p for beat in doc["beats"] for p in beat["panels"]]
 
     for kind, ids in (
         ("cast", [c["id"] for c in doc["cast"]]),
         ("claim", [c["id"] for c in doc["claims"]]),
-        ("page", [p["id"] for p in doc["pages"]]),
+        ("beat", [b["id"] for b in doc["beats"]]),
         ("panel", [p["id"] for p in panels]),
     ):
         for d in _dupes(ids):
             errors.append(f"duplicate {kind} id: {d}")
+
+    for beat in doc["beats"]:
+        for p in beat["panels"]:
+            if not p["id"].startswith(beat["id"] + "."):
+                errors.append(f"{p['id']}: panel id does not belong to beat {beat['id']}")
+    if panels and "transition" in panels[0]:
+        errors.append(f"{panels[0]['id']}: the first panel has a transition but nothing before it")
 
     used = set()
     for p in panels:

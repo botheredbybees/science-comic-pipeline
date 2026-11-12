@@ -34,19 +34,19 @@ def test_abstract_only_claim_drawn_in_a_panel_is_a_warning(doc):
 
 
 def test_unknown_speaker_is_an_error(doc):
-    doc["pages"][0]["panels"][0]["speech"][0]["speaker"] = "nobody"
+    doc["beats"][0]["panels"][0]["speech"][0]["speaker"] = "nobody"
     errors, _ = validate(doc)
     assert any("'nobody' is not in the cast" in e for e in errors)
 
 
 def test_unknown_claim_is_an_error(doc):
-    doc["pages"][0]["panels"][0]["claim_ids"] = ["C99"]
+    doc["beats"][0]["panels"][0]["claim_ids"] = ["C99"]
     errors, _ = validate(doc)
     assert any("unknown claim C99" in e for e in errors)
 
 
 def test_number_without_claim_is_an_error(doc):
-    panel = doc["pages"][0]["panels"][0]
+    panel = doc["beats"][0]["panels"][0]
     panel["claim_ids"] = []
     panel["speech"] = [{"speaker": "narrator", "text": "Seventy-nine, no, 79 students."}]
     errors, _ = validate(doc)
@@ -63,7 +63,7 @@ def test_unused_claim_is_a_warning(doc):
 
 
 def test_joke_on_cited_panel_is_a_warning_until_reviewed(doc):
-    panel = doc["pages"][0]["panels"][0]
+    panel = doc["beats"][0]["panels"][0]
     panel["claim_ids"] = ["C1"]
     panel["humour"] = {"note": "deadpan"}
     _, warnings = validate(doc)
@@ -77,6 +77,39 @@ def test_duplicate_ids_are_errors(doc):
     doc["cast"].append(copy.deepcopy(doc["cast"][0]))
     errors, _ = validate(doc)
     assert any("duplicate cast id" in e for e in errors)
+
+
+def test_first_panel_cannot_have_a_transition(doc):
+    doc["beats"][0]["panels"][0]["transition"] = "scene-to-scene"
+    errors, _ = validate(doc)
+    assert any("first panel has a transition" in e for e in errors)
+
+
+def test_panel_id_must_belong_to_its_beat(doc):
+    doc["beats"][0]["panels"][1]["id"] = "B2.9"
+    errors, _ = validate(doc)
+    assert any("does not belong to beat B1" in e for e in errors)
+
+
+def test_unknown_weight_transition_and_mode_are_schema_errors(doc):
+    panel = doc["beats"][0]["panels"][1]
+    panel["weight"], panel["transition"], panel["word_picture"] = "huge", "teleport", "loud"
+    errors, _ = validate(doc)
+    assert len([e for e in errors if e.startswith("schema:")]) == 3
+
+
+def test_no_limit_on_panel_count(doc):
+    template = doc["beats"][0]["panels"][1]
+    doc["beats"].append({"id": "B9", "act": "result", "panels": [
+        {**template, "id": f"B9.{i}", "claim_ids": ["C2"]} for i in range(1, 201)]})
+    errors, _ = validate(doc)
+    assert errors == []
+
+
+def test_pages_are_no_longer_accepted(doc):
+    doc["pages"] = []
+    errors, _ = validate(doc)
+    assert any("pages" in e for e in errors)
 
 
 def test_schema_error_stops_other_checks(doc):

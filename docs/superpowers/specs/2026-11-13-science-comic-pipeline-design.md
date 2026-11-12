@@ -89,8 +89,9 @@ style and does not reuse xkcd artwork.
   Ideas to use, from memory and still to be checked against the books: the six panel-to-panel
   transitions (moment-to-moment, action-to-action, subject-to-subject, scene-to-scene,
   aspect-to-aspect, non-sequitur); the modes of word and picture combination; and the five
-  choices (moment, frame, image, word, flow) as the per-panel checklist. Planned per-panel
-  fields: `weight`, `transition`, `word_picture`.
+  choices (moment, frame, image, word, flow) as the per-panel checklist. Implemented per-panel
+  fields (schema version 2): `weight` (small, standard, wide, full: 1 to 4 units of a four-unit
+  row), `transition` (not allowed on the first panel) and `word_picture`.
 
 ## Licensing policy
 
@@ -108,7 +109,9 @@ style and does not reuse xkcd artwork.
 - Whether the `painted` renderer is worth building, or needs an image model.
 - How to check a joke automatically, if at all.
 - Output formats beyond the strip and the PDF (slides, per-panel images).
-- The exact `weight` scale, and how the PDF packer chooses rows.
+- How the row packer treats a panel that ends up alone in a row: today it stretches to the full
+  width, so its weight stops meaning anything there. Options: allow rows of up to five units, let
+  the packer look ahead, or keep lone panels at their proportional width.
 
 ## Next steps
 

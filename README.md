@@ -22,6 +22,7 @@ paper ──> claims ledger ──> story spine ──> storyboard.yaml ──> 
 - **Every fact in a panel cites a claim, and every claim cites the paper.** The
   validator refuses a panel with a number in it and no claim behind it, and warns
   when a claim has only been checked against the abstract.
+- **The storyboard says what happens and how much room each moment gets, not how it is laid out.** Panels have a weight (small, standard, wide, full), as in a printed comic, and carry Scott McCloud's panel-to-panel transitions and word-and-picture modes.
 - **The storyboard is the product.** Renderers read it and never the paper, so a new
   drawing style is a new renderer and nothing else.
 - **Humour is optional and flagged.** A joke on a panel that cites a claim needs a
@@ -45,8 +46,10 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 
 | Path | What it is |
 |---|---|
-| `schema/storyboard.schema.json` | The storyboard format (JSON Schema) |
-| `scripts/validate_storyboard.py` | Schema check plus the accuracy-ledger rules |
+| `schema/storyboard.schema.json` | The storyboard format (JSON Schema): beats of panels, each with a weight, an optional transition and word-picture mode |
+| `scripts/validate_storyboard.py` | Schema check plus the accuracy-ledger rules; no limit on panel count |
+| `scripts/layout.py` | Packs panels into rows, left to right then down, by weight |
+| `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
 | `examples/` | Example papers, each with its licence record and a storyboard |
 | `renderers/` | One folder per drawing style (none yet; interface in its README) |
 | `skills/` | Agent skills for the judgement steps (planned; list in its README) |

@@ -1,7 +1,7 @@
 # Draft storyboard. Every claim below was checked against the full text of the paper
 # (Europe PMC PMC13022473, including Figures 3 to 7) on 2026-11-13; see CLAIM-CHECK.md for
 # what the check found. The characters and scenes are invented for the comic.
-version: 1
+version: 2
 
 meta:
   title: "Draw It Yourself"
@@ -117,12 +117,14 @@ claims:
     status: verified
     note: "The percentages overlap, so they sum to more than 100."
 
-pages:
-  - id: P1
+beats:
+  - id: B1
     title: "The problem"
+    act: problem
     panels:
-      - id: P1.1
-        act: problem
+      - id: B1.1
+        weight: standard
+        word_picture: additive
         scene: "A lecture hall. Sam stares at a slide of a cell-signalling pathway that is mostly arrows."
         speech:
           - { speaker: sam, kind: think, text: "Complex terms, abstract ideas, steps on steps on steps." }
@@ -130,30 +132,39 @@ pages:
         humour:
           note: "Deadpan: the slide's title is 'Simplified'."
           keeps_claims_intact: true
-      - id: P1.2
-        act: problem
+      - id: B1.2
+        weight: standard
+        transition: subject-to-subject
+        word_picture: duo-specific
         frame: borderless
         scene: "Dr Okoye holds up a cartoon of two people waiting at a bus stop, one holding a sign that reads 'receptor'."
         speech:
           - { speaker: dr_okoye, text: "Concept cartoons date from the late 1990s. They start discussions." }
         claim_ids: [C2]
-      - id: P1.3
-        act: problem
+      - id: B1.3
+        weight: wide
+        transition: action-to-action
+        word_picture: additive
         scene: "Dr Okoye hands Sam a marker instead of a slide clicker. Sam looks at it as though it were a live animal."
         speech:
           - { speaker: narrator, kind: caption, text: "Usually the teacher draws them. What if the students did?" }
 
-  - id: P2
+  - id: B2
     title: "The study"
+    act: method
     panels:
-      - id: P2.1
-        act: method
+      - id: B2.1
+        weight: wide
+        transition: scene-to-scene
+        word_picture: parallel
         scene: "A whiteboard with five subtopic cards pinned up, two covered with sheets of paper. Teams of different sizes crowd around the other three."
         speech:
           - { speaker: narrator, kind: caption, text: "Three modules. 79 students. Teams of 2 to 6. Five subtopics, only three on offer." }
         claim_ids: [C3, C4, C5]
-      - id: P2.2
-        act: method
+      - id: B2.2
+        weight: standard
+        transition: subject-to-subject
+        word_picture: duo-specific
         frame: borderless
         scene: "Teams pin finished cartoons to a wall and score each other's with a pencil. A bowl of chocolate sits in the foreground, guarded."
         speech:
@@ -162,40 +173,65 @@ pages:
         humour:
           note: "Scale: a very small bowl, guarded as if it were the Crown Jewels."
           keeps_claims_intact: true
-      - id: P2.3
-        act: method
+      - id: B2.3
+        weight: standard
+        transition: scene-to-scene
+        word_picture: word-specific
         scene: "Sam, at a desk, between a quiz paper and a phone showing a survey form."
         speech:
           - { speaker: narrator, kind: caption, text: "Then a 10-question quiz: 6 questions on cartooned subtopics, 4 on the rest. And an anonymous 18-question survey." }
         claim_ids: [C7, C8]
 
-  - id: P3
+  - id: B3
     title: "What they found"
+    act: result
     panels:
-      - id: P3.1
-        act: result
+      - id: B3.1
+        weight: wide
+        transition: scene-to-scene
+        word_picture: interdependent
         scene: "A hand-drawn chart with two bars: a tall one labelled 'cartooned' and a shorter one labelled 'not cartooned'."
         speech:
           - { speaker: narrator, kind: caption, text: "Quiz median: cartooned 82 percent correct, not cartooned 51. Significant: p = 0.004." }
         claim_ids: [C9, C10]
-      - id: P3.2
-        act: result
+      - id: B3.2
+        weight: small
+        transition: subject-to-subject
+        word_picture: picture-specific
         frame: borderless
-        scene: "Dr Okoye squints at the chart through round glasses and points to a tiny footnote."
+        scene: "Dr Okoye, in close-up, looks at the chart. Says nothing. Sips from the mug."
+        humour:
+          note: "A silent beat before the deflation: the small, empty panel is the pause."
+          keeps_claims_intact: true
+      - id: B3.3
+        weight: standard
+        transition: moment-to-moment
+        word_picture: interdependent
+        frame: borderless
+        scene: "Dr Okoye lowers the mug and points to a tiny footnote under the chart."
         speech:
           - { speaker: dr_okoye, text: "Significant, yes. But that's 20 question averages, not 79 students." }
         claim_ids: [C11, C4]
         humour:
           note: "Understatement: the lecturer, with a mug, calmly deflating their own chart."
           keeps_claims_intact: true
-      - id: P3.3
-        act: result
+      - id: B3.4
+        weight: wide
+        transition: scene-to-scene
+        word_picture: parallel
         scene: "Hand-drawn bars: 'organised' tallest, then 'engaging', 'understanding', and a much shorter bar for 'learned from other groups'."
         speech:
           - { speaker: narrator, kind: caption, text: "Ratings out of 5: organised 4.8, engaging 4.5, understanding 4.2. Learning from other groups' cartoons: 3.3. 68 percent preferred it to question and answer." }
         claim_ids: [C12, C13]
-      - id: P3.4
-        act: discussion
+
+  - id: B4
+    title: "What it means"
+    act: discussion
+    panels:
+      - id: B4.1
+        weight: full
+        transition: scene-to-scene
+        word_picture: duo-specific
         scene: "Sam, marker in hand, hesitates over a blank page headed 'REVISION'. A teammate is already drawing next to them."
         speech:
           - { speaker: narrator, kind: caption, text: "Would they use it to revise? 44 percent said yes and 20 percent said no. In 120 comments, the themes were learning, engagement, working together, and skills." }

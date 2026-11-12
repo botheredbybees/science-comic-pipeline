@@ -2,47 +2,106 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/botheredbybees/science-comic-pipeline/schema/storyboard.schema.json",
   "title": "Storyboard",
-  "description": "A science-comic storyboard: the source paper, a ledger of claims that cite it, a cast, and pages of panels. Renderers read this file and never the paper itself.",
+  "description": "A science-comic storyboard: the source paper, a ledger of claims that cite it, a cast, and an ordered sequence of beats made of panels. It says what happens and how much room each moment gets, not how it is laid out. Renderers and layouts read this file and never the paper itself.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "meta", "cast", "claims", "pages"],
+  "required": [
+    "version",
+    "meta",
+    "cast",
+    "claims",
+    "beats"
+  ],
   "properties": {
-    "version": { "const": 1 },
+    "version": {
+      "const": 2
+    },
     "meta": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["title", "source", "spine"],
+      "required": [
+        "title",
+        "source",
+        "spine"
+      ],
       "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "audience": { "type": "string" },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audience": {
+          "type": "string"
+        },
         "left_out": {
           "type": "array",
           "description": "Parts of the source deliberately not covered, so a reader can judge coverage.",
-          "items": { "type": "string", "minLength": 1 }
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "source": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["title", "authors", "year", "licence"],
+          "required": [
+            "title",
+            "authors",
+            "year",
+            "licence"
+          ],
           "properties": {
-            "title": { "type": "string", "minLength": 1 },
-            "authors": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
-            "year": { "type": "integer" },
-            "doi": { "type": "string" },
-            "url": { "type": "string" },
-            "licence": { "type": "string", "minLength": 1 },
-            "licence_checked": { "type": "string", "description": "Where and when the licence was confirmed." }
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "year": {
+              "type": "integer"
+            },
+            "doi": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "licence": {
+              "type": "string",
+              "minLength": 1
+            },
+            "licence_checked": {
+              "type": "string",
+              "description": "Where and when the licence was confirmed."
+            }
           }
         },
         "spine": {
           "type": "object",
           "description": "And / But / Therefore: the story reduced to one sentence each, written before any panels.",
           "additionalProperties": false,
-          "required": ["and", "but", "therefore"],
+          "required": [
+            "and",
+            "but",
+            "therefore"
+          ],
           "properties": {
-            "and": { "type": "string", "minLength": 1 },
-            "but": { "type": "string", "minLength": 1 },
-            "therefore": { "type": "string", "minLength": 1 }
+            "and": {
+              "type": "string",
+              "minLength": 1
+            },
+            "but": {
+              "type": "string",
+              "minLength": 1
+            },
+            "therefore": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         }
       }
@@ -52,12 +111,26 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-          "name": { "type": "string", "minLength": 1 },
-          "role": { "type": "string" },
-          "look": { "type": "string", "description": "A short visual description renderers can use." }
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string"
+          },
+          "look": {
+            "type": "string",
+            "description": "A short visual description renderers can use."
+          }
         }
       }
     },
@@ -66,69 +139,203 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "text", "kind", "source", "status"],
+        "required": [
+          "id",
+          "text",
+          "kind",
+          "source",
+          "status"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^C[0-9]+$" },
-          "text": { "type": "string", "minLength": 1 },
-          "kind": { "enum": ["background", "method", "result", "interpretation", "caveat"] },
+          "id": {
+            "type": "string",
+            "pattern": "^C[0-9]+$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "background",
+              "method",
+              "result",
+              "interpretation",
+              "caveat"
+            ]
+          },
           "source": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["locator"],
+            "required": [
+              "locator"
+            ],
             "properties": {
-              "locator": { "type": "string", "minLength": 1, "description": "Section, page, table or 'abstract'." },
-              "quote": { "type": "string" }
+              "locator": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Section, page, table or 'abstract'."
+              },
+              "quote": {
+                "type": "string"
+              }
             }
           },
-          "status": { "enum": ["verified", "abstract_only", "unverified"], "description": "'verified' means checked against the full text." },
-          "note": { "type": "string", "description": "Anything a panel must not overstate." }
+          "status": {
+            "enum": [
+              "verified",
+              "abstract_only",
+              "unverified"
+            ],
+            "description": "'verified' means checked against the full text."
+          },
+          "note": {
+            "type": "string",
+            "description": "Anything a panel must not overstate."
+          }
         }
       }
     },
-    "pages": {
+    "beats": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "panels"],
+        "required": [
+          "id",
+          "act",
+          "panels"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^P[0-9]+$" },
-          "title": { "type": "string" },
+          "id": {
+            "type": "string",
+            "pattern": "^B[0-9]+$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "act": {
+            "enum": [
+              "problem",
+              "method",
+              "result",
+              "discussion"
+            ]
+          },
           "panels": {
             "type": "array",
             "minItems": 1,
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "act", "scene"],
+              "required": [
+                "id",
+                "scene"
+              ],
               "properties": {
-                "id": { "type": "string", "pattern": "^P[0-9]+\\.[0-9]+$" },
-                "act": { "enum": ["problem", "method", "result", "discussion"] },
-                "scene": { "type": "string", "minLength": 1, "description": "What the reader sees." },
-                "frame": { "enum": ["outlined", "borderless"], "default": "outlined" },
+                "id": {
+                  "type": "string",
+                  "pattern": "^B[0-9]+\\.[0-9]+$"
+                },
+                "scene": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "What the reader sees."
+                },
+                "frame": {
+                  "enum": [
+                    "outlined",
+                    "borderless"
+                  ],
+                  "default": "outlined"
+                },
                 "speech": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["speaker", "text"],
+                    "required": [
+                      "speaker",
+                      "text"
+                    ],
                     "properties": {
-                      "speaker": { "type": "string", "description": "A cast id, or 'narrator'." },
-                      "text": { "type": "string", "minLength": 1 },
-                      "kind": { "enum": ["say", "think", "caption"], "default": "say" }
+                      "speaker": {
+                        "type": "string",
+                        "description": "A cast id, or 'narrator'."
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "kind": {
+                        "enum": [
+                          "say",
+                          "think",
+                          "caption"
+                        ],
+                        "default": "say"
+                      }
                     }
                   }
                 },
-                "claim_ids": { "type": "array", "items": { "type": "string", "pattern": "^C[0-9]+$" } },
+                "claim_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^C[0-9]+$"
+                  }
+                },
                 "humour": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["note"],
+                  "required": [
+                    "note"
+                  ],
                   "properties": {
-                    "note": { "type": "string", "minLength": 1, "description": "What the joke is. Absent means no joke." },
-                    "keeps_claims_intact": { "type": "boolean", "description": "Set by a reviewer: the joke does not change any claim." }
+                    "note": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "What the joke is. Absent means no joke."
+                    },
+                    "keeps_claims_intact": {
+                      "type": "boolean",
+                      "description": "Set by a reviewer: the joke does not change any claim."
+                    }
                   }
+                },
+                "weight": {
+                  "enum": [
+                    "small",
+                    "standard",
+                    "wide",
+                    "full"
+                  ],
+                  "default": "standard",
+                  "description": "How much room and time the moment gets: 1, 2, 3 or 4 units of a four-unit row. A wide, quiet panel reads as a pause."
+                },
+                "transition": {
+                  "enum": [
+                    "moment-to-moment",
+                    "action-to-action",
+                    "subject-to-subject",
+                    "scene-to-scene",
+                    "aspect-to-aspect",
+                    "non-sequitur"
+                  ],
+                  "description": "How this panel follows the previous one (McCloud's six). Not allowed on the first panel."
+                },
+                "word_picture": {
+                  "enum": [
+                    "word-specific",
+                    "picture-specific",
+                    "duo-specific",
+                    "additive",
+                    "parallel",
+                    "montage",
+                    "interdependent"
+                  ],
+                  "description": "How words and picture combine in this panel (McCloud's categories)."
                 }
               }
             }

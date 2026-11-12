@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Turn a storyboard YAML file into a readable HTML page.
 
-The page shows the panels in order (as a sideways strip or a vertical stack, switchable),
-each with its scene, dialogue, joke note and the claims it relies on, then the claims
+The page shows the panels in order (as a sideways strip, printed-style rows packed by panel
+weight, or a vertical stack, switchable), each with its scene, dialogue, joke note and the claims it relies on, then the claims
 ledger and the list of what the comic leaves out. It is a reading aid, not a renderer.
 
     python scripts/preview_storyboard.py examples/akam-2026-cartooning/storyboard.yaml -o output/preview.html
@@ -13,6 +13,9 @@ from html import escape as e
 from pathlib import Path
 
 import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from layout import pack_rows, units  # noqa: E402
 
 STATUS_GLYPH = {"verified": "✓", "abstract_only": "!", "unverified": "?"}
 
@@ -70,18 +73,24 @@ header { display: grid; gap: 14px; }
 .sw.out { border: 2px solid var(--ink); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
 .sw.bare { border: 2px dashed var(--line); border-radius: 4px; }
 
-.flow { display: flex; gap: 16px; align-items: stretch; }
-.flow[data-layout="strip"] { overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 14px; }
-.flow[data-layout="stack"] { flex-direction: column; max-width: 640px; }
-.pagemark { flex: 0 0 auto; writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--hand); font-size: 1.3rem;
-  color: var(--accent); padding: 6px 2px; align-self: stretch; text-align: center; }
-.flow[data-layout="stack"] .pagemark { writing-mode: horizontal-tb; transform: none; text-align: left; border-bottom: 1px solid var(--line); padding: 14px 0 6px; }
+.flow { gap: 16px; }
+.flow[data-layout="strip"] { display: flex; align-items: stretch; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 14px; }
+.flow[data-layout="strip"] .beat, .flow[data-layout="strip"] .row, .flow[data-layout="stack"] .beat, .flow[data-layout="stack"] .row { display: contents; }
+.flow[data-layout="stack"] { display: flex; flex-direction: column; max-width: 640px; }
+.flow[data-layout="rows"] { display: grid; gap: 26px; }
+.flow[data-layout="rows"] .beat { display: grid; gap: 14px; }
+.flow[data-layout="rows"] .row { display: flex; gap: 14px; }
+.flow[data-layout="rows"] .panel { flex: var(--u) 1 0; }
+.beattitle { font-family: var(--hand); font-size: 1.3rem; color: var(--accent); }
+.flow[data-layout="strip"] .beattitle { flex: 0 0 auto; writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 2px; align-self: stretch; text-align: center; }
+.flow[data-layout="stack"] .beattitle, .flow[data-layout="rows"] .beattitle { border-bottom: 1px solid var(--line); padding: 14px 0 6px; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid;
   gap: 12px; align-content: start; scroll-snap-align: start; min-width: 0; }
-.flow[data-layout="strip"] .panel { flex: 0 0 min(330px, 84vw); }
+.flow[data-layout="strip"] .panel { flex: 0 0 min(calc(var(--u) * 170px), 84vw); }
 .phead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .pid { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
-.act { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
+.ptags { font-size: .74rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 10px; }
+.wt { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
 .frame { padding: 16px; min-height: 120px; display: grid; align-content: center; }
 .frame.outlined { border: 2.5px solid var(--ink); border-radius: 255px 16px 225px 16px / 16px 225px 16px 255px; }
 .frame.borderless { border: 2px dashed var(--line); border-radius: 4px; }
@@ -127,7 +136,8 @@ JS = """
   }
   var saved = null;
   try { saved = localStorage.getItem('storyboard-layout'); } catch (e) {}
-  set(saved || (window.innerWidth >= 800 ? 'strip' : 'stack'));
+  var ok = ['strip', 'rows', 'stack'];
+  set(ok.indexOf(saved) >= 0 ? saved : (window.innerWidth >= 800 ? 'strip' : 'stack'));
   btns.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-set-layout')); }); });
   document.querySelectorAll('[data-scroll]').forEach(function (b) {
     b.addEventListener('click', function () { flow.scrollBy({ left: Number(b.getAttribute('data-scroll')) * 346, behavior: 'smooth' }); });
@@ -142,9 +152,17 @@ def _claim_chip(cid, claims):
             f'title="{e(claims[cid]["kind"])}, {e(status)}">{STATUS_GLYPH[status]} {e(cid)}</a>')
 
 
+def _tags(p):
+    bits = [f'<span>from previous: {e(p["transition"])}</span>'] if p.get("transition") else []
+    if p.get("word_picture"):
+        bits.append(f'<span>words and picture: {e(p["word_picture"])}</span>')
+    return f'<div class="ptags">{"".join(bits)}</div>' if bits else ""
+
+
 def _panel(p, claims):
-    parts = [f'<article class="panel" id="panel-{e(p["id"])}">',
-             f'<div class="phead"><span class="pid">{e(p["id"])}</span><span class="act">{e(p["act"])}</span></div>',
+    parts = [f'<article class="panel" id="panel-{e(p["id"])}" style="--u:{units(p)}">',
+             f'<div class="phead"><span class="pid">{e(p["id"])}</span><span class="wt">{e(p.get("weight", "standard"))}</span></div>',
+             _tags(p),
              f'<div class="frame {e(p.get("frame", "outlined"))}"><p class="scene">{e(p["scene"])}</p></div>']
     if p.get("speech"):
         parts.append('<div class="speech">')
@@ -165,7 +183,7 @@ def _panel(p, claims):
 
 def build(doc, standalone=False):
     claims = {c["id"]: c for c in doc["claims"]}
-    panels = [p for page in doc["pages"] for p in page["panels"]]
+    panels = [p for beat in doc["beats"] for p in beat["panels"]]
     used = {}
     for p in panels:
         for cid in p.get("claim_ids", []):
@@ -187,19 +205,22 @@ def build(doc, standalone=False):
         + "</p>"
         f'<div class="spine"><div><b>And</b><p>{e(spine["and"])}</p></div>'
         f'<div><b>But</b><p>{e(spine["but"])}</p></div><div><b>Therefore</b><p>{e(spine["therefore"])}</p></div></div>'
-        f'<p class="facts"><span><b>{len(panels)}</b> panels on <b>{len(doc["pages"])}</b> pages</span>'
+        f'<p class="facts"><span><b>{len(panels)}</b> panels in <b>{len(doc["beats"])}</b> beats</span>'
         f'<span><b>{len(doc["claims"])}</b> claims, <b>{n_ver}</b> verified</span><span><b>{n_joke}</b> jokes</span></p></header>')
     out.append(
         '<div class="toolbar"><div class="seg" role="group" aria-label="Layout">'
         '<button type="button" data-set-layout="strip" aria-pressed="false">Sideways strip</button>'
+        '<button type="button" data-set-layout="rows" aria-pressed="false">Printed rows</button>'
         '<button type="button" data-set-layout="stack" aria-pressed="false">Vertical stack</button></div>'
         '<div class="nav" id="nav"><button type="button" data-scroll="-1" aria-label="Previous panel">‹</button>'
         '<button type="button" data-scroll="1" aria-label="Next panel">›</button></div>'
         '<span class="legend"><span><i class="sw out"></i>outlined panel</span><span><i class="sw bare"></i>borderless panel</span></span></div>')
     out.append('<div class="flow" id="flow" tabindex="0" aria-label="Panels in reading order">')
-    for page in doc["pages"]:
-        out.append(f'<div class="pagemark">{e(page["id"])} · {e(page.get("title", ""))}</div>')
-        out.extend(_panel(p, claims) for p in page["panels"])
+    for beat in doc["beats"]:
+        out.append(f'<div class="beat"><div class="beattitle">{e(beat["id"])} \u00b7 {e(beat.get("title", beat["act"]))}</div>')
+        for row in pack_rows(beat["panels"]):
+            out.append('<div class="row">' + "".join(_panel(p, claims) for p in row) + "</div>")
+        out.append("</div>")
     out.append("</div>")
 
     out.append('<section class="ledger"><h2>Claims ledger</h2><p class="muted">Every fact in a panel traces to one of these, and each one to the paper.</p><div class="claims">')
