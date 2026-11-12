@@ -15,6 +15,11 @@
       "properties": {
         "title": { "type": "string", "minLength": 1 },
         "audience": { "type": "string" },
+        "left_out": {
+          "type": "array",
+          "description": "Parts of the source deliberately not covered, so a reader can judge coverage.",
+          "items": { "type": "string", "minLength": 1 }
+        },
         "source": {
           "type": "object",
           "additionalProperties": false,

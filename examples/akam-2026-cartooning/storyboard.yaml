@@ -6,6 +6,12 @@ version: 1
 meta:
   title: "Draw It Yourself"
   audience: "Undergraduate biology students and the staff who teach them"
+  left_out:
+    - "The student cartoons shown in the paper, for example apoptosis as a plague outbreak and a cancer cell taking over a celebrity chef's kitchen. They are the students' own work; the comic could draw its own."
+    - "The paper's three aims (go beyond recall in Bloom's taxonomy, build skills, make the experience memorable) and its dual-coding and cognitive-load explanations for why cartoons might work."
+    - "The suggestion to run the activity as guided homework when seminar time is short, and the authors' note that the balance of power between teacher and students was not evaluated."
+    - "The survey item on being encouraged to ask questions (rated 3.9) and the advice to offer other ways to ask them."
+    - "The skills students named in their comments: collaboration, using technology, presenting, researching, creativity and confidence."
   source:
     title: "Cartooning in Biological Learning"
     authors: ["Soukaina Bahsoun", "Mhairi Morris", "Elizabeth Akam"]
@@ -17,7 +23,7 @@ meta:
   spine:
     and: "Cell biology is hard to learn, and concept cartoons are an established way to make it approachable."
     but: "Concept cartoons are normally handed to students, and it was not known what happens when the students draw them."
-    therefore: "Teams in three modules turned DNA repair, apoptosis and the hallmarks of cancer into cartoons, then took a quiz and a survey, and the results were good with some honest limits."
+    therefore: "Teams in three modules turned DNA repair, apoptosis and the hallmarks of cancer into cartoons, then took a quiz and a survey. The results were good, with clear limits."
 
 cast:
   - id: sam
