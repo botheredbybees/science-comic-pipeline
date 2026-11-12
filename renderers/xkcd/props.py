@@ -17,7 +17,7 @@ def _dot(x, y, r=5):
 
 def axis(pen, x, y, w, h, p, fs):
     """A horizontal axis with ticks, marks and bars (a timeline, a scale of values)."""
-    items, fsb = p.get("items", []), max(11.0, fs * 0.85)
+    items, fsb = p.get("items", []), max(11.0, fs * 0.93)
     ay = y + h * 0.62
     o = [pen.arrow((x, ay), (x + w, ay), 2.2, head=8)]
     if p.get("title"):
@@ -50,7 +50,7 @@ def axis(pen, x, y, w, h, p, fs):
 
 def plot(pen, x, y, w, h, p, fs):
     """Axes with one or more curves and labelled notes. Points are [x, y] fractions, y up."""
-    fsb = max(11.0, fs * 0.8)
+    fsb = max(11.0, fs * 0.93)
     xl, yl, title = p.get("x_label", ""), p.get("y_label", ""), p.get("title", "")
     left, right = x + (fsb * 1.7 if yl else 8), x + w - 6
     top, bottom = y + (fsb * 1.4 if title else 6), y + h - (fsb * 1.7 if xl else 8)
@@ -72,7 +72,7 @@ def plot(pen, x, y, w, h, p, fs):
 
 
 def pie(pen, x, y, w, h, p, fs):
-    items, fsb = p.get("items", []), max(11.0, fs * 0.85)
+    items, fsb = p.get("items", []), max(11.0, fs * 0.93)
     r = min(h * 0.4, w * 0.22)
     cx, cy = x + w * 0.5, y + h * 0.5
     total = sum(i["value"] for i in items) or 1
@@ -90,7 +90,7 @@ def pie(pen, x, y, w, h, p, fs):
 
 def flow(pen, x, y, w, h, p, fs):
     """Boxes joined by arrows, left to right (or top to bottom in a tall box)."""
-    items, fsb = p.get("items", []), max(11.0, fs * 0.85)
+    items, fsb = p.get("items", []), max(11.0, fs * 0.93)
     n = max(len(items), 1)
     horizontal = w >= h * 0.9
     gap = 28
@@ -114,7 +114,7 @@ def flow(pen, x, y, w, h, p, fs):
 
 def steps(pen, x, y, w, h, p, fs):
     """A staircase of levels, rising left to right, each with a label and a caption."""
-    items, fsb = p.get("items", []), max(11.0, fs * 0.85)
+    items, fsb = p.get("items", []), max(11.0, fs * 0.93)
     n = max(len(items), 1)
     sw = w / n
     o = []
@@ -124,13 +124,13 @@ def steps(pen, x, y, w, h, p, fs):
         o.append(pen.rect(sx, sy, sw, sh, 2.4, fill=PAPER, over=0))
         o.append(text(sx + sw / 2, sy + 6, [it.get("label", "")], fs, anchor="middle", weight="bold"))
         if it.get("caption"):
-            o.append(text(sx + sw / 2, sy + 10 + fs, wrap(it["caption"], sw - 12, fsb), fsb, anchor="middle", lh=1.1))
+            o.append(text(sx + sw / 2, sy + 16 + fs, wrap(it["caption"], sw - 12, fsb), fsb, anchor="middle", lh=1.1))
     return "".join(o)
 
 
 def stack(pen, x, y, w, h, p, fs):
     """A column of stacked segments, bottom to top, each labelled at the right."""
-    items, fsb = p.get("items", []), max(11.0, fs * 0.85)
+    items, fsb = p.get("items", []), max(11.0, fs * 0.93)
     total = sum(i["value"] for i in items) or 1
     cw = w * 0.34
     yy = y + h
@@ -156,7 +156,7 @@ def ship(pen, x, y, w, h, p, fs):
         wx = x + w * (0.02 + 0.26 * i)
         o.append(pen.stroke([(wx, y + h * 0.9), (wx + w * 0.07, y + h * 0.84), (wx + w * 0.14, y + h * 0.9), (wx + w * 0.21, y + h * 0.84)], 1.8))
     if p.get("label"):
-        o.append(text(x + w / 2, y + h * 0.95, [p["label"]], max(11.0, fs * 0.85), anchor="middle"))
+        o.append(text(x + w / 2, y + h * 0.95, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
     return "".join(o)
 
 
@@ -167,7 +167,7 @@ def bottle(pen, x, y, w, h, p, fs):
     o = [pen.stroke(pts, 2.4, closed=True, fill=PAPER), pen.line((x + w / 2 - nw / 2 - 3, y), (x + w / 2 + nw / 2 + 3, y), 2.4)]
     o.append(pen.line((x + 4, y + h * 0.7), (x + w - 4, y + h * 0.7), 1.4, amp=0.6, color=MID))
     if p.get("label"):
-        o.append(text(x + w / 2, y + h + 4, wrap(p["label"], w * 2.2, max(11.0, fs * 0.8)), max(11.0, fs * 0.8), anchor="middle", lh=1.1))
+        o.append(text(x + w / 2, y + h + 4, wrap(p["label"], w * 2.2, max(11.0, fs * 0.93)), max(11.0, fs * 0.93), anchor="middle", lh=1.1))
     return "".join(o)
 
 
@@ -175,7 +175,7 @@ def jar(pen, x, y, w, h, p, fs):
     o = [pen.rect(x, y + h * 0.12, w, h * 0.88, 2.4, over=1), pen.rect(x + w * 0.1, y, w * 0.8, h * 0.12, 2.4, fill=PAPER, over=1)]
     o.append(pen.stroke([(x + w * 0.15, y + h * 0.3), (x + w * 0.15, y + h * 0.6)], 1.6, color=MID))
     if p.get("label"):
-        o.append(text(x + w / 2, y + h + 4, [p["label"]], max(11.0, fs * 0.85), anchor="middle"))
+        o.append(text(x + w / 2, y + h + 4, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
     return "".join(o)
 
 

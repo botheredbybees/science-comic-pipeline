@@ -95,13 +95,14 @@ def wrap(text, width, fs):
     return lines + ([cur] if cur else [])
 
 
-def text(x, y, lines, fs, anchor="start", fill=INK, lh=1.2, weight="normal"):
+def text(x, y, lines, fs, anchor="start", fill=INK, lh=1.2, weight="normal", halo=False):
     """SVG text with one tspan per line; y is the top of the block."""
     if not lines:
         return ""
     spans = "".join(f'<tspan x="{x:.1f}" dy="{(fs if i == 0 else fs * lh):.1f}">{esc(t)}</tspan>' for i, t in enumerate(lines))
+    glow = f' stroke="{PAPER}" stroke-width="5" stroke-linejoin="round" paint-order="stroke"' if halo else ""
     return (f'<text x="{x:.1f}" y="{y:.1f}" font-size="{fs:.1f}" text-anchor="{anchor}" fill="{fill}" '
-            f'font-weight="{weight}">{spans}</text>')
+            f'font-weight="{weight}"{glow}>{spans}</text>')
 
 
 def block_h(lines, fs, lh=1.2):

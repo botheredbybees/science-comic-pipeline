@@ -140,11 +140,18 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
         o.append(pen.line((cx + 2 * s, cy - R), (cx + 1 * s, cy - R - 8 * s), w * 0.8))
     elif hair == "bun":
         o.append(pen.ellipse(cx - 7 * s, cy - R - 5 * s, 6 * s, 6 * s, w))
+    elif hair == "beanie":  # a woolly hat: a puffy cap, a ribbed cuff, a solid pompom
+        o.append(pen.stroke([(cx - R * 1.08, cy - 5 * s), (cx - R * 1.0, cy - R * 0.95), (cx, cy - R * 1.3), (cx + R * 1.0, cy - R * 0.95), (cx + R * 1.08, cy - 5 * s)], w, fill=PAPER))
+        o.append(pen.line((cx - R * 1.1, cy - 5 * s), (cx + R * 1.1, cy - 5 * s), w))
+        o.append(pen.line((cx - R * 1.08, cy - 0.5 * s), (cx + R * 1.08, cy - 0.5 * s), w))
+        o += [pen.line((cx + dx * s, cy - 4.6 * s), (cx + dx * s, cy - 1 * s), w * 0.6, amp=0.1) for dx in range(-12, 13, 4)]
+        o.append(f'<circle cx="{cx:.1f}" cy="{cy - R * 1.42:.1f}" r="{4.6 * s:.1f}" fill="{INK}"/>')
     elif hair == "spiky":
         for dx in (-7, 0, 7):
             o.append(pen.line((cx + dx * s, cy - R + 1 * s), (cx + dx * 1.3 * s, cy - R - 8 * s), w))
     o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
-    return _flip("".join(o), cx, facing), (cx, cy - R - 4 * s)
+    top = cy - R - (13 * s if hair == "beanie" else 4 * s)
+    return _flip("".join(o), cx, facing), (cx, top)
 
 
 # ---------------------------------------------------------------- props
@@ -305,14 +312,27 @@ def stage(pen, x, y, w, h, st, cast, fs):
 PAD = 14
 
 
+FONT_SIZE = 18  # one size for every caption and speech line, so nothing is harder to read than the rest
+SPEECH_GAP = 26  # clear space between a speech block and the head it belongs to
+
+
 def panel_font(w):
-    return clamp(w / 24, 15, 21)
+    return FONT_SIZE
 
 
-def plan_panel(panel, w, k=0.55):
+def _head_offset(c, cast, w, h):
+    """How far below the top of the scene a staged character's head sits."""
+    diatom = (cast.get(c["id"], {}).get("appearance") or {}).get("body") == "diatom"
+    s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3) * c.get("scale", 1)
+    return c.get("y", 0.94) * h - (108 if diatom else 128) * s
+
+
+def plan_panel(panel, w, k=0.55, cast=None):
     """Work out the text blocks and the natural height of a panel of width w."""
+    cast = cast or {}
     fs = panel_font(w)
     inner = w - 2 * PAD
+    staged = {c["id"]: c for c in (panel.get("staging") or {}).get("characters", [])}
     captions, talk = [], []
     for s in panel.get("speech", []):
         kind = s.get("kind", "say")
@@ -321,11 +341,16 @@ def plan_panel(panel, w, k=0.55):
         else:
             shown = s["text"] if "staging" in panel else f'{s["speaker"].replace("_", " ").title()}: {s["text"]}'
             if kind == "think":
-                shown = f"“{shown}”"
-            talk.append((s, wrap(shown, min(inner * 0.78, 330), fs)))
-    cap_h = sum(block_h(c, fs) + 16 for c in captions) + (6 if captions else 0)
-    talk_h = sum(block_h(t[1], fs) + 22 for t in talk)
+                shown = f"\u201c{shown}\u201d"
+            talk.append((s, wrap(shown, min(inner * 0.6, 260), fs)))
     scene_nat = clamp(k * w, 150, 520 * k)
+    near = [(s, li) for s, li in talk if s["speaker"] in staged]
+    far = [(s, li) for s, li in talk if s["speaker"] not in staged]
+    # Speech sits just above its speaker's head; the scene only needs extra headroom when the head is too low.
+    need = sum(block_h(li, fs) + SPEECH_GAP for _, li in near)
+    free = min((_head_offset(staged[s["speaker"]], cast, inner, scene_nat) for s, _ in near), default=0)
+    talk_h = max(0.0, need - free) + sum(block_h(li, fs) + 22 for _, li in far)
+    cap_h = sum(block_h(c, fs) + 16 for c in captions) + (6 if captions else 0)
     return {"fs": fs, "captions": captions, "talk": talk, "cap_h": cap_h, "talk_h": talk_h,
             "scene_nat": scene_nat, "nat_h": PAD + cap_h + talk_h + scene_nat + PAD}
 
@@ -352,17 +377,26 @@ def draw_panel(panel, plan, w, h, cast):
     else:
         lines = wrap(panel["scene"], w - 2 * PAD - 12, fs * 0.9)
         o.append(text(w / 2, scene_y + scene_h / 2 - block_h(lines, fs * 0.9) / 2, lines, fs * 0.9, anchor="middle", fill=MID))
-    ty = talk_top
+    placed, ty = [], talk_top
     for s, lines in plan["talk"]:
         bh = block_h(lines, fs)
-        head = heads.get(s["speaker"])
         tw = max(len(li) for li in lines) * fs * CHAR_W
-        cx = clamp(head[0], PAD + tw / 2, w - PAD - tw / 2) if head else w / 2
-        o.append(text(cx, ty, lines, fs, anchor="middle"))
-        if head:
-            dash = "3 5" if s.get("kind") == "think" else None
-            o.append(pen.line((cx + (head[0] - cx) * 0.15, ty + bh + 3), (head[0], head[1]), 2.0, dash=dash))
-        ty += bh + 22
+        head = heads.get(s["speaker"])
+        if not head:  # nobody to point at: stack the text at the top of the scene
+            o.append(text(w / 2, ty, lines, fs, anchor="middle"))
+            ty += bh + 22
+            continue
+        cx = clamp(head[0], PAD + tw / 2, w - PAD - tw / 2)
+        bottom = head[1] - SPEECH_GAP
+        top = bottom - bh
+        for x0, x1, y0, y1 in placed:  # two speakers close together: stack rather than overlap
+            if cx - tw / 2 < x1 and cx + tw / 2 > x0 and top < y1 and bottom > y0:
+                top = y0 - 6 - bh
+                bottom = top + bh
+        placed.append((cx - tw / 2, cx + tw / 2, top, bottom))
+        o.append(text(cx, top, lines, fs, anchor="middle", halo=True))
+        dash = "3 5" if s.get("kind") == "think" else None
+        o.append(pen.line((cx + (head[0] - cx) * 0.2, bottom + 3), (head[0], head[1] - 8), 2.0, dash=dash))
     cid = "clip-" + pid.replace(".", "-")
     alt = esc(panel["scene"])
     alt_attr = escape(str(panel["scene"]), quote=True)
@@ -391,7 +425,7 @@ def build_items(doc, cast, k=0.55):
         first = True
         for row in pack_rows(beat["panels"]):
             widths = row_geometry(row, usable)
-            plans = [plan_panel(p, w, k) for (p, _), w in zip(row, widths)]
+            plans = [plan_panel(p, w, k, cast) for (p, _), w in zip(row, widths)]
             rh = max(pl["nat_h"] for pl in plans)
             label = (beat.get("title") or beat["act"]) if first else None
             items.append({"kind": "row", "h": rh + (30 if label else 0), "label": label, "beat": beat["id"],
@@ -487,6 +521,14 @@ def render(doc, out_dir, standalone=False):
     return paths
 
 
+def style_warnings(doc):
+    """xkcd mixes outlined and borderless panels; warn when a storyboard uses only one kind."""
+    frames = [p.get("frame", "outlined") for b in doc["beats"] for p in b["panels"]]
+    if len(frames) >= 6 and "borderless" not in frames:
+        return ["every panel is outlined; xkcd mixes outlined and borderless panels (set frame: borderless on some)"]
+    return []
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("storyboard")
@@ -494,6 +536,8 @@ def main(argv=None):
     ap.add_argument("--standalone", action="store_true", help="wrap the contact sheet in a full HTML document")
     args = ap.parse_args(argv)
     doc = yaml.safe_load(Path(args.storyboard).read_text())
+    for w in style_warnings(doc):
+        print(f"STYLE   {w}", file=sys.stderr)
     paths = render(doc, args.out, standalone=args.standalone)
     print(f"wrote {len(paths)} page(s) and sheet.html to {args.out}")
     return 0

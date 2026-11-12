@@ -132,7 +132,7 @@ beats:
           characters:
             - { id: sam, x: 0.2, pose: think, face: worry, facing: right }
           props:
-            - { kind: slide, x: 0.4, y: 0.04, w: 0.56, h: 0.64, title: "Simplified" }
+            - { kind: slide, x: 0.55, y: 0.04, w: 0.42, h: 0.64, title: "Simplified" }
         speech:
           - { speaker: sam, kind: think, text: "Complex terms, abstract ideas, steps on steps on steps." }
         claim_ids: [C1]
