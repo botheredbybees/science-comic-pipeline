@@ -492,6 +492,17 @@ h1 { margin: 0; font-size: 1.3rem; text-wrap: balance; } p { margin: 0; color: v
 .page { background: #fff; box-shadow: 0 2px 14px rgba(0,0,0,.28); }
 .page svg { display: block; width: 100%; height: auto; }
 .label { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+/* Printing or saving as PDF: one A4 sheet per comic page, nothing else. */
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  .wrap { display: block; max-width: none; margin: 0; }
+  .wrap > :not(.page) { display: none; }
+  .page { width: 210mm; height: 297mm; box-shadow: none; overflow: hidden; break-inside: avoid;
+    break-after: page; page-break-after: always; }
+  .page:last-child { break-after: auto; page-break-after: auto; }
+  .page svg { display: block; width: 210mm; height: 297mm; }
+}
 """
 
 
