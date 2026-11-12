@@ -140,17 +140,17 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
         o.append(pen.line((cx + 2 * s, cy - R), (cx + 1 * s, cy - R - 8 * s), w * 0.8))
     elif hair == "bun":
         o.append(pen.ellipse(cx - 7 * s, cy - R - 5 * s, 6 * s, 6 * s, w))
-    elif hair == "beanie":  # a woolly hat: a puffy cap, a ribbed cuff, a solid pompom
-        o.append(pen.stroke([(cx - R * 1.08, cy - 5 * s), (cx - R * 1.0, cy - R * 0.95), (cx, cy - R * 1.3), (cx + R * 1.0, cy - R * 0.95), (cx + R * 1.08, cy - 5 * s)], w, fill=PAPER))
-        o.append(pen.line((cx - R * 1.1, cy - 5 * s), (cx + R * 1.1, cy - 5 * s), w))
-        o.append(pen.line((cx - R * 1.08, cy - 0.5 * s), (cx + R * 1.08, cy - 0.5 * s), w))
-        o += [pen.line((cx + dx * s, cy - 4.6 * s), (cx + dx * s, cy - 1 * s), w * 0.6, amp=0.1) for dx in range(-12, 13, 4)]
-        o.append(f'<circle cx="{cx:.1f}" cy="{cy - R * 1.42:.1f}" r="{4.6 * s:.1f}" fill="{INK}"/>')
+    elif hair == "beanie":  # a woolly hat sitting above the eyes: puffy crown, ribbed cuff, solid pompom
+        o.append(pen.stroke([(cx - R * 1.06, cy - 11.5 * s), (cx - R * 1.0, cy - R * 1.2), (cx, cy - R * 1.55), (cx + R * 1.0, cy - R * 1.2), (cx + R * 1.06, cy - 11.5 * s)], w, fill=PAPER))
+        o.append(pen.line((cx - R * 1.08, cy - 11.5 * s), (cx + R * 1.08, cy - 11.5 * s), w))
+        o.append(pen.line((cx - R * 1.04, cy - 7.5 * s), (cx + R * 1.04, cy - 7.5 * s), w))
+        o += [pen.line((cx + dx * s, cy - 11 * s), (cx + dx * s, cy - 8 * s), w * 0.6, amp=0.1) for dx in range(-12, 13, 4)]
+        o.append(f'<circle cx="{cx:.1f}" cy="{cy - R * 1.55 - 4.6 * s:.1f}" r="{4.6 * s:.1f}" fill="{INK}"/>')
     elif hair == "spiky":
         for dx in (-7, 0, 7):
             o.append(pen.line((cx + dx * s, cy - R + 1 * s), (cx + dx * 1.3 * s, cy - R - 8 * s), w))
     o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
-    top = cy - R - (13 * s if hair == "beanie" else 4 * s)
+    top = cy - R - (17 * s if hair == "beanie" else 4 * s)
     return _flip("".join(o), cx, facing), (cx, top)
 
 
