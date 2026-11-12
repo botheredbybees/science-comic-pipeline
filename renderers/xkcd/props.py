@@ -83,7 +83,7 @@ def pie(pen, x, y, w, h, p, fs):
         o.append(pen.line((cx, cy), (cx + r * math.cos(ang), cy + r * math.sin(ang)), 2.0, amp=0.4))
         lx, ly = cx + (r + 10) * math.cos(mid), cy + (r + 10) * math.sin(mid)
         side = "start" if math.cos(mid) >= 0 else "end"
-        o.append(text(lx + (4 if side == "start" else -4), ly - fsb * 0.6, wrap(it.get("label", ""), w * 0.3, fsb)[:2], fsb, anchor=side, lh=1.1))
+        o.append(text(lx + (4 if side == "start" else -4), ly - fsb * 0.6, wrap(it.get("label", ""), max(w * 0.34, 110), fsb), fsb, anchor=side, lh=1.1))
         ang += math.tau * it["value"] / total
     return "".join(o)
 
@@ -103,7 +103,7 @@ def flow(pen, x, y, w, h, p, fs):
     o = []
     for i, (it, (bx, by)) in enumerate(zip(items, boxes)):
         o.append(pen.rect(bx, by, bw, bh, 2.2, fill=PAPER, over=1))
-        lines = wrap(it.get("label", ""), bw - 10, fsb)[:4]
+        lines = wrap(it.get("label", ""), bw - 10, fsb)
         o.append(text(bx + bw / 2, by + bh / 2 - block_h(lines, fsb, 1.1) / 2, lines, fsb, anchor="middle", lh=1.1))
         if i:
             px, py = boxes[i - 1]
@@ -139,7 +139,7 @@ def stack(pen, x, y, w, h, p, fs):
         sh = h * it["value"] / total
         fill = {"solid": INK, "hollow": PAPER}.get(it.get("style"), SOFT if k % 2 == 0 else PAPER)
         o.append(pen.rect(x, yy - sh, cw, sh, 2.2, fill=fill, over=0))
-        lines = wrap(it.get("label", ""), w - cw - 24, fsb)[:3]
+        lines = wrap(it.get("label", ""), w - cw - 24, fsb)
         o.append(pen.line((x + cw, yy - sh / 2), (x + cw + 14, yy - sh / 2), 1.6, amp=0.3))
         o.append(text(x + cw + 18, yy - sh / 2 - block_h(lines, fsb, 1.1) / 2, lines, fsb, lh=1.1))
         yy -= sh

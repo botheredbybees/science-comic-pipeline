@@ -260,7 +260,7 @@ def prop(pen, x, y, w, h, p, cast, fs):
     elif k == "sign":
         o.append(pen.line((x + w / 2, y + h * 0.5), (x + w / 2, y + h), 2.4))
         o.append(pen.rect(x, y, w, h * 0.5, 2.4, fill=PAPER, over=1))
-        o.append(text(x + w / 2, y + h * 0.25 - fs * 0.5, wrap(lab, w - 6, fs * 0.85)[:2], fs * 0.85, anchor="middle"))
+        o.append(text(x + w / 2, y + h * 0.25 - fs * 0.5, wrap(lab, w - 6, fs * 0.85), fs * 0.85, anchor="middle"))
     elif k == "picture":
         o.append(pen.rect(x, y, w, h, 2.8, fill=PAPER, over=1))
         if "staging" in p:
@@ -425,15 +425,24 @@ def build_items(doc, cast, k=0.55):
     h = block_h(title_lines, 46, 1.1) + block_h(sub, 17) + 24
     items.append({"kind": "header", "h": h, "draw": lambda y, tl=title_lines, sb=sub: (
         text(MARGIN, y, tl, 46, lh=1.1) + text(MARGIN, y + block_h(tl, 46, 1.1) + 6, sb, 17, fill=MID))})
+    prev_widths, prev_open = None, False
     for beat in doc["beats"]:
         first = True
-        for row in pack_rows(beat["panels"]):
+        for row in pack_rows(beat["panels"], prev=prev_widths):
+            # Two rows of nothing but open panels run together, so the second gets its widest panel outlined.
+            all_open = all(p.get("frame", "outlined") == "borderless" for p, _ in row)
+            if all_open and prev_open:
+                widest = max(range(len(row)), key=lambda i: row[i][1])
+                row = [({**p, "frame": "outlined"} if i == widest else p, u) for i, (p, u) in enumerate(row)]
+                all_open = False
+            prev_widths, prev_open = tuple(u for _, u in row), all_open
             widths = row_geometry(row, usable)
             plans = [plan_panel(p, w, k, cast) for (p, _), w in zip(row, widths)]
             rh = max(pl["nat_h"] for pl in plans)
             label = (beat.get("title") or beat["act"]) if first else None
             items.append({"kind": "row", "h": rh + (30 if label else 0), "label": label, "beat": beat["id"],
-                          "label_h": 30 if label else 0, **_row_limits(row, plans, rh),
+                          "label_h": 30 if label else 0, "widths": tuple(u for _, u in row), "all_open": all_open,
+                          **_row_limits(row, plans, rh),
                           "draw": _row_drawer(row, widths, plans, rh, label, cast)})
             first = False
     note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'

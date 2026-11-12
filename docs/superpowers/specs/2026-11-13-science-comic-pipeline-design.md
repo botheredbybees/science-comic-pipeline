@@ -145,6 +145,12 @@ hint (`short`, `standard`, `tall`), and within limits (a row may grow by about h
 shrink a little unless its speech needs the headroom). A sparse last page is not stretched. This also
 uses panel height as emphasis, as McCloud describes.
 
+Two readability rules came from reading the output: neighbouring rows should not have the same widths
+(the packer penalises a repeat, more for identical widths than near-identical ones, and the penalty is
+tuned so the page count does not grow), and two rows of only open panels must not be adjacent (the
+renderer outlines the widest panel of the second). Chart labels are never truncated; if they do not fit,
+the overflow check shows it.
+
 ## Licensing policy
 
 - Code and schema: MIT. Docs: CC BY 4.0. Rendered output carries the licence of its source: an

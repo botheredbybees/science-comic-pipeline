@@ -176,3 +176,41 @@ def test_a_sparse_last_page_is_not_stretched_to_fill_the_sheet(doc):
     tiny["beats"][0]["panels"] = tiny["beats"][0]["panels"][:2]
     rows = [p["h"] for p in _page_rows(tiny)[1] if p["kind"] == "row"]
     assert sum(rows) < 0.7 * (R.PAGE_H - 2 * R.MARGIN)
+
+
+def _rows(doc):
+    cast = {c["id"]: c for c in doc["cast"]}
+    return [it for it in R.build_items(doc, cast) if it["kind"] == "row"]
+
+
+def test_no_two_adjacent_rows_have_identical_widths(doc):
+    rows = _rows(doc)
+    assert all(a["widths"] != b["widths"] for a, b in zip(rows, rows[1:]))
+
+
+def test_two_all_open_rows_never_sit_together():
+    base = yaml.safe_load(EXAMPLE.read_text())
+    for beat in base["beats"]:  # make every panel open, then the renderer must outline some
+        for p in beat["panels"]:
+            p["frame"] = "borderless"
+    rows = _rows(base)
+    assert not any(a["all_open"] and b["all_open"] for a, b in zip(rows, rows[1:]))
+
+
+def test_the_original_document_is_not_changed_by_the_frame_rule():
+    base = yaml.safe_load(EXAMPLE.read_text())
+    for beat in base["beats"]:
+        for p in beat["panels"]:
+            p["frame"] = "borderless"
+    R.render_pages(base)
+    assert all(p["frame"] == "borderless" for beat in base["beats"] for p in beat["panels"])
+
+
+def test_a_long_chart_label_is_never_cut_short():
+    from props import extra_prop
+    pen = R.Pen("t")
+    label = "top 20 OTUs: 78 percent of all sequence reads in the survey"
+    svg = extra_prop(pen, 0, 0, 120, 200, {"kind": "pie", "items": [{"label": label, "value": 3}, {"label": "rest", "value": 1}]}, 18)
+    words = re.sub(r"<[^>]+>", " ", svg).split()
+    for word in label.split():
+        assert word in words

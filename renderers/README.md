@@ -44,6 +44,12 @@ many props) get the most room, and the plainest conversational rows give a littl
 (a row is tall if any of its panels is, and short only if all are). A sparse last page is left alone
 instead of being stretched to fill the sheet.
 
+**Rows that read as a layout, not a grid.** The row packer is nudged away from repeating the widths of the
+row before it (identical widths cost more than near-identical), including across a beat boundary, so
+pages are not a stack of equal rows. And two rows made only of open (borderless) panels run together and
+blur the reading order, so when a row would follow another all-open row, its widest panel is outlined
+(the storyboard itself is not changed).
+
 Known limits:
 - Text is wrapped with an average glyph width, not measured, so a different font may need a
   small margin. The face is Patrick Hand (SIL Open Font Licence); the SVG falls back to

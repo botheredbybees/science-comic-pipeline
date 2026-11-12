@@ -8,7 +8,8 @@ typesetter breaks paragraphs into lines. Panels keep their order.
 Limits, both adjustable:
   max_per_row  panels in one row (3 reads comfortably on A4 portrait; 4 suits a wider page)
   min_units    narrowest allowed panel (4 of 12 is a third of the row)
-A 'full' panel always has a row to itself.
+A 'full' panel always has a row to itself. A row that repeats the widths of the row before it is penalised,
+so a page reads as a varied layout and not a grid.
 """
 from functools import lru_cache
 
@@ -32,35 +33,49 @@ def _compositions(total, parts, min_units):
     return out
 
 
-def _best_row(prefs, row_units, min_units):
-    """The widths for one row of panels with these preferences, or None if none are allowed."""
+def _row_options(prefs, row_units, min_units):
+    """Every allowed way to give these panels widths, as (deviation cost, widths)."""
     if len(prefs) > 1 and row_units in prefs:  # a full-width panel stays alone
-        return None
-    best = None
-    for widths in _compositions(row_units, len(prefs), min_units):
-        cost = sum((w - p) ** 2 for w, p in zip(widths, prefs))
-        if best is None or cost < best[0]:
-            best = (cost, widths)
-    return best
+        return []
+    return [(sum((w - p) ** 2 for w, p in zip(widths, prefs)), widths)
+            for widths in _compositions(row_units, len(prefs), min_units)]
 
 
-def pack_rows(panels, max_per_row=3, row_units=ROW_UNITS, min_units=4):
-    """Return rows in reading order; each row is a list of (panel, assigned_units) summing to row_units."""
+REPEAT_SAME, REPEAT_NEAR = 12, 2  # penalties for a row that matches, or nearly matches, the row before it
+
+
+def _repeat_cost(prev, widths, same=None, near=None):
+    """A penalty for a row that looks like the row before it, so the page does not become a grid."""
+    same = REPEAT_SAME if same is None else same
+    near = REPEAT_NEAR if near is None else near
+    if prev is None or len(prev) != len(widths):
+        return 0
+    if prev == widths:
+        return same
+    return near if all(abs(a - b) <= 1 for a, b in zip(prev, widths)) else 0
+
+
+def pack_rows(panels, max_per_row=3, row_units=ROW_UNITS, min_units=4, prev=None):
+    """Return rows in reading order; each row is a list of (panel, assigned_units) summing to row_units.
+
+    `prev` is the widths of the row just before the first one (for a beat that follows another), so a
+    row is nudged away from repeating its neighbour's widths."""
     n = len(panels)
     prefs = [min(units(p), row_units) for p in panels]
-    best = [(0, [])] + [None] * n  # best[i] = (cost, row sizes) for the first i panels
+    # best[i][last_widths] = (cost, [(panel_count, widths), ...]) for the first i panels
+    best = [dict() for _ in range(n + 1)]
+    best[0][prev] = (0, [])
     for i in range(1, n + 1):
         for k in range(1, min(max_per_row, i) + 1):
-            if best[i - k] is None:
-                continue
-            row = _best_row(tuple(prefs[i - k:i]), row_units, min_units)
-            if row is None:
-                continue
-            cost = best[i - k][0] + row[0]
-            if best[i] is None or cost < best[i][0]:
-                best[i] = (cost, best[i - k][1] + [(k, row[1])])
+            options = _row_options(tuple(prefs[i - k:i]), row_units, min_units)
+            for last, (base, hist) in best[i - k].items():
+                for cost, widths in options:
+                    total = base + cost + _repeat_cost(last, widths)
+                    cur = best[i].get(widths)
+                    if cur is None or total < cur[0]:
+                        best[i][widths] = (total, hist + [(k, widths)])
     rows, at = [], 0
-    for k, widths in best[n][1]:
+    for k, widths in min(best[n].values(), key=lambda v: v[0])[1]:
         rows.append(list(zip(panels[at:at + k], widths)))
         at += k
     return rows
