@@ -615,6 +615,12 @@
                         "hollow",
                         "mark"
                       ]
+                    },
+                    "row": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3,
+                      "description": "Stack crowded axis labels: raises a mark or bar label, or lowers a tick label, by this many lines."
                     }
                   }
                 }

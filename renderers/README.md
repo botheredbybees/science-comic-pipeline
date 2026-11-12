@@ -16,11 +16,13 @@ A renderer turns a validated `storyboard.yaml` into pages. One exists so far.
 
 A sentence cannot be drawn by a program, so a panel can carry a `staging` block: who stands where
 (`characters`: cast id or `extra`, `x`, `pose`, `face`, `facing`, `holding`, `scale`) and which
-props appear (`props`: `board`, `slide`, `bars`, `paper`, `phone`, `bowl`, `wall`, `sign`,
-`picture` (a small nested staging), `desk`, `label`, `arrow`, `box`). Positions are fractions of the
+props appear (`props`: objects `board`, `slide`, `paper`, `phone`, `bowl`, `bottle`, `jar`, `ship`,
+`sign`, `desk`, `flash`, `cups`, `picture` (a small nested staging), `label`, `arrow`, `box`; charts
+and diagrams `bars`, `plot`, `axis`, `pie`, `flow`, `steps`, `stack`). Positions are fractions of the
 panel's scene area. In the pipeline the agent writes the staging as the "artist" step. Numbers
 in a chart or label need a claim, exactly as dialogue does. A panel without staging falls back to
-its scene text. Cast members may carry `appearance` hints (`hair`, `glasses`, `lanyard`).
+its scene text. Cast members may carry `appearance` hints (`body`: stick or diatom, `hair`, `glasses`, `lanyard`).
+On an `axis`, `row` stacks crowded labels at different heights.
 
 ## xkcd (`renderers/xkcd/render.py`)
 

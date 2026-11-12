@@ -6,7 +6,7 @@ the prop's box (y runs up in `plot`, as on a chart).
 """
 import math
 
-from draw import INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
+from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
 EXTRA = {"axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups"}
 
@@ -23,17 +23,28 @@ def axis(pen, x, y, w, h, p, fs):
     if p.get("title"):
         o.append(text(x + w / 2, y, [p["title"]], fsb, anchor="middle"))
     slot = w / max(len(items), 1) * 1.3
+    def fit(cx, lines):
+        """Shift a label's centre so it stays inside the box."""
+        half = max((len(li) for li in lines), default=0) * fsb * CHAR_W / 2
+        return clamp(cx, x + half, x + w - half)
+
     for it in items:
         px = x + clamp(it.get("at", 0), 0, 1) * w
         lines = wrap(it.get("label", ""), max(slot, 80), fsb)
+        lift = it.get("row", 0) * (block_h(lines, fsb, 1.1) + 6)
         if it.get("to") is not None:
             x2 = x + clamp(it["to"], 0, 1) * w
-            o.append(pen.rect(px, ay - 24, max(x2 - px, 4), 16, 2, fill=PAPER if it.get("style") == "hollow" else INK, over=1))
-            o.append(text((px + x2) / 2, ay - 28 - block_h(lines, fsb, 1.1), lines, fsb, anchor="middle", lh=1.1))
+            by = ay - 24 - it.get("row", 0) * 22
+            o.append(pen.rect(px, by, max(x2 - px, 4), 16, 2, fill=PAPER if it.get("style") == "hollow" else INK, over=1))
+            o.append(text(fit((px + x2) / 2, lines), by - 4 - block_h(lines, fsb, 1.1), lines, fsb, anchor="middle", lh=1.1))
         elif it.get("style") == "mark":
-            o += [_dot(px, ay - 10), text(px, ay - 20 - block_h(lines, fsb, 1.1), lines, fsb, anchor="middle", lh=1.1)]
+            top = ay - 20 - block_h(lines, fsb, 1.1) - lift
+            o.append(_dot(px, ay - 10))
+            if lift:
+                o.append(pen.line((px, ay - 14), (px, top + block_h(lines, fsb, 1.1) + 2), 1.2, amp=0.3, color=MID))
+            o.append(text(fit(px, lines), top, lines, fsb, anchor="middle", lh=1.1))
         else:
-            o += [pen.line((px, ay - 6), (px, ay + 6), 2.0, amp=0.2), text(px, ay + 9, lines, fsb, anchor="middle", lh=1.1)]
+            o += [pen.line((px, ay - 6), (px, ay + 6), 2.0, amp=0.2), text(fit(px, lines), ay + 9 + lift, lines, fsb, anchor="middle", lh=1.1)]
     return "".join(o)
 
 

@@ -120,6 +120,22 @@ attribution a CC BY source requires is printed on the last page from `meta.sourc
 Open points: text is wrapped by an average glyph width, not measured; figures stay small in wide,
 short panels; the staging vocabulary is small and fixed, with `box` as the fallback.
 
+## Verifying claims against the source (built 2026-11-13)
+
+A claim may only be `verified` if it carries a `quote` and a `page`, and `scripts/check_quotes.py`
+finds the quote on that page of the source text (case, punctuation, line breaks, hyphenation and
+ligatures ignored). It also warns when a number in the claim is not in its quote. This is the
+machine half of verification; whether a claim says only what its quote supports is still a human
+or model judgement.
+
+First long run (a 160-page user guide): three fresh agents, one third of an existing comic each,
+wrote 242 claims with quotes and a list of problems in the existing comic. The checker found 0 errors
+in their files, and 9 claims they could not support were left `unverified` and kept out of the panels.
+Lessons: run the checker yourself and read the files, because an agent's summary got two claim ids
+swapped; the agents flagged about 90 statements in the earlier comic that overstated, dropped a hedge
+from, or mis-cited the guide, so a comic made without this step is likely to carry errors a reader
+would repeat.
+
 ## Licensing policy
 
 - Code and schema: MIT. Examples, docs and rendered output: CC BY 4.0.
