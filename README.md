@@ -7,7 +7,8 @@ repeatable process for the middle step: **read the paper, pull out what it actua
 claims, find the story in it, and hand a structured storyboard to a renderer.**
 
 > **Status: early skeleton.** The storyboard schema and its validator work and are
-> tested. The renderers, skills and a full worked example do not exist yet. See
+> tested, and one example has a fully checked draft storyboard. The renderers and
+> skills do not exist yet. See
 > [the design](docs/superpowers/specs/2026-11-13-science-comic-pipeline-design.md).
 
 ## The idea
@@ -35,8 +36,10 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
 The example is a draft storyboard of an open-access paper about students learning
-biology by drawing cartoons. Its claims come from the abstract only, so the validator
-prints one warning per claim until someone checks them against the full text.
+biology by drawing cartoons. All its claims were checked against the full text and
+figures, and [CLAIM-CHECK.md](examples/akam-2026-cartooning/CLAIM-CHECK.md) records what
+that turned up (the abstract and the paper's own text disagree with its figures in
+several places). Set a claim's `status` to `abstract_only` and the validator warns.
 
 ## Layout
 

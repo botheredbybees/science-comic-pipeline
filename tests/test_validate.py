@@ -22,9 +22,15 @@ def test_example_has_no_errors(doc):
     assert errors == []
 
 
-def test_example_warns_about_abstract_only_claims(doc):
+def test_example_is_fully_verified_and_clean(doc):
+    errors, warnings = validate(doc)
+    assert errors == [] and warnings == []
+
+
+def test_abstract_only_claim_drawn_in_a_panel_is_a_warning(doc):
+    doc["claims"][0]["status"] = "abstract_only"
     _, warnings = validate(doc)
-    assert any("abstract_only" in w for w in warnings)
+    assert any("C1 is abstract_only" in w for w in warnings)
 
 
 def test_unknown_speaker_is_an_error(doc):
@@ -81,7 +87,13 @@ def test_schema_error_stops_other_checks(doc):
 
 def test_cli_exit_codes(tmp_path, capsys):
     assert main([str(EXAMPLE)]) == 0
-    assert main([str(EXAMPLE), "--strict"]) == 1  # the example carries warnings on purpose
+    assert main([str(EXAMPLE), "--strict"]) == 0  # the example is clean
+    warned = yaml.safe_load(EXAMPLE.read_text())
+    warned["claims"][0]["status"] = "unverified"
+    path = tmp_path / "warned.yaml"
+    path.write_text(yaml.safe_dump(warned))
+    assert main([str(path)]) == 0
+    assert main([str(path), "--strict"]) == 1
     bad = tmp_path / "bad.yaml"
     bad.write_text("version: 1\n")
     assert main([str(bad)]) == 1

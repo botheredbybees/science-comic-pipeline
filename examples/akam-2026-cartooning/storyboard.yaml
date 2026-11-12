@@ -1,6 +1,6 @@
-# Draft storyboard. Every claim below comes from the paper's ABSTRACT only; none has
-# been checked against the full text, so all are 'abstract_only' (see the warnings the
-# validator prints). The characters and scenes are invented for the comic.
+# Draft storyboard. Every claim below was checked against the full text of the paper
+# (Europe PMC PMC13022473, including Figures 3 to 7) on 2026-11-13; see CLAIM-CHECK.md for
+# what the check found. The characters and scenes are invented for the comic.
 version: 1
 
 meta:
@@ -13,11 +13,11 @@ meta:
     doi: "10.1002/bmb.70040"
     url: "https://europepmc.org/articles/PMC13022473"
     licence: "CC BY 4.0"
-    licence_checked: "Europe PMC record for PMC13022473, 2026-11-13; confirm on the article page before publishing"
+    licence_checked: "The article's own licence statement (Europe PMC full-text XML), 2026-11-13"
   spine:
-    and: "Bioscience students have to understand complicated, abstract ideas, and cartoons of everyday situations are a known way to make them approachable."
-    but: "It is not obvious that students learn more when they draw the cartoons themselves."
-    therefore: "Teams in three biology modules turned genetics, cell signalling and cancer processes into cartoons, then sat a quiz and a survey to find out."
+    and: "Cell biology is hard to learn, and concept cartoons are an established way to make it approachable."
+    but: "Concept cartoons are normally handed to students, and it was not known what happens when the students draw them."
+    therefore: "Teams in three modules turned DNA repair, apoptosis and the hallmarks of cancer into cartoons, then took a quiz and a survey, and the results were good with some honest limits."
 
 cast:
   - id: sam
@@ -31,52 +31,85 @@ cast:
 
 claims:
   - id: C1
-    text: "Teaching bioscience subjects requires helping students understand complicated and abstract concepts."
+    text: "Learning cell biology is hard: the terminology is complex, the concepts are abstract, the processes have many steps, and there is a great deal of information."
     kind: background
-    source: { locator: "abstract" }
-    status: abstract_only
+    source:
+      locator: "Introduction, paragraph 1"
+      quote: "complex, acronymized and often historical terminology, abstract concepts, multi-step processes, integration of knowledge, and volume of information"
+    status: verified
   - id: C2
-    text: "Concept cartoons are cartoon-style drawings that illustrate everyday situations."
+    text: "Concept cartoons were introduced by Keogh and Naylor in the late 1990s and have been used to engage learners and start discussions; they are reported to help with misconceptions."
     kind: background
-    source: { locator: "abstract" }
-    status: abstract_only
+    source: { locator: "Introduction, paragraph 2" }
+    status: verified
   - id: C3
-    text: "The activity ran across three undergraduate biology modules, at levels four to six, on genetics, cell signalling and cancer."
+    text: "Three modules at Loughborough University, at UK levels 4 to 6, took part. Their topics were DNA repair mechanisms, signalling of life and death, and the molecular hallmarks of cancer."
     kind: method
-    source: { locator: "abstract" }
-    status: abstract_only
+    source: { locator: "Methods, paragraph 1 and Table 1" }
+    status: verified
   - id: C4
-    text: "79 students took part, working in teams of 2 to 6, each turning a biological process into a cartoon."
+    text: "79 students took part. They formed teams of two to six, and each team randomly chose a subtopic and made a cartoon of it."
     kind: method
-    source: { locator: "abstract" }
-    status: abstract_only
+    source: { locator: "Methods, paragraphs 1 and 3" }
+    status: verified
   - id: C5
-    text: "The activity was evaluated with a 10-question multiple-choice quiz and an 18-question survey on a 5-point scale, with free-form comments."
+    text: "Only three of the five subtopics were on offer, so that cartooned and not-cartooned subtopics could be compared."
     kind: method
-    source: { locator: "abstract" }
-    status: abstract_only
+    source: { locator: "Methods, paragraph 3" }
+    status: verified
   - id: C6
-    text: "There was a statistically significant difference in performance between cartooned and not-cartooned subtopics."
-    kind: result
-    source: { locator: "abstract" }
-    status: abstract_only
-    note: "The abstract does not give the direction of the difference or the test used. Do not draw either until the full text is checked."
+    text: "The session was run as a friendly competition with chocolate prizes. Each group ranked the other groups' cartoons and the points decided the winner."
+    kind: method
+    source: { locator: "Methods, paragraphs 3 and 4" }
+    status: verified
   - id: C7
-    text: "Average student ratings were 4.8 for engagement, 4.5 for learning and 4.2 for understanding."
-    kind: result
-    source: { locator: "abstract" }
-    status: abstract_only
-    note: "Assumes these are out of 5, from the 5-point scale; confirm in the full text."
+    text: "Learning was tested with a 10-question multiple-choice quiz: six questions on cartooned subtopics and four on not-cartooned ones. It was given in two of the three modules."
+    kind: method
+    source: { locator: "Methods, final paragraph" }
+    status: verified
   - id: C8
-    text: "68 percent of students preferred the cartooning activity to learning through traditional question and answer."
-    kind: result
-    source: { locator: "abstract" }
-    status: abstract_only
+    text: "A separate anonymous survey had 18 questions, a mix of 5-point scales and free-form comments."
+    kind: method
+    source: { locator: "Methods, paragraph 5" }
+    status: verified
   - id: C9
-    text: "In free-form comments students cited improved understanding, and the activity fostered teamwork between cohorts."
+    text: "A Mann-Whitney U test found a significant difference in quiz performance between cartooned and not-cartooned subtopics (U = 12.0, p = 0.004)."
     kind: result
-    source: { locator: "abstract" }
-    status: abstract_only
+    source: { locator: "Results, Assessment of Learning" }
+    status: verified
+  - id: C10
+    text: "Cartooned subtopics scored higher: a median of 81.74 percent correct (IQR 19.32), against 50.55 percent (IQR 31.69) for not-cartooned subtopics."
+    kind: result
+    source: { locator: "Results, Assessment of Learning; Figure 7" }
+    status: verified
+    note: "The Results sentence lists 50.55 first and 81.74 second 'respectively' after 'cartooned and non-cartooned', which reads as the reverse. Figure 7 and a median recomputed from its bars (about 81.5 cartooned, about 50 not cartooned) show cartooned higher, so the text's order looks like a slip. Not confirmed with the authors."
+  - id: C11
+    text: "The quiz comparison uses 20 question-level averages (2 quizzes by 10 questions), not individual students' scores."
+    kind: caveat
+    source: { locator: "Methods, final paragraph" }
+    status: verified
+  - id: C12
+    text: "Average survey ratings out of 5: well organised with clear instructions 4.8, engaging 4.5, improved my understanding 4.2. Learning about other groups' topics from their presentations rated 3.3."
+    kind: result
+    source: { locator: "Results; Figures 3, 4 and 5" }
+    status: verified
+    note: "The abstract labels 4.8 as 'engagement'. In Figure 3 it is the organisation and clarity item; engagement (Figure 4) is 4.5."
+  - id: C13
+    text: "68 percent of students preferred the cartooning activity to learning in a traditional question and answer format."
+    kind: result
+    source: { locator: "Results, Reflection and Future Use; Figure 6" }
+    status: verified
+  - id: C14
+    text: "Reactions to using cartooning for revision were mixed: 44 percent scored 4 or 5 and 20 percent scored 1 or 2."
+    kind: caveat
+    source: { locator: "Results, Reflection and Future Use" }
+    status: verified
+  - id: C15
+    text: "In 120 free-form comments the themes were improved learning experience (36 percent of responses), engagement (32 percent), collaborative learning (30 percent) and skill development (12 percent)."
+    kind: result
+    source: { locator: "Results, Open-Ended Feedback" }
+    status: verified
+    note: "The percentages overlap, so they sum to more than 100."
 
 pages:
   - id: P1
@@ -86,7 +119,7 @@ pages:
         act: problem
         scene: "A lecture hall. Sam stares at a slide of a cell-signalling pathway that is mostly arrows."
         speech:
-          - { speaker: sam, kind: think, text: "Genetics. Cell signalling. Cancer. All of it is invisible, and all of it is on the exam." }
+          - { speaker: sam, kind: think, text: "Complex terms, abstract ideas, steps on steps on steps." }
         claim_ids: [C1]
         humour:
           note: "Deadpan: the slide's title is 'Simplified'."
@@ -96,49 +129,69 @@ pages:
         frame: borderless
         scene: "Dr Okoye holds up a cartoon of two people waiting at a bus stop, one holding a sign that reads 'receptor'."
         speech:
-          - { speaker: dr_okoye, text: "A concept cartoon is a drawing of an everyday situation that carries an idea." }
+          - { speaker: dr_okoye, text: "Concept cartoons date from the late 1990s. They start discussions." }
         claim_ids: [C2]
       - id: P1.3
         act: problem
         scene: "Dr Okoye hands Sam a marker instead of a slide clicker. Sam looks at it as though it were a live animal."
         speech:
-          - { speaker: narrator, kind: caption, text: "But what if the students drew them?" }
+          - { speaker: narrator, kind: caption, text: "Usually the teacher draws them. What if the students did?" }
 
   - id: P2
     title: "The study"
     panels:
       - id: P2.1
         act: method
-        scene: "A whiteboard with three columns: GENETICS, CELL SIGNALLING, CANCER. Teams of different sizes crowd around each."
+        scene: "A whiteboard with five subtopic cards pinned up, two covered with sheets of paper. Teams of different sizes crowd around the other three."
         speech:
-          - { speaker: narrator, kind: caption, text: "Three biology modules. 79 students. Teams of 2 to 6. One process each, turned into a cartoon." }
-        claim_ids: [C3, C4]
+          - { speaker: narrator, kind: caption, text: "Three modules. 79 students. Teams of 2 to 6. Five subtopics, only three on offer." }
+        claim_ids: [C3, C4, C5]
       - id: P2.2
         act: method
         frame: borderless
-        scene: "Sam, at a desk, with a quiz paper on one side and a survey sheet on the other, and a speech bubble that has become a single line to Dr Okoye."
+        scene: "Teams pin finished cartoons to a wall and score each other's with a pencil. A bowl of chocolate sits in the foreground, guarded."
         speech:
-          - { speaker: narrator, kind: caption, text: "Afterwards: a 10-question quiz, an 18-question survey, and room for comments." }
-        claim_ids: [C5]
+          - { speaker: narrator, kind: caption, text: "A friendly competition. Teams ranked each other's work. The prize was chocolate." }
+        claim_ids: [C6]
+        humour:
+          note: "Scale: a very small bowl, guarded as if it were the Crown Jewels."
+          keeps_claims_intact: true
+      - id: P2.3
+        act: method
+        scene: "Sam, at a desk, between a quiz paper and a phone showing a survey form."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Then a 10-question quiz: 6 questions on cartooned subtopics, 4 on the rest. And an anonymous 18-question survey." }
+        claim_ids: [C7, C8]
 
   - id: P3
     title: "What they found"
     panels:
       - id: P3.1
         act: result
-        scene: "Two stacks of quiz papers, labelled 'cartooned' and 'not cartooned', with a question mark between them."
+        scene: "A hand-drawn chart with two bars: a tall one labelled 'cartooned' and a shorter one labelled 'not cartooned'."
         speech:
-          - { speaker: narrator, kind: caption, text: "Cartooned subtopics and not-cartooned subtopics did not score the same. The difference was statistically significant." }
-        claim_ids: [C6]
+          - { speaker: narrator, kind: caption, text: "Quiz median: cartooned 82 percent correct, not cartooned 51. Significant: p = 0.004." }
+        claim_ids: [C9, C10]
       - id: P3.2
         act: result
-        scene: "A bar chart drawn by hand: three bars labelled engagement, learning and understanding, each slightly shorter than the last."
+        frame: borderless
+        scene: "Dr Okoye squints at the chart through round glasses and points to a tiny footnote."
         speech:
-          - { speaker: narrator, kind: caption, text: "Ratings out of 5: engagement 4.8, learning 4.5, understanding 4.2. And 68 percent preferred this to question-and-answer." }
-        claim_ids: [C7, C8]
+          - { speaker: dr_okoye, text: "Significant, yes. But that's 20 question averages, not 79 students." }
+        claim_ids: [C11, C4]
+        humour:
+          note: "Understatement: the lecturer, with a mug, calmly deflating their own chart."
+          keeps_claims_intact: true
       - id: P3.3
-        act: discussion
-        scene: "Sam and a teammate, back to back, each holding half of a cartoon that only works when joined."
+        act: result
+        scene: "Hand-drawn bars: 'organised' tallest, then 'engaging', 'understanding', and a much shorter bar for 'learned from other groups'."
         speech:
-          - { speaker: sam, text: "I understood it better, and I got a team out of it." }
-        claim_ids: [C9]
+          - { speaker: narrator, kind: caption, text: "Ratings out of 5: organised 4.8, engaging 4.5, understanding 4.2. Learning from other groups' cartoons: 3.3. 68 percent preferred it to question and answer." }
+        claim_ids: [C12, C13]
+      - id: P3.4
+        act: discussion
+        scene: "Sam, marker in hand, hesitates over a blank page headed 'REVISION'. A teammate is already drawing next to them."
+        speech:
+          - { speaker: narrator, kind: caption, text: "Would they use it to revise? 44 percent said yes and 20 percent said no. In 120 comments, the themes were learning, engagement, working together, and skills." }
+          - { speaker: sam, text: "Mixed. But I did meet everyone in my group." }
+        claim_ids: [C14, C15]
