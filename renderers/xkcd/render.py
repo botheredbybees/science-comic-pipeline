@@ -29,6 +29,7 @@ from animals import ANIMALS  # noqa: E402
 PAGE_W, PAGE_H, MARGIN, GUTTER = 1000, 1414, 40, 16  # A4 at 1000 units wide
 FOOTER_H = 30
 PIPELINE_URL = "https://github.com/botheredbybees/science-comic-pipeline"
+PIPELINE_NAME = "science-comic-pipeline"
 FIT_FACTORS = (0.55, 0.5, 0.45, 0.4, 0.36)  # scene height as a fraction of panel width, tallest first
 
 
@@ -566,20 +567,25 @@ def build_items(doc, cast, k=0.55):
     note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
             + (f', doi {src["doi"]}' if src.get("doi") else "")
             + f'. Licence: {src["licence"]}. '
-            "Condensed into a comic with invented characters and scenes using science-comic-pipeline; "
-            "the authors did not write or endorse it.")
+            "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
+            "the authors did not write or endorse this comic.")
     colo = wrap(note, usable, 15)
     paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
     links = [(f"Read the original paper: {paper}", paper)] if paper else []
     if lic_url:
         links.append((f"Licence terms: {lic_url}", lic_url))
-    links.append((f"The pipeline that made this comic: {PIPELINE_URL}", PIPELINE_URL))
 
     def draw_colophon(y, c=colo, ls=links):
-        out = [text(MARGIN, y + 6, c, 15, fill=MID)]
-        for i, (label, href) in enumerate(ls):  # clickable in a browser and in the PDF
+        """The footer in the caption grey. The pipeline's name and the lines below are links (clickable in a browser
+        and in the PDF), underlined but not heavier than the text around them."""
+        def inline(line):
+            return esc(line).replace(PIPELINE_NAME, f'<a href="{PIPELINE_URL}" target="_blank"><tspan text-decoration="underline">{PIPELINE_NAME}</tspan></a>')
+        spans = "".join(f'<tspan x="{MARGIN:.1f}" dy="{(15 if i == 0 else 18):.1f}">{inline(t)}</tspan>' for i, t in enumerate(c))
+        out = [f'<text x="{MARGIN:.1f}" y="{y + 6:.1f}" font-size="15" fill="{MID}">{spans}</text>']
+        for i, (label, href) in enumerate(ls):
             ly = y + 6 + block_h(c, 15) + 4 + i * 15 * 1.3
-            out.append(f'<a href="{esc(href)}" target="_blank">{text(MARGIN, ly, [label], 15, fill=INK).replace("<text ", "<text text-decoration=\"underline\" ", 1)}</a>')
+            out.append(f'<a href="{esc(href)}" target="_blank">'
+                       + text(MARGIN, ly, [label], 15, fill=MID).replace("<text ", '<text text-decoration="underline" ', 1) + "</a>")
         return "".join(out)
 
     items.append({"kind": "colophon", "h": block_h(colo, 15) + len(links) * 15 * 1.3 + 16, "draw": draw_colophon})
