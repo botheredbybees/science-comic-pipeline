@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render a storyboard and scan the pages for defects a script can see.
 
-    python scripts/visual_qa.py examples/lin-2017-wap-npc/storyboard.yaml
+    python scripts/visual_qa.py examples/pauli-2021-krill-salps-diet/storyboard.yaml
     python scripts/visual_qa.py storyboard.yaml --keep out/qa     (also keep the rendered pages)
 
 It loads the rendered pages in headless Chrome or Chromium and reports, per page and panel:

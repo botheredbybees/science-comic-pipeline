@@ -6,8 +6,8 @@ Papers and data products reach few people if they only exist as papers. This rep
 repeatable process for the middle step: **read the paper, pull out what it actually
 claims, find the story in it, and hand a structured storyboard to a renderer.**
 
-> **Status: working, still early.** Four papers have been turned into comics (the PDFs are below), the storyboard
-> schema, validator and renderer are tested, and five skills describe the judgement steps. Two of the comics were made
+> **Status: working, still early.** Five papers have been turned into comics; two are kept here as examples (the PDFs are below), the storyboard
+> schema, validator and renderer are tested, and five skills describe the judgement steps. Three of the comics were made
 > by an agent that had only the skills to go on, which is how the skills were debugged. See
 > [the design](docs/superpowers/specs/2026-11-13-science-comic-pipeline-design.md).
 
@@ -18,9 +18,7 @@ source paper's licence, a link to the paper, and the line that its authors did n
 
 | Comic | Paper | Pages |
 |---|---|---|
-| [Who Sank the Carbon?](examples/lin-2017-wap-npc/lin-2017-wap-npc.pdf) | Lin et al. 2017, *Scientific Reports*: which plankton predict net community production off the Western Antarctic Peninsula | 7 |
 | [Who Eats What?](examples/pauli-2021-krill-salps-diet/pauli-2021-krill-salps-diet.pdf) | Pauli et al. 2021, *Communications Biology*: what krill and salps eat, read from their DNA | 9 |
-| [The Currency Exchange](examples/strzepek-2022-rates/strzepek-2022-rates.pdf) | Strzepek et al. 2022, *Journal of Plankton Research*: can omics give ocean models the rates they need? | 6 |
 | [Draw It Yourself](examples/akam-2026-cartooning/akam-2026-cartooning.pdf) | Bahsoun, Morris and Akam 2026, *Biochemistry and Molecular Biology Education*: learning biology by drawing cartoons (a draft) | 2 |
 
 ## The idea

@@ -23,8 +23,8 @@ storyboard (3) is the product that renderers read; the humour (4) is optional; t
 **The rule that holds it together:** nothing in a panel that is not in a cited, verified claim, and no joke
 or caption that makes a claim say more than it does.
 
-These skills were written from what the Lin 2017 and Akam 2026 examples needed, then followed cold by an agent that had
-not seen those examples: first on Strzepek et al. 2022 (a perspective article with little story, 36 panels), then on
+These skills were written from what two early comics (Lin 2017 and Akam 2026) needed, then followed cold by an agent that had
+not seen those comics: first on Strzepek et al. 2022 (a perspective article with little story, 36 panels), then on
 Pauli et al. 2021 (a primary research article, 46 panels), then on Lin et al. 2021 (a long data article, 59 panels). Each
 run finished a comic that passes the quote check, the validator and the scan, and each found real faults in the skills
 and scripts, which were fixed before the next paper. The third run's were: bar labels that rounded `25.0` to `25`, prop

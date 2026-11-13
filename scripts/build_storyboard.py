@@ -8,7 +8,7 @@ A working folder holds
 and the output keeps only the claims the panels actually cite, so a long ledger can serve several
 comics. It reports any cited claim that is not `verified`, and lists verified claims that no panel cites.
 
-    python scripts/build_storyboard.py examples/lin-2017-wap-npc
+    python scripts/build_storyboard.py examples/pauli-2021-krill-salps-diet
 """
 import argparse
 import glob

@@ -4,7 +4,7 @@
 Renders the xkcd-style pages, then prints them with a headless Chrome or Chromium (which must be
 installed). The contact sheet carries print rules, so each PDF page holds exactly one comic page.
 
-    python scripts/export_pdf.py examples/lin-2017-wap-npc/storyboard.yaml -o output/lin-2017.pdf
+    python scripts/export_pdf.py examples/pauli-2021-krill-salps-diet/storyboard.yaml -o output/pauli-2021.pdf
 """
 import argparse
 import shutil

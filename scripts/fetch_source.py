@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fetch an open-access paper from Europe PMC and split it into numbered text "pages" for claim checking.
 
-    python scripts/fetch_source.py --doi 10.1038/s41598-017-14109-1 -o sources/lin-2017
-    python scripts/fetch_source.py --pmcid PMC5665988 -o sources/lin-2017
-    python scripts/fetch_source.py --xml saved.xml -o sources/lin-2017        (no network)
+    python scripts/fetch_source.py --doi 10.1038/s42003-021-02581-5 -o sources/pauli-2021
+    python scripts/fetch_source.py --pmcid PMC8433442 -o sources/pauli-2021
+    python scripts/fetch_source.py --xml saved.xml -o sources/pauli-2021        (no network)
 
 Writes into the output folder:
   pages/p001.txt ...   one paragraph, figure/table caption, or table per file: the "pages" a claim's `page` refers to

@@ -134,6 +134,6 @@ A person reads the comic. The scripts check that the numbers match the quotes; t
 
 - Add a drawing style: a renderer reads `storyboard.yaml` and never the paper. `renderers/xkcd/` is the model.
 - Improve a skill: they are plain Markdown. Each of the three cold runs found faults in them; the notes are in
-  `skills/README.md` and in each example's `SKILL-FEEDBACK.md`.
+  `skills/README.md` and in the Pauli example's `SKILL-FEEDBACK.md`.
 - Send what you made: open an issue or a pull request with the new `examples/<slug>/` folder (the claims ledger, the
   storyboard, `ATTRIBUTION.md` and the PDF; never the paper's text).
