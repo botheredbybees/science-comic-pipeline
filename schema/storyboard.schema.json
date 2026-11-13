@@ -465,7 +465,11 @@
                   "marker",
                   "mug",
                   "paper",
-                  "clipboard"
+                  "clipboard",
+                  "teacup",
+                  "flask",
+                  "magnifier",
+                  "notebook"
                 ]
               },
               "scale": {
@@ -521,7 +525,12 @@
                   "bottle",
                   "jar",
                   "flash",
-                  "cups"
+                  "cups",
+                  "laptop",
+                  "microscope",
+                  "teapot",
+                  "net",
+                  "thermometer"
                 ]
               },
               "x": {

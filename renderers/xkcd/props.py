@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups"}
+EXTRA = {"axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer"}
 
 
 def _dot(x, y, r=5):
@@ -208,7 +208,79 @@ def cups(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
-_DRAW = {"axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
+def _fit(x, y, w, h, ratio):
+    """The largest box of width/height `ratio` that fits in the given one, centred, so the object keeps its shape."""
+    bw, bh = (w, w / ratio) if w / h < ratio else (h * ratio, h)
+    return x + (w - bw) / 2, y + (h - bh), bw, bh
+
+
+def laptop(pen, x, y, w, h, p, fs):
+    x, y, w, h = _fit(x, y, w, h, 1.5)
+    o = [pen.rect(x + w * 0.14, y, w * 0.72, h * 0.62, 2.4, fill=PAPER, over=1),
+         pen.poly([(x + w * 0.04, y + h * 0.66), (x + w * 0.96, y + h * 0.66), (x + w, y + h * 0.78), (x, y + h * 0.78)], 2.4, fill=SOFT, jit=0.4),
+         f'<circle cx="{x + w / 2:.1f}" cy="{y + h * 0.31:.1f}" r="{min(w, h) * 0.06:.1f}" fill="{INK}"/>']
+    if p.get("label"):
+        o.append(text(x + w / 2, y + h * 0.84, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
+    return "".join(o)
+
+
+def microscope(pen, x, y, w, h, p, fs):
+    ox, oy, ow, oh = x, y, w, h
+    x, y, w, h = _fit(x, y, w, h, 0.8)
+    o = [pen.rect(x + w * 0.1, y + h * 0.92, w * 0.62, h * 0.08, 2.4, fill=INK, over=0),
+         pen.stroke([(x + w * 0.62, y + h * 0.92), (x + w * 0.88, y + h * 0.72), (x + w * 0.84, y + h * 0.32), (x + w * 0.6, y + h * 0.14)], 3.4),
+         pen.stroke([(x + w * 0.36, y + h * 0.04), (x + w * 0.58, y + h * 0.1), (x + w * 0.46, y + h * 0.46), (x + w * 0.26, y + h * 0.4)], 2.4, closed=True, fill=PAPER),
+         pen.line((x + w * 0.31, y + h * 0.42), (x + w * 0.29, y + h * 0.54), 3.0, amp=0.1),
+         pen.line((x + w * 0.12, y + h * 0.66), (x + w * 0.66, y + h * 0.66), 2.6, amp=0.3),
+         pen.rect(x + w * 0.2, y + h * 0.62, w * 0.2, h * 0.04, 1.4, fill=PAPER, over=0)]
+    if p.get("label"):
+        o.append(text(x + w * 0.45, oy + oh + 4, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
+    return "".join(o)
+
+
+def teapot(pen, x, y, w, h, p, fs):
+    x, y, w, h = _fit(x, y, w, h, 1.3)
+    cx = x + w * 0.5
+    o = [pen.stroke([(x + w * 0.78, y + h * 0.5), (x + w * 0.98, y + h * 0.34), (x + w * 0.96, y + h * 0.3), (x + w * 0.74, y + h * 0.42)], 2.2, closed=True, fill=PAPER),
+         pen.stroke([(x + w * 0.2, y + h * 0.45), (x + w * 0.02, y + h * 0.5), (x + w * 0.04, y + h * 0.75), (x + w * 0.2, y + h * 0.78)], 2.4),
+         pen.ellipse(cx, y + h * 0.62, w * 0.34, h * 0.3, 2.4, fill=PAPER),
+         pen.line((cx - w * 0.2, y + h * 0.33), (cx + w * 0.2, y + h * 0.33), 2.4, amp=0.2),
+         pen.stroke([(cx - w * 0.14, y + h * 0.33), (cx, y + h * 0.22), (cx + w * 0.14, y + h * 0.33)], 2.2, fill=PAPER),
+         f'<circle cx="{cx:.1f}" cy="{y + h * 0.19:.1f}" r="{w * 0.03:.1f}" fill="{INK}"/>']
+    o += [pen.stroke([(x + w * (0.9 + dx), y + h * 0.26), (x + w * (0.88 + dx), y + h * 0.17), (x + w * (0.93 + dx), y + h * 0.1), (x + w * (0.91 + dx), y)], 1.4)
+          for dx in (-0.02, 0.04)]
+    if p.get("label"):
+        o.append(text(cx, y + h + 4, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
+    return "".join(o)
+
+
+def net(pen, x, y, w, h, p, fs):
+    """A plankton net: a ring on a line, a long cone of mesh and a collecting bottle at the end."""
+    x, y, w, h = _fit(x, y, w, h, 0.5)
+    rx, ry = x + w * 0.5, y + h * 0.18
+    o = [pen.line((rx, ry), (rx, y), 2.4, amp=0.2),
+         pen.ellipse(rx, ry, w * 0.36, h * 0.07, 2.4, jit=0.01)]
+    o += [pen.line((rx + dx * w * 0.36, ry), (rx + dx * w * 0.06, y + h * 0.85), 1.6, amp=0.3) for dx in (-1, -0.5, 0, 0.5, 1)]
+    o += [pen.rect(rx - w * 0.07, y + h * 0.85, w * 0.14, h * 0.15, 2.2, fill=PAPER, over=0)]
+    if p.get("label"):
+        o.append(text(rx, y + h + 4, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
+    return "".join(o)
+
+
+def thermometer(pen, x, y, w, h, p, fs):
+    x, y, w, h = _fit(x, y, w, h, 0.28)
+    cx, bulb = x + w * 0.5, min(w * 0.42, h * 0.14)
+    tube = w * 0.14
+    o = [pen.stroke([(cx - tube, y + h - bulb * 1.5), (cx - tube, y + h * 0.1), (cx, y + h * 0.04), (cx + tube, y + h * 0.1), (cx + tube, y + h - bulb * 1.5)], 2.4),
+         pen.ellipse(cx, y + h - bulb, bulb, bulb, 2.4, fill=INK, jit=0.01),
+         pen.line((cx, y + h * 0.4), (cx, y + h - bulb), 3.6, amp=0.1)]
+    o += [pen.line((cx + tube, y + h * (0.12 + 0.1 * i)), (cx + tube + w * 0.14, y + h * (0.12 + 0.1 * i)), 1.4, amp=0.1) for i in range(6)]
+    if p.get("label"):
+        o.append(text(cx, y + h + 4, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
+    return "".join(o)
+
+
+_DRAW = {"laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
          "bottle": bottle, "jar": jar, "flash": flash, "cups": cups}
 
 

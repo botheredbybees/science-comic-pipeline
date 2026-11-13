@@ -17,7 +17,7 @@ A renderer turns a validated `storyboard.yaml` into pages. One exists so far.
 A sentence cannot be drawn by a program, so a panel can carry a `staging` block: who stands where
 (`characters`: cast id or `extra`, `x`, `pose`, `face`, `facing`, `holding`, `scale`) and which
 props appear (`props`: objects `board`, `slide`, `paper`, `phone`, `bowl`, `bottle`, `jar`, `ship`,
-`sign`, `desk`, `flash`, `cups`, `picture` (a small nested staging), `label`, `arrow`, `box`; charts
+`sign`, `desk`, `flash`, `cups`, `picture` (a small nested staging), `label`, `arrow`, `box`, `laptop`, `microscope`, `teapot`, `net`, `thermometer`; charts
 and diagrams `bars`, `plot`, `axis`, `pie`, `flow`, `steps`, `stack`). Positions are fractions of the
 panel's scene area. In the pipeline the agent writes the staging as the "artist" step. Numbers
 in a chart or label need a claim, exactly as dialogue does. A panel without staging falls back to
@@ -29,7 +29,7 @@ say so in the caption or give them the same `max`. Axis tick numbers (and a `min
 for the validator: cite the claim that defines the scale.
 
 Things found by using the vocabulary (check the render when you stage these): a character `holding` can only be
-a `marker`, `mug` (held by its handle, with steam), `paper` or `clipboard`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
+a `marker`, `mug` (held by its handle, with steam), `teacup` (a cup and saucer with a tea-bag tag), `paper`, `clipboard`, `notebook`, `flask` or `magnifier`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
 `label`'s `x` is its centre; an `arrow` is drawn from `x`, `y` to `x2`, `y2`; a `board` shrinks its card text
 in a narrow panel (to about 9 units); a solid `axis` bar can cover its tick labels; `year` in `meta.source`
 is an integer.
@@ -52,7 +52,7 @@ stays `25.0`).
 | `board` | `cards`: each `label`, `covered` (a hatched, hidden card); `title`; labels shrink to fit |
 | `slide`, `paper`, `sign`, `box`, `label`, `picture` | `label` or `title`; `picture` takes a nested `staging`; `label`'s `x` is its centre and `size` is small, normal or large |
 | `arrow` | from `x`, `y` to `x2`, `y2` |
-| `desk`, `ship`, `bowl`, `bottle`, `jar`, `flash`, `cups`, `phone`, `wall` | objects; `label` where one is shown; `cups` takes `items` with a `value` (how full) |
+| `desk`, `ship`, `bowl`, `bottle`, `jar`, `flash`, `cups`, `phone`, `wall`, `laptop`, `microscope`, `teapot`, `net` (a plankton net), `thermometer` | objects; `label` where one is shown; `cups` takes `items` with a `value` (how full). `laptop`, `microscope`, `teapot`, `net` and `thermometer` keep their proportions inside the box you give them |
 
 **How wide a panel gets.** A panel's `weight` is a preference: `small`, `standard` and `wide` are packed into rows by the
 layout, so a `wide` chart can still land at a third of a row. Only `full` always spans the page. Give a crowded chart

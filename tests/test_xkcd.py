@@ -104,6 +104,7 @@ def _demo_doc():
         "ship": {}, "bottle": {"label": "b"}, "jar": {"label": "j"}, "flash": {"label": "f"},
         "board": {"cards": [{"label": "a"}, {"label": "b", "covered": True}]},
         "bars": {"bars": [{"label": "a", "value": 1}], "show_values": False},
+        "laptop": {"label": "l"}, "microscope": {"label": "m"}, "teapot": {"label": "t"}, "net": {"label": "n"}, "thermometer": {"label": "th"},
     }
     props = [{"kind": k, "x": 0.1, "y": 0.1, "w": 0.5, "h": 0.5, **spec} for k, spec in kinds.items()]
     panels = [{"id": f"B1.{i}", "scene": "s", "weight": "wide", "staging": {"props": [p], "characters": [
@@ -118,7 +119,7 @@ def test_every_prop_kind_draws_to_valid_svg():
     svgs, _ = R.render_pages(_demo_doc())
     for svg in svgs:
         ET.fromstring(svg)
-    assert len(re.findall(r'<g id="panel-', "".join(svgs))) == 13
+    assert len(re.findall(r'<g id="panel-', "".join(svgs))) == 18
 
 
 def test_a_diatom_draws_for_every_pose_and_both_directions():
@@ -322,3 +323,12 @@ def test_the_last_page_links_to_the_paper_and_its_licence(doc):
 def test_bar_labels_print_the_number_as_written():
     svg = R._bars(R.Pen("n"), 0, 0, 400, 300, {"unit": "%", "bars": [{"label": "a", "value": 25.0}, {"label": "b", "value": 14}, {"label": "c", "value": 11.3}]}, 16)
     assert ">25.0%<" in svg and ">14%<" in svg and ">11.3%<" in svg
+
+
+def test_every_held_object_draws_in_every_pose():
+    pen = R.Pen("held")
+    for held in ("marker", "mug", "paper", "clipboard", "teacup", "flask", "magnifier", "notebook"):
+        for pose in ("stand", "hold", "think", "sip", "point", "shrug", "up"):
+            svg, _ = R.figure(pen, 100, 300, 1.0, pose, "neutral", "right", held, {})
+            ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+            assert svg.count("<path") > 8  # the figure and something in its hand

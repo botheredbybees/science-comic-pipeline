@@ -54,6 +54,28 @@ def _holding(pen, holding, hx, hy, s, w):
                              (hx + x * s, top - 18 * s)], w * 0.5) for x in (8, 12.5, 17)]
         return (pen.stroke([(hx + 4 * s, hy - 8 * s), (hx - 3 * s, hy - 7 * s), (hx - 3 * s, hy - 1 * s), (hx + 4 * s, hy)], w * 0.8)
                 + pen.rect(hx + 4 * s, top, 17 * s, 19 * s, w * 0.8, fill=PAPER, over=0) + "".join(steam))
+    if holding == "teacup":  # a small cup held by its handle, a saucer under it, the tea bag's tag over the rim, and steam
+        top = hy - 8 * s
+        tag = [pen.stroke([(hx + 14 * s, top), (hx + 18 * s, top + 5 * s), (hx + 18.5 * s, top + 9 * s)], w * 0.4),
+               pen.rect(hx + 16.5 * s, top + 9 * s, 4 * s, 4 * s, w * 0.4, fill=PAPER, over=0)]
+        steam = [pen.stroke([(hx + x * s, top - 3 * s), (hx + (x - 2) * s, top - 7 * s), (hx + (x + 2) * s, top - 11 * s), (hx + x * s, top - 15 * s)], w * 0.5)
+                 for x in (8, 12)]
+        return (pen.stroke([(hx + 4 * s, hy - 5 * s), (hx - 2 * s, hy - 4 * s), (hx - 2 * s, hy + 1 * s), (hx + 4 * s, hy + 1.5 * s)], w * 0.7)
+                + pen.stroke([(hx + 3 * s, top), (hx + 5 * s, hy + 6 * s), (hx + 17 * s, hy + 6 * s), (hx + 19 * s, top)], w * 0.8, closed=True, fill=PAPER)
+                + pen.line((hx + 1 * s, hy + 8 * s), (hx + 21 * s, hy + 8 * s), w * 0.8, amp=0.2) + "".join(tag) + "".join(steam))
+    if holding == "flask":  # a conical flask with a stopper and some liquid
+        return (pen.stroke([(hx + 4 * s, hy - 19 * s), (hx + 4 * s, hy - 8 * s), (hx - 3 * s, hy + 6 * s), (hx + 15 * s, hy + 6 * s),
+                            (hx + 8 * s, hy - 8 * s), (hx + 8 * s, hy - 19 * s)], w * 0.8, closed=True, fill=PAPER)
+                + pen.stroke([(hx - 1 * s, hy + 1 * s), (hx + 12 * s, hy + 1 * s), (hx + 14 * s, hy + 6 * s), (hx - 3 * s, hy + 6 * s)], 0.5, closed=True, fill=SOFT, color=SOFT)
+                + pen.line((hx + 3 * s, hy - 19 * s), (hx + 9 * s, hy - 19 * s), w * 0.9, amp=0.1))
+    if holding == "magnifier":  # a hand lens: a ring on a handle
+        return (pen.line((hx - 1 * s, hy + 3 * s), (hx + 6 * s, hy - 7 * s), w * 1.1, amp=0.2)
+                + pen.ellipse(hx + 11 * s, hy - 13 * s, 8 * s, 8 * s, w * 0.9, fill=PAPER, jit=0.01)
+                + pen.stroke([(hx + 7 * s, hy - 15 * s), (hx + 9 * s, hy - 18 * s)], w * 0.4, color=MID))
+    if holding == "notebook":  # a closed notebook with a band round it
+        return (pen.rect(hx - 2 * s, hy - 16 * s, 15 * s, 21 * s, w * 0.8, fill=PAPER, over=0)
+                + pen.line((hx + 1.5 * s, hy - 16 * s), (hx + 1.5 * s, hy + 5 * s), w * 0.6, amp=0.1)
+                + pen.line((hx + 8 * s, hy - 16 * s), (hx + 8 * s, hy + 5 * s), w * 0.5, amp=0.1, color=MID))
     if holding == "clipboard":
         return (pen.rect(hx - 3 * s, hy - 17 * s, 17 * s, 23 * s, w * 0.8, fill=PAPER, over=0)
                 + pen.rect(hx + 1.5 * s, hy - 19.5 * s, 8 * s, 4 * s, w * 0.7, fill=INK, over=0)

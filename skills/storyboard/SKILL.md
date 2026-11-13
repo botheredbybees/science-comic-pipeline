@@ -82,7 +82,8 @@ examples/<slug>/
 - **The `scene` text is the panel's alt text: describe only what is staged.** The validator warns when
   a scene names a prop (ship, bowl, bottle, jar, desk, phone, slide, pie, board) that is not staged, but it cannot see
   anything else, so a scene that mentions a calendar or an ocean that is not drawn is a defect you must catch. A character holds
-  only a `marker`, `mug`, `paper` or `clipboard`; stage anything else as a prop.
+  only a `marker`, `mug`, `teacup`, `paper`, `clipboard`, `notebook`, `flask` or `magnifier` (vary them: one object for a
+  whole comic goes stale); the room's props are in `renderers/README.md`; stage anything else as a prop.
 - **Shortening a long claim.** A caption is 12 to 35 words, and some claims are longer. Cut examples, asides and
   the second of two parallel facts, and keep, whole, anything that carries a hedge ("may", "suggests"), a number with
   its unit, or a scope ("in this region"). If the hedge sits in the middle of the sentence, keep the middle: split the
