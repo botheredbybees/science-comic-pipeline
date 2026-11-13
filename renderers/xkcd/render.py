@@ -41,7 +41,7 @@ ARMS = {  # (back arm, front arm): points relative to the shoulder, for a figure
     "think": ([(-13, 16), (-17, 38)], [(18, 14), (6, -18)]),
     "shrug": ([(-22, 10), (-26, -6)], [(22, 10), (26, -6)]),
     "up": ([(-18, -10), (-24, -34)], [(18, -10), (24, -34)]),
-    "sip": ([(-13, 16), (-17, 38)], [(18, 6), (8, -22)]),
+    "sip": ([(-13, 16), (-17, 38)], [(20, 8), (13, -4)]),  # the mug stops just in front of the mouth, clear of the face
 }
 
 
