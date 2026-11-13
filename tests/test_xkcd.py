@@ -277,3 +277,13 @@ def test_the_colophon_names_the_licence_deed():
     assert R._licence_url("CC BY 4.0") == "https://creativecommons.org/licenses/by/4.0/"
     assert R._licence_url("CC BY-SA 4.0") == "https://creativecommons.org/licenses/by-sa/4.0/"
     assert R._licence_url("All rights reserved") == ""
+
+
+def test_every_hair_style_draws_over_the_head_and_raises_the_head_point():
+    pen = R.Pen("hair")
+    _, bald = R.figure(pen, 100, 300, 1.0, "stand", "smile", "right", None, {})
+    for hair in ("bob", "long", "ponytail", "bun", "spiky", "beanie"):
+        for facing in ("left", "right"):
+            svg, head = R.figure(pen, 100, 300, 1.0, "stand", "smile", facing, None, {"hair": hair, "glasses": True, "lanyard": True})
+            ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+            assert head[1] <= bald[1]

@@ -116,6 +116,49 @@ def _diatom(pen, cx, base, s, pose, face, facing, holding, app):
     return _flip("".join(o), cx, facing), (cx, top - 4 * s)
 
 
+# Hair and hats are one big simple shape laid over the head, as in a newspaper-strip stick figure: solid black
+# hair (the face is what is left uncovered), or a plain white hat that overhangs the head. Points are in head
+# radii from the head's centre, for a figure facing right, so the back of the head is to the left.
+HAIR_CAP = {  # the outline of hair that covers the top and back of the head, ending in a fringe across the forehead
+    "bob": [(0.95, -0.28), (0.62, -0.98), (0.0, -1.2), (-0.85, -0.98), (-1.24, -0.2), (-1.22, 0.55), (-0.85, 0.8),
+            (-0.6, 0.3), (-0.5, -0.2), (0.0, -0.5), (0.5, -0.45)],
+    "long": [(0.95, -0.28), (0.62, -0.98), (0.0, -1.2), (-0.85, -0.98), (-1.28, -0.1), (-1.3, 1.1), (-1.05, 1.9),
+             (-0.5, 1.95), (-0.55, 0.6), (-0.5, -0.2), (0.0, -0.5), (0.5, -0.45)],
+    "short": [(0.92, -0.25), (0.6, -0.97), (0.0, -1.16), (-0.85, -0.92), (-1.14, -0.2), (-0.92, 0.2), (-0.5, -0.15),
+              (0.0, -0.45), (0.5, -0.4)],
+}
+PONYTAIL = [(-1.0, -0.5), (-1.7, -0.45), (-2.15, 0.15), (-2.1, 0.95), (-1.8, 1.25), (-1.65, 0.55), (-1.15, 0.05)]
+SPIKES = [(-1.1, -0.1), (-1.4, -0.65), (-0.95, -0.8), (-0.95, -1.3), (-0.4, -1.0), (0.0, -1.5), (0.35, -1.0), (0.9, -1.3),
+          (0.92, -0.78), (1.22, -0.62), (0.9, -0.3), (0.45, -0.6), (0.0, -0.4), (-0.45, -0.6), (-0.85, -0.2)]
+BEANIE = [(-1.2, -0.42), (-1.18, -1.05), (-0.62, -1.62), (0.0, -1.76), (0.62, -1.62), (1.18, -1.05), (1.22, -0.42),
+          (0.6, -0.5), (0.0, -0.54), (-0.6, -0.5)]
+
+
+def _hair(pen, kind, cx, cy, R, w):
+    """The hair or hat for a head of radius R, drawn over the head circle and under the face."""
+    def P(pts):
+        return [(cx + x * R, cy + y * R) for x, y in pts]
+    if kind in ("bob", "long"):
+        return [pen.stroke(P(HAIR_CAP[kind]), w, closed=True, fill=INK)]
+    if kind in ("ponytail", "bun"):
+        o = [pen.stroke(P(HAIR_CAP["short"]), w, closed=True, fill=INK)]
+        if kind == "ponytail":
+            o.append(pen.stroke(P(PONYTAIL), w, closed=True, fill=INK))
+        else:
+            o.append(f'<circle cx="{cx - 0.55 * R:.1f}" cy="{cy - 1.3 * R:.1f}" r="{0.42 * R:.1f}" fill="{INK}" stroke="{INK}" stroke-width="{w:.1f}"/>')
+        return o
+    if kind == "spiky":
+        return [pen.poly(P(SPIKES), w, fill=INK, jit=0.4)]
+    if kind == "beanie":
+        return [pen.stroke(P(BEANIE), w, closed=True, fill=PAPER),
+                pen.line((cx - 1.2 * R, cy - 0.78 * R), (cx + 1.2 * R, cy - 0.78 * R), w * 0.8, amp=0.3),
+                f'<circle cx="{cx + 0.05 * R:.1f}" cy="{cy - 1.9 * R:.1f}" r="{0.3 * R:.1f}" fill="{INK}"/>']
+    return []
+
+
+HAIR_TOP = {"bob": 1.2, "long": 1.2, "ponytail": 1.2, "bun": 1.75, "spiky": 1.55, "beanie": 1.85}  # head radii above the head's centre
+
+
 def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
     """Draw one figure (a stick figure, or a diatom if appearance.body is 'diatom'); return (svg, head point)."""
     app = app or {}
@@ -127,34 +170,21 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     cy, neck, hip = base - LEG - BODY - R, base - LEG - BODY, base - LEG
     sh = neck + 9 * s
     w = clamp(2.3 * s, 1.5, 3.0)
-    o = [pen.line((cx, hip), (cx - 13 * s, base), w), pen.line((cx, hip), (cx + 13 * s, base), w),
-         pen.line((cx, neck), (cx, hip), w)]
+    o = [pen.line((cx, hip), (cx - 13 * s, base), w, amp=0.35), pen.line((cx, hip), (cx + 13 * s, base), w, amp=0.35),
+         pen.line((cx, neck), (cx, hip), w, amp=0.35)]
     back, front = ARMS.get(pose, ARMS["stand"])
-    for arm in (back, front):
-        o.append(pen.stroke([(cx, sh)] + [(cx + dx * s, sh + dy * s) for dx, dy in arm], w))
+    for arm in (back, front):  # an upper arm and a forearm: two straight strokes meeting at the elbow
+        pts = [(cx, sh)] + [(cx + dx * s, sh + dy * s) for dx, dy in arm]
+        o += [pen.line(a, b, w, amp=0.35) for a, b in zip(pts, pts[1:])]
     o.append(_holding(pen, holding, cx + front[-1][0] * s, sh + front[-1][1] * s, s, w))
-    if app.get("lanyard"):
-        o.append(pen.stroke([(cx - 6 * s, neck + 1 * s), (cx, neck + 22 * s), (cx + 6 * s, neck + 1 * s)], w * 0.6))
-        o.append(pen.rect(cx - 4.5 * s, neck + 22 * s, 9 * s, 10 * s, w * 0.6, fill=PAPER, over=0))
-    o.append(pen.ellipse(cx, cy, R, R * 1.02, w, fill=PAPER))
+    if app.get("lanyard"):  # a name badge on a short cord, hung from the neck
+        o.append(pen.line((cx, neck + 1 * s), (cx, neck + 15 * s), w * 0.5, amp=0.1))
+        o.append(pen.rect(cx - 5 * s, neck + 15 * s, 10 * s, 12 * s, w * 0.7, fill=PAPER, over=0))
+    o.append(pen.ellipse(cx, cy, R, R, w, fill=PAPER, jit=0.012))
     hair = app.get("hair", "none")
-    if hair == "ponytail":
-        o.append(pen.stroke([(cx - 11 * s, cy - 9 * s), (cx - 21 * s, cy - 2 * s), (cx - 24 * s, cy + 11 * s)], w))
-        o.append(pen.line((cx - 5 * s, cy - R), (cx - 9 * s, cy - R - 7 * s), w * 0.8))
-        o.append(pen.line((cx + 2 * s, cy - R), (cx + 1 * s, cy - R - 8 * s), w * 0.8))
-    elif hair == "bun":
-        o.append(pen.ellipse(cx - 7 * s, cy - R - 5 * s, 6 * s, 6 * s, w))
-    elif hair == "beanie":  # a woolly hat sitting above the eyes: puffy crown, ribbed cuff, solid pompom
-        o.append(pen.stroke([(cx - R * 1.06, cy - 11.5 * s), (cx - R * 1.0, cy - R * 1.2), (cx, cy - R * 1.55), (cx + R * 1.0, cy - R * 1.2), (cx + R * 1.06, cy - 11.5 * s)], w, fill=PAPER))
-        o.append(pen.line((cx - R * 1.08, cy - 11.5 * s), (cx + R * 1.08, cy - 11.5 * s), w))
-        o.append(pen.line((cx - R * 1.04, cy - 7.5 * s), (cx + R * 1.04, cy - 7.5 * s), w))
-        o += [pen.line((cx + dx * s, cy - 11 * s), (cx + dx * s, cy - 8 * s), w * 0.6, amp=0.1) for dx in range(-12, 13, 4)]
-        o.append(f'<circle cx="{cx:.1f}" cy="{cy - R * 1.55 - 4.6 * s:.1f}" r="{4.6 * s:.1f}" fill="{INK}"/>')
-    elif hair == "spiky":
-        for dx in (-7, 0, 7):
-            o.append(pen.line((cx + dx * s, cy - R + 1 * s), (cx + dx * 1.3 * s, cy - R - 8 * s), w))
+    o += _hair(pen, hair, cx, cy, R, w)
     o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
-    top = cy - R - (17 * s if hair == "beanie" else 4 * s)
+    top = cy - R * HAIR_TOP.get(hair, 1.0) - 4 * s
     return _flip("".join(o), cx, facing), (cx, top)
 
 

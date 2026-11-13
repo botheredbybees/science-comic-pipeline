@@ -46,6 +46,13 @@ class Pen:
         return (f'<path d="{smooth(pts, closed)}" fill="{fill}" stroke="{color}" stroke-width="{w:.1f}" '
                 f'stroke-linecap="round" stroke-linejoin="round"{extra}/>')
 
+    def poly(self, pts, w=2.4, fill="none", color=INK, jit=0.0):
+        """A closed shape with straight edges and sharp corners (spiky hair)."""
+        pts = [(x + self.n(jit), y + self.n(jit)) for x, y in pts]
+        d = "M" + " L".join(f"{x:.1f} {y:.1f}" for x, y in pts) + "Z"
+        return (f'<path d="{d}" fill="{fill}" stroke="{color}" stroke-width="{w:.1f}" stroke-linecap="round" '
+                f'stroke-linejoin="round"/>')
+
     def line(self, a, b, w=2.4, amp=0.9, **kw):
         (x1, y1), (x2, y2) = a, b
         length = math.hypot(x2 - x1, y2 - y1) or 1
@@ -69,11 +76,11 @@ class Pen:
                 self.line((x + w + o(), y + h), (x - o(), y + h), sw), self.line((x, y + h + o()), (x, y - o()), sw)]
         return "".join(out)
 
-    def ellipse(self, cx, cy, rx, ry, sw=2.4, fill="none"):
+    def ellipse(self, cx, cy, rx, ry, sw=2.4, fill="none", jit=0.03):
         k = 12
         a0 = self.r.uniform(0, math.tau)
-        pts = [(cx + rx * (1 + self.n(0.03)) * math.cos(a0 + math.tau * i / k),
-                cy + ry * (1 + self.n(0.03)) * math.sin(a0 + math.tau * i / k)) for i in range(k)]
+        pts = [(cx + rx * (1 + self.n(jit)) * math.cos(a0 + math.tau * i / k),
+                cy + ry * (1 + self.n(jit)) * math.sin(a0 + math.tau * i / k)) for i in range(k)]
         return self.stroke(pts, sw, closed=True, fill=fill)
 
     def arrow(self, a, b, w=2.4, head=9):
