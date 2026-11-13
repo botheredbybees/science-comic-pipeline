@@ -21,7 +21,7 @@ props appear (`props`: objects `board`, `slide`, `paper`, `phone`, `bowl`, `bott
 and diagrams `bars`, `plot`, `axis`, `pie`, `flow`, `steps`, `stack`). Positions are fractions of the
 panel's scene area. In the pipeline the agent writes the staging as the "artist" step. Numbers
 in a chart or label need a claim, exactly as dialogue does. A panel without staging falls back to
-its scene text. Cast members may carry `appearance` hints (`body`: stick, diatom, krill, penguin or whale, `hair`, `glasses`, `lanyard`). `hair` is `none`, `bob`, `long`, `ponytail`, `bun`, `spiky` or `beanie`: solid black hair laid over the head (the face is what it leaves uncovered), or a plain white hat that overhangs the head, each one big simple shape with no detail, as in a newspaper-strip stick figure. `hair_tone: light` draws the same shape as an outline with no fill (blond). A `lanyard` is a name badge on a short cord, and `coat: true` puts a lab coat on the figure (an outline round the torso with a V collar and a pocket). The animal bodies are drawn in `renderers/xkcd/animals.py`; a krill is small, so give it a larger `scale` in the staging (about 1.3 to 1.5), and a whale a smaller one (about 0.4 to 0.65).
+its scene text. Cast members may carry `appearance` hints (`body`: stick, diatom, krill, penguin or whale, `hair`, `glasses`, `coat`). `hair` is `none`, `bob`, `long`, `ponytail`, `bun`, `spiky` or `beanie`: solid black hair laid over the head (the face is what it leaves uncovered), or a plain white hat that overhangs the head, each one big simple shape with no detail, as in a newspaper-strip stick figure. `hair_tone: light` draws the same shape as an outline with no fill, and `hair_tone: strands` draws it as a handful of curved strokes combed back from a parting (both read as blond; neither suits `spiky`, which is always solid). `coat: true` puts a lab coat on the figure (an outline round the torso with a V collar and a pocket). The animal bodies are drawn in `renderers/xkcd/animals.py`; a krill is small, so give it a larger `scale` in the staging (about 1.3 to 1.5), and a whale a smaller one (about 0.4 to 0.65).
 On an `axis`, `row` stacks crowded labels at different heights. A `bars` prop draws its `title` above the chart; its
 bars stand on a zero line, and a negative value hangs below it (a signed index such as Ivlev's: set `min: -1`, `max: 1`).
 Each chart is scaled to its own largest bar unless `max` is given, so bar heights are not comparable between panels;
@@ -29,7 +29,7 @@ say so in the caption or give them the same `max`. Axis tick numbers (and a `min
 for the validator: cite the claim that defines the scale.
 
 Things found by using the vocabulary (check the render when you stage these): a character `holding` can only be
-a `marker`, `mug` or `paper`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
+a `marker`, `mug` (held by its handle, with steam), `paper` or `clipboard`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
 `label`'s `x` is its centre; an `arrow` is drawn from `x`, `y` to `x2`, `y2`; a `board` shrinks its card text
 in a narrow panel (to about 9 units); a solid `axis` bar can cover its tick labels; `year` in `meta.source`
 is an integer.

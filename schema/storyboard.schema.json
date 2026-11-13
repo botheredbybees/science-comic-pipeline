@@ -150,9 +150,6 @@
               "glasses": {
                 "type": "boolean"
               },
-              "lanyard": {
-                "type": "boolean"
-              },
               "coat": {
                 "type": "boolean",
                 "description": "a lab coat over the body"
@@ -160,9 +157,10 @@
               "hair_tone": {
                 "enum": [
                   "dark",
-                  "light"
+                  "light",
+                  "strands"
                 ],
-                "description": "dark hair is solid black; light (blond) hair is an outline with no fill"
+                "description": "dark hair is solid black; light is the same shape as an outline with no fill; strands is a few curved strokes laid over the head (not for spiky hair)"
               },
               "body": {
                 "enum": [
@@ -466,7 +464,8 @@
                 "enum": [
                   "marker",
                   "mug",
-                  "paper"
+                  "paper",
+                  "clipboard"
                 ]
               },
               "scale": {

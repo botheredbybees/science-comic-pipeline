@@ -46,9 +46,17 @@ ARMS = {  # (back arm, front arm): points relative to the shoulder, for a figure
 def _holding(pen, holding, hx, hy, s, w):
     if holding == "marker":
         return pen.line((hx - 2 * s, hy + 3 * s), (hx + 13 * s, hy - 9 * s), 4.2 * s)
-    if holding == "mug":
-        return (pen.rect(hx - 5 * s, hy - 13 * s, 18 * s, 20 * s, w * 0.8, fill=PAPER, over=0)
-                + pen.stroke([(hx + 13 * s, hy - 9 * s), (hx + 20 * s, hy - 5 * s), (hx + 13 * s, hy + 1 * s)], w * 0.8))
+    if holding == "mug":  # held by the handle, which is the hand's end of the mug, with steam rising off the coffee
+        top = hy - 12 * s
+        steam = [pen.stroke([(hx + x * s, top - 3 * s), (hx + (x - 2.5) * s, top - 8 * s), (hx + (x + 2.5) * s, top - 13 * s),
+                             (hx + x * s, top - 18 * s)], w * 0.5) for x in (8, 12.5, 17)]
+        return (pen.stroke([(hx + 4 * s, hy - 8 * s), (hx - 3 * s, hy - 7 * s), (hx - 3 * s, hy - 1 * s), (hx + 4 * s, hy)], w * 0.8)
+                + pen.rect(hx + 4 * s, top, 17 * s, 19 * s, w * 0.8, fill=PAPER, over=0) + "".join(steam))
+    if holding == "clipboard":
+        return (pen.rect(hx - 3 * s, hy - 17 * s, 17 * s, 23 * s, w * 0.8, fill=PAPER, over=0)
+                + pen.rect(hx + 1.5 * s, hy - 19.5 * s, 8 * s, 4 * s, w * 0.7, fill=INK, over=0)
+                + "".join(pen.line((hx - 0 * s, hy - 11 * s + i * 5 * s), (hx + 11 * s, hy - 11 * s + i * 5 * s), w * 0.45, amp=0.15)
+                          for i in range(3)))
     if holding == "paper":
         return pen.rect(hx - 2 * s, hy - 15 * s, 16 * s, 21 * s, w * 0.8, fill=PAPER, over=0)
     return ""
@@ -134,10 +142,52 @@ BEANIE = [(-1.2, -0.42), (-1.18, -1.05), (-0.62, -1.62), (0.0, -1.76), (0.62, -1
           (0.6, -0.5), (0.0, -0.54), (-0.6, -0.5)]
 
 
+HAIR_OUTER_N = {"bob": 7, "long": 8, "short": 6}  # how many of a cap's points run along its outside (the rest are the fringe)
+
+
+def _strands(pen, cap, cx, cy, R, w, n=11):
+    """Hair as a handful of curved strokes combed from a parting at the front of the crown, back over the head and
+    down to points spaced along the outside of the hair, plus a few across the forehead. A white patch underneath
+    hides the top of the head circle, as the hair does."""
+    full = [(cx + x * R, cy + y * R) for x, y in HAIR_CAP[cap]]
+    outer = full[:HAIR_OUTER_N[cap]]
+    seg = [math.dist(outer[i], outer[i + 1]) for i in range(len(outer) - 1)]
+    total = sum(seg)
+    out = [pen.stroke(full, 0.1, closed=True, fill=PAPER, color=PAPER)]
+    part = (cx + 0.3 * R, cy - 1.14 * R)
+
+    def strand(end, bow):
+        mid = ((part[0] + end[0]) / 2, (part[1] + end[1]) / 2)
+        away = (mid[0] - cx, mid[1] - cy)
+        norm = math.hypot(*away) or 1
+        mid = (mid[0] + away[0] / norm * bow * R, mid[1] + away[1] / norm * bow * R)
+        return pen.stroke([(part[0] + pen.n(0.25), part[1] + pen.n(0.25)), mid, end], w * 0.6)
+
+    for k in range(n):
+        d, i = total * (k + 0.5) / n, 0
+        while d > seg[i]:
+            d -= seg[i]
+            i += 1
+        t = d / seg[i]
+        out.append(strand((outer[i][0] + (outer[i + 1][0] - outer[i][0]) * t, outer[i][1] + (outer[i + 1][1] - outer[i][1]) * t), 0.12))
+    out += [strand(p, 0.05) for p in full[-2:]]  # across the forehead
+    return out
+
+
 def _hair(pen, kind, cx, cy, R, w, tone="dark"):
     """The hair or hat for a head of radius R, drawn over the head circle and under the face.
     Dark hair is solid black; light (blond) hair is the same shape as an outline with a white fill."""
     fill = INK if tone == "dark" else PAPER
+    if tone == "strands" and kind in ("bob", "long", "ponytail", "bun"):
+        o = _strands(pen, "short" if kind in ("ponytail", "bun") else kind, cx, cy, R, w, n=9 if kind == "long" else 8)
+        if kind == "ponytail":  # the tail: three strokes from the nape to the tip
+            o += [pen.stroke([(cx - 1.0 * R, cy - 0.45 * R), (cx - 1.75 * R, cy - 0.2 * R + dy * R), (cx - 1.8 * R + dx * R, cy + 1.2 * R)], w * 0.6)
+                  for dx, dy in ((0, 0), (0.25, 0.25), (-0.2, -0.2))]
+        elif kind == "bun":
+            o.append(f'<circle cx="{cx - 0.55 * R:.1f}" cy="{cy - 1.3 * R:.1f}" r="{0.42 * R:.1f}" fill="{PAPER}" stroke="{INK}" stroke-width="{w * 0.6:.1f}"/>')
+        return o
+    if tone == "strands":
+        tone, fill = "dark", INK  # spiky hair and hats have no strand form
 
     def P(pts):
         return [(cx + x * R, cy + y * R) for x, y in pts]
@@ -189,9 +239,6 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
         pts = [start] + [(cx + dx * s, sh + dy * s) for dx, dy in arm]
         o += [pen.line(a, b, w, amp=0.35) for a, b in zip(pts, pts[1:])]
     o.append(_holding(pen, holding, cx + front[-1][0] * s, sh + front[-1][1] * s, s, w))
-    if app.get("lanyard"):  # a name badge on a short cord, hung from the neck
-        o.append(pen.line((cx, neck + 1 * s), (cx, neck + 15 * s), w * 0.5, amp=0.1))
-        o.append(pen.rect(cx - 5 * s, neck + 15 * s, 10 * s, 12 * s, w * 0.7, fill=PAPER, over=0))
     o.append(pen.ellipse(cx, cy, R, R, w, fill=PAPER, jit=0.012))
     hair = app.get("hair", "none")
     o += _hair(pen, hair, cx, cy, R, w, app.get("hair_tone", "dark"))

@@ -29,8 +29,8 @@ cast:
   - id: sam
     name: "Sam"
     role: "A second-year biology student"
-    look: "Stick figure with a messy ponytail and a lanyard"
-    appearance: { hair: ponytail, lanyard: true }
+    look: "Stick figure with a messy ponytail"
+    appearance: { hair: ponytail }
   - id: dr_okoye
     name: "Dr Okoye"
     role: "A lecturer who has run out of slides"

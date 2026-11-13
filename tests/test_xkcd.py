@@ -284,7 +284,7 @@ def test_every_hair_style_draws_over_the_head_and_raises_the_head_point():
     _, bald = R.figure(pen, 100, 300, 1.0, "stand", "smile", "right", None, {})
     for hair in ("bob", "long", "ponytail", "bun", "spiky", "beanie"):
         for facing in ("left", "right"):
-            svg, head = R.figure(pen, 100, 300, 1.0, "stand", "smile", facing, None, {"hair": hair, "glasses": True, "lanyard": True})
+            svg, head = R.figure(pen, 100, 300, 1.0, "stand", "smile", facing, None, {"hair": hair, "glasses": True})
             ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
             assert head[1] <= bald[1]
 
@@ -298,3 +298,14 @@ def test_light_hair_is_an_outline_and_a_lab_coat_draws():
         ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
     assert dark.count(f'fill="{R.INK}"') > light.count(f'fill="{R.INK}"')  # light hair has no black fill
     assert len(light) > len(plain)  # the coat adds strokes
+
+
+def test_strand_hair_clipboard_and_a_mug_with_steam_draw():
+    pen = R.Pen("props")
+    for hair in ("bob", "long", "ponytail", "bun", "spiky"):
+        svg, _ = R.figure(pen, 100, 300, 1.0, "hold", "smile", "right", "mug", {"hair": hair, "hair_tone": "strands", "coat": True})
+        ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+    mug = R._holding(pen, "mug", 100, 100, 1.0, 2.3)
+    clip = R._holding(pen, "clipboard", 100, 100, 1.0, 2.3)
+    assert mug.count("<path") >= 5  # the handle, the cup (4 edges) and three wisps of steam
+    assert clip.count("<path") >= 8
