@@ -9,7 +9,7 @@ PDF extraction matches however the lines broke.
 The source is either a directory of per-page text files (p001.txt, p002.txt, ...) or one text
 file whose pages are separated by form feeds (what `pdftotext` writes).
 
-    python scripts/check_quotes.py storyboard.yaml --pages-dir private/labstaf/source/pages
+    python scripts/check_quotes.py storyboard.yaml --pages-dir sources/<slug>/pages
     python scripts/check_quotes.py storyboard.yaml --text source.txt
 
 Errors: a verified claim with no quote or page, or whose quote is not on its page.
