@@ -66,9 +66,9 @@ def krill(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdin
         return (cx - (x - 35) * u, base + y * u)
 
     o = []
-    for dy, rot in ((-9, -0.55), (0, 0.0), (9, 0.55)):  # the tail fan, three leaf-shaped lobes
-        px, py = P(80, -26 + dy * 0.9)
-        o.append(_blob(pen, px, py, 11 * u, 4.6 * u, rot if facing else rot, w, K["shell"], K["line"]))
+    for dy, rot in ((-9, 0.5), (0, 0.0), (9, -0.5)):  # the tail fan, three leaf-shaped lobes
+        px, py = P(82, -26 + dy * 0.9)
+        o.append(_blob(pen, px, py, 11 * u, 4.6 * u, rot, w, K["shell"], K["line"]))
     for x, r in ((67, 7.5), (58.5, 9), (49, 10.5), (38, 12)):  # the abdomen, tail end first so the nearer ones overlap it
         px, py = P(x, -26 + (38 - x) * 0.05)
         o.append(_blob(pen, px, py, r * u, r * u * 1.2, 0, w, K["abdomen"], K["line"]))
