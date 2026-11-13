@@ -49,7 +49,7 @@ def test_the_page_fit_never_uses_more_pages_than_the_tallest_setting(doc):
 
 def test_attribution_is_printed_on_the_last_page(doc):
     last = R.render_pages(doc)[0][-1]
-    assert "Licence: CC BY 4.0" in last and "did not write or endorse" in last
+    assert "Licence: CC BY 4.0" in last and "endorse it" in last
 
 
 def test_wrapped_lines_fit_their_width():
@@ -316,4 +316,4 @@ def test_the_last_page_links_to_the_paper_and_its_licence(doc):
     last = svgs[-1]
     ET.fromstring(last)
     assert 'href="https://doi.org/' in last or 'href="http' in last
-    assert last.count("<a ") >= 1
+    assert last.count("<a ") >= 2 and R.PIPELINE_URL in last and "using science-comic-pipeline" in last

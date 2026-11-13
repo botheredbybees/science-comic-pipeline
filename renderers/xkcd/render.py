@@ -28,6 +28,7 @@ from animals import ANIMALS  # noqa: E402
 
 PAGE_W, PAGE_H, MARGIN, GUTTER = 1000, 1414, 40, 16  # A4 at 1000 units wide
 FOOTER_H = 30
+PIPELINE_URL = "https://github.com/botheredbybees/science-comic-pipeline"
 FIT_FACTORS = (0.55, 0.5, 0.45, 0.4, 0.36)  # scene height as a fraction of panel width, tallest first
 
 
@@ -565,12 +566,14 @@ def build_items(doc, cast, k=0.55):
     note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
             + (f', doi {src["doi"]}' if src.get("doi") else "")
             + f'. Licence: {src["licence"]}. '
-            "Condensed into a comic with invented characters and scenes; the authors did not write or endorse it.")
+            "Condensed into a comic with invented characters and scenes using science-comic-pipeline; "
+            "the authors did not write or endorse it.")
     colo = wrap(note, usable, 15)
     paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
     links = [(f"Read the original paper: {paper}", paper)] if paper else []
     if lic_url:
         links.append((f"Licence terms: {lic_url}", lic_url))
+    links.append((f"The pipeline that made this comic: {PIPELINE_URL}", PIPELINE_URL))
 
     def draw_colophon(y, c=colo, ls=links):
         out = [text(MARGIN, y + 6, c, 15, fill=MID)]
