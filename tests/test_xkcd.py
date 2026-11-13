@@ -389,3 +389,34 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
     assert "<svg" in "".join(svgs)
     from validate_storyboard import validate
     assert validate(d)[0] == []  # the schema accepts the body name
+
+
+SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn"]
+
+
+@pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
+def test_every_schematic_prop_draws_inside_its_box_in_a_wide_and_a_tall_box(kind):
+    import props as P
+    spec = {"kind": kind, "label": "label", "items": [{"label": "a"}, {"label": "b"}, {"label": "c"}]}
+    for w, h in ((300, 100), (100, 300), (200, 200)):
+        svg = P.extra_prop(R.Pen(1), 50, 50, w, h, spec, 16)
+        assert "<" in svg
+        ys = [float(v) for v in re.findall(r'(?<![a-z])(?:cy|y|y1|y2)="(-?[\d.]+)"', svg)]
+        assert not ys or (min(ys) >= 50 - 25 and max(ys) <= 50 + h + 25), (kind, w, h, min(ys), max(ys))
+
+
+@pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
+def test_a_schematic_prop_is_accepted_by_the_schema_and_renders_in_a_panel(doc, kind):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0].setdefault("staging", {}).setdefault("props", []).append({"kind": kind, "x": 0.6, "y": 0.2, "w": 0.3, "h": 0.5})
+    assert validate(d)[0] == []
+    assert "<svg" in "".join(R.render_pages(d)[0])
+
+
+def test_the_validator_knows_the_new_objects_when_a_scene_names_them(doc):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0]["scene"] = "A sequencer stands next to a database."
+    _, warnings = validate(d)
+    assert any("mentions a sequencer" in w for w in warnings) and any("mentions a database" in w for w in warnings)

@@ -548,7 +548,18 @@
                   "microscope",
                   "teapot",
                   "net",
-                  "thermometer"
+                  "thermometer",
+                  "sequence",
+                  "tree",
+                  "clusters",
+                  "network",
+                  "database",
+                  "filter",
+                  "tubes",
+                  "sequencer",
+                  "cpr",
+                  "echosounder",
+                  "venn"
                 ]
               },
               "x": {

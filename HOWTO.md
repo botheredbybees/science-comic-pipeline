@@ -44,6 +44,15 @@ python3 -m venv .venv
 The validator prints two warnings (jokes still waiting for a human; that is intended), the scan prints
 `no defects found`, and `output/smoke.pdf` has 9 A4 pages. If any step fails, see section 6.
 
+### Choosing a paper from a folder of PDFs
+
+If you have a folder of papers and want to know which could be a public comic, run
+`.venv/bin/python scripts/triage_papers.py /path/to/papers -o private/triage/<name>` (needs `pdftotext`). It reads each
+PDF's DOI, asks Crossref and Unpaywall about the licence (only the DOI leaves your machine), and writes `papers.csv`
+(each paper marked `usable`, `check`, `private-only` or `no-doi`) and `topics.csv` (which equipment, collection methods and
+analyses the papers mention most). Treat the licence as a lead: confirm it from the article's own text before a public
+comic (`skills/source-to-claims`). A `private-only` paper can still be a private reading aid.
+
 ## 3. Point your AI environment at the repo
 
 The pipeline is a set of plain Markdown instructions, the five files in `skills/`, plus the scripts they call. Nothing is

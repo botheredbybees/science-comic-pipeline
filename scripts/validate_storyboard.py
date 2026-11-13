@@ -85,7 +85,8 @@ def _staging_texts(staging):
 # describes something the reader cannot see.
 SCENE_OBJECTS = {"ship": "ship", "bowl": "bowl", "bottle": "bottle", "jar": "jar", "desk": "desk", "phone": "phone",
                  "slide": "slide", "pie": "pie", "board": "board", "teapot": "teapot", "laptop": "laptop",
-                 "microscope": "microscope", "thermometer": "thermometer"}
+                 "microscope": "microscope", "thermometer": "thermometer", "sequencer": "sequencer",
+                 "database": "database", "echosounder": "echosounder"}
 # Objects a character holds rather than a prop; the scene may name one only if someone in the staging holds it.
 SCENE_HELD = ("mug", "teacup", "clipboard", "notebook", "flask", "magnifier")
 

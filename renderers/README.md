@@ -77,7 +77,24 @@ stays `25.0`).
 | `board` | `cards`: each `label`, `covered` (a hatched, hidden card); `title`; labels shrink to fit |
 | `slide`, `paper`, `sign`, `box`, `label`, `picture` | `label` or `title`; `picture` takes a nested `staging`; `label`'s `x` is its centre and `size` is small, normal or large |
 | `arrow` | from `x`, `y` to `x2`, `y2` |
+| `sequence` | a strip of DNA letters in four grey tones with one stretch bracketed; `label` names the bracketed stretch (the marker gene) |
+| `tree` | a branching tree (a phylogeny); `items`: each `label` names a tip (3 to 9 tips; none gives six unnamed ones) |
+| `clusters` | groups of dots on two axes (sequence clusters, an ordination); `items`: each `label` names a group (1 to 4); `label` is an axis note |
+| `network` | a small neural network, input on the left; `items`: the first `label` names the input, the last the output; `label` under it |
+| `database` | three stacked discs (a reference library); `label` under it |
+| `filter` | a bottle, a filter housing and a pump (filtering water for eDNA); `label` under it |
+| `tubes` | a rack of sample tubes (extraction, PCR, stored samples); `label` under it |
+| `sequencer` | a benchtop DNA sequencer; `label` under it |
+| `cpr` | a towed plankton recorder, generic; `label` under it |
+| `echosounder` | a hull, a cone of sound with echo arcs and a few dots; `label` under it |
+| `venn` | two overlapping circles; `items`: the two circles' `label`s; `label` names the overlap |
 | `desk`, `ship`, `bowl`, `bottle`, `jar`, `flash`, `cups`, `phone`, `wall`, `laptop`, `microscope`, `teapot`, `net` (a plankton net), `thermometer` | objects; `label` where one is shown; `cups` takes `items` with a `value` (how full). `laptop`, `microscope`, `teapot`, `net` and `thermometer` keep their proportions inside the box you give them |
+
+**The schematic props** (`sequence` to `venn`, above) are generic pictures of common equipment and analysis steps. Their
+shape, count and size mean nothing: the dots in `clusters`, the letters in `sequence`, the nodes in `network`, the tips
+of an unnamed `tree` and the dots in `echosounder` are decoration. So say "schematic" in the label or the caption, put every
+claim in the caption, and never read a number or a result off one. None of them draws a number, so they never need a claim
+by themselves; a `label` you add that contains a number does.
 
 **How wide a panel gets.** A panel's `weight` is a preference: `small`, `standard` and `wide` are packed into rows by the
 layout, so a `wide` chart can still land at a third of a row. Only `full` always spans the page. Give a crowded chart

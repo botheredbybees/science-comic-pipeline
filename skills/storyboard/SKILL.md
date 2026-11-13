@@ -73,12 +73,15 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
 |---|---|
 | an organism, or what it did | its body (`extra` with `body`: krill, salp, copepod, fish, worm, jellyfish, urchin, diatom, penguin, whale), alone or in numbers, with the claim's own labels |
 | a number, a share, a comparison | `bars`, `pie`, `plot`, `axis` or `stack`, with only the claim's numbers |
-| a method or a procedure | the apparatus (`net`, `bottle`, `jar`, `microscope`, `laptop`, `ship`, `thermometer`, `flask`), or a `flow` or `steps` diagram of the stages |
+| a method or a procedure | the apparatus (`net`, `cpr`, `echosounder`, `filter`, `bottle`, `jar`, `tubes`, `sequencer`, `microscope`, `laptop`, `ship`, `thermometer`, `flask`), or a `flow` or `steps` diagram of the stages |
+| an analysis step | `sequence` (a marker gene, a read), `tree` (a phylogeny), `clusters` (sequence clusters, an ordination), `network` (a neural network or embedding), `database` (a reference library), `venn` (what two methods share), or a `flow` of the steps |
 | where, or when | a `ship` with a labelled `arrow`, a `picture`, or a `box` naming the place |
 | a result that two things disagree on | two objects or two bars side by side, each labelled |
 | a caveat or a limit | a `sign` or `box`, or a lone figure with an empty `bars` frame where the data are missing |
 | a definition | the thing, drawn, with a `label` |
 
+- The schematic props (`sequence`, `tree`, `clusters`, `network`, `database`, `filter`, `tubes`, `sequencer`, `cpr`,
+  `echosounder`, `venn`) are generic: say "schematic" and let the caption carry the claim (see `renderers/README.md`).
 - **No more than about a quarter of the panels may be figures only** (the validator warns above that). A figures-only
   panel is fine when it is the point: a pause, a reaction, a joke that needs a face. It is a defect when it is filler.
 - **A claim with nothing to draw does not need its own panel.** Put it as a second caption in a neighbouring panel that
