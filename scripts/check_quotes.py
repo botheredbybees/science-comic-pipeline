@@ -84,7 +84,7 @@ def check(doc, pages, locators=None):
         if m and locators and page in locators:
             sec, n = locators[page]
             parts = [x.strip().lower() for x in sec.split(" / ")]
-            want = [x.strip().lower() for x in m.group(1).split(", ")]
+            want = [x.strip().lower() for x in re.split(r", | / ", m.group(1))]
             if not all(any(p.startswith(w) for p in parts) for w in want) or int(m.group(2)) != n:
                 warnings.append(f"{cid}: locator \"{src['locator']}\" but page {page} is {sec}, paragraph {n}")
         missing = sorted(set(NUMBER.findall(c["text"])) - set(NUMBER.findall(quote)))

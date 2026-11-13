@@ -250,6 +250,11 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
 
 
 # ---------------------------------------------------------------- props
+def _num(v):
+    """A number as the storyboard wrote it: 25.0 stays 25.0 and 25 stays 25, so a label matches its claim."""
+    return str(v)
+
+
 def _bars(pen, x, y, w, h, spec, fs):
     """Vertical bars from a zero line. Values below zero hang down from it (a signed index such as
     Ivlev's); `min` and `max` set the scale, otherwise it fits the data. A `title` is drawn above."""
@@ -261,7 +266,7 @@ def _bars(pen, x, y, w, h, spec, fs):
     pct = "%" if spec.get("unit") == "%" else ""
     show = spec.get("show_values", True)
     fsb = max(11.0, fs * 0.85)
-    ticks = [f"{hi:g}{pct}"] + ([f"{lo:g}{pct}"] if lo < 0 else [])
+    ticks = [f"{_num(hi)}{pct}"] + ([f"{_num(lo)}{pct}"] if lo < 0 else [])
     tick_w = max(len(t) for t in ticks) * fsb * CHAR_W + 8 if show and spec.get("show_max", True) else 0
     ax = x + max(14, tick_w)
     slot = (x + w - ax - 4) / n
@@ -292,7 +297,7 @@ def _bars(pen, x, y, w, h, spec, fs):
         o.append(pen.rect(cx - bw / 2, min(y0, y1), bw, abs(y1 - y0), 2.4, fill=fill, over=1.5))
         if show:
             ly = y1 - fsb * 1.25 if b["value"] >= 0 else y1 + 4
-            o.append(text(cx, ly, [f"{b['value']:g}{pct}"], fsb, anchor="middle"))
+            o.append(text(cx, ly, [f"{_num(b['value'])}{pct}"], fsb, anchor="middle"))
         o.append(text(cx, bottom + 4 + (fsb * 1.3 if lo < 0 else 0), labs[i], fsb, anchor="middle", lh=1.15))
     return "".join(o)
 

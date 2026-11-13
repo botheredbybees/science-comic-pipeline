@@ -110,5 +110,5 @@ match). The comic must not repeat an error you found. Fill `meta.source` (title,
 licence, licence_checked) from `source.json`. (`source.json` stores the year as a string; `meta.source.year` is an
 integer.)
 
-**Done when:** `check_quotes.py` reports 0 errors and 0 warnings, and every claim is either `verified` or
-explicitly `unverified` with a note.
+**Done when:** `check_quotes.py` reports 0 errors and 0 warnings, and every claim is either `verified`, or `abstract_only` / `unverified` with a note saying why (those two draw a validator
+warning if a panel uses them, so a claim you mean to draw should be `verified`).

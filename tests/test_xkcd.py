@@ -317,3 +317,8 @@ def test_the_last_page_links_to_the_paper_and_its_licence(doc):
     ET.fromstring(last)
     assert 'href="https://doi.org/' in last or 'href="http' in last
     assert last.count("<a ") >= 3 and R.PIPELINE_URL in last and "using the " in last
+
+
+def test_bar_labels_print_the_number_as_written():
+    svg = R._bars(R.Pen("n"), 0, 0, 400, 300, {"unit": "%", "bars": [{"label": "a", "value": 25.0}, {"label": "b", "value": 14}, {"label": "c", "value": 11.3}]}, 16)
+    assert ">25.0%<" in svg and ">14%<" in svg and ">11.3%<" in svg

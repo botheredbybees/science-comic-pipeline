@@ -43,15 +43,17 @@ the flag: a joke you are unsure about keeps it, and waits for a human.
 
 ## 4. Check each joke before setting `keeps_claims_intact: true`
 
-Answer in writing (in the note) for each, briefly: a note such as "1 no change; 2 reads as the comic's voice;
-3 organisms; 4 no; 5 yes" is enough, with a sentence only where an answer is not a plain no:
+Answer in writing (in the note) for each, briefly: a note such as "1 yes; 2 yes, the comic's voice;
+3 yes, an organism; 4 yes; 5 yes" is enough, with a sentence only where an answer is not a plain no:
 
-1. Does any number, unit, hedge ("may", "suggests"), scope or direction change? (They must not.)
-2. Could a reader take the joke as something the paper reported? If so, make it unmistakably the comic's
-   voice, or cut it. Say in `CLAIM-CHECK.md` where the comic added its own cross-reference or aside.
-3. Who is the butt of it? Never the authors, the participants or any group of people. Organisms, the
-   weather, instruments and the narrator's own confidence are fair game.
-4. Does it play down a caveat or a limitation? Then it is not a joke the comic can make.
+Each is phrased so that **yes is the safe answer**; one "no" means rewrite or cut:
+
+1. Is every number, unit, hedge ("may", "suggests"), scope and direction exactly as in the claim?
+2. Is it unmistakably the comic's own voice, so no reader could take it for something the paper reported? (Say in
+   `CLAIM-CHECK.md` where the comic added its own cross-reference or aside.)
+3. Is the butt an organism, the weather, an instrument or the narrator's own confidence, and not the authors, the
+   participants or any group of people?
+4. Does it leave every caveat and limitation at full strength?
 5. Would it still read as honest to the authors?
 
 Leave `keeps_claims_intact` false, and the humour block in place, when you are not sure. A person decides;

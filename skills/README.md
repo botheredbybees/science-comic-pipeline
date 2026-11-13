@@ -25,9 +25,9 @@ or caption that makes a claim say more than it does.
 
 These skills were written from what the Lin 2017 and Akam 2026 examples needed, then followed cold by an agent that had
 not seen those examples: first on Strzepek et al. 2022 (a perspective article with little story, 36 panels), then on
-Pauli et al. 2021 (a primary research article with data, 46 panels). Both runs finished a comic that passes the quote
-check, the validator and the scan, and each found real faults in the skills and scripts, which were fixed before the next
-paper. The second run's faults were: figure and table captions glued onto the paragraph before them, no paragraph numbers
-in `page-map.txt`, bars with a title that was never drawn and no signed values, no salp body, conflicts inside a paper
-(Results against Discussion, text against a table) that the skill did not name, and contradictory rules about unused
-claims. Two runs are not proof: the next paper is the next test.
+Pauli et al. 2021 (a primary research article, 46 panels), then on Lin et al. 2021 (a long data article, 59 panels). Each
+run finished a comic that passes the quote check, the validator and the scan, and each found real faults in the skills
+and scripts, which were fixed before the next paper. The third run's were: bar labels that rounded `25.0` to `25`, prop
+field names that were documented nowhere, a `wide` chart that could be packed at a third of a row, a locator separator
+the checker rejected, a licence statement that was cut short, and unclear formats for `PLAN.md` and `ATTRIBUTION.md`.
+Faults are getting smaller and rarer, but three runs are not proof: the next paper is the next test.

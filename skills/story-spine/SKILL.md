@@ -100,7 +100,9 @@ cast:
 ## Output
 
 - `examples/<slug>/head.yaml`: `meta` (title, audience, source, spine, left_out) and `cast`.
-- `examples/<slug>/PLAN.md`: the beat table.
+- `examples/<slug>/PLAN.md`: the audience, the spine and the beat table: one row per beat with its id, title, job
+  (problem, method, result or discussion), the claim ids it carries, and the rhythm it needs (where the pause, the
+  chart and the payoff fall). A page of notes, not a form: the storyboard is the product.
 
 **Done when:** the spine uses only claims from the ledger, the audience and the left-out list are written,
 and every beat has a job and claim ids.

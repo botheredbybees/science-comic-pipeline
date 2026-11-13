@@ -125,7 +125,7 @@ def parse(xml_text):
     statement = text_of(lic) if lic is not None else ""
     family, label = licence_family(lic_url, statement)
     meta = {"title": title, "authors": authors, "year": year, "doi": doi, "pmcid": pmcid, "licence": label,
-            "licence_family": family, "licence_url": lic_url, "licence_statement": statement[:400],
+            "licence_family": family, "licence_url": lic_url, "licence_statement": statement,
             "licence_checked": f"Europe PMC full-text XML, {date.today().isoformat()}"}
 
     pages = []
@@ -205,6 +205,9 @@ def main(argv=None):
     usable = meta["licence_family"] in USABLE
     print(f"Licence: {meta['licence']} {meta['licence_url']}".rstrip())
     print(f"Title:   {meta['title']}")
+    if meta["licence_statement"]:
+        cut = meta["licence_statement"][:300]
+        print("Statement: " + (cut if len(meta["licence_statement"]) <= 300 else cut.rsplit(" ", 1)[0] + " ..."))
     if not usable and not args.force:
         print("Not usable as the basis of an adaptation (needs CC BY, CC BY-SA or CC0). Nothing written; use --force to override.")
         return 2

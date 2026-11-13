@@ -75,6 +75,11 @@ is an adaptation the authors did not write or endorse.
 
 ## Output
 
+Also write `examples/<slug>/ATTRIBUTION.md` (copy it from any finished example): the paper's authors, title, journal, DOI
+and Europe PMC link; its licence and where and when you read it; **Changes made** (condensed into claims, invented
+characters named, jokes flagged, the authors did not write or endorse it); and that the storyboard and the PDF are shared
+under the same licence as the paper (CC BY-SA if the paper is ShareAlike).
+
 `QA.md` in the working folder (or your reply): the defects found, what you did, and what is left (known
 limits, such as text wrapped by average glyph width, not measured). **Done when** the scan is clean, you
 looked at every page, and the PDF is exported.

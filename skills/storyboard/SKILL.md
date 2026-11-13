@@ -69,7 +69,8 @@ examples/<slug>/
   - never draw a value that is not in a cited claim; a schematic line is dashed or dotted and its panel says "schematic" or shows only the
     claim's own numbers;
   - set `max` only when it is in a claim (percent charts may use 100); use `show_max: false` to hide an axis maximum you cannot cite;
-  - a chart with several bars is better in a `wide` or `full` panel;
+  - a chart with several bars is better in a `full` panel: `weight` is only a preference, so a `wide` panel can be packed at a
+    third of a row and the chart will collide (the field names every prop reads are in `renderers/README.md`);
   - `bars` draws its `title` above the chart and stands bars on a zero line, so a signed index (Ivlev's, -1 to +1)
     is `min: -1, max: 1` with negative bars hanging down. Each chart is scaled to its own tallest bar unless you
     give `max`, so heights do not compare between panels: give related charts the same `max`, or say so in the caption;

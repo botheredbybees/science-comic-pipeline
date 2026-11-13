@@ -34,6 +34,30 @@ a `marker`, `mug` (held by its handle, with steam), `paper` or `clipboard`; a `s
 in a narrow panel (to about 9 units); a solid `axis` bar can cover its tick labels; `year` in `meta.source`
 is an integer.
 
+## Prop fields
+
+Every prop has `kind`, and `x`, `y`, `w`, `h` as fractions of the scene (`w` and `h` default to about 0.3). A number that is
+drawn (a bar value, a pie value, a tick, a note label) must come from a cited claim, and is printed as written (`25.0`
+stays `25.0`).
+
+| `kind` | Fields it reads |
+|---|---|
+| `bars` | `bars` (each `label`, `value`, `style`: solid or hollow); `title`; `unit` (`%` adds a percent sign); `max`, `min` (the scale; `min` below zero hangs negative bars under a zero line); `show_values` and `show_max` (false hides the numbers and the top tick) |
+| `axis` | `items`: each `label`, `at` (0 to 1 along the line); `to` (a span from `at` to `to`); `style` (`solid`, `hollow` or `mark`, a dot); `row` (0 to 3, lifts crowded labels); `title` |
+| `plot` | `series`: each `points` (a list of `[x, y]` in 0 to 1, y up) and `style` (solid, dashed, dotted); `notes`: each `x`, `y`, `label`; `x_label`, `y_label`, `title`. A schematic curve should be dashed and the panel should say so |
+| `pie` | `items`: each `label`, `value` (shares are drawn in proportion to the values) |
+| `flow` | `items`: each `label`; boxes joined by arrows, left to right in a wide box, top to bottom in a tall one |
+| `steps` | `items`: each `label`, `caption`; a rising staircase |
+| `stack` | `items`: each `label`, `value`, `style`; a column of segments, bottom to top |
+| `board` | `cards`: each `label`, `covered` (a hatched, hidden card); `title`; labels shrink to fit |
+| `slide`, `paper`, `sign`, `box`, `label`, `picture` | `label` or `title`; `picture` takes a nested `staging`; `label`'s `x` is its centre and `size` is small, normal or large |
+| `arrow` | from `x`, `y` to `x2`, `y2` |
+| `desk`, `ship`, `bowl`, `bottle`, `jar`, `flash`, `cups`, `phone`, `wall` | objects; `label` where one is shown; `cups` takes `items` with a `value` (how full) |
+
+**How wide a panel gets.** A panel's `weight` is a preference: `small`, `standard` and `wide` are packed into rows by the
+layout, so a `wide` chart can still land at a third of a row. Only `full` always spans the page. Give a crowded chart
+`full`, or `height: tall`, and look at the page.
+
 ## xkcd (`renderers/xkcd/render.py`)
 
 Stick figures, outlined and borderless panels, a hand-drawn wobble on every line, a short line from
