@@ -37,7 +37,8 @@ def build(folder):
     doc = dict(head)
     doc["claims"] = [ledger[c] for c in used]
     doc["beats"] = beats
-    return doc, [c for c in used if ledger[c]["status"] != "verified"], len(ledger)
+    unused = sorted((c for c in ledger if c not in used), key=lambda s: int(s[1:]))
+    return doc, [c for c in used if ledger[c]["status"] != "verified"], len(ledger), unused
 
 
 def main(argv=None):
@@ -45,12 +46,14 @@ def main(argv=None):
     ap.add_argument("folder")
     ap.add_argument("-o", "--out", help="default: <folder>/storyboard.yaml")
     args = ap.parse_args(argv)
-    doc, unverified, n_ledger = build(args.folder)
+    doc, unverified, n_ledger, unused = build(args.folder)
     out = Path(args.out or Path(args.folder) / "storyboard.yaml")
     out.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=200))
     panels = sum(len(b["panels"]) for b in doc["beats"])
     print(f"{len(doc['beats'])} beats, {panels} panels, {len(doc['claims'])} of {n_ledger} ledger claims used"
           + (f"; NOT verified but used: {unverified}" if unverified else ""))
+    if unused:
+        print(f"unused ledger claims (use them or drop them): {unused}")
     return 0
 
 

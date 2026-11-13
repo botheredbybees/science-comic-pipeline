@@ -50,9 +50,10 @@ examples/<slug>/
   caption may shorten a claim, never strengthen it.
 - Speakers are in the cast or `narrator`; staged characters are in the cast or `extra`.
 - Use only `verified` claims. An `abstract_only` or `unverified` claim draws a warning; fix it, or leave it out.
-- A claim in the ledger that no panel uses is a warning: use it or drop it from the ledger (or accept the
-  warning knowingly if the ledger is shared).
-- A panel carrying a joke needs the joke flagged (see `humour-pass`).
+- `build_storyboard.py` lists the ledger claims that no panel cites. Use each or drop it, so the ledger and
+  the comic agree. (The built storyboard keeps only cited claims, so the validator cannot see the rest.)
+- A joke on a panel that cites claims draws a warning until a reviewer sets `keeps_claims_intact: true`
+  (see `humour-pass`). That warning is deliberate: it is how a joke waits for a human.
 
 ## Writing well
 
@@ -70,6 +71,11 @@ examples/<slug>/
   - a chart with several bars is better in a `wide` or `full` panel.
 - Stage everything the picture needs: where each character stands (`x`, `scale`), who faces whom, and the
   props. Leave room above speakers for their text. Krill are small: give them `scale` 1.3 to 1.5.
+- **The `scene` text is the panel's alt text: describe only what is staged.** Nothing checks it against the
+  staging, so a scene that mentions a calendar or an ocean that is not drawn is a defect. A character holds
+  only a `marker`, `mug` or `paper`; stage anything else as a prop.
+- **Number words are not checked.** The validator sees digits only, so "over two hundred fold" in a caption
+  passes without a claim. Check number words against the claims yourself.
 - Do not invent facts in `scene`, in props, or in a character's face: a worried krill implies the paper
   says krill are at risk, so only draw it if a cited claim does.
 
@@ -79,11 +85,12 @@ examples/<slug>/
 python scripts/build_storyboard.py examples/<slug>                       # writes storyboard.yaml, keeps cited claims
 python scripts/validate_storyboard.py examples/<slug>/storyboard.yaml --strict
 python scripts/check_quotes.py examples/<slug>/claims.yaml --pages-dir sources/<slug>/pages --strict
-python scripts/preview_storyboard.py examples/<slug>/storyboard.yaml     # a readable page to review the story
+python scripts/preview_storyboard.py examples/<slug>/storyboard.yaml -o output/<slug>-preview.html   # a readable page to review the story
 ```
 
 Fix every error and warning before the next step. Reading the preview as a stranger would, ask: does the
 story make sense without the paper? Is any caption stronger than its claim?
 
-**Done when:** `validate_storyboard.py --strict` and `check_quotes.py --strict` are clean. Then run
+**Done when:** `check_quotes.py --strict` is clean and `validate_storyboard.py --strict` has no errors and
+no warnings except one per joke still awaiting a human. Then run
 `humour-pass` (optional) and `visual-qa`.

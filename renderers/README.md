@@ -24,6 +24,12 @@ in a chart or label need a claim, exactly as dialogue does. A panel without stag
 its scene text. Cast members may carry `appearance` hints (`body`: stick, diatom, krill, penguin or whale, `hair`, `glasses`, `lanyard`). The animal bodies are drawn in `renderers/xkcd/animals.py`; a krill is small, so give it a larger `scale` in the staging (about 1.3 to 1.5), and a whale a smaller one (about 0.4 to 0.65).
 On an `axis`, `row` stacks crowded labels at different heights.
 
+Things found by using the vocabulary (check the render when you stage these): a character `holding` can only be
+a `marker`, `mug` or `paper`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
+`label`'s `x` is its centre; an `arrow` is drawn from `x`, `y` to `x2`, `y2`; a `board` shrinks its card text
+in a narrow panel (to about 9 units); a solid `axis` bar can cover its tick labels; `year` in `meta.source`
+is an integer.
+
 ## xkcd (`renderers/xkcd/render.py`)
 
 Stick figures, outlined and borderless panels, a hand-drawn wobble on every line, a short line from

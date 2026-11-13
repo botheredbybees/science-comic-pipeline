@@ -8,8 +8,8 @@ description: Use after the storyboard validates and before sharing. Renders the 
 **Goal:** a list of defects, fixed, so that the pages read well. A script catches some defects; the rest
 need eyes. Do both.
 
-**You need:** a storyboard that passes `validate_storyboard.py --strict`; Chrome or Chromium installed
-(used headless); a way to view a rendered page as an image (any browser or screenshot tool).
+**You need:** a storyboard that validates with no errors (jokes awaiting review may still warn); Chrome or Chromium installed
+(used headless; the handwriting font Patrick Hand should be installed or loaded, or text widths differ); a way to view a rendered page as an image (any browser or screenshot tool).
 
 ## 1. Scan
 
@@ -22,8 +22,10 @@ panel, and exits 1 when there is any. Fix each, then re-run until it says `no de
 
 ## 2. Look at every page
 
-Open `output/<slug>/sheet.html` (or the PDF) and view each page at readable size. The script cannot see these,
-so check them yourself, page by page:
+Open `output/<slug>/sheet.html` (or the PDF) and view each page at readable size. Without a browser tool, make a
+picture of a page with headless Chrome at A4 proportions (a larger window gives a false blank band):
+`google-chrome --headless=new --screenshot=p1.png --window-size=794,1123 output/<slug>/page-1.svg`.
+The scan cannot see the following, so check them yourself, page by page:
 
 - Text running over a drawing, a speech line that crosses a figure, or a line that points at the wrong speaker.
 - A figure cut off at a panel edge, or tiny in a wide, short panel.
@@ -34,6 +36,7 @@ so check them yourself, page by page:
 - Reading order: left to right, then down. Two rows made only of open (borderless) panels adjacent, or two
   rows with the same widths, make a page hard to read.
 - Pages with a big blank band at the bottom (except the last), or a last page nearly empty.
+- Text running through the border of its own sign or box (the scan compares text with other text only).
 - Garbled characters (accents, quotes, "mojibake").
 - Faces and poses that imply something the paper does not say (a worried animal).
 

@@ -29,3 +29,9 @@ def test_overlapping_text_is_reported(tmp_path):
     bad.write_text(yaml.safe_dump(doc))
     res = scan(bad)
     assert any("same spot" in d["text"] or "same spot" in d["other"] for d in res["overlap"])
+
+
+def test_a_relative_keep_folder_works(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    res = scan(EXAMPLE, keep="kept")
+    assert res["overflow"] == [] and (tmp_path / "kept" / "page-1.svg").exists()

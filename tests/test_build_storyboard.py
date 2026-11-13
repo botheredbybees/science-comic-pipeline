@@ -24,12 +24,12 @@ BEATS = [{"id": "B1", "act": "problem", "panels": [{"id": "B1.1", "scene": "s", 
 
 
 def test_only_cited_claims_are_kept(tmp_path):
-    doc, unverified, n = build(folder(tmp_path, [claim("C1"), claim("C2")], BEATS))
-    assert [c["id"] for c in doc["claims"]] == ["C2"] and n == 2 and unverified == []
+    doc, unverified, n, unused = build(folder(tmp_path, [claim("C1"), claim("C2")], BEATS))
+    assert [c["id"] for c in doc["claims"]] == ["C2"] and n == 2 and unverified == [] and unused == ["C1"]
 
 
 def test_unverified_cited_claims_are_reported(tmp_path):
-    _, unverified, _ = build(folder(tmp_path, [claim("C2", "unverified")], BEATS))
+    _, unverified, _, _ = build(folder(tmp_path, [claim("C2", "unverified")], BEATS))
     assert unverified == ["C2"]
 
 

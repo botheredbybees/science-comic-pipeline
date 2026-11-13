@@ -29,6 +29,15 @@ python scripts/fetch_source.py --doi <doi> -o sources/<slug>
 Read every page, including captions and the limitations paragraph. Note where the abstract and the body
 disagree (they do more often than you would think), and where the text and a figure disagree.
 
+**Things the text will do to you:**
+- Europe PMC strips in-text citations, so a sentence may contain empty brackets, `()` or `(; )`, or lose its
+  subject ("... as shown by [12]" becomes "... as shown by"). A quote must reproduce the text as it is on the
+  page, empty brackets and all, and a cited study cannot be named in the comic ("a study", not "Smith 2019").
+- A figure caption may contradict the body, or itself. Follow the body, log the conflict in `CLAIM-CHECK.md`,
+  and record the caption's version as `unverified` with a note, so no panel draws it.
+- A perspective, review or opinion piece has no methods or results. Its claims are mostly `interpretation` and
+  `caveat` ("in our opinion"), and the authors' hedges are the content: keep them.
+
 ## 3. Write the claims
 
 One statement per claim. Aim for the paper's whole argument, not a sample: background the story needs,
@@ -53,6 +62,8 @@ Rules for the text:
   direction (correlated is not caused). Keep the scope (in this region, in these stations).
 - Numbers go in verbatim, with their units and statistics. Do not round, convert or combine them.
 - Separate what the authors found from what they cite. "X is known to Y [12]" is background, not a result.
+- **Definitions are claims too.** If a term must be explained in a caption (omics, a model name, an abbreviation),
+  quote the paper's own definition into the ledger now. You will need it when you write panels, and it is cheaper now.
 - A claim that only a figure shows (a value you read off a chart) is `unverified` with a note, never `verified`.
 
 Rules for the quote:
@@ -68,7 +79,8 @@ python scripts/check_quotes.py examples/<slug>/claims.yaml --pages-dir sources/<
 
 (The ledger is a YAML file with a `claims:` list. Several files are fine: `claims-A.yaml` and so on. Later,
 `build_storyboard.py` keeps only the claims the panels cite.) It errors when a `verified` claim has no quote, or the quote is not on
-its page, and warns when a number in the claim is not in its quote. Fix every error and warning.
+its page, and warns when a number in the claim is not in its quote. Fix every error and warning. (A claim naming "Fig. 3" draws a harmless warning, because the figure number is not
+in the quote: either put the figure number in the quote or drop it from the claim text.)
 
 The script cannot tell you whether a claim says more than its quote. **Do a second pass yourself:** read
 each claim against its quote and ask "what would make this overstated?" Remove or weaken the claim, or

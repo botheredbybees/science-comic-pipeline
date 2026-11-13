@@ -40,7 +40,7 @@ visuals do the work.
 ## 3. Choose the cast
 
 - Usually one **guide**, a person in the paper's world (a scientist on the ship, a student), who asks the
-  reader's questions. Give them a simple look (`appearance`: hair, glasses, lanyard, hat).
+  reader's questions. Give them a simple look (`appearance`: `hair` is one of none, ponytail, bun, spiky, beanie; `glasses` and `lanyard` are true or false; `body` is stick by default).
 - Organisms or things that carry the result can be characters (`body: diatom | krill | penguin | whale`
   are drawn; other things are props or `extra`). A character must not be made to say something the
   organism did not do: playing "Dot, the diatom" is fine; giving it motives the paper does not report is not.
@@ -66,6 +66,27 @@ payoff lands, and where the caveats go (they belong in the comic, near the claim
 
 Every claim you plan to use must exist in the ledger. If the story needs a statement that is not in it, go
 back and add it (with a quote), do not write it into a panel.
+
+## head.yaml skeleton
+
+```yaml
+version: 2
+meta:
+  title: "A short title"
+  audience: "One sentence"
+  left_out: ["What the comic skips, and why"]
+  source:
+    title: "..."          # from sources/<slug>/source.json
+    authors: ["A B", "C D"]
+    year: 2022            # an integer, not a string
+    doi: "10.xxxx/xxxx"
+    url: "https://doi.org/10.xxxx/xxxx"
+    licence: "CC BY 4.0"
+    licence_checked: "Europe PMC full-text XML, 2026-11-13"
+  spine: { and: "...", but: "...", therefore: "..." }
+cast:
+  - { id: ines, name: "Ines", role: "A scientist on the ship", look: "Stick figure in a woolly hat", appearance: { hair: beanie } }
+```
 
 ## Output
 

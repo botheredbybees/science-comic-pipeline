@@ -60,7 +60,7 @@ def scan(storyboard, keep=None, browser=None, wait_ms=15000):
         raise RuntimeError("no Chrome or Chromium found")
     doc = yaml.safe_load(Path(storyboard).read_text())
     with tempfile.TemporaryDirectory() as tmp:
-        out = Path(keep) if keep else Path(tmp)
+        out = Path(keep).resolve() if keep else Path(tmp)
         render.render(doc, str(out), standalone=True)
         sheet = out / "sheet.html"
         probe = out / "qa-probe.html"

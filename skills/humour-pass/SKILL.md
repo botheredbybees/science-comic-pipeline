@@ -35,7 +35,8 @@ humour:
   keeps_claims_intact: false     # leave false until the check below
 ```
 
-The validator warns about a joke on a panel that cites claims until `keeps_claims_intact: true`.
+The validator warns about a joke on a panel that cites claims until `keeps_claims_intact: true`. That warning is
+the flag: a joke you are unsure about keeps it, and waits for a human.
 
 ## 4. Check each joke before setting `keeps_claims_intact: true`
 
@@ -56,6 +57,8 @@ you propose.
 
 `humour` blocks on a few panels, each with a note, and a list in your reply of the jokes proposed, which
 you consider safe, and which you want a human to look at first. Re-run
-`validate_storyboard.py --strict`; every joke on a cited panel must be flagged.
+`validate_storyboard.py --strict`: it should show no errors and exactly one warning for each joke you left
+`false`. Any other warning is a defect.
 
-**Done when:** each joke has passed the five questions or has been removed, and the human reviewer has the list.
+**Done when:** each joke has passed the five questions (`keeps_claims_intact: true`), or is left `false` and on
+the list for the reviewer, or has been removed.

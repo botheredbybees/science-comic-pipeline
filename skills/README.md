@@ -18,6 +18,9 @@ storyboard (3) is the product that renderers read; the humour (4) is optional; t
 **The rule that holds it together:** nothing in a panel that is not in a cited, verified claim, and no joke
 or caption that makes a claim say more than it does.
 
-These skills were written from what the Lin 2017 and Akam 2026 examples needed. They have not yet been tested
-by someone who has not seen those examples; the first test is to follow them cold on a new paper, and
-what goes wrong there is recorded in the design document.
+These skills were written from what the Lin 2017 and Akam 2026 examples needed, then followed cold, once, by an
+agent that had not seen those examples, on Strzepek et al. 2022 (a perspective article with little story). It finished
+a 36-panel comic that passes the quote check, the validator and the scan. It also found real faults in the skills and
+scripts (a crash on a relative path, a contradiction about jokes, missing guidance on stripped citations, definitions,
+perspective papers and caption/body conflicts), which are fixed. One cold run is not proof: the next paper is the
+next test.
