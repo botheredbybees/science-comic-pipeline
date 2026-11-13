@@ -24,7 +24,7 @@ panel, and exits 1 when there is any. Fix each, then re-run until it says `no de
 
 Export the PDF first (step 4) and view each page at readable size: it is drawn in the real font, which a bare
 `page-N.svg` is not (the SVG shows a fallback font, so wrapping looks different). Without a PDF viewer, make PNGs with
-`pdftoppm -r 70 -png output/<slug>.pdf output/<slug>/q`. Compare the PDF with the sheet once: the layout must match.
+`pdftoppm -r 70 -png examples/<slug>/<slug>.pdf output/<slug>/q`. Compare the PDF with the sheet once: the layout must match.
 The scan cannot see the following, so check them yourself, page by page:
 
 - Text running over a drawing, a speech line that crosses a figure, or a line that points at the wrong speaker.
@@ -66,10 +66,10 @@ a fix can create a new defect.
 ## 4. Export
 
 ```bash
-python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o output/<slug>.pdf
+python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o examples/<slug>/<slug>.pdf
 ```
 
-One A4 page per comic page. Check the page count and that the attribution for the source is printed on
+One A4 page per comic page. The PDF is the finished comic and lives in the example's folder, where git keeps it (`output/` is not kept). Check the page count and that the attribution for the source is printed on
 the last page, complete: title, authors, year, DOI, licence, and two clickable links (the original paper and the licence terms), and the line that the comic
 is an adaptation the authors did not write or endorse.
 

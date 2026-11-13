@@ -9,6 +9,8 @@ __pycache__/
 sources/
 output/
 *.pdf
+# ...except the finished comic that sits in each example's folder
+!examples/*/*.pdf
 
 # Work on sources whose licence has not been checked stays local
 private/

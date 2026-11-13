@@ -6,10 +6,22 @@ Papers and data products reach few people if they only exist as papers. This rep
 repeatable process for the middle step: **read the paper, pull out what it actually
 claims, find the story in it, and hand a structured storyboard to a renderer.**
 
-> **Status: early.** The storyboard schema and its validator work and are tested, two examples have
-> fully checked storyboards, an xkcd-style renderer turns them into A4 pages and a PDF, and five
-> skills describe the judgement steps. See
+> **Status: working, still early.** Four papers have been turned into comics (the PDFs are below), the storyboard
+> schema, validator and renderer are tested, and five skills describe the judgement steps. Two of the comics were made
+> by an agent that had only the skills to go on, which is how the skills were debugged. See
 > [the design](docs/superpowers/specs/2026-11-13-science-comic-pipeline-design.md).
+
+## Examples
+
+Each comic is a finished A4 PDF kept beside its storyboard, claims ledger and attribution. Every comic carries its
+source paper's licence, a link to the paper, and the line that its authors did not write or endorse it.
+
+| Comic | Paper | Pages |
+|---|---|---|
+| [Who Sank the Carbon?](examples/lin-2017-wap-npc/lin-2017-wap-npc.pdf) | Lin et al. 2017, *Scientific Reports*: which plankton predict net community production off the Western Antarctic Peninsula | 7 |
+| [Who Eats What?](examples/pauli-2021-krill-salps-diet/pauli-2021-krill-salps-diet.pdf) | Pauli et al. 2021, *Communications Biology*: what krill and salps eat, read from their DNA | 9 |
+| [The Currency Exchange](examples/strzepek-2022-rates/strzepek-2022-rates.pdf) | Strzepek et al. 2022, *Journal of Plankton Research*: can omics give ocean models the rates they need? | 6 |
+| [Draw It Yourself](examples/akam-2026-cartooning/akam-2026-cartooning.pdf) | Bahsoun, Morris and Akam 2026, *Biochemistry and Molecular Biology Education*: learning biology by drawing cartoons (a draft) | 2 |
 
 ## The idea
 
@@ -28,16 +40,28 @@ paper ──> claims ledger ──> story spine ──> storyboard.yaml ──> 
 - **Humour is optional and flagged.** A joke on a panel that cites a claim needs a
   reviewer to confirm it leaves the claim intact.
 
-## Try it
+## Make a comic
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python scripts/validate_storyboard.py examples/akam-2026-cartooning/storyboard.yaml
-.venv/bin/python -m pytest tests -q
-.venv/bin/python renderers/xkcd/render.py examples/akam-2026-cartooning/storyboard.yaml -o output/xkcd
+.venv/bin/python scripts/fetch_source.py --doi <doi> -o sources/<slug>            # the paper's text, and its licence check
+# then the five skills in skills/, in order, which write examples/<slug>/ ...
+.venv/bin/python scripts/build_storyboard.py examples/<slug>                       # head + beats + claims -> storyboard.yaml
+.venv/bin/python scripts/validate_storyboard.py examples/<slug>/storyboard.yaml --strict
+.venv/bin/python scripts/visual_qa.py examples/<slug>/storyboard.yaml --keep output/<slug>
+.venv/bin/python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o examples/<slug>/<slug>.pdf
 ```
 
-The example is a draft storyboard of an open-access paper about students learning
+**Which steps need a model?** Only the judgement steps: choosing the claims, finding the story, writing the panels and
+staging, proposing jokes, and looking at the pages. Everything else is a plain script, and that includes the PDF:
+`export_pdf.py` draws the pages itself (SVG, with the wobble seeded, so the output is identical on every run) and prints
+them with a headless Chrome or Chromium. No image model is involved anywhere, so a number in a chart is always the number
+in the claim behind it. `pytest tests` runs the tests.
+
+To try the renderer on an existing storyboard without making anything:
+`.venv/bin/python renderers/xkcd/render.py examples/akam-2026-cartooning/storyboard.yaml -o output/xkcd`.
+
+The Akam example is a draft storyboard of an open-access paper about students learning
 biology by drawing cartoons. All its claims were checked against the full text and
 figures, and [CLAIM-CHECK.md](examples/akam-2026-cartooning/CLAIM-CHECK.md) records what
 that turned up (the abstract and the paper's own text disagree with its figures in
