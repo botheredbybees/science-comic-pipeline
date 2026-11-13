@@ -1,0 +1,124 @@
+- id: B2
+  title: "Five Januaries at sea"
+  act: method
+  panels:
+  - id: B2.1
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    scene: "A ship sails on a wavy sea; Wren stands on the left holding her clipboard and Teo, with his teacup, stands beside her."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Each year in January, a research vessel conducted intensive oceanographic and biological surveys across the shelf-transects and a north-south gradient at the West Antarctic Peninsula." }
+    - { speaker: wren, text: "Five years: 2012 to 2016." }
+    claim_ids: [C11, C10, C32]
+    staging:
+      characters:
+      - { id: wren, x: 0.12, pose: point, face: smile, facing: right, holding: clipboard, scale: 0.9 }
+      - { id: teo, x: 0.28, pose: sip, face: neutral, facing: right, holding: teacup, scale: 0.9 }
+      props:
+      - { kind: ship, x: 0.45, y: 0.45, w: 0.5, h: 0.45 }
+  - id: B2.2
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Wren points at a bottle of seawater."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Surface seawater from the ship's underway flow-through system was gently vacuum-filtered onto a Supor filter." }
+    claim_ids: [C12]
+    staging:
+      characters:
+      - { id: wren, x: 0.25, pose: point, face: neutral, facing: right }
+      props:
+      - { kind: bottle, x: 0.55, y: 0.35, w: 0.2, h: 0.5, label: "surface seawater" }
+  - id: B2.3
+    weight: small
+    frame: outlined
+    transition: action-to-action
+    word_picture: picture-specific
+    scene: "A jar labelled filters stands on the left, and Teo, in his woolly hat, holds his teacup."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The filters were immediately stored at −80 °C until further analysis." }
+    - { speaker: teo, text: "My tea is nowhere near that cold." }
+    claim_ids: [C13]
+    humour:
+      note: "Teo and his teacup of tea: a running gag that is only about Teo's tea, not about the filters. The caption is the paper's sentence unchanged. Check: 1 no change (the line has no number, hedge or scope); 2 reads as the comic's voice (Teo's); 3 the butt is Teo's tea; 4 no, nothing is played down; 5 yes."
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - { id: teo, x: 0.72, pose: sip, face: deadpan, facing: left, holding: teacup, scale: 0.9 }
+      props:
+      - { kind: jar, x: 0.12, y: 0.45, w: 0.3, h: 0.4, label: "filters" }
+  - id: B2.4
+    weight: wide
+    frame: outlined
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Wren stands beside a row of three boxes joined by arrows: water filtered, filter frozen, 18S gene sequenced."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Based on a five-year WAP DNA sampling, the authors explored the plankton community structure and diversity via sequencing of the 18S rRNA gene marker." }
+    claim_ids: [C14, C12, C13]
+    staging:
+      characters:
+      - { id: wren, x: 0.1, pose: point, face: neutral, facing: right, holding: clipboard, scale: 0.85 }
+      props:
+      - { kind: flow, x: 0.36, y: 0.35, w: 0.62, h: 0.45, items: [ { label: "water filtered" }, { label: "filter frozen" }, { label: "18S rRNA gene sequenced" } ] }
+  - id: B2.5
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A large label reads ASVs; Teo reacts to it and Wren answers."
+    speech:
+    - { speaker: narrator, kind: caption, text: "At the finest taxonomic resolution, 2480 amplicon sequence variants (ASVs) were identified from the five-year amplicon dataset." }
+    - { speaker: teo, text: "2480 of them?" }
+    claim_ids: [C15]
+    staging:
+      characters:
+      - { id: teo, x: 0.25, pose: shrug, face: surprised, facing: right }
+      - { id: wren, x: 0.78, pose: point, face: smile, facing: left, holding: clipboard, scale: 0.9 }
+      props:
+      - { kind: label, x: 0.52, y: 0.22, label: "2480 ASVs", size: large }
+  - id: B2.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: word-specific
+    scene: "Wren, with her clipboard, stands before a sign that reads O2/Ar."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Seawater O2/Ar ratios were measured underway from the ship's flow-through system, using an equilibrator inlet mass spectrometer (EIMS)." }
+    claim_ids: [C16]
+    staging:
+      characters:
+      - { id: wren, x: 0.28, pose: point, face: neutral, facing: right, holding: clipboard }
+      props:
+      - { kind: sign, x: 0.62, y: 0.3, w: 0.3, h: 0.5, label: "O2/Ar" }
+  - id: B2.7
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Teo asks about argon while Wren explains."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Using Ar, an inert gas with similar solubility properties as O2, the authors decomposed total O2 into physical and biological components." }
+    - { speaker: teo, text: "Why argon?" }
+    claim_ids: [C17]
+    staging:
+      characters:
+      - { id: teo, x: 0.28, pose: think, face: neutral, facing: right, holding: teacup }
+      - { id: wren, x: 0.72, pose: point, face: smile, facing: left }
+  - id: B2.8
+    weight: wide
+    frame: outlined
+    height: short
+    transition: subject-to-subject
+    word_picture: additive
+    scene: "Wren holds her clipboard and Teo shrugs."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The O2/Ar-NCP measurements in this study only reflect the mixed layer carbon fluxes, and the authors do not assess the sequestration timescales." }
+    - { speaker: teo, text: "So it is a mixed-layer measurement." }
+    claim_ids: [C19]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: stand, face: neutral, facing: right, holding: clipboard }
+      - { id: teo, x: 0.7, pose: shrug, face: neutral, facing: left }

@@ -1,0 +1,241 @@
+- id: B5
+  title: "Which community predicts the carbon?"
+  act: result
+  panels:
+  - id: B5.1
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Teo, holding his teacup, stares at a very large label reading ASVs while Wren watches."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Due to the high dimensionality of the ASV dataset, it is challenging to model NCP based on community structure." }
+    claim_ids: [C27]
+    staging:
+      characters:
+      - { id: teo, x: 0.25, pose: shrug, face: surprised, facing: right, holding: teacup }
+      - { id: wren, x: 0.8, pose: stand, face: neutral, facing: left, holding: clipboard, scale: 0.9 }
+      props:
+      - { kind: label, x: 0.55, y: 0.2, label: "ASVs", size: large }
+  - id: B5.2
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Wren points at a board titled WGCNA modules."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The authors applied a weighted gene correlation network analysis (WGCNA) approach to delineate clusters of 18S ASVs into subnetworks or modules." }
+    claim_ids: [C20]
+    staging:
+      characters:
+      - { id: wren, x: 0.2, pose: point, face: neutral, facing: right, holding: clipboard }
+      props:
+      - { kind: board, x: 0.42, y: 0.15, w: 0.54, h: 0.55, title: "ASVs into modules", cards: [ { label: "ASVs" }, { label: "modules" } ] }
+  - id: B5.3
+    weight: standard
+    frame: outlined
+    transition: action-to-action
+    word_picture: additive
+    scene: "Teo asks what a module is and Wren reads the answer from her clipboard."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Each module represents an assemblage of predicted highly interconnected plankton community members, potentially indicating a group of organisms with strong ecological overlap and/or interactions." }
+    - { speaker: teo, text: "What is a module, exactly?" }
+    claim_ids: [C21]
+    staging:
+      characters:
+      - { id: teo, x: 0.28, pose: think, face: neutral, facing: right, holding: teacup }
+      - { id: wren, x: 0.72, pose: hold, face: smile, facing: left, holding: clipboard }
+  - id: B5.4
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: "Wren points at a row of three boxes joined by arrows: 2480 ASVs, 12 modules, genetic programming models of NCP."
+    speech:
+    - { speaker: narrator, kind: caption, text: "In total, the authors identified 12 modules from the five-year global community structure." }
+    claim_ids: [C22, C15, C23]
+    staging:
+      characters:
+      - { id: wren, x: 0.1, pose: point, face: neutral, facing: right, holding: clipboard, scale: 0.85 }
+      props:
+      - { kind: flow, x: 0.34, y: 0.3, w: 0.64, h: 0.5, items: [ { label: "2480 ASVs" }, { label: "12 modules" }, { label: "genetic programming models of NCP" } ] }
+  - id: B5.5
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Wren, holding her clipboard, explains genetic programming to Teo."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Genetic Programming (GP) is a machine learning approach based on evolution computation." }
+    - { speaker: wren, text: "It can capture complex, non-linear relationships without an a priori assumption." }
+    claim_ids: [C23, C24]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: smile, facing: right, holding: clipboard }
+      - { id: teo, x: 0.75, pose: sip, face: neutral, facing: left, holding: teacup }
+  - id: B5.6
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Teo asks whether the fit is any good; Wren holds her clipboard."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The top four GP solutions provide good predictions on NCP with R2 ranging from 0.70 to 0.80." }
+    - { speaker: teo, text: "Is that a good fit?" }
+    - { speaker: wren, text: "The paper says good predictions." }
+    claim_ids: [C50]
+    staging:
+      characters:
+      - { id: teo, x: 0.28, pose: think, face: neutral, facing: right, holding: teacup }
+      - { id: wren, x: 0.7, pose: stand, face: neutral, facing: left, holding: clipboard }
+  - id: B5.7
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Wren, with her clipboard, lists physical factors to Teo."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The top two physical factors ranked by selection frequency are SST and mixed layer depth (MLD), followed by surface photosynthetically active radiation (PAR)." }
+    claim_ids: [C51, C7]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: neutral, facing: right, holding: clipboard }
+      - { id: teo, x: 0.75, pose: stand, face: neutral, facing: left, holding: teacup }
+  - id: B5.8
+    weight: small
+    frame: borderless
+    height: short
+    transition: moment-to-moment
+    word_picture: word-specific
+    scene: "Wren glances up, thinking."
+    speech:
+    - { speaker: narrator, kind: caption, text: "This suggests that temperature and light are likely the primary physiological limiting factors on NCP in the WAP system." }
+    claim_ids: [C52]
+    staging:
+      characters:
+      - { id: wren, x: 0.5, pose: think, face: neutral, facing: right, holding: clipboard }
+  - id: B5.9
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A large label reads MET. Dot the diatom stands beside Wren."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Among the community-assemblage factors, module turquoise (MET) is the most important predictor for NCP." }
+    claim_ids: [C54]
+    staging:
+      characters:
+      - { id: wren, x: 0.22, pose: point, face: neutral, facing: right, holding: clipboard, scale: 0.9 }
+      - { id: dot, x: 0.8, pose: stand, face: neutral, facing: left, scale: 0.9 }
+      props:
+      - { kind: label, x: 0.52, y: 0.2, label: "MET", size: large }
+  - id: B5.10
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Teo asks how big MET is and Dot waits beside him."
+    speech:
+    - { speaker: narrator, kind: caption, text: "MET is also the largest module identified, which consists of 126 ASVs, mainly representing diverse groups of diatoms and dinoflagellates." }
+    - { speaker: teo, text: "Diatoms again." }
+    claim_ids: [C55]
+    staging:
+      characters:
+      - { id: teo, x: 0.3, pose: think, face: neutral, facing: right, holding: teacup }
+      - { id: dot, x: 0.75, pose: stand, face: neutral, facing: left }
+  - id: B5.11
+    weight: full
+    height: short
+    frame: outlined
+    transition: aspect-to-aspect
+    word_picture: parallel
+    scene: "A board lists the central members of MET: the diatom genera Thalassiosira, Odontella, Porosira, Actinocyclus, Proboscia, Chaetoceros, and the dinoflagellate Gyrodinium. Wren points at it with her clipboard and Dot the diatom stands beside her."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The central nodes in the MET network, the top-10 most connected ASVs, include the diatom genera and the dinoflagellate Gyrodinium." }
+    claim_ids: [C56]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: neutral, facing: right, holding: clipboard, scale: 0.8 }
+      - { id: dot, x: 0.7, pose: stand, face: neutral, facing: left, scale: 0.8 }
+      props:
+      - { kind: board, x: 0.04, y: 0.04, w: 0.92, h: 0.38, title: "Central nodes of MET", cards: [ { label: "Thalassiosira" }, { label: "Odontella" }, { label: "Porosira" }, { label: "Actinocyclus" }, { label: "Proboscia" }, { label: "Chaetoceros" }, { label: "Gyrodinium" } ] }
+  - id: B5.12
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Wren, holding her clipboard, tells Teo about solution 1."
+    speech:
+    - { speaker: narrator, kind: caption, text: "MET appears in all top-four performed GP solutions, and it is the sole biological factor in solution 1 explaining a majority of the NCP variability (R2 = 0.70)." }
+    claim_ids: [C57]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: neutral, facing: right, holding: clipboard }
+      - { id: teo, x: 0.75, pose: sip, face: neutral, facing: left, holding: teacup }
+  - id: B5.13
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: interdependent
+    scene: "A bar chart of correlations with MET: SST and salinity and MLD hang below the zero line, sea-ice melt and meteoric freshwater stand above it."
+    speech:
+    - { speaker: narrator, kind: caption, text: "MET is significantly correlated with low SST, low salinity, shallow MLD, elevated sea-ice melt and meteoric freshwater." }
+    claim_ids: [C59]
+    staging:
+      props:
+      - { kind: bars, x: 0.04, y: 0.05, w: 0.92, h: 0.9, title: "MET correlation (R)", min: -1, max: 1, show_max: false, bars: [ { label: "SST", value: -0.51 }, { label: "salinity", value: -0.48 }, { label: "MLD", value: -0.36 }, { label: "sea-ice melt", value: 0.33 }, { label: "meteoric freshwater", value: 0.34 } ] }
+  - id: B5.14
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Wren, holding her clipboard, and Teo, teacup in hand, look at the same page."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The overall spatial distributions of MET are consistent with the January averaged sea-ice distribution estimated by satellite." }
+    claim_ids: [C58]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: hold, face: neutral, facing: right, holding: clipboard }
+      - { id: teo, x: 0.72, pose: sip, face: neutral, facing: left, holding: teacup }
+  - id: B5.15
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: interdependent
+    scene: "A bar chart of correlations with MET: NCP 0.57, primary production 0.47 and bacterial production 0.61."
+    speech:
+    - { speaker: narrator, kind: caption, text: "NCP, ship-based primary production and bacterial production are all positively correlated with MET. This indicates that MET-dominated regions have high biological activities." }
+    claim_ids: [C60, C61]
+    staging:
+      props:
+      - { kind: bars, x: 0.04, y: 0.05, w: 0.92, h: 0.9, title: "MET correlation (R)", max: 1, show_max: false, bars: [ { label: "NCP", value: 0.57 }, { label: "primary production", value: 0.47 }, { label: "bacterial production", value: 0.61 } ] }
+  - id: B5.16
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Wren, holding her clipboard, introduces two smaller modules to Teo."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Two other community-assemblages, MER (module red, 27 ASVs) and MEG (module green, 29 ASVs), also contribute to NCP models but to a lesser extent." }
+    claim_ids: [C64]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: neutral, facing: right, holding: clipboard }
+      - { id: teo, x: 0.75, pose: stand, face: neutral, facing: left, holding: teacup }
+  - id: B5.17
+    weight: standard
+    frame: borderless
+    transition: aspect-to-aspect
+    word_picture: parallel
+    scene: "Wren holds her clipboard and points to two labels, MER and MEG."
+    speech:
+    - { speaker: narrator, kind: caption, text: "MER is dominated by the cryptophyte Geminigera, which appears in warmer waters. MEG, heterotrophic protists dominated by Picomonas and Telonema, contributes to NCP negatively in two GP solutions." }
+    claim_ids: [C65, C66]
+    staging:
+      characters:
+      - { id: wren, x: 0.2, pose: point, face: neutral, facing: right, holding: clipboard, scale: 0.9 }
+      props:
+      - { kind: label, x: 0.55, y: 0.3, label: "MER: warmer water", size: normal }
+      - { kind: label, x: 0.55, y: 0.6, label: "MEG: heterotrophic protists", size: normal }

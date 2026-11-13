@@ -42,6 +42,9 @@ paper ──> claims ledger ──> story spine ──> storyboard.yaml ──> 
 
 ## Make a comic
 
+The full guide, with set-up for Claude Code, Codex, Gemini CLI, Cursor, Copilot and others, a prompt to paste, and
+troubleshooting, is [HOWTO.md](HOWTO.md). The short version:
+
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/fetch_source.py --doi <doi> -o sources/<slug>            # the paper's text, and its licence check
@@ -82,6 +85,7 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 | `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
 | `examples/` | Example papers, each with its licence record, claims ledger, storyboard and claim check |
 | `renderers/` | One folder per drawing style. `xkcd/` draws stick-figure A4 pages from a panel's `staging` |
+| `HOWTO.md`, `AGENTS.md` | How to run it end to end in your AI environment; the briefing every agent reads first |
 | `skills/` | Five agent skills for the judgement steps, in order: source-to-claims, story-spine, storyboard, humour-pass, visual-qa |
 | `docs/superpowers/` | Design and plans |
 

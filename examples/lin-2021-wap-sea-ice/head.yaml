@@ -1,0 +1,46 @@
+version: 2
+meta:
+  title: "Ice, Plankton and Carbon: Five Januaries on the Western Antarctic Peninsula"
+  audience: "Marine science students and curious readers who know that Antarctic sea ice is shrinking but have not wondered what that does to the plankton, or to the carbon they move."
+  left_out:
+    - "Figures: only the text was read (Europe PMC XML has no images), so nothing is drawn from a map, a CCA biplot or a scatter plot."
+    - "The supplementary figures and tables (Figs. S1 to S6, Table S2): the model solutions are only summarised from the main text."
+    - "Quantitative microbiome profiling, the internal-standard DNA spike and the HPLC-CHEMTAX recalibration, which are batch-correction methods."
+    - "Sequencing, primer, PCR and DADA2 details, and the statistics of the module-trait correlations beyond a few correlation coefficients."
+    - "The Southern Annular Mode explanation of sea-ice years, and the freshwater end-member mass balance."
+    - "The check of ship-based NCP against NCP from seasonal DIC drawdown (R2 = 0.83) and the Southern Ocean's share of CO2 and heat uptake, which the paper does not gloss or which the story did not need."
+    - "That the filter pore size changed between years (0.45 um in 2012 and 2013, 0.2 um in 2014 to 2016); the paper does not discuss whether it matters."
+    - "The disagreements inside the paper (sample counts, the number of physical factors, one significance claim): they are logged in CLAIM-CHECK.md and not drawn."
+  source:
+    title: "Decline in plankton diversity and carbon flux with reduced sea ice extent along the Western Antarctic Peninsula"
+    authors: ["Yajuan Lin", "Carly Moreno", "Adrian Marchetti", "Hugh Ducklow", "Oscar Schofield", "Erwan Delage", "Michael Meredith", "Zuchuan Li", "Damien Eveillard", "Samuel Chaffron", "Nicolas Cassar"]
+    year: 2021
+    doi: "10.1038/s41467-021-25235-w"
+    url: "https://doi.org/10.1038/s41467-021-25235-w"
+    licence: "CC BY 4.0"
+    licence_checked: "Licence text in the article's Europe PMC full-text XML (PMC8368043): 'This article is licensed under a Creative Commons Attribution 4.0 International License', 2026-11-13; no third-party material is used"
+  spine:
+    and: "The Western Antarctic Peninsula has the fastest sea ice decrease in Antarctica (C3), and its plankton support krill, penguins and whales (C4) and set how much organic carbon is available for export (C7)."
+    but: "It is imperative to understand how plankton community, biodiversity and carbon flux will change in this rapidly changing environment (C5), and the study years (2012 to 2016) were a period of moderately positive ice anomalies, not record-low ice (C32)."
+    therefore: "The authors paired five years of underway NCP with 18S DNA sequencing (C10). In late-ice-retreat years diatoms made 39.5% of reads against 14.0% in early-retreat years (C35, C36), diversity fell as SST rose (C42), and a diatom-and-dinoflagellate assemblage (MET) was the best community predictor of NCP (C54, C57). The authors hypothesize three patterns (C70 to C74), say a longer time series is needed (C80), and suggest warming may reduce diversity and carbon drawdown (C49, C79)."
+cast:
+  - id: wren
+    name: "Wren"
+    role: "A scientist on the ship; the guide who asks the reader's questions"
+    look: "Stick figure with long light-coloured hair, glasses and a lab coat, usually holding a clipboard"
+    appearance: { hair: long, hair_tone: strands, glasses: true, coat: true }
+  - id: teo
+    name: "Teo"
+    role: "Wren's sceptical colleague, who wants to see the numbers and drinks too much tea"
+    look: "Stick figure in a woolly hat, often with a mug"
+    appearance: { hair: beanie }
+  - id: dot
+    name: "Dot"
+    role: "A diatom. Plays the diatoms in the story; she is given no motives the paper does not report"
+    look: "A diatom"
+    appearance: { body: diatom }
+  - id: kip
+    name: "Kip"
+    role: "A krill. A walk-on who stands for the animals that eat plankton; says nothing the paper does not"
+    look: "A small krill"
+    appearance: { body: krill }

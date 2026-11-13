@@ -1,0 +1,118 @@
+- id: B4
+  title: "Warmer water, less diversity"
+  act: result
+  panels:
+  - id: B4.1
+    weight: full
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: "A schematic plot with a dashed line falling from left to right: Chao1 richness against sea surface temperature. A note beside the line gives the 40% decrease for a 4 °C rise. Wren points at it."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Chao1, a measure for species richness, demonstrated an evident decline towards higher SST, with a 40% decrease in the index for a 4 °C rise in SST." }
+    claim_ids: [C42]
+    staging:
+      characters:
+      - { id: wren, x: 0.1, pose: point, face: neutral, facing: right, holding: magnifier, scale: 0.85 }
+      props:
+      - { kind: plot, x: 0.34, y: 0.08, w: 0.62, h: 0.84, title: "schematic", x_label: "sea surface temperature (SST)", y_label: "Chao1 richness", series: [ { points: [ [0.05, 0.85], [0.95, 0.3] ], style: dashed } ], notes: [ { x: 0.6, y: 0.78, label: "40% lower" }, { x: 0.6, y: 0.62, label: "for a 4 °C rise" } ] }
+  - id: B4.2
+    weight: standard
+    frame: outlined
+    transition: moment-to-moment
+    word_picture: additive
+    scene: "Wren, holding her magnifying glass, and Teo, with his teacup, discuss two more measures."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Pielou’s evenness and Shannon, which consider both species richness and evenness, also decreased significantly with increasing SST." }
+    claim_ids: [C43]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: neutral, facing: right, holding: magnifier }
+      - { id: teo, x: 0.72, pose: sip, face: neutral, facing: left, holding: teacup }
+  - id: B4.3
+    weight: small
+    frame: borderless
+    height: short
+    transition: moment-to-moment
+    word_picture: word-specific
+    scene: "Teo nods."
+    speech:
+    - { speaker: narrator, kind: caption, text: "All three diversity indices show significant negative correlations with SST (two-sided t-test, p < 0.01)." }
+    claim_ids: [C45]
+    staging:
+      characters:
+      - { id: teo, x: 0.5, pose: stand, face: neutral, facing: right, holding: teacup }
+  - id: B4.4
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Wren and Teo talk it over, Teo with his teacup."
+    speech:
+    - { speaker: narrator, kind: caption, text: "Communities in warmer WAP waters show lower richness and lower evenness, i.e., a few taxa dominate." }
+    - { speaker: teo, text: "So, in warmer water, less variety." }
+    claim_ids: [C44]
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: stand, face: neutral, facing: right, holding: magnifier }
+      - { id: teo, x: 0.7, pose: think, face: neutral, facing: left, holding: teacup }
+  - id: B4.5
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Teo asks whether the WAP fits the global pattern; Wren answers."
+    speech:
+    - { speaker: narrator, kind: caption, text: "In a recent global analysis from Tara Oceans, temperature was also the major explanatory factor for eukaryotic plankton biodiversity, but with the opposite trend: lower diversity towards higher latitude or lower temperature." }
+    - { speaker: teo, text: "So the WAP goes against that?" }
+    - { speaker: wren, text: "The authors call it unexpected." }
+    claim_ids: [C46, C48]
+    staging:
+      characters:
+      - { id: teo, x: 0.25, pose: think, face: neutral, facing: right }
+      - { id: wren, x: 0.75, pose: point, face: neutral, facing: left, holding: magnifier }
+  - id: B4.6
+    weight: small
+    frame: borderless
+    height: short
+    transition: moment-to-moment
+    word_picture: word-specific
+    scene: "Wren holds up her magnifying glass."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The Tara Oceans dataset featured only limited sampling in the Southern Ocean (three data points)." }
+    claim_ids: [C47]
+    staging:
+      characters:
+      - { id: wren, x: 0.5, pose: hold, face: neutral, facing: right, holding: magnifier }
+  - id: B4.7
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Dot the diatom stands beside Wren, who holds her magnifying glass."
+    speech:
+    - { speaker: narrator, kind: caption, text: "One explanation: the ice-associated plankton communities consist mainly of diatoms, which are highly diverse and can thrive at lower temperatures compared to other phytoplankton." }
+    - { speaker: dot, text: "Highly diverse. Just saying." }
+    claim_ids: [C48]
+    humour:
+      note: "Dot the diatom is a little smug about the claim that diatoms are highly diverse; the smile is part of the joke. The caption is the paper's explanation, with its hedge ('One explanation'). Check: 1 no change; 2 reads as Dot's voice, but the smugness gives a diatom an attitude the paper does not report (a human should decide); 3 organisms; 4 no; 5 probably yes."
+      keeps_claims_intact: false
+    staging:
+      characters:
+      - { id: wren, x: 0.3, pose: point, face: neutral, facing: right, holding: magnifier }
+      - { id: dot, x: 0.7, pose: stand, face: smile, facing: left, scale: 1.0 }
+  - id: B4.8
+    weight: full
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    word_picture: word-specific
+    scene: "Wren and Teo stand side by side, looking out, in a wide quiet panel."
+    speech:
+    - { speaker: narrator, kind: caption, text: "The authors write: “our results suggest that global warming may decrease plankton diversity in coastal Antarctica.”" }
+    claim_ids: [C49]
+    staging:
+      characters:
+      - { id: wren, x: 0.42, pose: stand, face: neutral, facing: right, holding: magnifier, scale: 1.0 }
+      - { id: teo, x: 0.58, pose: sip, face: neutral, facing: right, holding: teacup, scale: 1.0 }
