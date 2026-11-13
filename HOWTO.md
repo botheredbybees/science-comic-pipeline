@@ -62,8 +62,9 @@ documentation if a file name here no longer works; the prompt in section 4 works
 
 ## 4. Run it, end to end
 
-Pick a short **slug** for the paper, such as `lin-2021-wap-sea-ice` (first author, year, topic). Everything lives under
-that name: `sources/<slug>/` (the paper's text, never committed) and `examples/<slug>/` (your work).
+Pick a short **slug** for the paper, such as `xia-2024-phytoplankton-pearl-river` (first author, year, topic). If you do
+not know the title yet, fetch into `sources/_new` first: `fetch_source.py` prints a suggested slug, and you can rename the
+folder. Everything lives under that name: `sources/<slug>/` (the paper's text, never committed) and `examples/<slug>/` (your work).
 
 ### The one-prompt way
 

@@ -85,3 +85,12 @@ def test_locator_is_checked_against_the_page_map(tmp_path):
     bad = {1: ("Methods / Field sampling", 3)}
     assert cq.check(doc, pages, ok)[1] == []
     assert any("locator" in w for w in cq.check(doc, pages, bad)[1])
+
+
+def test_locator_headings_with_commas_and_numbers_and_rrna_labels_are_fine():
+    import check_quotes as cq
+    pages = {1: "rRNA gene copies vary"}
+    doc = {"claims": [{"id": "C1", "text": "The 18S rRNA gene copies vary.", "status": "verified",
+                       "source": {"page": 1, "quote": "rRNA gene copies vary", "locator": "3. Results, 3.2. Fv/Fm, light and stress, paragraph 1"}}]}
+    locs = {1: ("3. Results / 3.2. Fv/Fm, light and stress", 1)}
+    assert cq.check(doc, pages, locs) == ([], [])

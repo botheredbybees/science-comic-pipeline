@@ -25,9 +25,9 @@ or caption that makes a claim say more than it does.
 
 These skills were written from what two early comics (Lin 2017 and Akam 2026) needed, then followed cold by an agent that had
 not seen those comics: first on Strzepek et al. 2022 (a perspective article with little story, 36 panels), then on
-Pauli et al. 2021 (a primary research article, 46 panels), then on Lin et al. 2021 (a long data article, 59 panels). Each
+Pauli et al. 2021 (a primary research article, 46 panels), then on Lin et al. 2021 (a long data article, 59 panels), then on Xia et al. 2024 (an MDPI field survey, 52 panels, the first run to follow the HOWTO). Each
 run finished a comic that passes the quote check, the validator and the scan, and each found real faults in the skills
 and scripts, which were fixed before the next paper. The third run's were: bar labels that rounded `25.0` to `25`, prop
 field names that were documented nowhere, a `wide` chart that could be packed at a third of a row, a locator separator
 the checker rejected, a licence statement that was cut short, and unclear formats for `PLAN.md` and `ATTRIBUTION.md`.
-Faults are getting smaller and rarer, but three runs are not proof: the next paper is the next test.
+The fourth run's were: a locator check that choked on headings with commas, authors and licence URL missing from MDPI's XML, an rRNA label counted as a number, speech lines doubled in the PDF's text layer, and a missing `ATTRIBUTION.md` template. Faults are getting smaller and rarer, but four runs are not proof: the next paper is the next test.

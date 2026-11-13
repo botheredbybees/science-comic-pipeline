@@ -75,10 +75,27 @@ is an adaptation the authors did not write or endorse.
 
 ## Output
 
-Also write `examples/<slug>/ATTRIBUTION.md` (copy it from any finished example): the paper's authors, title, journal, DOI
-and Europe PMC link; its licence and where and when you read it; **Changes made** (condensed into claims, invented
-characters named, jokes flagged, the authors did not write or endorse it); and that the storyboard and the PDF are shared
-under the same licence as the paper (CC BY-SA if the paper is ShareAlike).
+Also write `examples/<slug>/ATTRIBUTION.md`, in this shape (fill every `<...>` from `head.yaml` and `source.json`):
+
+```markdown
+# Attribution
+
+`storyboard.yaml` and the PDF in this folder are an adaptation of:
+
+> <authors, as Surname Initials>. **<title>.**
+> *<journal>* <year>.
+> DOI [<doi>](https://doi.org/<doi>) · [Europe PMC <PMCID>](https://europepmc.org/articles/<PMCID>)
+
+The article is published under a <licence name> licence ([terms](<licence url>)). The licence statement is in the
+article's own text, read from the Europe PMC full-text copy on <date>.
+
+**Changes made:** the paper's methods and findings were condensed into claims, and invented characters (<names>) and
+scenes were added to carry them. A few lines are jokes. The paper's authors did not write or endorse this comic.
+Any error in it is ours.
+
+The storyboard and anything rendered from it are shared under <the same licence as the paper; CC BY-SA if the paper is
+ShareAlike>. The paper itself is not copied into this repository.
+```
 
 `QA.md` in the working folder (or your reply): the defects found, what you did, and what is left (known
 limits, such as text wrapped by average glyph width, not measured). **Done when** the scan is clean, you

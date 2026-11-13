@@ -109,7 +109,8 @@ def parse(xml_text):
     art = art if art is not None else root
     title = text_of(art.find(".//article-title")) if art.find(".//article-title") is not None else ""
     authors = []
-    for c in art.findall(".//contrib[@contrib-type='author']"):
+    contribs = art.findall(".//contrib[@contrib-type='author']") or art.findall(".//contrib-group[@content-type='author']/contrib")
+    for c in contribs:  # some publishers (MDPI) put the type on the group, not on each contrib
         n = c.find("name")
         if n is not None:
             authors.append(" ".join(filter(None, [text_of(n.find("given-names")) if n.find("given-names") is not None else "",
@@ -123,6 +124,10 @@ def parse(xml_text):
         ref = next((e for e in lic.iter() if e.tag == "license_ref"), None)
         lic_url = (ref.text or "").strip() if ref is not None else (lic.get("href") or "")
     statement = text_of(lic) if lic is not None else ""
+    if lic is not None and not lic_url:  # an ext-link inside the licence text, or the URL written in the statement
+        lic_url = next((v for e in lic.iter() for k, v in e.attrib.items() if k.endswith("href") and "creativecommons.org" in v), "")
+        m = re.search(r"https?://creativecommons\.org/[^\s)<>]+", statement)
+        lic_url = lic_url or (m.group(0).rstrip(".,;") if m else "")
     family, label = licence_family(lic_url, statement)
     meta = {"title": title, "authors": authors, "year": year, "doi": doi, "pmcid": pmcid, "licence": label,
             "licence_family": family, "licence_url": lic_url, "licence_statement": statement,
@@ -169,6 +174,16 @@ def parse(xml_text):
     return meta, pages
 
 
+SLUG_SKIP = {"a", "an", "the", "of", "in", "on", "and", "for", "to", "with", "under", "from", "by", "at", "as", "is", "are", "how", "what", "can"}
+
+
+def suggest_slug(meta):
+    """first-author-surname, year and the first few significant words of the title, e.g. xia-2024-phytoplankton-diversity-spatial."""
+    first = (meta["authors"][0].split()[-1] if meta["authors"] else "paper").lower()
+    words = [w for w in re.findall(r"[a-z]+", meta["title"].lower()) if w not in SLUG_SKIP][:3]
+    return "-".join([re.sub(r"[^a-z]", "", first), meta["year"] or "year"] + words)
+
+
 def write(out, meta, pages, xml_text):
     out = Path(out)
     (out / "pages").mkdir(parents=True, exist_ok=True)
@@ -205,6 +220,7 @@ def main(argv=None):
     usable = meta["licence_family"] in USABLE
     print(f"Licence: {meta['licence']} {meta['licence_url']}".rstrip())
     print(f"Title:   {meta['title']}")
+    print(f"Suggested slug: {suggest_slug(meta)}")
     if meta["licence_statement"]:
         cut = meta["licence_statement"][:300]
         print("Statement: " + (cut if len(meta["licence_statement"]) <= 300 else cut.rsplit(" ", 1)[0] + " ..."))

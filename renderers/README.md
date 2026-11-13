@@ -34,6 +34,24 @@ a `marker`, `mug` (held by its handle, with steam), `teacup` (a cup and saucer w
 in a narrow panel (to about 9 units); a solid `axis` bar can cover its tick labels; `year` in `meta.source`
 is an integer.
 
+## Character vocabulary
+
+A staged character takes `pose`, `face` and `facing`; the enums are in the schema and repeated here.
+
+| Field | Values |
+|---|---|
+| `pose` | `stand`, `point` (front arm out), `hold` (something held out at chest height), `think` (hand to the chin; with something in the hand it becomes `hold`), `shrug` (both hands up and out), `sip` (a hand raised to just in front of the mouth), `up` (both arms raised) |
+| `face` | `neutral`, `smile`, `worry`, `deadpan`, `surprised` |
+| `facing` | `right` (the default) or `left` |
+| `holding` | `marker`, `mug`, `teacup`, `paper`, `clipboard`, `notebook`, `flask`, `magnifier` |
+| `scale` | a multiplier; about 1.0 for people, 1.0 to 1.5 for krill, 0.4 to 0.65 for a whale |
+| `body` | overrides the cast member's body, so an `extra` can be an animal |
+
+A character's look (hair, hair tone, glasses, coat, body) belongs to the cast member in `head.yaml`; see the appearance
+options above. Wording a label: use `box` for a multi-word label (it wraps inside its border) and `sign` for a short one.
+A number prints the way YAML reads it: `25.0` stays `25.0` and `17.5` stays `17.5`, but `17.60` is read as `17.6`, so put the
+exact figure in the caption.
+
 ## Prop fields
 
 Every prop has `kind`, and `x`, `y`, `w`, `h` as fractions of the scene (`w` and `h` default to about 0.3). A number that is

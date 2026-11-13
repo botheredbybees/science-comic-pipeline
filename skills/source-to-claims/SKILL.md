@@ -14,7 +14,7 @@ the author's memory of the paper. Nothing later is allowed to state a fact that 
 ## 1. Get the text and the licence
 
 ```bash
-python scripts/fetch_source.py --doi <doi> -o sources/<slug>
+python scripts/fetch_source.py --doi <doi> -o sources/<slug>   # it prints a suggested slug once it has read the title
 ```
 
 - It prints the licence first. Only **CC BY, CC BY-SA and CC0** can be adapted; the script refuses
@@ -24,7 +24,8 @@ python scripts/fetch_source.py --doi <doi> -o sources/<slug>
 - The paper's text lands in `sources/<slug>/pages/pNNN.txt`, one paragraph, figure or table caption, or table
   (its rows, joined with ` | `) per file. A claim's `page` is that number. `page-map.txt` lists them as
   `p012 [Results / Feeding selectivity] para 2: ...`, so a `locator` is read straight off it
-  (`Results, Feeding selectivity, paragraph 2`); `check_quotes.py` warns when a locator disagrees with the map.
+  (`Results, Feeding selectivity, paragraph 2`; with numbered headings, `3. Results, 3.2. Feeding selectivity, paragraph 1`: each piece
+  of the locator only has to appear in the section's name, so a heading with a comma in it is fine); `check_quotes.py` warns when a locator disagrees with the map.
   Do not count paragraphs by hand. Sources stay out of git. (Europe PMC's XML has no images: you will not see
   the figures. Say so in `CLAIM-CHECK.md`, and treat anything only a figure shows as `unverified`.)
 
@@ -88,7 +89,7 @@ Rules for the quote:
 ## 4. Check by script, then by reading
 
 ```bash
-python scripts/check_quotes.py examples/<slug>/claims.yaml --pages-dir sources/<slug>/pages
+python scripts/check_quotes.py examples/<slug>/claims.yaml --pages-dir sources/<slug>/pages --strict
 ```
 
 (The ledger is a YAML file with a `claims:` list. Several files are fine: `claims-A.yaml` and so on. Later,

@@ -73,3 +73,18 @@ def test_figures_and_tables_inside_a_paragraph_get_their_own_pages(tmp_path):
     F.write(tmp_path, meta, pages, xml)
     pm = (tmp_path / "page-map.txt").read_text()
     assert "[Introduction] para 1:" in pm and "[Introduction / Methods] para 1:" in pm and "caption:" in pm
+
+
+def test_authors_and_licence_url_from_mdpi_style_xml():
+    xml = """<?xml version="1.0"?><article xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>
+      <article-id pub-id-type="doi">10.3390/x</article-id><title-group><article-title>Phytoplankton in the Pearl River</article-title></title-group>
+      <contrib-group content-type="author"><contrib><name><surname>Xia</surname><given-names>Jing</given-names></name></contrib>
+        <contrib><name><surname>Hu</surname><given-names>Haojie</given-names></name></contrib></contrib-group>
+      <pub-date><year>2024</year></pub-date>
+      <permissions><license><license-p>Licensee MDPI. Creative Commons Attribution (CC BY) license
+        (<ext-link xlink:href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</ext-link>).</license-p></license></permissions>
+    </article-meta></front><body><p>Text.</p></body></article>"""
+    meta, _ = F.parse(xml)
+    assert meta["authors"] == ["Jing Xia", "Haojie Hu"]
+    assert meta["licence_url"] == "https://creativecommons.org/licenses/by/4.0/" and meta["licence_family"] == "by"
+    assert F.suggest_slug(meta) == "xia-2024-phytoplankton-pearl-river"

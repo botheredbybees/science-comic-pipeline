@@ -30,6 +30,11 @@ Propose at most one joke per beat, and fewer is better. A comic that is funny th
 that tries on every panel. Put the joke in a character's line, a picture, or an unlabelled prop; **keep the
 caption that carries the claim free of it**. If the joke needs the claim's wording altered, drop the joke.
 
+**Invented characters and organisms.** A joke about the comic's own cast (the guide's tea, a crew member's habit, a
+forecaster's catchphrase) is the comic's voice: question 3's "butt" is then a fictional character, which is fine, and you
+say so in the note. A joke that gives a real organism a feeling, a motive or an attitude the paper does not report
+(a diatom taking a result "personally") is the comic speaking for the organism: flag it for a human and say why.
+
 ## 3. Attach and flag each one
 
 ```yaml

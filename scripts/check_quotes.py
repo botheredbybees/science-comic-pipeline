@@ -25,6 +25,7 @@ from pathlib import Path
 import yaml
 
 NUMBER = re.compile(r"\d+(?:\.\d+)?")
+SVEDBERG = re.compile(r"\b\d+S\b")  # 16S, 18S, 28S: ribosomal RNA labels
 
 
 def tokens(text):
@@ -83,11 +84,14 @@ def check(doc, pages, locators=None):
         m = re.match(r"^(.*?),? paragraph (\d+)$", src.get("locator", "") or "")
         if m and locators and page in locators:
             sec, n = locators[page]
-            parts = [x.strip().lower() for x in sec.split(" / ")]
-            want = [x.strip().lower() for x in re.split(r", | / ", m.group(1))]
-            if not all(any(p.startswith(w) for p in parts) for w in want) or int(m.group(2)) != n:
+            # every part of the locator must appear in the section's path; headings with commas or numbers
+            # ("3.2. Feeding, selectivity") are fine, since each comma-separated piece is looked for on its own
+            path = re.sub(r"\s+", " ", sec.lower())
+            want = [x.strip().lower() for x in re.split(r", | / ", m.group(1)) if x.strip()]
+            if not all(w in path for w in want) or int(m.group(2)) != n:
                 warnings.append(f"{cid}: locator \"{src['locator']}\" but page {page} is {sec}, paragraph {n}")
-        missing = sorted(set(NUMBER.findall(c["text"])) - set(NUMBER.findall(quote)))
+        # a label such as the 18S in "18S rRNA" is a name, not a quantity the quote has to contain
+        missing = sorted(set(NUMBER.findall(SVEDBERG.sub("", c["text"]))) - set(NUMBER.findall(quote)))
         if missing:
             warnings.append(f"{cid}: number(s) {', '.join(missing)} in the claim are not in its quote")
     return errors, warnings
