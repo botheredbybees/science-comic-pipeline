@@ -21,20 +21,31 @@ python scripts/fetch_source.py --doi <doi> -o sources/<slug>
   anything else (a NoDerivatives licence rules the paper out). CC BY-SA means the comic must be CC BY-SA.
 - No PMC full text? Convert the PDF with `pdftotext` (pages are separated by form feeds) and use
   `check_quotes.py --text`. Then check the licence by hand in the paper, and note where you found it.
-- The paper's text lands in `sources/<slug>/pages/pNNN.txt`, one paragraph or caption per file. A claim's
-  `page` is that number. `page-map.txt` lists them with their section. Sources stay out of git.
+- The paper's text lands in `sources/<slug>/pages/pNNN.txt`, one paragraph, figure or table caption, or table
+  (its rows, joined with ` | `) per file. A claim's `page` is that number. `page-map.txt` lists them as
+  `p012 [Results / Feeding selectivity] para 2: ...`, so a `locator` is read straight off it
+  (`Results, Feeding selectivity, paragraph 2`); `check_quotes.py` warns when a locator disagrees with the map.
+  Do not count paragraphs by hand. Sources stay out of git. (Europe PMC's XML has no images: you will not see
+  the figures. Say so in `CLAIM-CHECK.md`, and treat anything only a figure shows as `unverified`.)
 
 ## 2. Read it all before writing anything
 
-Read every page, including captions and the limitations paragraph. Note where the abstract and the body
-disagree (they do more often than you would think), and where the text and a figure disagree.
+Read every page, including captions, tables and the limitations paragraph. **Cross-check as you go:** every number
+in the abstract and the Discussion against the Results and the tables, and every "no significant difference" or
+"significant" against the statistics it rests on. Papers disagree with themselves more often than you would think.
 
 **Things the text will do to you:**
 - Europe PMC strips in-text citations, so a sentence may contain empty brackets, `()` or `(; )`, or lose its
   subject ("... as shown by [12]" becomes "... as shown by"). A quote must reproduce the text as it is on the
   page, empty brackets and all, and a cited study cannot be named in the comic ("a study", not "Smith 2019").
-- A figure caption may contradict the body, or itself. Follow the body, log the conflict in `CLAIM-CHECK.md`,
-  and record the caption's version as `unverified` with a note, so no panel draws it.
+- **Conflicts inside the paper.** The usual forms: a caption against the body; Results against Discussion (26.5% in
+  one, "about one third" in the other); a Discussion number borrowed from a different quantity (a share that is
+  dinoflagellates in the Results appears as diatoms in the Discussion); text against a table (p = 0.665 and 0.661);
+  "significant differences between all groups" against "no significant difference between these two". Follow the
+  Results and the table, log every conflict in `CLAIM-CHECK.md`, and record the other version as `unverified` with a
+  note, so no panel draws it. The quote checker cannot find these; only reading can.
+- **Abstract against body.** A claim quoted from the abstract that the body restates is `verified` (quote the body,
+  or the abstract with a note naming the body paragraph). One the body does not restate is `abstract_only`.
 - A perspective, review or opinion piece has no methods or results. Its claims are mostly `interpretation` and
   `caveat` ("in our opinion"), and the authors' hedges are the content: keep them.
 
@@ -42,7 +53,9 @@ disagree (they do more often than you would think), and where the text and a fig
 
 One statement per claim. Aim for the paper's whole argument, not a sample: background the story needs,
 the methods in a sentence each, every result you might draw, the authors' interpretation, and **their
-caveats**. Caveats are claims too; they are usually the most honest and often the funniest material.
+caveats**. The ledger may be bigger than the comic: a verified claim that no panel cites is fine (the builder
+lists them, in case you forgot one), and an `unverified` one is never drawn. Do not delete claims to make the
+lists agree. Caveats are claims too; they are usually the most honest and often the funniest material.
 
 ```yaml
 claims:
@@ -50,7 +63,7 @@ claims:
   text: "Diatoms dominated the community, an average of 41% of all reads."   # what the comic may say
   kind: result            # background | method | result | interpretation | caveat
   source:
-    locator: "Results, paragraph 2"
+    locator: "Results, paragraph 2"   # as in page-map.txt
     page: 9
     quote: "diatoms dominated the community, an average of 41% of all reads"
   status: verified        # verified | abstract_only | unverified
@@ -64,6 +77,7 @@ Rules for the text:
 - Separate what the authors found from what they cite. "X is known to Y [12]" is background, not a result.
 - **Definitions are claims too.** If a term must be explained in a caption (omics, a model name, an abbreviation),
   quote the paper's own definition into the ledger now. You will need it when you write panels, and it is cheaper now.
+- Ids look like `C12` (letter C, then digits). Keep the ids when you drop a claim; they need not be consecutive.
 - A claim that only a figure shows (a value you read off a chart) is `unverified` with a note, never `verified`.
 
 Rules for the quote:
@@ -93,7 +107,8 @@ Do not trust a summary from another agent or from your own earlier work: open th
 Write `CLAIM-CHECK.md` in the folder: the date, the source and how you got it, the licence and where you read
 it, the check results, and anything odd (abstract against body, a likely typo, a figure the text does not
 match). The comic must not repeat an error you found. Fill `meta.source` (title, authors, year, doi, url,
-licence, licence_checked) from `source.json`.
+licence, licence_checked) from `source.json`. (`source.json` stores the year as a string; `meta.source.year` is an
+integer.)
 
 **Done when:** `check_quotes.py` reports 0 errors and 0 warnings, and every claim is either `verified` or
 explicitly `unverified` with a note.

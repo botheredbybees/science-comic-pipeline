@@ -6,7 +6,7 @@
     python scripts/fetch_source.py --xml saved.xml -o sources/lin-2017        (no network)
 
 Writes into the output folder:
-  pages/p001.txt ...   one paragraph (or caption) per file: the "pages" a claim's `page` refers to
+  pages/p001.txt ...   one paragraph, figure/table caption, or table per file: the "pages" a claim's `page` refers to
   page-map.txt         one line per page: number, section, kind and the first words, to find a quote
   source.json          title, authors, year, DOI, PMCID and the licence statement with its URL
   <PMCID>.xml          the full text as fetched
@@ -70,12 +70,16 @@ def licence_family(url, statement):
     return "unknown", "unknown"
 
 
-def text_of(el):
-    """Text of an element, dropping bibliography citation numbers, with whitespace collapsed."""
+FLOATS = ("fig", "table-wrap")
+
+
+def text_of(el, skip=()):
+    """Text of an element, dropping bibliography citation numbers (and any `skip` tags, keeping
+    the text that follows them), with whitespace collapsed."""
     out = []
 
     def walk(e):
-        if e.tag == "xref" and e.get("ref-type") == "bibr":
+        if (e.tag == "xref" and e.get("ref-type") == "bibr") or e.tag in skip:
             out.append(e.tail or "")
             return
         out.append(e.text or "")
@@ -128,20 +132,33 @@ def parse(xml_text):
     for p in art.findall(".//front//abstract//p"):
         pages.append(("Abstract", "abstract", text_of(p)))
 
+    def float_pages(f, section):
+        label = text_of(f.find("label")) if f.find("label") is not None else f.tag
+        cap = f.find("caption")
+        if cap is not None:
+            pages.append((section, "caption", f"{label}. {text_of(cap)}"))
+        if f.tag == "table-wrap":
+            rows = [" | ".join(text_of(c) for c in r if c.tag in ("td", "th")) for r in f.iter("tr")]
+            rows = [r for r in rows if r.strip(" |")]
+            if rows:
+                pages.append((section, "table", f"{label} rows: " + " ;; ".join(rows)))
+
     def visit(node, section, parents):
         for c in node:
             if c.tag in SKIP_PARENTS:
                 continue
             if c.tag == "sec":
                 t = c.find("title")
-                visit(c, text_of(t) if t is not None else section, parents)
+                visit(c, f"{section} / {text_of(t)}" if t is not None and section != "Body" else (text_of(t) if t is not None else section), parents)
             elif c.tag == "p":
-                pages.append((section, "para", text_of(c)))
-            elif c.tag in ("fig", "table-wrap"):
-                label = text_of(c.find("label")) if c.find("label") is not None else c.tag
-                cap = c.find("caption")
-                if cap is not None:
-                    pages.append((section, "caption", f"{label}. {text_of(cap)}"))
+                # Springer-style XML puts figures and tables inside the paragraph; keep the paragraph's own
+                # text on its page and give each figure and table a page of its own.
+                pages.append((section, "para", text_of(c, skip=FLOATS)))
+                for f in c.iter():
+                    if f.tag in FLOATS:
+                        float_pages(f, section)
+            elif c.tag in FLOATS:
+                float_pages(c, section)
             else:
                 visit(c, section, parents)
 
@@ -156,9 +173,14 @@ def write(out, meta, pages, xml_text):
     out = Path(out)
     (out / "pages").mkdir(parents=True, exist_ok=True)
     lines = []
+    count = {}
     for n, (section, kind, text) in enumerate(pages, 1):
         (out / "pages" / f"p{n:03d}.txt").write_text(text + "\n")
-        lines.append(f"p{n:03d} [{section}] {kind}: {text[:70]}")
+        # a locator such as "Discussion, paragraph 3" counts paragraphs within the section
+        key = (section, kind)
+        count[key] = count.get(key, 0) + 1
+        what = f"{kind} {count[key]}" if kind in ("para", "abstract") else kind
+        lines.append(f"p{n:03d} [{section}] {what}: {text[:70]}")
     (out / "page-map.txt").write_text("\n".join(lines) + "\n")
     (out / "source.json").write_text(json.dumps(meta, indent=2) + "\n")
     (out / f"{meta['pmcid'] or 'source'}.xml").write_text(xml_text)

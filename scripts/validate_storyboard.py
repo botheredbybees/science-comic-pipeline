@@ -63,11 +63,27 @@ def _staging_texts(staging):
         if prop.get("kind") == "bars" and "max" in prop and prop.get("show_values", True) and prop.get("show_max", True) \
                 and not (prop.get("unit") == "%" and prop["max"] == 100):
             out.append(str(prop["max"]))
+        if prop.get("kind") == "bars" and prop.get("min", 0) < 0 and prop.get("show_values", True) and prop.get("show_max", True):
+            out.append(str(prop["min"]))
         for b in prop.get("bars", []):
             out += [b.get("label", ""), str(b["value"])] if prop.get("show_values", True) else [b.get("label", "")]
         if "staging" in prop:
             out += _staging_texts(prop["staging"])
     return out
+
+
+# Words in a `scene` that name a prop the renderer can draw. If the scene says it and the staging lacks it, the alt text
+# describes something the reader cannot see.
+SCENE_OBJECTS = {"ship": "ship", "bowl": "bowl", "bottle": "bottle", "jar": "jar", "desk": "desk", "phone": "phone",
+                 "slide": "slide", "pie": "pie", "board": "board"}
+
+
+def _prop_kinds(staging):
+    kinds = set()
+    for prop in (staging or {}).get("props", []):
+        kinds.add(prop["kind"])
+        kinds |= _prop_kinds(prop.get("staging"))
+    return kinds
 
 
 def validate(doc):
@@ -130,8 +146,13 @@ def validate(doc):
             for line in p.get("speech", []):
                 if line.get("kind", "say") != "caption" and line["speaker"] not in staged:
                     warnings.append(f"{p['id']}: {line['speaker']} speaks but is not in the staging, so no speech line can point at them")
-        if "humour" in p and cited and not p["humour"].get("keeps_claims_intact"):
-            warnings.append(f"{p['id']}: joke on a panel that cites {', '.join(cited)}; a reviewer must confirm it keeps the claims intact")
+        if "humour" in p and not p["humour"].get("keeps_claims_intact"):
+            warnings.append(f"{p['id']}: joke on a panel that cites {', '.join(cited) if cited else 'no claim'}; "
+                            "a reviewer must confirm it keeps the claims intact")
+        drawn = _prop_kinds(p.get("staging"))
+        for word, kind in SCENE_OBJECTS.items():
+            if re.search(rf"\b{word}s?\b", p.get("scene", ""), re.I) and kind not in drawn:
+                warnings.append(f"{p['id']}: the scene (the alt text) mentions a {word} but no {kind} prop is staged")
 
     for cid in sorted(used):
         c = claims[cid]

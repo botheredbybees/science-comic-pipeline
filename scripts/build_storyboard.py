@@ -6,7 +6,7 @@ A working folder holds
   beats/B*.yaml        a list of beats, each a list of panels (sorted by file name)
   claims*.yaml         ledgers (a `claims:` list); also any claims/*.yaml
 and the output keeps only the claims the panels actually cite, so a long ledger can serve several
-comics. It reports any cited claim that is not `verified`.
+comics. It reports any cited claim that is not `verified`, and lists verified claims that no panel cites.
 
     python scripts/build_storyboard.py examples/lin-2017-wap-npc
 """
@@ -37,7 +37,8 @@ def build(folder):
     doc = dict(head)
     doc["claims"] = [ledger[c] for c in used]
     doc["beats"] = beats
-    unused = sorted((c for c in ledger if c not in used), key=lambda s: int(s[1:]))
+    # only verified claims are worth a second look; an unverified one is left out on purpose
+    unused = sorted((c for c in ledger if c not in used and ledger[c]["status"] == "verified"), key=lambda s: int(s[1:]))
     return doc, [c for c in used if ledger[c]["status"] != "verified"], len(ledger), unused
 
 
@@ -53,7 +54,7 @@ def main(argv=None):
     print(f"{len(doc['beats'])} beats, {panels} panels, {len(doc['claims'])} of {n_ledger} ledger claims used"
           + (f"; NOT verified but used: {unverified}" if unverified else ""))
     if unused:
-        print(f"unused ledger claims (use them or drop them): {unused}")
+        print(f"verified claims no panel cites (fine if left out on purpose; check none was forgotten): {unused}")
     return 0
 
 

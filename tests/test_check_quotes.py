@@ -74,3 +74,14 @@ def test_cli_with_a_pages_dir(tmp_path):
     sb.write_text("claims:\n  - {id: C1, text: 'x', kind: result, status: verified, source: {locator: p, quote: 'downstream carriers fill', page: 1}}\n")
     assert main([str(sb), "--pages-dir", str(pages)]) == 0
     assert load_pages(pages_dir=pages) == {1: PAGES[1]}
+
+
+def test_locator_is_checked_against_the_page_map(tmp_path):
+    import check_quotes as cq
+    pages = {1: "Alpha beta gamma."}
+    doc = {"claims": [{"id": "C1", "text": "Alpha", "status": "verified",
+                       "source": {"page": 1, "quote": "Alpha beta", "locator": "Methods, Field sampling, paragraph 2"}}]}
+    ok = {1: ("Methods / Field sampling", 2)}
+    bad = {1: ("Methods / Field sampling", 3)}
+    assert cq.check(doc, pages, ok)[1] == []
+    assert any("locator" in w for w in cq.check(doc, pages, bad)[1])

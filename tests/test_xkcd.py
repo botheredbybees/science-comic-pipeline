@@ -249,3 +249,31 @@ def test_board_card_labels_shrink_to_fit_their_cards():
     svg = R.prop(pen, 0, 0, 220, 120, spec, {}, 18)
     sizes = [float(m) for m in re.findall(r'font-size="([\d.]+)"', svg)]
     assert sizes and min(sizes) < 18 and min(sizes) >= 9
+
+
+def test_bars_draw_a_title_and_hang_negative_values_below_zero():
+    pen = R.Pen("b")
+    spec = {"title": "Selectivity", "min": -1, "max": 1, "bars": [{"label": "a", "value": 0.5}, {"label": "b", "value": -0.5}]}
+    svg = R._bars(pen, 0, 0, 400, 300, spec, 16)
+    ET.fromstring(f"<svg xmlns='http://www.w3.org/2000/svg'>{svg}</svg>")
+    assert "Selectivity" in svg and "-0.5" in svg and ">-1<" in svg.replace(" ", "")
+    # the positive value label sits above the negative one
+    ys = {m.group(2): float(m.group(1)) for m in re.finditer(r'y="([\d.]+)"[^>]*><tspan[^>]*>(-?0\.5)<', svg)}
+    assert ys["0.5"] < ys["-0.5"]
+
+
+def test_an_extra_can_be_an_animal_by_naming_a_body_in_the_staging(doc):
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0]["staging"]["characters"] += [{"id": "extra", "x": 0.6, "body": "salp", "scale": 1.2}]
+    from validate_storyboard import validate
+    import jsonschema
+    assert validate(d)[0] == []
+    with_salp = "".join(R.render_pages(d)[0])
+    plain = "".join(R.render_pages(doc)[0])
+    assert with_salp != plain and "<svg" in with_salp
+
+
+def test_the_colophon_names_the_licence_deed():
+    assert R._licence_url("CC BY 4.0") == "https://creativecommons.org/licenses/by/4.0/"
+    assert R._licence_url("CC BY-SA 4.0") == "https://creativecommons.org/licenses/by-sa/4.0/"
+    assert R._licence_url("All rights reserved") == ""

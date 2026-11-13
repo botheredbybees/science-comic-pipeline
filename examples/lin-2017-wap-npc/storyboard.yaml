@@ -895,7 +895,7 @@ beats:
     weight: standard
     frame: borderless
     transition: scene-to-scene
-    scene: Ines on the deck of the R/V Laurence M. Gould, in the cold, holding a bottle.
+    scene: Ines on the deck of the R/V Laurence M. Gould, in the cold.
     speech:
     - speaker: narrator
       kind: caption
@@ -919,7 +919,7 @@ beats:
   - id: B2.4
     weight: wide
     transition: scene-to-scene
-    scene: The ship's seawater line runs past a filter holder and a row of sensors.
+    scene: A seawater line runs past a filter holder and a row of sensors.
     speech:
     - speaker: narrator
       kind: caption
@@ -972,7 +972,7 @@ beats:
   - id: B2.6
     weight: standard
     transition: subject-to-subject
-    scene: 'A fraction on the board: NCP over POC. Dot asks what it is for.'
+    scene: 'A fraction: NCP over POC. Dot asks what it is for.'
     speech:
     - speaker: narrator
       kind: caption

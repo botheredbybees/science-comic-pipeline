@@ -157,7 +157,8 @@
                   "diatom",
                   "krill",
                   "penguin",
-                  "whale"
+                  "whale",
+                  "salp"
                 ]
               }
             }
@@ -459,6 +460,17 @@
                 "type": "number",
                 "exclusiveMinimum": 0,
                 "maximum": 3
+              },
+              "body": {
+                "enum": [
+                  "stick",
+                  "diatom",
+                  "krill",
+                  "penguin",
+                  "whale",
+                  "salp"
+                ],
+                "description": "draw this character with this body instead of the cast member's (so an `extra` can be an animal)"
               }
             }
           }
@@ -587,6 +599,10 @@
               },
               "max": {
                 "type": "number"
+              },
+              "min": {
+                "type": "number",
+                "description": "bars only: the lowest value on the scale; below zero, bars hang down from the zero line (a signed index)"
               },
               "unit": {
                 "type": "string"

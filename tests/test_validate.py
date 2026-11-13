@@ -199,3 +199,18 @@ def test_a_number_not_in_any_cited_claim_is_a_warning(doc):
 def test_numbers_that_come_from_the_cited_claims_do_not_warn(doc):
     _, warnings = validate(doc)
     assert not any("none of its cited claims" in w for w in warnings)
+
+
+def test_scene_naming_an_unstaged_prop_warns_and_a_joke_on_a_claim_free_panel_warns(doc):
+    panel = doc["beats"][0]["panels"][0]
+    panel["scene"] = "Ines stands at a desk."
+    panel["staging"] = {"characters": [{"id": "extra", "x": 0.5}]}
+    panel["claim_ids"] = []
+    for line in panel.get("speech", []):
+        line["text"] = "No numbers here."
+    panel["humour"] = {"note": "a joke", "keeps_claims_intact": False}
+    errors, warnings = validate(doc)
+    assert any("mentions a desk" in w for w in warnings)
+    assert any("joke on a panel that cites no claim" in w for w in warnings)
+    panel["staging"]["props"] = [{"kind": "desk"}]
+    assert not any("mentions a desk" in w for w in validate(doc)[1])

@@ -22,7 +22,11 @@ and diagrams `bars`, `plot`, `axis`, `pie`, `flow`, `steps`, `stack`). Positions
 panel's scene area. In the pipeline the agent writes the staging as the "artist" step. Numbers
 in a chart or label need a claim, exactly as dialogue does. A panel without staging falls back to
 its scene text. Cast members may carry `appearance` hints (`body`: stick, diatom, krill, penguin or whale, `hair`, `glasses`, `lanyard`). The animal bodies are drawn in `renderers/xkcd/animals.py`; a krill is small, so give it a larger `scale` in the staging (about 1.3 to 1.5), and a whale a smaller one (about 0.4 to 0.65).
-On an `axis`, `row` stacks crowded labels at different heights.
+On an `axis`, `row` stacks crowded labels at different heights. A `bars` prop draws its `title` above the chart; its
+bars stand on a zero line, and a negative value hangs below it (a signed index such as Ivlev's: set `min: -1`, `max: 1`).
+Each chart is scaled to its own largest bar unless `max` is given, so bar heights are not comparable between panels;
+say so in the caption or give them the same `max`. Axis tick numbers (and a `min` or `max` shown on bars) count as numbers
+for the validator: cite the claim that defines the scale.
 
 Things found by using the vocabulary (check the render when you stage these): a character `holding` can only be
 a `marker`, `mug` or `paper`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a

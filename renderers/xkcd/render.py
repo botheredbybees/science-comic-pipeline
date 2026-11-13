@@ -12,6 +12,7 @@ Nothing here is copied from xkcd; only the ideas about style are borrowed.
 """
 import argparse
 import math
+import re
 import sys
 from html import escape
 from pathlib import Path
@@ -159,30 +160,49 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
 
 # ---------------------------------------------------------------- props
 def _bars(pen, x, y, w, h, spec, fs):
+    """Vertical bars from a zero line. Values below zero hang down from it (a signed index such as
+    Ivlev's); `min` and `max` set the scale, otherwise it fits the data. A `title` is drawn above."""
     bars = spec["bars"]
     n = len(bars)
-    mx = spec.get("max") or max(b["value"] for b in bars)
+    vals = [b["value"] for b in bars]
+    hi = spec.get("max") or max(max(vals), 0) or 1
+    lo = spec.get("min", min(0, min(vals)))
     pct = "%" if spec.get("unit") == "%" else ""
     show = spec.get("show_values", True)
     fsb = max(11.0, fs * 0.85)
-    tick = f"{mx:g}{pct}" if show and spec.get("show_max", True) else ""
-    ax = x + max(14, len(tick) * fsb * CHAR_W + 8)
+    ticks = [f"{hi:g}{pct}"] + ([f"{lo:g}{pct}"] if lo < 0 else [])
+    tick_w = max(len(t) for t in ticks) * fsb * CHAR_W + 8 if show and spec.get("show_max", True) else 0
+    ax = x + max(14, tick_w)
     slot = (x + w - ax - 4) / n
     labs = [wrap(b.get("label", ""), slot - 4, fsb) for b in bars]
     lab_h = max(len(la) for la in labs) * fsb * 1.15 + 8
-    top, bottom = y + fsb + 10, y + h - lab_h
-    o = [pen.line((ax, top - 4), (ax, bottom), 2.2), pen.line((ax, bottom), (x + w, bottom), 2.2)]
-    if tick:
-        o.append(text(ax - 5, top - 4 - fsb * 0.2, [tick], fsb, anchor="end"))
+    title = spec.get("title", "")
+    top, bottom = y + fsb + 10 + (fsb * 1.4 if title else 0), y + h - lab_h
+    if lo < 0:  # leave room for the value labels of bars that hang below the zero line
+        bottom -= fsb * 1.3
+
+    def yv(v):
+        return bottom - (v - lo) / (hi - lo) * (bottom - top)
+
+    o = []
+    if title:
+        o.append(text(ax + (x + w - ax) / 2, y, [title], fsb, anchor="middle"))
+    o += [pen.line((ax, top - 4), (ax, bottom), 2.2), pen.line((ax, yv(0)), (x + w, yv(0)), 2.2)]
+    if tick_w:
+        o.append(text(ax - 5, top - 4 - fsb * 0.2, [ticks[0]], fsb, anchor="end"))
+        if lo < 0:
+            o.append(text(ax - 5, bottom - fsb * 0.2, [ticks[1]], fsb, anchor="end"))
     for i, b in enumerate(bars):
         bw = min(slot * 0.62, 86)
         cx = ax + slot * (i + 0.5)
-        bh = clamp(b["value"] / mx, 0, 1) * (bottom - top)
+        v = clamp(b["value"], lo, hi)
+        y0, y1 = yv(0), yv(v)
         fill = PAPER if b.get("style") == "hollow" else INK
-        o.append(pen.rect(cx - bw / 2, bottom - bh, bw, bh, 2.4, fill=fill, over=1.5))
+        o.append(pen.rect(cx - bw / 2, min(y0, y1), bw, abs(y1 - y0), 2.4, fill=fill, over=1.5))
         if show:
-            o.append(text(cx, bottom - bh - fsb * 1.25, [f"{b['value']:g}{pct}"], fsb, anchor="middle"))
-        o.append(text(cx, bottom + 4, labs[i], fsb, anchor="middle", lh=1.15))
+            ly = y1 - fsb * 1.25 if b["value"] >= 0 else y1 + 4
+            o.append(text(cx, ly, [f"{b['value']:g}{pct}"], fsb, anchor="middle"))
+        o.append(text(cx, bottom + 4 + (fsb * 1.3 if lo < 0 else 0), labs[i], fsb, anchor="middle", lh=1.15))
     return "".join(o)
 
 
@@ -302,6 +322,8 @@ def stage(pen, x, y, w, h, st, cast, fs):
     base_s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3)  # wide, short boxes get bigger figures
     for c in st.get("characters", []):
         app = cast.get(c["id"], {}).get("appearance")
+        if c.get("body"):  # a body on the staged character overrides the cast's, so `extra` can be an animal
+            app = {**(app or {}), "body": c["body"]}
         svg, head = figure(pen, x + c.get("x", 0.5) * w, y + c.get("y", 0.94) * h, base_s * c.get("scale", 1),
                            c.get("pose", "stand"), c.get("face", "neutral"), c.get("facing", "right"),
                            c.get("holding"), app)
@@ -326,9 +348,9 @@ def panel_font(w):
 
 def _head_offset(c, cast, w, h):
     """How far below the top of the scene a staged character's head sits."""
-    body = (cast.get(c["id"], {}).get("appearance") or {}).get("body")
+    body = c.get("body") or (cast.get(c["id"], {}).get("appearance") or {}).get("body")
     s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3) * c.get("scale", 1)
-    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52}.get(body, 128)  # head height above the feet, at s = 1
+    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52, "salp": 66}.get(body, 128)  # head height above the feet, at s = 1
     return c.get("y", 0.94) * h - rise * s
 
 
@@ -450,8 +472,10 @@ def build_items(doc, cast, k=0.55):
                           **_row_limits(row, plans, rh),
                           "draw": _row_drawer(row, widths, plans, rh, label, cast)})
             first = False
+    lic_url = _licence_url(src["licence"])
     note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
-            + (f', doi {src["doi"]}' if src.get("doi") else "") + f'. Licence: {src["licence"]}. '
+            + (f', doi {src["doi"]}' if src.get("doi") else "")
+            + f'. Licence: {src["licence"]}' + (f' ({lic_url})' if lic_url else "") + ". "
             "Condensed into a comic with invented characters and scenes; the authors did not write or endorse it.")
     colo = wrap(note, usable, 15)
     items.append({"kind": "colophon", "h": block_h(colo, 15) + 12,
@@ -604,9 +628,20 @@ h1 { margin: 0; font-size: 1.3rem; text-wrap: balance; } p { margin: 0; color: v
 """
 
 
+def _licence_url(label):
+    """The Creative Commons deed for a label such as "CC BY 4.0" or "CC BY-SA 4.0"; "" for anything else."""
+    m = re.match(r"^CC[ -](BY(?:-SA)?|0)(?:[ -](\d\.\d))?$", label.strip(), re.I)
+    if not m:
+        return ""
+    kind = m.group(1).lower()
+    if kind == "0":
+        return "https://creativecommons.org/publicdomain/zero/1.0/"
+    return f"https://creativecommons.org/licenses/{kind}/{m.group(2) or '4.0'}/"
+
+
 def build_sheet(doc, svgs, standalone=False):
     pages = "".join(f'<div class="page">{s}</div>' for s in svgs)
-    body = (f'<title>{esc(doc["meta"]["title"])} xkcd Pages</title><meta name="claude:viewport-fit-sides" content="cover">'
+    body = (f'<title>{esc(doc["meta"]["title"])}</title><meta name="claude:viewport-fit-sides" content="cover">'
             '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Patrick+Hand&display=swap">'
             f'<style>{SHEET_CSS}</style><div class="wrap"><div><span class="label">xkcd-style render</span>'
             f'<h1>{esc(doc["meta"]["title"])}: {len(svgs)} A4 pages</h1></div>'

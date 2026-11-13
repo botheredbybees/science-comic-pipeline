@@ -41,10 +41,16 @@ visuals do the work.
 
 - Usually one **guide**, a person in the paper's world (a scientist on the ship, a student), who asks the
   reader's questions. Give them a simple look (`appearance`: `hair` is one of none, ponytail, bun, spiky, beanie; `glasses` and `lanyard` are true or false; `body` is stick by default).
-- Organisms or things that carry the result can be characters (`body: diatom | krill | penguin | whale`
-  are drawn; other things are props or `extra`). A character must not be made to say something the
+- Organisms or things that carry the result can be characters (`body: diatom | krill | penguin | whale | salp`
+  are drawn; other things are props or `extra`). A walk-on animal that is not a recurring character needs no cast
+  entry: stage `{ id: extra, body: penguin }`. If your organism has no body, use a stick figure and caption what it is
+  (and say so in the cast `role`); do not draw a body the renderer cannot. A character must not be made to say something the
   organism did not do: playing "Dot, the diatom" is fine; giving it motives the paper does not report is not.
-- Fewer is better. Three or four recurring characters; others are `extra`.
+- Fewer is better. Three or four recurring characters; others are `extra` (with a `body` when they are animals).
+
+**Jargon.** A general reader needs terms explained, but the comic may add nothing the paper does not say. Use
+the paper's own gloss ("a parasitic dinoflagellate group"), which you put in the ledger as a definition claim. If the
+paper gives none, keep the term and list it in `left_out`, or leave it out; do not write a definition from memory.
 
 ## 4. Say what is left out
 
@@ -63,6 +69,9 @@ beats is normal; panels per beat follow the material. For each beat write:
 Use McCloud's ideas (*Understanding Comics*, *Making Comics*) to pace it: a wide quiet panel is a pause; a
 small panel a quick beat. Mark where the reader needs a breather, where a chart is the point, where the
 payoff lands, and where the caveats go (they belong in the comic, near the claim they qualify).
+
+A rule of thumb: about one claim per panel, so a paper with 60 usable claims makes a comic of 30 to 50 panels; a
+perspective piece with fewer facts makes a shorter one. Claim ids may appear in `meta.spine` text, as in the examples.
 
 Every claim you plan to use must exist in the ledger. If the story needs a statement that is not in it, go
 back and add it (with a quote), do not write it into a panel.

@@ -21,6 +21,9 @@ Good raw material is already in the paper:
 - **The method as an adventure.** The ship, the sampling, the instrument that did not do what was hoped.
 - **The reader's own reaction** voiced by a character ("Surely.", "Surely not.").
 
+A face or a pose can be the joke (a deadpan salp, a smile beside a number). If it is, say so in the note and treat it
+as a joke; if it is only tone, keep it neutral where a cited claim is negative or hedged.
+
 ## 2. Draft a few, not many
 
 Propose at most one joke per beat, and fewer is better. A comic that is funny three times is stronger than one
@@ -35,12 +38,13 @@ humour:
   keeps_claims_intact: false     # leave false until the check below
 ```
 
-The validator warns about a joke on a panel that cites claims until `keeps_claims_intact: true`. That warning is
+The validator warns about any joke until `keeps_claims_intact: true`, on a panel with claims or without. That warning is
 the flag: a joke you are unsure about keeps it, and waits for a human.
 
 ## 4. Check each joke before setting `keeps_claims_intact: true`
 
-Answer in writing (in the note) for each:
+Answer in writing (in the note) for each, briefly: a note such as "1 no change; 2 reads as the comic's voice;
+3 organisms; 4 no; 5 yes" is enough, with a sentence only where an answer is not a plain no:
 
 1. Does any number, unit, hedge ("may", "suggests"), scope or direction change? (They must not.)
 2. Could a reader take the joke as something the paper reported? If so, make it unmistakably the comic's
@@ -58,7 +62,7 @@ you propose.
 `humour` blocks on a few panels, each with a note, and a list in your reply of the jokes proposed, which
 you consider safe, and which you want a human to look at first. Re-run
 `validate_storyboard.py --strict`: it should show no errors and exactly one warning for each joke you left
-`false`. Any other warning is a defect.
+`false`, and so **exit 1 is the right end state** while a joke awaits a human. Any other warning is a defect.
 
 **Done when:** each joke has passed the five questions (`keeps_claims_intact: true`), or is left `false` and on
 the list for the reviewer, or has been removed.

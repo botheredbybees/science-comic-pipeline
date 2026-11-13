@@ -47,7 +47,19 @@ def contains(page_tokens, quote_tokens):
     return bool(n) and any(page_tokens[i:i + n] == quote_tokens for i in range(len(page_tokens) - n + 1))
 
 
-def check(doc, pages):
+def load_locators(pages_dir):
+    """Map page number -> "Section, paragraph N" from page-map.txt (written by fetch_source.py), if present."""
+    pm = Path(pages_dir).parent / "page-map.txt"
+    out = {}
+    if pm.exists():
+        for line in pm.read_text().splitlines():
+            m = re.match(r"p(\d+) \[(.*?)\] (?:para|abstract) (\d+):", line)
+            if m:
+                out[int(m.group(1))] = (m.group(2), int(m.group(3)))
+    return out
+
+
+def check(doc, pages, locators=None):
     """Return (errors, warnings)."""
     errors, warnings = [], []
     toks = {n: tokens(t) for n, t in pages.items()}
@@ -68,6 +80,13 @@ def check(doc, pages):
             hint = f"; the quote is on page(s) {elsewhere}" if elsewhere else "; the quote is not on any page"
             (errors if c["status"] == "verified" else warnings).append(f"{cid}: quote not found on page {page}{hint}")
             continue
+        m = re.match(r"^(.*?),? paragraph (\d+)$", src.get("locator", "") or "")
+        if m and locators and page in locators:
+            sec, n = locators[page]
+            parts = [x.strip().lower() for x in sec.split(" / ")]
+            want = [x.strip().lower() for x in m.group(1).split(", ")]
+            if not all(any(p.startswith(w) for p in parts) for w in want) or int(m.group(2)) != n:
+                warnings.append(f"{cid}: locator \"{src['locator']}\" but page {page} is {sec}, paragraph {n}")
         missing = sorted(set(NUMBER.findall(c["text"])) - set(NUMBER.findall(quote)))
         if missing:
             warnings.append(f"{cid}: number(s) {', '.join(missing)} in the claim are not in its quote")
@@ -83,7 +102,7 @@ def main(argv=None):
     ap.add_argument("--strict", action="store_true")
     args = ap.parse_args(argv)
     doc = yaml.safe_load(Path(args.storyboard).read_text())
-    errors, warnings = check(doc, load_pages(args.pages_dir, args.text))
+    errors, warnings = check(doc, load_pages(args.pages_dir, args.text), load_locators(args.pages_dir) if args.pages_dir else None)
     for e in errors:
         print(f"ERROR   {e}")
     for w in warnings:

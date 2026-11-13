@@ -38,7 +38,7 @@ def test_parse_pages_and_metadata():
     assert "Density of plankton is high." in texts[1]  # citation numbers dropped
     assert "We sampled water." in texts and "Figure 1. A map." in texts
     assert not any("Should not appear" in t for t in texts)
-    assert [s for s, _, _ in pages][1:3] == ["Introduction", "Methods"]
+    assert [s for s, _, _ in pages][1:3] == ["Introduction", "Introduction / Methods"]
 
 
 def test_licence_families():
@@ -56,3 +56,20 @@ def test_writes_pages_and_refuses_a_noderivs_licence(tmp_path, capsys):
     assert json.loads((tmp_path / "out" / "source.json").read_text())["licence"] == "CC BY 4.0"
     assert F.main(["--xml", str(bad), "-o", str(tmp_path / "out2")]) == 2
     assert not (tmp_path / "out2").exists()
+
+
+def test_figures_and_tables_inside_a_paragraph_get_their_own_pages(tmp_path):
+    xml = (XML % "by").replace(
+        "<sec><title>Methods</title>",
+        '<sec><title>Methods</title><p>Krill ate diatoms (Table 1) and grew.'
+        '<table-wrap id="t1"><label>Table 1</label><caption><p>Diets.</p></caption>'
+        '<table><tr><th>Taxon</th><th>Share</th></tr><tr><td>Diatoms</td><td>41%</td></tr></table></table-wrap>'
+        '<fig id="f2"><label>Figure 2</label><caption><p>A net.</p></caption></fig> Then they stopped.</p>')
+    meta, pages = F.parse(xml)
+    texts = [t for _, _, t in pages]
+    assert "Krill ate diatoms (Table 1) and grew. Then they stopped." in texts  # the paragraph, without the floats
+    assert "Table 1. Diets." in texts and "Figure 2. A net." in texts
+    assert any(t.startswith("Table 1 rows:") and "Diatoms | 41%" in t for t in texts)
+    F.write(tmp_path, meta, pages, xml)
+    pm = (tmp_path / "page-map.txt").read_text()
+    assert "[Introduction] para 1:" in pm and "[Introduction / Methods] para 1:" in pm and "caption:" in pm

@@ -22,16 +22,18 @@ panel, and exits 1 when there is any. Fix each, then re-run until it says `no de
 
 ## 2. Look at every page
 
-Open `output/<slug>/sheet.html` (or the PDF) and view each page at readable size. Without a browser tool, make a
-picture of a page with headless Chrome at A4 proportions (a larger window gives a false blank band):
-`google-chrome --headless=new --screenshot=p1.png --window-size=794,1123 output/<slug>/page-1.svg`.
+Export the PDF first (step 4) and view each page at readable size: it is drawn in the real font, which a bare
+`page-N.svg` is not (the SVG shows a fallback font, so wrapping looks different). Without a PDF viewer, make PNGs with
+`pdftoppm -r 70 -png output/<slug>.pdf output/<slug>/q`. Compare the PDF with the sheet once: the layout must match.
 The scan cannot see the following, so check them yourself, page by page:
 
 - Text running over a drawing, a speech line that crosses a figure, or a line that points at the wrong speaker.
 - A figure cut off at a panel edge, or tiny in a wide, short panel.
 - Charts: every bar and point labelled; no label cut short; axes and units readable; nothing drawn that
   is not in a claim.
-- Pie, axis and flow labels that collide.
+- Pie, axis and flow labels that collide. On a crowded `axis` a `row` lifts each label relative to its own height,
+  so labels of different heights cross each other's leader lines: give each cluster of marks one combined label instead.
+- Charts with no title, no unit, or a bar label touching the top of a solid bar (the scan sees text against text only).
 - A caption in a font size different from its neighbours, or text too small to read at A4.
 - Reading order: left to right, then down. Two rows made only of open (borderless) panels adjacent, or two
   rows with the same widths, make a page hard to read.
@@ -52,7 +54,7 @@ Most defects are fixed in `staging` or on the panel:
 | Figure tiny in a wide panel | make the panel `standard` or `height: tall` |
 | Crowded chart labels | `row` on an `axis`, fewer labels, a `wide` or `full` panel |
 | Two open rows adjacent / same-width rows | change a panel's `frame` or `weight` |
-| Blank band under a page | `height: tall` on a significant panel |
+| Blank band under a page | `height: tall` on a significant panel (the layout repacks, so look at the next page too) |
 | A caption too long | split into two panels |
 
 If the cause is a renderer bug (a prop that cannot be staged correctly), fix `renderers/xkcd/` and add a
@@ -68,7 +70,8 @@ python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o output/<slug>.pd
 ```
 
 One A4 page per comic page. Check the page count and that the attribution for the source is printed on
-the last page.
+the last page, complete: title, authors, year, DOI, licence **and the licence's URL**, and the line that the comic
+is an adaptation the authors did not write or endorse.
 
 ## Output
 

@@ -12,15 +12,22 @@ so the skills stay short. Run them in this order.
 | 4 | [`humour-pass`](humour-pass/SKILL.md) | Proposes a few jokes that leave claims intact; flags each for a human | `humour` blocks | `validate_storyboard.py` |
 | 5 | [`visual-qa`](visual-qa/SKILL.md) | Renders, scans for overflow and overlap, reviews every page by eye, fixes the staging | `QA.md`, the PDF | `visual_qa.py`, `export_pdf.py` |
 
+**Commands.** The skills write `python scripts/...`; use the repo's own interpreter, `.venv/bin/python` (set up as
+in the top-level README, so `jsonschema` and `pyyaml` are there). The pages are drawn in Patrick Hand, which the
+sheet and the PDF export load from Google Fonts: they need a network connection, and an `.svg` opened on its own shows
+a fallback font. Judge wrapping in the PDF, not in a bare SVG.
+
 How they fit: the ledger (1) is the only place facts come from; the spine (2) decides the story; the
 storyboard (3) is the product that renderers read; the humour (4) is optional; the QA (5) is the last look.
 
 **The rule that holds it together:** nothing in a panel that is not in a cited, verified claim, and no joke
 or caption that makes a claim say more than it does.
 
-These skills were written from what the Lin 2017 and Akam 2026 examples needed, then followed cold, once, by an
-agent that had not seen those examples, on Strzepek et al. 2022 (a perspective article with little story). It finished
-a 36-panel comic that passes the quote check, the validator and the scan. It also found real faults in the skills and
-scripts (a crash on a relative path, a contradiction about jokes, missing guidance on stripped citations, definitions,
-perspective papers and caption/body conflicts), which are fixed. One cold run is not proof: the next paper is the
-next test.
+These skills were written from what the Lin 2017 and Akam 2026 examples needed, then followed cold by an agent that had
+not seen those examples: first on Strzepek et al. 2022 (a perspective article with little story, 36 panels), then on
+Pauli et al. 2021 (a primary research article with data, 46 panels). Both runs finished a comic that passes the quote
+check, the validator and the scan, and each found real faults in the skills and scripts, which were fixed before the next
+paper. The second run's faults were: figure and table captions glued onto the paragraph before them, no paragraph numbers
+in `page-map.txt`, bars with a title that was never drawn and no signed values, no salp body, conflicts inside a paper
+(Results against Discussion, text against a table) that the skill did not name, and contradictory rules about unused
+claims. Two runs are not proof: the next paper is the next test.

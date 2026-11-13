@@ -1,9 +1,9 @@
-"""Animal characters for the xkcd renderer: krill, penguin and whale.
+"""Animal characters for the xkcd renderer: krill, penguin, whale and salp.
 
 Each function draws one animal facing right with its feet (or tail, or belly) on `base`, and returns
 (svg, (head_x, head_top_y)) like a stick figure does, so speech lines can point at it. Left-facing is
 done by mirroring around the centre. `s` is the usual figure scale; at s = 1 a penguin is about 100 units
-tall, a whale about 250 long and a krill about 70 long, so give a krill a larger `scale` in the staging.
+tall, a whale about 250 long, a krill about 70 long and a salp about 110 long, so give a krill a larger `scale` in the staging.
 
 They stay black and white like the rest of the renderer: ink outlines, white fills, and the light grey
 SOFT for shading, so they sit comfortably next to the stick figures and props.
@@ -159,4 +159,28 @@ def whale(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdin
     return _mirror("".join(o), cx, facing), (cx + 70 * s, base - 82 * s)
 
 
-ANIMALS = {"krill": krill, "penguin": penguin, "whale": whale}
+def salp(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A solitary salp: a see-through barrel with muscle hoops, an open mouth at the front, a smaller
+    opening at the back and a dark gut. (A salp has no eyes; the dot is the cartoon's, so it can have a face.)"""
+    w = clamp(2.2 * s, 1.5, 3.0)
+
+    def P(x, y):
+        return (cx + x * s, base + y * s)
+
+    body = [P(*p) for p in ((-50, -52), (-20, -60), (20, -60), (48, -54), (54, -38), (48, -22), (20, -16), (-20, -16), (-50, -24), (-56, -38))]
+    o = [pen.line(P(-60, -42), P(-76, -46), w * 0.6, amp=0.4, color=MID), pen.line(P(-60, -34), P(-77, -32), w * 0.6, amp=0.4, color=MID),
+         pen.stroke(body, w, closed=True, fill=PAPER, color=INK)]
+    for x in (-36, -18, 0, 18, 36):  # the muscle hoops
+        o.append(pen.stroke([P(x, -58 + abs(x) * 0.05), P(x + 3, -38), P(x, -18 - abs(x) * 0.05)], w * 0.55, color=MID))
+    o.append(_blob(pen, cx - 55 * s, base - 38 * s, 4.5 * s, 12 * s, 0, w * 0.8, SOFT, INK))  # the atrial opening, at the back
+    o.append(_blob(pen, cx + 53 * s, base - 38 * s, 6.5 * s, 16 * s, 0, w, PAPER, INK))  # the mouth, open at the front
+    o.append(_blob(pen, cx + 51 * s, base - 38 * s, 3 * s, 9 * s, 0, w * 0.5, INK, INK))
+    o.append(_blob(pen, cx - 6 * s, base - 28 * s, 9 * s, 5.5 * s, 0.15, w * 0.8, INK, INK))  # the gut, a dark knot
+    o.append(_eye(pen, *P(34, -47), 3.4 * s + 0.4, face, w))
+    if face in ("smile", "worry"):
+        b = 3 if face == "smile" else -3
+        o.append(pen.stroke([P(24, -30), P(34, -30 + b * 2), P(44, -30)], w * 0.7, color=INK))
+    return _mirror("".join(o), cx, facing), (cx + 30 * s, base - 66 * s)
+
+
+ANIMALS = {"krill": krill, "penguin": penguin, "whale": whale, "salp": salp}
