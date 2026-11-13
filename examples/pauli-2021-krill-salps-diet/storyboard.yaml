@@ -1,0 +1,2016 @@
+version: 2
+meta:
+  title: Who Eats What? Krill, Salps and the Southern Ocean Lunch Menu
+  audience: Curious adults with no biology background who have heard of krill and penguins but not of salps.
+  left_out:
+  - 'Laboratory protocols (DNA extraction kits, PCR settings, sequencing pipeline, fatty acid chemistry): they matter to specialists but do not change the story.'
+  - Most statistics (ANOVA tables, Wilcoxon and Kruskal-Wallis tests, PCA variance, ANOSIM); the comic gives the paper's percentages and indices only.
+  - Regional differences between the six sampling areas, and the supplementary figures and movies.
+  - Depth-by-depth detail of the selectivity results (only the headline that selectivity held across depths is used).
+  - The fecal pellet compositions (krill pellets rich in small flagellates, salp pellets in diatoms and flagellates) and the sinking speed and carbon-export discussion; fecal pellets appear only as how
+    the diatom result was read.
+  - Fatty acid results on copepod markers, lipid content and clustering; the fatty alcohols; the sex and length effects.
+  - Syndiniales biology beyond one caveat, the possible masking of krill eating krill moults, and the metabarcoding pipeline details (dataset sizes, ASV counts).
+  source:
+    title: Selective feeding in Southern Ocean key grazers—diet composition of krill and salps
+    authors:
+    - Nora-Charlotte Pauli
+    - Katja Metfies
+    - Evgeny A. Pakhomov
+    - Stefan Neuhaus
+    - Martin Graeve
+    - Philipp Wenta
+    - Clara M. Flintrop
+    - Thomas H. Badewien
+    - Morten H. Iversen
+    - Bettina Meyer
+    year: 2021
+    doi: 10.1038/s42003-021-02581-5
+    url: https://doi.org/10.1038/s42003-021-02581-5
+    licence: CC BY 4.0
+    licence_checked: Europe PMC full-text XML (PMC8433442), licence statement 'Creative Commons Attribution 4.0 International License ... permits use, sharing, adaptation', 2026-11-13
+  spine:
+    and: Krill and salps are two dominant grazers of the Southern Ocean, krill known as selective feeders and salps assumed to eat whatever the water holds, and a warming Antarctic Peninsula is making their
+      ranges overlap (C1, C8, C10, C11).
+    but: Nobody had compared their diets side by side, from the same region and with the same methods, so the assumption that salps are indiscriminate had never been tested head to head (C9, C15).
+    therefore: The authors sequenced stomach contents, fecal pellets and the surrounding plankton along the Antarctic Peninsula in autumn 2018, plus fatty acids; neither diet matched the plankton, so salps
+      look selective too, and the two diets were broadly similar (C58, C60, C62).
+cast:
+- id: mara
+  name: Mara
+  role: A scientist on the ship who asks the reader's questions
+  look: Stick figure with long blond hair in a lab coat
+  appearance:
+    hair: long
+    hair_tone: strands
+    coat: true
+- id: kip
+  name: Kip
+  role: An Antarctic krill
+  look: A krill
+  appearance:
+    body: krill
+- id: sal
+  name: Sal
+  role: A salp, the filter-feeding tunicate
+  look: A see-through barrel with muscle hoops
+  appearance:
+    body: salp
+- id: whale
+  name: Whale
+  role: One of the predators that eat krill
+  look: A whale
+  appearance:
+    body: whale
+- id: penguin
+  name: Penguin
+  role: One of the predators that eat krill
+  look: A penguin
+  appearance:
+    body: penguin
+claims:
+- id: C1
+  text: Antarctic krill and the salp Salpa thompsoni are among the dominant grazers in the Southern Ocean.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 3
+    quote: Antarctic krill (Euphausia superba Dana, 1850; hereafter krill) and the tunicate Salpa thompsoni Foxton, 1961 (hereafter salp) are among the dominant grazers in the Southern Ocean
+  status: verified
+- id: C2
+  text: Krill is a key species in the Southern Ocean ecosystem and an important link between phytoplankton and higher trophic levels such as whales, seals, and penguins.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 3
+    quote: Krill is a key species in the SO ecosystem and an important link between phytoplankton and higher trophic levels such as whales, seals, and penguins
+  status: verified
+  note: SO = Southern Ocean (abbreviation defined on the page).
+- id: C3
+  text: Salps are a less important food source for these apex predators.
+  kind: background
+  source:
+    locator: Introduction, paragraph 1
+    page: 3
+    quote: while salps are a less important food source for these apex predators
+  status: verified
+- id: C5
+  text: Krill biomass is positively correlated to sea ice and cold temperatures.
+  kind: background
+  source:
+    locator: Introduction, paragraph 2
+    page: 4
+    quote: Krill biomass is positively correlated to sea ice and cold temperatures
+  status: verified
+- id: C6
+  text: Opposite to krill, salp abundances are negatively correlated to sea ice cover.
+  kind: background
+  source:
+    locator: Introduction, paragraph 3
+    page: 5
+    quote: Opposite to krill, salp abundances are negatively correlated to sea ice cover
+  status: verified
+- id: C7
+  text: In response to climatic changes, an increase in the abundance of salps was observed and their southern distribution limit has shifted from 60°S to 65°S since 1980.
+  kind: background
+  source:
+    locator: Introduction, paragraph 3
+    page: 5
+    quote: in response to climatic changes, an increase in the abundance of salps was observed and their southern distribution limit has shifted from 60°S to 65°S since 1980
+  status: verified
+- id: C8
+  text: This has resulted in a greater overlap between the ranges of salps and krill, making them direct competitors for food and habitat in the western Antarctic Peninsula (WAP) region.
+  kind: background
+  source:
+    locator: Introduction, paragraph 3
+    page: 5
+    quote: This has resulted in a greater overlap between the ranges of salps and krill, making them direct competitors for food and habitat in the WAP region
+  status: verified
+  note: WAP = western Antarctic Peninsula; defined on page 4 of the source.
+- id: C10
+  text: Krill are selective feeders with a diatom-dominated diet.
+  kind: background
+  source:
+    locator: Introduction, paragraph 4
+    page: 6
+    quote: Krill are selective feeders with a diatom-dominated diet
+  status: verified
+- id: C11
+  text: The diet of salps mainly reflects the composition of the available plankton community, thus salps are assumed to be non-selective, indiscriminate feeders.
+  kind: background
+  source:
+    locator: Introduction, paragraph 4
+    page: 6
+    quote: the diet of salps mainly reflects the composition of the available plankton community, thus salps are assumed to be non-selective, indiscriminate feeders
+  status: verified
+- id: C12
+  text: Selective feeding is the selection of particular prey items while avoiding or rejecting others, and is displayed by most zooplankton.
+  kind: background
+  source:
+    locator: Introduction, paragraph 4
+    page: 6
+    quote: Selective feeding, i.e. the selection of particular prey items while avoiding or rejecting others, is displayed by most zooplankton
+  status: verified
+- id: C15
+  text: Studies that simultaneously compare the diet composition of krill and salps from the same region are lacking.
+  kind: background
+  source:
+    locator: Introduction, paragraph 5
+    page: 9
+    quote: studies that simultaneously compare the diet composition of krill and salps from the same region are lacking
+  status: verified
+- id: C16
+  text: Metabarcoding is the amplification of a standardized region of the DNA and subsequent sequencing and comparison to a reference database.
+  kind: method
+  source:
+    locator: Introduction, paragraph 6
+    page: 10
+    quote: metabarcoding (i.e. the amplification of a standardized region of the DNA and subsequent sequencing and comparison to a reference database)
+  status: verified
+- id: C17
+  text: The authors used a combined approach of 18S rRNA metabarcoding and fatty acid analyses to reveal long- and short-term diets of krill and salps and to identify feeding preferences of both species.
+  kind: method
+  source:
+    locator: Introduction, last paragraph
+    page: 11
+    quote: We used a combined analytical approach of 18 S rRNA metabarcoding and fatty acid analyses to reveal long- and short-term diets of krill and salps and to identify feeding preferences of both species
+  status: verified
+- id: C18
+  text: Samples were collected during the research cruise PS112 with RV Polarstern between March and May 2018 along the Antarctic Peninsula.
+  kind: method
+  source:
+    locator: Methods, Field sampling, paragraph 1
+    page: 41
+    quote: Samples were collected during the research cruise PS112 with RV Polarstern between March and May 2018 along the Antarctic Peninsula
+  status: verified
+- id: C19
+  text: Krill and salps were collected by oblique net tows in the upper 200 m of the water column.
+  kind: method
+  source:
+    locator: Methods, Field sampling, paragraph 2
+    page: 42
+    quote: krill and salps were collected at ten stations across all regions by oblique net tows with an IKMT (Isaacs-Kidd Midwater Trawl, mesh size 505 µm), or with a RMT (Rectangular Midwater Trawl, mesh
+      size 320 µm) in the upper 200 m of the water column
+  status: verified
+- id: C20
+  text: The animals were measured, sexed, staged, frozen in liquid nitrogen, and stored individually at -80 °C within approximately ten minutes.
+  kind: method
+  source:
+    locator: Methods, Field sampling, paragraph 2
+    page: 42
+    quote: the animals were measured, sexed, staged, frozen in liquid nitrogen, and stored individually at – 80 °C within approximately ten minutes
+  status: verified
+- id: C21
+  text: The authors compared the stomach contents of krill (61 samples across 10 stations) and salps (60 samples across 10 stations) to the ambient plankton community (10 samples across 10 stations of 2
+    L each).
+  kind: method
+  source:
+    locator: Results, paragraph 1
+    page: 12
+    quote: we compared the stomach contents of krill (61 samples across 10 stations) and salps (60 samples across 10 stations) to the ambient plankton community (10 samples across 10 stations of 2 L each)
+  status: verified
+- id: C22
+  text: The composition of fecal pellets produced by krill and salps was also compared (n = 14 for krill fecal pellets, n = 11 for salp fecal pellets).
+  kind: method
+  source:
+    locator: Results, paragraph 1
+    page: 12
+    quote: the composition of fecal pellets (FP) produced by krill and salps were compared (n = 14 for krill FP, n = 11 for salp FP)
+  status: verified
+- id: C23
+  text: Krill fecal pellets were collected from free drifting sediment traps, and freshly produced salp fecal pellets from incubation experiments.
+  kind: method
+  source:
+    locator: Methods, Field sampling, paragraph 3
+    page: 43
+    quote: We collected FP produced by krill from free drifting sediment traps (hereafter drift traps), as well as freshly produced salp fecal pellets from incubation experiments
+  status: verified
+- id: C24
+  text: At ten stations across all study regions, the authors collected a subsample of 2 L of water from the chlorophyll maximum layer (15-60 m).
+  kind: method
+  source:
+    locator: Methods, Field sampling, paragraph 4
+    page: 44
+    quote: At ten stations across all study regions, we collected a subsample of 2 L from the chlorophyll maximum layer (15–60 m)
+  status: verified
+- id: C25
+  text: A common methodological issue when sequencing stomach or gut content samples is that predator DNA often swamps prey sequences.
+  kind: method
+  source:
+    locator: Methods, DNA isolation, paragraph 2
+    page: 46
+    quote: A common methodological issue when sequencing stomach or gut content samples is that predator DNA often swamps prey sequences
+  status: verified
+- id: C26
+  text: The authors designed a blocking probe binding to the krill rRNA gene between the applied primers.
+  kind: method
+  source:
+    locator: Methods, DNA isolation, paragraph 2
+    page: 46
+    quote: we designed a blocking probe (5´-GACGGGCTTTAGCGTTC-3´) binding to the krill rRNA gene between the applied primers
+  status: verified
+- id: C27
+  text: Template controls were randomly included in the library preparation steps, and the authors did not find evidence for contamination.
+  kind: method
+  source:
+    locator: Methods, DNA isolation, paragraph 1
+    page: 45
+    quote: template controls were randomly included in the library preparation steps. We did not find evidence for contamination
+  status: verified
+- id: C30
+  text: The authors used long-term dietary markers by extracting fatty acids from tissue samples of krill (n = 21) and salps (n = 22).
+  kind: method
+  source:
+    locator: Results, Fatty acid composition
+    page: 25
+    quote: we used long-term dietary markers by extracting fatty acids from tissue samples of krill (n = 21) and salps (n = 22)
+  status: verified
+- id: C31
+  text: Ivlev's selectivity index ranges from +1, indicating preference of a prey taxon, to -1, indicating avoidance, while 0 denotes random feeding.
+  kind: method
+  source:
+    locator: Methods, Sequencing data, last paragraph
+    page: 53
+    quote: Ivlev’s selectivity index ranges from +1 indicating preference of a prey taxon to –1 indicating avoidance, while 0 denotes random feeding
+  status: verified
+- id: C32
+  text: The relative proportion of 18S gene copy numbers is influenced by the relative abundance of the organisms in the sample, as well as by varying gene copy numbers.
+  kind: caveat
+  source:
+    locator: Methods, Amplicon sequencing
+    page: 48
+    quote: The relative proportion of 18S gene copy numbers is influenced by the relative abundance of the organisms in the sample, as well as by varying gene copy numbers
+  status: verified
+  note: A sequence share is not a biomass share. The authors go on to argue amplicon sequencing is a reliable tool; do not drop the caveat.
+- id: C33
+  text: The 18S metabarcoding libraries of the water column were dominated by dinoflagellates, mainly represented by the genus Gyrodinium (Dinophyceae, 39.5%).
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 16
+    quote: The 18S metabarcoding libraries of the water column were dominated by dinoflagellates, mainly represented by the genus Gyrodinium (Dinophyceae, 39.5%
+  status: verified
+- id: C34
+  text: Diatoms (Bacillariophyta, 19.4%) and Prymnesiophyceae (mainly Phaeocystis sp., 10.9%) represented the most abundant taxa in the plankton community.
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 16
+    quote: In addition, diatoms (Bacillariophyta, 19.4%), and Prymnesiophyceae (mainly Phaeocystis sp., 10.9%) represented the most abundant taxa
+  status: verified
+  note: 'The sentence begins ''In addition'' after the dinoflagellate sentence: do not rank them (first, second) beyond the percentages.'
+- id: C35
+  text: Copepods, including the genera Oithona and Metridia, accounted for 6.3%, and the parasitic dinoflagellate group Syndiniales for about 5% of all sequences in the plankton community.
+  kind: result
+  source:
+    locator: Results, paragraph 3
+    page: 16
+    quote: Copepods, including the genera Oithona and Metridia, accounted for 6.3%, and the parasitic dinoflagellate group Syndiniales for about 5% of all sequences in the plankton community
+  status: verified
+- id: C36
+  text: The sequence libraries from the stomach content of krill and salps did not reflect the dinoflagellate-dominated plankton community nor the high proportion of diatoms observed in the water samples.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 18
+    quote: the sequence libraries obtained from the stomach content of krill and salps did not reflect the dinoflagellate-dominated plankton community nor the high proportion of diatoms observed in the
+      water samples
+  status: verified
+- id: C37
+  text: The krill stomach content included a high share of crustacean sequences (26.5%), mainly assigned to the copepod genera Calanus and Oithona.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 18
+    quote: The 18S metabarcoding libraries of the krill stomach content included a high share of crustacean sequences (26.5%; Fig. 3c), which were mainly assigned to the copepod genera Calanus and Oithona
+  status: verified
+- id: C38
+  text: In krill stomachs the amount of dinoflagellates (Dinophyceae) and diatoms was markedly reduced compared to the plankton community (14.5 and 12.2%, respectively).
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 18
+    quote: The amount of dinoflagellates (Dinophyceae) and diatoms was markedly reduced compared to the plankton community (14.5 and 12.2%, respectively)
+  status: verified
+- id: C39
+  text: The parasitic Syndiniales group was enriched in krill stomachs, accounting for 12.4% of the sequences.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 18
+    quote: the parasitic Syndiniales group was enriched in krill stomachs accounting for 12.4% of the sequences
+  status: verified
+- id: C40
+  text: Salps constituted almost 6% of the stomach content of krill.
+  kind: result
+  source:
+    locator: Results, paragraph 4
+    page: 18
+    quote: In addition, salps constituted almost 6% to the stomach content of krill
+  status: verified
+- id: C41
+  text: The sequence libraries from the stomach content of salps were dominated by the parasitic dinoflagellate group Syndiniales (31%).
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 19
+    quote: The sequence libraries obtained from the stomach content of salps were dominated by the parasitic dinoflagellate group Syndiniales (31%
+  status: verified
+- id: C42
+  text: Salp stomach libraries contained a high share of small flagellates (Ebria sp., Filosa-Thecofilosea; 20.7%).
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 19
+    quote: contained a high share of small flagellates (Ebria sp., Filosa-Thecofilosea; 20.7%)
+  status: verified
+- id: C43
+  text: In salp stomachs, other dinoflagellates (Dinophyceae) and diatoms were less abundant compared to the plankton community, accounting for 18.1%, and 7.4% of the sequences, respectively.
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 19
+    quote: Other dinoflagellates (Dinophyceae) and diatoms were less abundant compared to the plankton community accounting for 18.1%, and 7.4% of the sequences, respectively
+  status: verified
+- id: C44
+  text: Crustacean remains in salp stomachs contributed 13.1% of all sequences and were mainly assigned to copepods.
+  kind: result
+  source:
+    locator: Results, paragraph 5
+    page: 19
+    quote: Crustacean remains in salp stomachs contributed to 13.1% of all sequences and were mainly assigned to copepods
+  status: verified
+- id: C45
+  text: The clusters of stomach content and fecal pellets of both species each largely overlapped.
+  kind: result
+  source:
+    locator: Results, paragraph 2
+    page: 14
+    quote: the clusters of stomach content and fecal pellets of both species each largely overlapped
+  status: verified
+  note: The same sentence says the ANOSIM found significant differences between all sampling groups. Do not turn 'largely overlapped' into 'identical'.
+- id: C48
+  text: Across all stations, salps showed a strong preference for small flagellates (Filosa-Thecofilosea, Ivlev's selectivity index = +0.88), Syndiniales (+0.73), and Chrysophyceae (+0.78).
+  kind: result
+  source:
+    locator: Results, Feeding selectivity
+    page: 22
+    quote: Across all stations, salps showed a strong preference for small flagellates (Filosa-Thecofilosea, Ivlev’s selectivity index = +0.88; Fig. 4), Syndiniales (+0.73), and Chrysophyceae (+0.78)
+  status: verified
+- id: C49
+  text: Salps avoided Prymnesiophytes (-0.90), Pelagophyceae (-0.87), Picozoa (-0.90), and Cryptophyceae (-0.96).
+  kind: result
+  source:
+    locator: Results, Feeding selectivity
+    page: 22
+    quote: while Prymnesiophytes (–0.90), Pelagophyceae (–0.87), Picozoa (–0.90), and Cryptophyceae (–0.96) were avoided
+  status: verified
+- id: C50
+  text: Krill selectively fed on copepods (+0.61), polychaetes (+0.58), and golden algae (Chrysophyceae, +0.89), while avoiding radiolarian protozoans (Acantharia, -0.85) and Cryptophyceae (-0.71).
+  kind: result
+  source:
+    locator: Results, Feeding selectivity
+    page: 22
+    quote: Krill selectively fed on copepods (+0.61), polychaetes (+0.58), and golden algae (Chrysophyceae, +0.89; Fig. 4), while avoiding radiolarian protozoans (Acantharia, –0.85) and Cryptophyceae (–0.71)
+  status: verified
+- id: C51
+  text: For krill, the preference for copepods was apparent across all depths.
+  kind: result
+  source:
+    locator: Results, Feeding selectivity, paragraph 2
+    page: 24
+    quote: For krill, the preference for copepods was apparent across all depths
+  status: verified
+- id: C52
+  text: The feeding selectivity of krill and salps was confirmed across different depths from the surface to 200 m at several stations.
+  kind: result
+  source:
+    locator: Discussion, paragraph 2
+    page: 32
+    quote: The feeding selectivity of krill and salps was confirmed across different depths from the surface to 200 m at several stations
+  status: verified
+- id: C53
+  text: Diatom marker fatty acids were higher in krill (median = 30.6% of total fatty acids, p = 0.002) than in salps (median = 17.1%).
+  kind: result
+  source:
+    locator: Results, Fatty acid composition
+    page: 25
+    quote: Diatom marker fatty acids (16:1(n−7), 20:5(n−3)) differed significantly between both species and were higher in krill (median = 30.6% of total fatty acids, p = 0.002; ANOVA; Fig. 5, Table 2)
+      compared to salps (median = 17.1%)
+  status: verified
+- id: C54
+  text: Dinoflagellate marker fatty acids showed no difference between species (median = 14% for each species).
+  kind: result
+  source:
+    locator: Results, Fatty acid composition
+    page: 25
+    quote: Dinoflagellate marker fatty acids (18:4(n−3), 22:6(n−3)) showed no difference between species (median = 14% for each species
+  status: verified
+  note: Text gives p = 0.665 and Table 2 gives 0.661 for the same test; the panel avoids the p-value.
+- id: C58
+  text: Neither species' diet reflected the composition of the plankton community, suggesting that, in contrast to the accepted paradigm, not only krill but also salps are selective feeders.
+  kind: interpretation
+  source:
+    locator: Abstract
+    page: 1
+    quote: Neither species’ diet reflected the composition of the plankton community, suggesting that in contrast to the accepted paradigm, not only krill but also salps are selective feeders
+  status: verified
+  note: Also stated in the Discussion (page 22).
+- id: C60
+  text: Krill and salps had broadly similar diets, potentially enhancing the competition between both species.
+  kind: interpretation
+  source:
+    locator: Abstract
+    page: 1
+    quote: we found that krill and salps had broadly similar diets, potentially enhancing the competition between both species
+  status: verified
+  note: The Discussion (page 30) words this more strongly ('enable salps to outcompete krill'); the comic follows the abstract's hedge.
+- id: C61
+  text: This could be augmented by salps' ability to rapidly reproduce in favorable conditions, posing further risks to krill populations.
+  kind: interpretation
+  source:
+    locator: Abstract
+    page: 1
+    quote: This could be augmented by salps’ ability to rapidly reproduce in favorable conditions, posing further risks to krill populations
+  status: verified
+- id: C62
+  text: There was no significant difference between krill and salp diet composition, suggesting that, contrary to previous hypotheses, salps might be as selective in their feeding behavior as krill.
+  kind: interpretation
+  source:
+    locator: Discussion, paragraph 2
+    page: 32
+    quote: there was no significant difference between krill and salp diet composition, suggesting that contrary to previous hypotheses salps might be as selective in their feeding behavior as krill
+  status: verified
+  note: Reported alongside an ANOSIM that found significant differences between all five sampling groups (page 11). See CLAIM-CHECK.md.
+- id: C63
+  text: It remains unclear how salps perform such selective feeding behavior.
+  kind: caveat
+  source:
+    locator: Discussion, paragraph 3
+    page: 33
+    quote: It remains unclear how salps perform such selective feeding behavior
+  status: verified
+- id: C64
+  text: On-board video observations showed that salps are agile swimmers, often performing back-flushes to empty their feeding tract.
+  kind: result
+  source:
+    locator: Discussion, paragraph 3
+    page: 33
+    quote: On-board video observations obtained during this study showed that salps are agile swimmers, often performing back-flushes to empty their feeding tract
+  status: verified
+- id: C65
+  text: This behavior may allow for selective feeding by rejecting non-desirable food via back-flushing and subsequent swimming to other feeding grounds.
+  kind: interpretation
+  source:
+    locator: Discussion, paragraph 3
+    page: 33
+    quote: This behavior may allow for selective feeding by rejecting non-desirable food via back-flushing and subsequent swimming to other feeding grounds
+  status: verified
+- id: C66
+  text: The relative abundance of diatoms was significantly higher in salp fecal pellets (36.2%) compared to their stomachs (7.4%), supporting the notion that salps cannot digest diatoms efficiently.
+  kind: interpretation
+  source:
+    locator: Discussion, paragraph 5
+    page: 35
+    quote: The relative abundance of diatoms was significantly higher in salp FP (36.2%) compared to their stomachs (7.4%), supporting the notion that salps cannot digest diatoms efficiently
+  status: verified
+- id: C67
+  text: The authors found 17% of diatom fatty acid markers in salp tissue, indicating the assimilation of diatoms.
+  kind: interpretation
+  source:
+    locator: Discussion, paragraph 5
+    page: 35
+    quote: we found 17% of diatom fatty acid markers in salp tissue, indicating the assimilation of diatoms
+  status: verified
+- id: C68
+  text: During visual inspections of some salp stomachs on board, the authors observed krill fecal pellets, suggesting that salps ingested those krill fecal pellets.
+  kind: result
+  source:
+    locator: Discussion, paragraph 5
+    page: 35
+    quote: During visual inspections of some salp stomachs on board, we observed krill FP, suggesting that salps ingested those krill FP
+  status: verified
+- id: C70
+  text: The diet of krill contained about 6% salp sequences, suggesting that krill were either directly feeding on salps or on their remains.
+  kind: interpretation
+  source:
+    locator: Discussion, paragraph 8
+    page: 38
+    quote: show that the diet of krill contained about 6% salp sequences, suggesting that krill were either directly feeding on salps or on their remains
+  status: verified
+- id: C71
+  text: During on-board video recordings, the authors observed an individual krill holding on to a small chain of salps with its feeding basket and swimming with it for more than one minute before letting
+    go.
+  kind: result
+  source:
+    locator: Discussion, paragraph 8
+    page: 38
+    quote: we observed an individual krill holding on to a small chain of salps with its feeding basket and swimming with it for more than one minute before letting go
+  status: verified
+- id: C72
+  text: The authors were not able to observe the krill feeding directly on the salps.
+  kind: caveat
+  source:
+    locator: Discussion, paragraph 8
+    page: 38
+    quote: Although we were not able to observe the krill feeding directly on the salps
+  status: verified
+- id: C73
+  text: The parasitic dinoflagellate group Syndiniales accounted for almost one third of the salp and 12.4% of the krill diet, while being less abundant in the plankton community (4.9%).
+  kind: result
+  source:
+    locator: Discussion, paragraph 9
+    page: 39
+    quote: The parasitic dinoflagellate group Syndiniales accounted for almost one third of the salp and 12.4% of the krill diet, while being less abundant in the plankton community (4.9%)
+  status: verified
+- id: C74
+  text: The relative enrichment of Syndiniales sequences in the stomachs of either species versus the plankton community might indicate prior infections of salps or krill.
+  kind: caveat
+  source:
+    locator: Discussion, paragraph 9
+    page: 39
+    quote: the relative enrichment of Syndiniales sequences in the stomachs of either species versus the plankton community might indicate prior infections of salps or krill
+  status: verified
+- id: C75
+  text: The authors observed selective feeding behavior of both krill and salps and did not find evidence for more efficient feeding on small prey by salps compared to krill. This indicates that the projected
+    shift in plankton size along the WAP might not favor salps as previously suggested.
+  kind: interpretation
+  source:
+    locator: Discussion, paragraph 10
+    page: 40
+    quote: we observed selective feeding behavior of both krill and salps and did not find evidence for more efficient feeding on small prey by salps compared to krill. This indicates that the projected
+      shift in plankton size along the WAP might not favor salps as previously suggested
+  status: verified
+- id: C76
+  text: Future studies should further investigate the selective feeding behavior using both field and laboratory tests.
+  kind: caveat
+  source:
+    locator: Discussion, paragraph 10
+    page: 40
+    quote: Future studies should further investigate the selective feeding behavior using both field and laboratory tests
+  status: verified
+- id: C78
+  text: The plankton community was typical for an autumn (March-May) plankton community around the WAP.
+  kind: caveat
+  source:
+    locator: Discussion, paragraph 1
+    page: 31
+    quote: which is typical for an autumn (March–May) plankton community around the WAP
+  status: verified
+  note: 'Scope: one cruise, autumn 2018, along the Antarctic Peninsula.'
+beats:
+- id: B1
+  title: Two grazers
+  act: problem
+  panels:
+  - id: B1.1
+    weight: wide
+    frame: borderless
+    scene: Mara stands on the deck of a ship beside Kip the krill and Sal the salp.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Antarctic krill and the salp Salpa thompsoni are among the dominant grazers in the Southern Ocean.
+    - speaker: mara
+      text: Meet the two grazers.
+    claim_ids:
+    - C1
+    staging:
+      props:
+      - kind: ship
+        x: 0.62
+        y: 0.15
+        w: 0.36
+        h: 0.45
+      characters:
+      - id: mara
+        x: 0.12
+        pose: point
+        face: smile
+        facing: right
+      - id: kip
+        x: 0.3
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.2
+      - id: sal
+        x: 0.52
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B1.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: Kip the krill stands between a whale and a penguin.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill is a key species in the Southern Ocean ecosystem and an important link between phytoplankton and higher trophic levels such as whales, seals, and penguins.
+    claim_ids:
+    - C2
+    staging:
+      characters:
+      - id: whale
+        x: 0.17
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 0.45
+      - id: kip
+        x: 0.5
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.4
+      - id: penguin
+        x: 0.82
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B1.3
+    weight: small
+    frame: outlined
+    transition: moment-to-moment
+    scene: Sal the salp stands alone.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Salps are a less important food source for these apex predators.
+    claim_ids:
+    - C3
+    staging:
+      characters:
+      - id: sal
+        x: 0.5
+        pose: stand
+        face: neutral
+        facing: right
+  - id: B1.4
+    weight: standard
+    frame: borderless
+    transition: aspect-to-aspect
+    word_picture: additive
+    scene: Kip and Sal stand back to back, facing away from each other.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill biomass is positively correlated to sea ice and cold temperatures. Opposite to krill, salp abundances are negatively correlated to sea ice cover.
+    claim_ids:
+    - C5
+    - C6
+    staging:
+      characters:
+      - id: kip
+        x: 0.3
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.4
+      - id: sal
+        x: 0.7
+        pose: stand
+        face: neutral
+        facing: right
+  - id: B1.5
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: interdependent
+    scene: A line marking latitude, with a bar running from 60°S to 65°S for the salps' southern limit; the axis is schematic.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In response to climatic changes, an increase in the abundance of salps was observed and their southern distribution limit has shifted from 60°S to 65°S since 1980.
+    claim_ids:
+    - C7
+    staging:
+      props:
+      - kind: axis
+        x: 0.04
+        y: 0.05
+        w: 0.92
+        h: 0.9
+        title: Latitude (schematic, not to scale)
+        items:
+        - label: 60°S
+          at: 0.2
+        - label: 65°S
+          at: 0.8
+        - label: salps' southern limit has shifted
+          at: 0.2
+          to: 0.8
+          style: hollow
+  - id: B1.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Kip and Sal lean in toward the same bowl of food.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: This has resulted in a greater overlap between the ranges of salps and krill, making them direct competitors for food and habitat in the western Antarctic Peninsula (WAP) region.
+    claim_ids:
+    - C8
+    staging:
+      props:
+      - kind: bowl
+        x: 0.4
+        y: 0.62
+        w: 0.2
+        h: 0.26
+      characters:
+      - id: kip
+        x: 0.16
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.1
+      - id: sal
+        x: 0.83
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 0.8
+  - id: B1.7
+    weight: wide
+    frame: borderless
+    height: short
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: Mara looks on as Kip stands by a bowl and Sal stands by another.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill are selective feeders with a diatom-dominated diet. Salps are assumed to be non-selective, indiscriminate feeders.
+    - speaker: mara
+      text: Selective? What does that mean?
+    claim_ids:
+    - C10
+    - C11
+    staging:
+      props:
+      - kind: bowl
+        x: 0.42
+        y: 0.7
+        w: 0.12
+        h: 0.22
+      - kind: bowl
+        x: 0.8
+        y: 0.7
+        w: 0.12
+        h: 0.22
+      characters:
+      - id: mara
+        x: 0.08
+        pose: think
+        face: neutral
+        facing: right
+      - id: kip
+        x: 0.24
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.2
+      - id: sal
+        x: 0.7
+        pose: stand
+        face: neutral
+        facing: right
+  - id: B1.8
+    weight: standard
+    frame: outlined
+    transition: action-to-action
+    scene: Mara points and smiles as she explains.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Selective feeding is the selection of particular prey items while avoiding or rejecting others, and is displayed by most zooplankton.
+    claim_ids:
+    - C12
+    staging:
+      characters:
+      - id: mara
+        x: 0.3
+        pose: point
+        face: smile
+        facing: right
+  - id: B1.9
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: Mara stands thinking, with Kip and Sal side by side.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Studies that simultaneously compare the diet composition of krill and salps from the same region are lacking.
+    - speaker: mara
+      text: So nobody has put them side by side?
+    claim_ids:
+    - C15
+    staging:
+      characters:
+      - id: mara
+        x: 0.15
+        pose: think
+        face: neutral
+        facing: right
+      - id: kip
+        x: 0.6
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.4
+      - id: sal
+        x: 0.85
+        pose: stand
+        face: neutral
+        facing: left
+- id: B2
+  title: What did they eat?
+  act: method
+  panels:
+  - id: B2.1
+    weight: full
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    scene: A research ship on the sea, with Mara standing on the right.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Samples were collected during the research cruise PS112 with RV Polarstern between March and May 2018 along the Antarctic Peninsula.
+    - speaker: mara
+      text: Time to go fishing for krill and salps.
+    claim_ids:
+    - C18
+    staging:
+      props:
+      - kind: ship
+        x: 0.12
+        y: 0.12
+        w: 0.55
+        h: 0.7
+      characters:
+      - id: mara
+        x: 0.85
+        pose: point
+        face: smile
+        facing: left
+  - id: B2.2
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: An arrow runs down from the top of the panel, labelled as a net tow in the upper 200 m, with Mara beside it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill and salps were collected by oblique net tows in the upper 200 m of the water column.
+    claim_ids:
+    - C19
+    staging:
+      props:
+      - kind: arrow
+        x: 0.4
+        y: 0.08
+        x2: 0.4
+        y2: 0.8
+      - kind: label
+        x: 0.4
+        y: 0.84
+        label: net tow, upper 200 m
+      characters:
+      - id: mara
+        x: 0.85
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B2.3
+    weight: small
+    frame: outlined
+    transition: action-to-action
+    scene: Mara holds up a jar.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The animals were measured, sexed, staged, frozen in liquid nitrogen, and stored individually at -80 °C within approximately ten minutes.
+    - speaker: mara
+      text: About ten minutes.
+    claim_ids:
+    - C20
+    staging:
+      props:
+      - kind: jar
+        x: 0.55
+        y: 0.55
+        w: 0.2
+        h: 0.3
+      characters:
+      - id: mara
+        x: 0.25
+        pose: hold
+        face: deadpan
+        facing: right
+  - id: B2.4
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: 'A bar chart of the number of samples: krill stomachs, salp stomachs, plankton samples, krill fecal pellets and salp fecal pellets.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Stomach contents of krill (61 samples) and salps (60 samples) were compared to the ambient plankton community (10 samples). Fecal pellets were also compared (n = 14 for krill, n = 11 for salps).
+    claim_ids:
+    - C21
+    - C22
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: Number of samples
+      - kind: bars
+        x: 0.05
+        y: 0.12
+        w: 0.9
+        h: 0.86
+        bars:
+        - label: krill stomachs
+          value: 61
+        - label: salp stomachs
+          value: 60
+          style: hollow
+        - label: plankton
+          value: 10
+        - label: krill fecal pellets
+          value: 14
+        - label: salp fecal pellets
+          value: 11
+          style: hollow
+  - id: B2.5
+    weight: standard
+    frame: borderless
+    transition: aspect-to-aspect
+    scene: Mara stands between a jar and a bottle, pointing at them.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill fecal pellets were collected from free drifting sediment traps, and freshly produced salp fecal pellets from incubation experiments.
+    - speaker: mara
+      text: Plus 2 L of water from the chlorophyll maximum layer (15-60 m).
+    claim_ids:
+    - C23
+    - C24
+    staging:
+      props:
+      - kind: jar
+        x: 0.1
+        y: 0.55
+        w: 0.16
+        h: 0.3
+      - kind: bottle
+        x: 0.78
+        y: 0.5
+        w: 0.14
+        h: 0.38
+      characters:
+      - id: mara
+        x: 0.5
+        pose: point
+        face: smile
+        facing: right
+  - id: B2.6
+    weight: standard
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: word-specific
+    scene: 'A flow of three boxes: amplify a region of DNA, sequence it, compare it to a reference database.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Metabarcoding is the amplification of a standardized region of the DNA and subsequent sequencing and comparison to a reference database.
+    claim_ids:
+    - C16
+    staging:
+      props:
+      - kind: flow
+        x: 0.05
+        y: 0.1
+        w: 0.9
+        h: 0.8
+        items:
+        - label: amplify a region of DNA
+        - label: sequence it
+        - label: compare to a reference database
+  - id: B2.7
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Mara holds up a clipboard beside Kip.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: A common methodological issue when sequencing stomach or gut content samples is that predator DNA often swamps prey sequences.
+    - speaker: mara
+      text: So we designed a blocking probe that binds to the krill rRNA gene.
+    claim_ids:
+    - C25
+    - C26
+    staging:
+      characters:
+      - id: mara
+        x: 0.2
+        pose: hold
+        holding: clipboard
+        face: neutral
+        facing: right
+      - id: kip
+        x: 0.72
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.1
+  - id: B2.8
+    weight: small
+    frame: borderless
+    transition: scene-to-scene
+    scene: Mara stands with a deadpan face.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Template controls were randomly included in the library preparation steps, and the authors did not find evidence for contamination.
+    claim_ids:
+    - C27
+    staging:
+      characters:
+      - id: mara
+        x: 0.5
+        pose: stand
+        face: deadpan
+        facing: right
+  - id: B2.9
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: Mara stands and speaks.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The authors combined 18S rRNA metabarcoding and fatty acid analyses to reveal long- and short-term diets and to identify feeding preferences of both species.
+    - speaker: mara
+      text: Fatty acids came from the tissue of krill (n = 21) and salps (n = 22).
+    claim_ids:
+    - C17
+    - C30
+    staging:
+      characters:
+      - id: mara
+        x: 0.2
+        pose: point
+        face: smile
+        facing: right
+      - id: kip
+        x: 0.55
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.1
+      - id: sal
+        x: 0.85
+        pose: stand
+        face: neutral
+        facing: left
+- id: B3
+  title: The menu
+  act: result
+  panels:
+  - id: B3.1
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: 'A bar chart of the plankton community: dinoflagellates, diatoms, Prymnesiophyceae and copepods, as a share of sequences.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The water column was dominated by dinoflagellates, mainly Gyrodinium (Dinophyceae, 39.5%). Diatoms (19.4%) and Prymnesiophyceae (10.9%) were the most abundant taxa, and copepods accounted for
+        6.3%.
+    claim_ids:
+    - C33
+    - C34
+    - C35
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: 'Plankton community: share of sequences'
+      - kind: bars
+        x: 0.05
+        y: 0.12
+        w: 0.9
+        h: 0.86
+        unit: '%'
+        bars:
+        - label: dinoflagellates (Dinophyceae)
+          value: 39.5
+        - label: diatoms
+          value: 19.4
+        - label: Prymnesiophyceae
+          value: 10.9
+        - label: copepods
+          value: 6.3
+  - id: B3.2
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Mara asks a question, with Kip and Sal standing beside her.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The sequence libraries from the stomach content of krill and salps did not reflect the dinoflagellate-dominated plankton community nor the high proportion of diatoms observed in the water samples.
+    - speaker: mara
+      text: So lunch does not match the water?
+    claim_ids:
+    - C36
+    staging:
+      characters:
+      - id: mara
+        x: 0.12
+        pose: think
+        face: neutral
+        facing: right
+      - id: kip
+        x: 0.5
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.0
+      - id: sal
+        x: 0.88
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B3.3
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: 'A bar chart of krill stomach contents: crustaceans, dinoflagellates, Syndiniales and diatoms, as a share of sequences.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill stomachs held a high share of crustacean sequences (26.5%), mainly copepods. Dinoflagellates and diatoms were markedly reduced compared to the plankton (14.5 and 12.2%); the parasitic
+        Syndiniales were enriched (12.4%).
+    claim_ids:
+    - C37
+    - C38
+    - C39
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: 'Krill stomach contents: share of sequences'
+      - kind: bars
+        x: 0.05
+        y: 0.12
+        w: 0.9
+        h: 0.86
+        unit: '%'
+        bars:
+        - label: crustaceans
+          value: 26.5
+        - label: dinoflagellates (Dinophyceae)
+          value: 14.5
+        - label: Syndiniales (parasites)
+          value: 12.4
+        - label: diatoms
+          value: 12.2
+  - id: B3.4
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: 'A bar chart of salp stomach contents: Syndiniales, small flagellates, dinoflagellates, crustaceans and diatoms, as a share of sequences.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Salp stomachs were dominated by the parasitic Syndiniales (31%), with a high share of small flagellates (20.7%). Other dinoflagellates and diatoms were less abundant than in the plankton (18.1%
+        and 7.4%); crustaceans made up 13.1%.
+    claim_ids:
+    - C41
+    - C42
+    - C43
+    - C44
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: 'Salp stomach contents: share of sequences'
+      - kind: bars
+        x: 0.05
+        y: 0.12
+        w: 0.9
+        h: 0.86
+        unit: '%'
+        bars:
+        - label: Syndiniales (parasites)
+          value: 31
+          style: hollow
+        - label: small flagellates
+          value: 20.7
+          style: hollow
+        - label: other dinoflagellates
+          value: 18.1
+          style: hollow
+        - label: crustaceans
+          value: 13.1
+          style: hollow
+        - label: diatoms
+          value: 7.4
+          style: hollow
+  - id: B3.5
+    weight: standard
+    frame: borderless
+    height: short
+    transition: scene-to-scene
+    scene: Kip and Sal stand close together.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The clusters of stomach content and fecal pellets of both species each largely overlapped.
+    claim_ids:
+    - C45
+    staging:
+      characters:
+      - id: kip
+        x: 0.4
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.0
+      - id: sal
+        x: 0.58
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B3.6
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: A bar chart of the share of Syndiniales sequences in the plankton, krill stomachs and salp stomachs.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The parasitic dinoflagellate group Syndiniales accounted for almost one third of the salp and 12.4% of the krill diet, while being less abundant in the plankton community (4.9%).
+    claim_ids:
+    - C73
+    - C41
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: 'Syndiniales: share of sequences'
+      - kind: bars
+        x: 0.05
+        y: 0.12
+        w: 0.9
+        h: 0.86
+        unit: '%'
+        bars:
+        - label: plankton
+          value: 4.9
+        - label: krill stomachs
+          value: 12.4
+        - label: salp stomachs
+          value: 31
+          style: hollow
+  - id: B3.7
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Mara thinks, with Sal standing beside her.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The relative enrichment of Syndiniales sequences in the stomachs of either species versus the plankton community might indicate prior infections of salps or krill.
+    - speaker: mara
+      text: Or the animals had been infected before.
+    claim_ids:
+    - C74
+    staging:
+      characters:
+      - id: mara
+        x: 0.25
+        pose: think
+        face: neutral
+        facing: right
+      - id: sal
+        x: 0.72
+        pose: stand
+        face: neutral
+        facing: left
+- id: B4
+  title: Picky eaters
+  act: result
+  panels:
+  - id: B4.1
+    weight: wide
+    frame: outlined
+    height: short
+    transition: scene-to-scene
+    word_picture: interdependent
+    scene: A scale from -1 (avoided) through 0 (random feeding) to +1 (preferred).
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Ivlev's selectivity index ranges from +1, indicating preference of a prey taxon, to -1, indicating avoidance, while 0 denotes random feeding.
+    claim_ids:
+    - C31
+    staging:
+      props:
+      - kind: axis
+        x: 0.04
+        y: 0.05
+        w: 0.92
+        h: 0.9
+        title: Ivlev's selectivity index
+        items:
+        - label: -1 avoided
+          at: 0.03
+        - label: 0 random feeding
+          at: 0.5
+        - label: +1 preferred
+          at: 0.97
+  - id: B4.2
+    weight: full
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: A scale of Ivlev's selectivity index for salps, with marks for the preferred prey on the right and the avoided prey on the left.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Across all stations, salps showed a strong preference for small flagellates (+0.88), Syndiniales (+0.73), and Chrysophyceae (+0.78), while Prymnesiophytes, Pelagophyceae, Picozoa and Cryptophyceae
+        were avoided.
+    claim_ids:
+    - C48
+    - C49
+    - C31
+    staging:
+      props:
+      - kind: axis
+        x: 0.03
+        y: 0.04
+        w: 0.94
+        h: 0.92
+        title: 'Salps: Ivlev''s selectivity index'
+        items:
+        - label: '-1'
+          at: 0.0
+        - label: '0'
+          at: 0.5
+        - label: '+1'
+          at: 1.0
+        - label: 'preferred: Syndiniales +0.73, Chrysophyceae +0.78, small flagellates +0.88'
+          at: 0.865
+          style: mark
+        - label: ''
+          at: 0.89
+          style: mark
+        - label: ''
+          at: 0.94
+          style: mark
+        - label: 'avoided: Cryptophyceae -0.96, Prymnesiophytes and Picozoa -0.90 each, Pelagophyceae -0.87'
+          at: 0.02
+          style: mark
+        - label: ''
+          at: 0.05
+          style: mark
+        - label: ''
+          at: 0.05
+          style: mark
+        - label: ''
+          at: 0.065
+          style: mark
+  - id: B4.3
+    weight: full
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: A scale of Ivlev's selectivity index for krill, with marks for the preferred prey on the right and the avoided prey on the left.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill selectively fed on copepods (+0.61), polychaetes (+0.58), and golden algae (Chrysophyceae, +0.89), while avoiding radiolarian protozoans (Acantharia, -0.85) and Cryptophyceae (-0.71).
+    claim_ids:
+    - C50
+    - C31
+    staging:
+      props:
+      - kind: axis
+        x: 0.03
+        y: 0.04
+        w: 0.94
+        h: 0.92
+        title: 'Krill: Ivlev''s selectivity index'
+        items:
+        - label: '-1'
+          at: 0.0
+        - label: '0'
+          at: 0.5
+        - label: '+1'
+          at: 1.0
+        - label: golden algae +0.89
+          at: 0.945
+          style: mark
+        - label: copepods +0.61
+          at: 0.805
+          style: mark
+          row: 1
+        - label: polychaetes +0.58
+          at: 0.79
+          style: mark
+          row: 2
+        - label: Acantharia -0.85
+          at: 0.075
+          style: mark
+        - label: Cryptophyceae -0.71
+          at: 0.145
+          style: mark
+          row: 1
+  - id: B4.4
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: An arrow pointing down from the surface to 200 m, with Kip beside it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The feeding selectivity of krill and salps was confirmed across different depths from the surface to 200 m at several stations.
+    - speaker: kip
+      text: Copepods, at every depth.
+    claim_ids:
+    - C52
+    - C51
+    staging:
+      props:
+      - kind: arrow
+        x: 0.2
+        y: 0.08
+        x2: 0.2
+        y2: 0.78
+      - kind: label
+        x: 0.2
+        y: 0.84
+        label: 200 m
+      characters:
+      - id: kip
+        x: 0.62
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.1
+  - id: B4.5
+    weight: full
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: Mara faces Kip and Sal, with a surprised look.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Neither species' diet reflected the composition of the plankton community, suggesting that, in contrast to the accepted paradigm, not only krill but also salps are selective feeders.
+    - speaker: mara
+      text: So salps are picky too?
+    - speaker: sal
+      text: I have standards.
+    claim_ids:
+    - C58
+    humour:
+      note: 'Sal answers Mara''s question with a prim line while smiling. The caption is the abstract''s sentence unchanged. 1: no number, hedge, scope or direction changes. 2: a reader could take ''standards''
+        as the paper saying salps choose by quality; the paper only reports that diets did not match the plankton, so the line is a gag in Sal''s own voice, not a finding. 3: the butt is the salp''s smugness
+        (an organism). 4: it does not touch a caveat. 5: authors would probably accept it, but ''standards'' is the comic''s wording, so a human decides.'
+      keeps_claims_intact: false
+    staging:
+      characters:
+      - id: mara
+        x: 0.2
+        pose: up
+        face: surprised
+        facing: right
+      - id: kip
+        x: 0.55
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.1
+      - id: sal
+        x: 0.85
+        pose: stand
+        face: smile
+        facing: left
+- id: B5
+  title: After the meal
+  act: result
+  panels:
+  - id: B5.1
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: 'A bar chart of median marker fatty acids: diatom markers and dinoflagellate markers, for krill and for salps.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Diatom marker fatty acids were higher in krill (median = 30.6% of total fatty acids) than in salps (median = 17.1%). Dinoflagellate marker fatty acids showed no difference between species (median
+        = 14% for each species).
+    claim_ids:
+    - C53
+    - C54
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: 'Marker fatty acids: median share of total fatty acids'
+      - kind: bars
+        x: 0.05
+        y: 0.12
+        w: 0.9
+        h: 0.86
+        unit: '%'
+        bars:
+        - label: diatom markers, krill
+          value: 30.6
+        - label: diatom markers, salps
+          value: 17.1
+          style: hollow
+        - label: dinoflagellate markers, krill
+          value: 14
+        - label: dinoflagellate markers, salps
+          value: 14
+          style: hollow
+  - id: B5.2
+    weight: standard
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: A bar chart of the relative abundance of diatoms in salp stomachs and in salp fecal pellets.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The relative abundance of diatoms was significantly higher in salp fecal pellets (36.2%) compared to their stomachs (7.4%), supporting the notion that salps cannot digest diatoms efficiently.
+    claim_ids:
+    - C66
+    staging:
+      props:
+      - kind: label
+        x: 0.5
+        y: 0.0
+        label: Diatoms in salps
+      - kind: bars
+        x: 0.08
+        y: 0.12
+        w: 0.84
+        h: 0.86
+        unit: '%'
+        bars:
+        - label: stomachs
+          value: 7.4
+          style: hollow
+        - label: fecal pellets
+          value: 36.2
+          style: hollow
+  - id: B5.3
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: Mara points at Sal and asks a question.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The authors found 17% of diatom fatty acid markers in salp tissue, indicating the assimilation of diatoms.
+    - speaker: mara
+      text: So some diatoms do get absorbed.
+    claim_ids:
+    - C67
+    staging:
+      characters:
+      - id: mara
+        x: 0.25
+        pose: point
+        face: neutral
+        facing: right
+      - id: sal
+        x: 0.7
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B5.4
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Sal stands beside a bowl while Mara holds a clipboard.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: During visual inspections of some salp stomachs on board, the authors observed krill fecal pellets, suggesting that salps ingested those krill fecal pellets.
+    claim_ids:
+    - C68
+    staging:
+      props:
+      - kind: bowl
+        x: 0.4
+        y: 0.68
+        w: 0.2
+        h: 0.24
+      characters:
+      - id: mara
+        x: 0.15
+        pose: hold
+        holding: clipboard
+        face: neutral
+        facing: right
+      - id: sal
+        x: 0.82
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B5.5
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: Mara looks surprised as Kip stands with Sal behind him.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The diet of krill contained about 6% salp sequences, suggesting that krill were either directly feeding on salps or on their remains.
+    - speaker: mara
+      text: Krill eating salps?
+    claim_ids:
+    - C70
+    - C40
+    staging:
+      characters:
+      - id: mara
+        x: 0.12
+        pose: stand
+        face: surprised
+        facing: right
+      - id: kip
+        x: 0.45
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.1
+      - id: sal
+        x: 0.88
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B5.6
+    weight: wide
+    frame: outlined
+    transition: moment-to-moment
+    word_picture: parallel
+    scene: Kip stands holding on to Sal while Mara watches.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: During on-board video recordings, the authors observed an individual krill holding on to a small chain of salps with its feeding basket and swimming with it for more than one minute before letting
+        go.
+    claim_ids:
+    - C71
+    staging:
+      characters:
+      - id: mara
+        x: 0.12
+        pose: stand
+        face: neutral
+        facing: right
+      - id: kip
+        x: 0.5
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.1
+      - id: sal
+        x: 0.62
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B5.7
+    weight: small
+    frame: outlined
+    height: short
+    transition: moment-to-moment
+    scene: Mara gives a deadpan look.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The authors were not able to observe the krill feeding directly on the salps.
+    - speaker: mara
+      text: Attached, but not seen eating.
+    claim_ids:
+    - C72
+    staging:
+      characters:
+      - id: mara
+        x: 0.5
+        pose: shrug
+        face: deadpan
+        facing: right
+- id: B6
+  title: So what?
+  act: discussion
+  panels:
+  - id: B6.1
+    weight: wide
+    frame: borderless
+    height: short
+    transition: scene-to-scene
+    word_picture: picture-specific
+    scene: Sal stands alone with a deadpan face.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: It remains unclear how salps perform such selective feeding behavior.
+    - speaker: sal
+      text: Don't look at me.
+    claim_ids:
+    - C63
+    humour:
+      note: 'Sal shrugs and deflects, as if asked to explain itself. The caption is the authors'' own statement of what is unknown, unchanged. 1: nothing changes. 2: the line is plainly Sal''s, but it could
+        be read as the salp being unwilling to say, so a human should confirm it does not imply anything about salp behaviour. 3: the butt is the salp and the authors'' own uncertainty is left intact. 4:
+        it plays the caveat straight (the unknown stays unknown), not down. 5: reads as honest, but unsure whether a shrugging salp suggests there is a mechanism to hide.'
+      keeps_claims_intact: false
+    staging:
+      characters:
+      - id: sal
+        x: 0.5
+        pose: shrug
+        face: deadpan
+        facing: right
+  - id: B6.2
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Sal faces left while an arrow points right, showing Sal moving backwards.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: On-board video observations showed that salps are agile swimmers, often performing back-flushes to empty their feeding tract.
+    claim_ids:
+    - C64
+    staging:
+      props:
+      - kind: arrow
+        x: 0.55
+        y: 0.5
+        x2: 0.9
+        y2: 0.5
+      characters:
+      - id: sal
+        x: 0.3
+        pose: stand
+        face: neutral
+        facing: left
+        scale: 1.3
+  - id: B6.3
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    scene: Mara thinks while Sal stands behind her.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: This behavior may allow for selective feeding by rejecting non-desirable food via back-flushing and subsequent swimming to other feeding grounds.
+    claim_ids:
+    - C65
+    staging:
+      characters:
+      - id: mara
+        x: 0.3
+        pose: think
+        face: neutral
+        facing: right
+      - id: sal
+        x: 0.75
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B6.4
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: Kip and Sal stand side by side while Mara looks at them.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: There was no significant difference between krill and salp diet composition, suggesting that, contrary to previous hypotheses, salps might be as selective in their feeding behavior as krill.
+    claim_ids:
+    - C62
+    staging:
+      characters:
+      - id: mara
+        x: 0.15
+        pose: stand
+        face: neutral
+        facing: right
+      - id: kip
+        x: 0.52
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.1
+      - id: sal
+        x: 0.82
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B6.5
+    weight: wide
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: Kip and Sal face a single bowl from opposite sides.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Krill and salps had broadly similar diets, potentially enhancing the competition between both species. This could be augmented by salps' ability to rapidly reproduce in favorable conditions,
+        posing further risks to krill populations.
+    claim_ids:
+    - C60
+    - C61
+    staging:
+      props:
+      - kind: bowl
+        x: 0.43
+        y: 0.66
+        w: 0.14
+        h: 0.24
+      characters:
+      - id: kip
+        x: 0.2
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.1
+      - id: sal
+        x: 0.8
+        pose: stand
+        face: neutral
+        facing: left
+  - id: B6.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Mara stands with a clipboard.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The authors observed selective feeding behavior of both krill and salps and did not find evidence for more efficient feeding on small prey by salps compared to krill. This indicates that the
+        projected shift in plankton size along the WAP might not favor salps as previously suggested.
+    claim_ids:
+    - C75
+    staging:
+      characters:
+      - id: mara
+        x: 0.5
+        pose: hold
+        holding: clipboard
+        face: neutral
+        facing: right
+  - id: B6.7
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: Mara stands with a deadpan face.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The relative proportion of 18S gene copy numbers is influenced by the relative abundance of the organisms in the sample, as well as by varying gene copy numbers.
+    claim_ids:
+    - C32
+    staging:
+      characters:
+      - id: mara
+        x: 0.5
+        pose: stand
+        face: deadpan
+        facing: right
+  - id: B6.8
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: Mara stands beside a ship.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The plankton community was typical for an autumn (March-May) plankton community around the WAP.
+    claim_ids:
+    - C78
+    staging:
+      props:
+      - kind: ship
+        x: 0.45
+        y: 0.15
+        w: 0.5
+        h: 0.6
+      characters:
+      - id: mara
+        x: 0.2
+        pose: stand
+        face: neutral
+        facing: right
+  - id: B6.9
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    scene: Mara, Kip and Sal stand together.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Future studies should further investigate the selective feeding behavior using both field and laboratory tests.
+    claim_ids:
+    - C76
+    staging:
+      characters:
+      - id: mara
+        x: 0.2
+        pose: point
+        face: smile
+        facing: right
+      - id: kip
+        x: 0.52
+        pose: stand
+        face: neutral
+        facing: right
+        scale: 1.1
+      - id: sal
+        x: 0.82
+        pose: stand
+        face: neutral
+        facing: left

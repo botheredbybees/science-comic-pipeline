@@ -1,0 +1,100 @@
+- id: B4
+  title: "Snapshots, not rates"
+  act: result
+  panels:
+  - id: B4.1
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    height: tall
+    word_picture: additive
+    scene: "A schematic chart of two wavy lines, one for mRNA and one for protein, rising and falling out of step with each other. It is schematic, not data."
+    speech:
+    - {speaker: narrator, kind: caption, text: "It is well recognized that the amplitude and timing of the mRNA pool does not align with protein expression. A study of one cyanobacteria species, tracked over a day, illustrated the misalignment."}
+    claim_ids: [C27, C28]
+    staging:
+      props:
+      - {kind: plot, x: 0.05, y: 0.05, w: 0.9, h: 0.85, title: "schematic: mRNA and protein", x_label: "time", y_label: "amount", series: [{points: [[0.0, 0.3], [0.2, 0.8], [0.4, 0.3], [0.6, 0.8], [0.8, 0.3], [1.0, 0.7]], style: dashed}, {points: [[0.0, 0.7], [0.2, 0.3], [0.4, 0.7], [0.6, 0.3], [0.8, 0.7], [1.0, 0.3]], style: dotted}], notes: [{x: 0.1, y: 0.78, label: "mRNA (dashed)"}, {x: 0.7, y: 0.78, label: "protein (dotted)"}]}
+  - id: B4.2
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: "The omics researcher reads a note and nods slowly."
+    speech:
+    - {speaker: narrator, kind: caption, text: "A critique the authors cite says mRNA abundance is a poor proxy for protein abundance."}
+    - {speaker: omicist, text: "Noted."}
+    claim_ids: [C25]
+    staging:
+      characters:
+      - {id: omicist, x: 0.5, pose: hold, face: deadpan, facing: right, holding: paper, scale: 0.9}
+  - id: B4.3
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "The modeller, at the desk, raises a finger as if to make a point."
+    speech:
+    - {speaker: narrator, kind: caption, text: "Even in advanced biomedical research, post-transcriptional and post-translational modifications to enzymes confound deriving metabolic rates from omics."}
+    - {speaker: modeller, text: "So biomedicine hasn't solved it either."}
+    claim_ids: [C30, C55]
+    staging:
+      characters:
+      - {id: modeller, x: 0.5, pose: point, face: neutral, facing: right, scale: 0.9}
+      props:
+      - {kind: desk, x: 0.0, y: 0.85, w: 1.0, h: 0.15}
+  - id: B4.4
+    weight: wide
+    frame: borderless
+    transition: aspect-to-aspect
+    scene: "The omics researcher holds up a framed snapshot picture, while the physiologist, mug in hand, points at it."
+    speech:
+    - {speaker: narrator, kind: caption, text: "Omics-based approaches provide static snap-shots of physiological potential."}
+    - {speaker: physio, text: "Activity ultimately drives the cycles."}
+    claim_ids: [C31, C32]
+    staging:
+      characters:
+      - {id: omicist, x: 0.2, pose: hold, face: neutral, facing: right, scale: 0.9}
+      - {id: physio, x: 0.8, pose: point, face: smile, facing: left, holding: mug, scale: 0.9}
+      props:
+      - {kind: picture, x: 0.42, y: 0.55, w: 0.16, h: 0.32, staging: {characters: [{id: extra, x: 0.5, pose: stand, face: neutral}]}}
+  - id: B4.5
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    scene: "A board describing the Nitrospina study: Tropical North Pacific, subsurface, nitrite oxidoreductase."
+    speech:
+    - {speaker: narrator, kind: caption, text: "A study of subsurface biota in the Tropical North Pacific found nitrite oxidoreductase of the bacterium Nitrospina abundant. It tried to estimate nitrite oxidation rates from biochemistry, physiology and omics."}
+    claim_ids: [C51]
+    staging:
+      props:
+      - {kind: board, x: 0.08, y: 0.12, w: 0.84, h: 0.6, title: "estimating nitrite oxidation rates", cards: [{label: "biochemistry"}, {label: "physiology"}, {label: "omics"}]}
+  - id: B4.6
+    weight: full
+    frame: outlined
+    transition: action-to-action
+    height: tall
+    word_picture: interdependent
+    scene: "A schematic axis labelled 'derived rate' with a short mark at one end and a long bar spanning to the other end, captioned '>200-fold'. The modeller stares at it, deadpan."
+    speech:
+    - {speaker: narrator, kind: caption, text: "Despite this suite of approaches, the derived rates ranged >200-fold, pointing to the need to develop targeted physiological assays."}
+    - {speaker: modeller, text: "Over two hundred fold."}
+    claim_ids: [C52]
+    staging:
+      characters:
+      - {id: modeller, x: 0.88, pose: stand, face: deadpan, facing: left, scale: 0.8}
+      props:
+      - {kind: axis, x: 0.05, y: 0.25, w: 0.7, h: 0.55, title: "derived nitrite oxidation rate (schematic)", items: [{label: "lowest derived rate", at: 0.05}, {label: "highest derived rate", at: 0.95}, {label: ">200-fold", at: 0.05, to: 0.95, style: hollow}]}
+  - id: B4.7
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: word-specific
+    scene: "The modeller points at a sign that reads 'omics rates?' while the omics researcher shrugs."
+    speech:
+    - {speaker: narrator, kind: caption, text: "From this and the biomedical record, the authors conclude that it is unlikely that omics can provide such rates in the coming decade."}
+    claim_ids: [C10]
+    staging:
+      characters:
+      - {id: modeller, x: 0.3, pose: point, face: deadpan, facing: right, scale: 0.9}
+      - {id: omicist, x: 0.8, pose: shrug, face: neutral, facing: left, scale: 0.85}
+      props:
+      - {kind: sign, x: 0.4, y: 0.1, w: 0.2, h: 0.6, label: "omics rates?"}

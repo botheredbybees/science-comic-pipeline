@@ -1,0 +1,104 @@
+- id: B6
+  title: "Co-design, and what could go wrong"
+  act: discussion
+  panels:
+  - id: B6.1
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "Three boxes, 'omics', 'physiological rates' and 'biogeochemistry', with arrows from omics up to the rates box and down to biogeochemistry."
+    speech:
+    - {speaker: narrator, kind: caption, text: "The authors propose that physiological rates can bridge biogeochemistry and omics: they quantify the integrated activity of proteins that drive biogeochemical cycles, in units that modelers can use."}
+    claim_ids: [C33, C34]
+    staging:
+      props:
+      - {kind: box, x: 0.0, y: 0.5, w: 0.3, h: 0.3, label: "omics"}
+      - {kind: box, x: 0.35, y: 0.1, w: 0.3, h: 0.3, label: "physiological rates"}
+      - {kind: box, x: 0.64, y: 0.5, w: 0.36, h: 0.3, label: "biogeochemistry"}
+      - {kind: arrow, x: 0.2, y: 0.48, x2: 0.4, y2: 0.42}
+      - {kind: arrow, x: 0.6, y: 0.42, x2: 0.78, y2: 0.48}
+  - id: B6.2
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: "The physiologist looks thoughtful, mug in hand."
+    speech:
+    - {speaker: narrator, kind: caption, text: "The authors ask whether we are measuring the best physiological metrics to mesh omics with biogeochemistry."}
+    - {speaker: physio, text: "Our metrics need urgent scrutiny. Long-established assays still have compelling evidence of utility."}
+    claim_ids: [C41, C42]
+    staging:
+      characters:
+      - {id: physio, x: 0.5, pose: think, face: neutral, facing: right, holding: mug, scale: 0.9}
+  - id: B6.3
+    weight: wide
+    frame: outlined
+    transition: action-to-action
+    word_picture: additive
+    scene: "A flow of boxes: 'protein abundance correlates with metabolic activity', then 'reverse-engineer a metric'. The omics researcher and physiologist stand either side."
+    speech:
+    - {speaker: narrator, kind: caption, text: "The way ahead may be to use molecular biology to reverse engineer the most pertinent physiological metrics, starting with processes where protein abundance correlates with quantifiable metabolic activity."}
+    claim_ids: [C43, C44]
+    staging:
+      characters:
+      - {id: omicist, x: 0.08, pose: point, face: smile, facing: right, scale: 0.8}
+      - {id: physio, x: 0.92, pose: point, face: smile, facing: left, holding: mug, scale: 0.8}
+      props:
+      - {kind: flow, x: 0.2, y: 0.2, w: 0.6, h: 0.6, items: [{label: "protein abundance correlates with metabolic activity"}, {label: "reverse engineer a metric"}]}
+  - id: B6.4
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "The research ship sails on; the modeller watches it go."
+    speech:
+    - {speaker: narrator, kind: caption, text: "The transition to field studies will face additional challenges, which centre on how marine biota integrate environmental history."}
+    claim_ids: [C46]
+    staging:
+      characters:
+      - {id: modeller, x: 0.2, pose: stand, face: neutral, facing: right, scale: 0.85}
+      props:
+      - {kind: ship, x: 0.45, y: 0.4, w: 0.5, h: 0.4}
+  - id: B6.5
+    weight: standard
+    frame: borderless
+    transition: aspect-to-aspect
+    scene: "A board titled 'response?' with two cards: 'instantaneous' and 'lagged'."
+    speech:
+    - {speaker: narrator, kind: caption, text: "An open question is whether the relationship between environmental forcing and cellular status is instantaneous or lagged. Different metrics, and different omics layers, show a range of response times."}
+    claim_ids: [C47, C48]
+    staging:
+      props:
+      - {kind: board, x: 0.08, y: 0.15, w: 0.84, h: 0.55, title: "response?", cards: [{label: "instantaneous"}, {label: "lagged"}]}
+  - id: B6.6
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    height: tall
+    scene: "The modeller, physiologist and omics researcher stand at a desk under a sign saying 'co-design workshop'."
+    speech:
+    - {speaker: narrator, kind: caption, text: "In the authors' opinion, it may be more straight-forward to co-design targeted physiological metrics that better link omics with marine biogeochemistry, helped along by co-design workshops and other forums."}
+    claim_ids: [C56, C57]
+    staging:
+      characters:
+      - {id: physio, x: 0.15, pose: sip, face: smile, facing: right, holding: mug, scale: 0.85}
+      - {id: modeller, x: 0.5, pose: point, face: smile, facing: right, scale: 0.85}
+      - {id: omicist, x: 0.85, pose: hold, face: smile, facing: left, holding: paper, scale: 0.85}
+      props:
+      - {kind: sign, x: 0.3, y: 0.02, w: 0.4, h: 0.3, label: "co-design workshop"}
+      - {kind: desk, x: 0.0, y: 0.85, w: 1.0, h: 0.15}
+  - id: B6.7
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    height: standard
+    word_picture: word-specific
+    scene: "A quiet closing shot: the desk, with the sign now reading 'a new generation of rate measurements'."
+    speech:
+    - {speaker: narrator, kind: caption, text: "The authors advocate co-designing a new generation of rate measurements. In their opinion, this will lead in the coming decades to incorporating omics into biogeochemical models."}
+    claim_ids: [C12, C45]
+    staging:
+      characters:
+      - {id: modeller, x: 0.75, pose: stand, face: smile, facing: left, scale: 0.9}
+      props:
+      - {kind: sign, x: 0.15, y: 0.1, w: 0.4, h: 0.5, label: "a new generation of rate measurements"}
+      - {kind: desk, x: 0.0, y: 0.85, w: 1.0, h: 0.15}

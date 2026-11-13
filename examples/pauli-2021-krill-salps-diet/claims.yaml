@@ -1,0 +1,349 @@
+claims:
+# ---- background -------------------------------------------------------------------------
+- id: C1
+  text: "Antarctic krill and the salp Salpa thompsoni are among the dominant grazers in the Southern Ocean."
+  kind: background
+  source: { locator: "Introduction, paragraph 1", page: 3, quote: "Antarctic krill (Euphausia superba Dana, 1850; hereafter krill) and the tunicate Salpa thompsoni Foxton, 1961 (hereafter salp) are among the dominant grazers in the Southern Ocean" }
+  status: verified
+- id: C2
+  text: "Krill is a key species in the Southern Ocean ecosystem and an important link between phytoplankton and higher trophic levels such as whales, seals, and penguins."
+  kind: background
+  source: { locator: "Introduction, paragraph 1", page: 3, quote: "Krill is a key species in the SO ecosystem and an important link between phytoplankton and higher trophic levels such as whales, seals, and penguins" }
+  status: verified
+  note: "SO = Southern Ocean (abbreviation defined on the page)."
+- id: C3
+  text: "Salps are a less important food source for these apex predators."
+  kind: background
+  source: { locator: "Introduction, paragraph 1", page: 3, quote: "while salps are a less important food source for these apex predators" }
+  status: verified
+- id: C5
+  text: "Krill biomass is positively correlated to sea ice and cold temperatures."
+  kind: background
+  source: { locator: "Introduction, paragraph 2", page: 4, quote: "Krill biomass is positively correlated to sea ice and cold temperatures" }
+  status: verified
+- id: C6
+  text: "Opposite to krill, salp abundances are negatively correlated to sea ice cover."
+  kind: background
+  source: { locator: "Introduction, paragraph 3", page: 5, quote: "Opposite to krill, salp abundances are negatively correlated to sea ice cover" }
+  status: verified
+- id: C7
+  text: "In response to climatic changes, an increase in the abundance of salps was observed and their southern distribution limit has shifted from 60°S to 65°S since 1980."
+  kind: background
+  source: { locator: "Introduction, paragraph 3", page: 5, quote: "in response to climatic changes, an increase in the abundance of salps was observed and their southern distribution limit has shifted from 60°S to 65°S since 1980" }
+  status: verified
+- id: C8
+  text: "This has resulted in a greater overlap between the ranges of salps and krill, making them direct competitors for food and habitat in the western Antarctic Peninsula (WAP) region."
+  kind: background
+  source: { locator: "Introduction, paragraph 3", page: 5, quote: "This has resulted in a greater overlap between the ranges of salps and krill, making them direct competitors for food and habitat in the WAP region" }
+  status: verified
+  note: "WAP = western Antarctic Peninsula; defined on page 4 of the source."
+- id: C10
+  text: "Krill are selective feeders with a diatom-dominated diet."
+  kind: background
+  source: { locator: "Introduction, paragraph 4", page: 6, quote: "Krill are selective feeders with a diatom-dominated diet" }
+  status: verified
+- id: C11
+  text: "The diet of salps mainly reflects the composition of the available plankton community, thus salps are assumed to be non-selective, indiscriminate feeders."
+  kind: background
+  source: { locator: "Introduction, paragraph 4", page: 6, quote: "the diet of salps mainly reflects the composition of the available plankton community, thus salps are assumed to be non-selective, indiscriminate feeders" }
+  status: verified
+- id: C12
+  text: "Selective feeding is the selection of particular prey items while avoiding or rejecting others, and is displayed by most zooplankton."
+  kind: background
+  source: { locator: "Introduction, paragraph 4", page: 6, quote: "Selective feeding, i.e. the selection of particular prey items while avoiding or rejecting others, is displayed by most zooplankton" }
+  status: verified
+- id: C15
+  text: "Studies that simultaneously compare the diet composition of krill and salps from the same region are lacking."
+  kind: background
+  source: { locator: "Introduction, paragraph 5", page: 9, quote: "studies that simultaneously compare the diet composition of krill and salps from the same region are lacking" }
+  status: verified
+- id: C16
+  text: "Metabarcoding is the amplification of a standardized region of the DNA and subsequent sequencing and comparison to a reference database."
+  kind: method
+  source: { locator: "Introduction, paragraph 6", page: 10, quote: "metabarcoding (i.e. the amplification of a standardized region of the DNA and subsequent sequencing and comparison to a reference database)" }
+  status: verified
+- id: C17
+  text: "The authors used a combined approach of 18S rRNA metabarcoding and fatty acid analyses to reveal long- and short-term diets of krill and salps and to identify feeding preferences of both species."
+  kind: method
+  source: { locator: "Introduction, last paragraph", page: 11, quote: "We used a combined analytical approach of 18 S rRNA metabarcoding and fatty acid analyses to reveal long- and short-term diets of krill and salps and to identify feeding preferences of both species" }
+  status: verified
+# ---- methods ----------------------------------------------------------------------------
+- id: C18
+  text: "Samples were collected during the research cruise PS112 with RV Polarstern between March and May 2018 along the Antarctic Peninsula."
+  kind: method
+  source: { locator: "Methods, Field sampling, paragraph 1", page: 41, quote: "Samples were collected during the research cruise PS112 with RV Polarstern between March and May 2018 along the Antarctic Peninsula" }
+  status: verified
+- id: C19
+  text: "Krill and salps were collected by oblique net tows in the upper 200 m of the water column."
+  kind: method
+  source: { locator: "Methods, Field sampling, paragraph 2", page: 42, quote: "krill and salps were collected at ten stations across all regions by oblique net tows with an IKMT (Isaacs-Kidd Midwater Trawl, mesh size 505 µm), or with a RMT (Rectangular Midwater Trawl, mesh size 320 µm) in the upper 200 m of the water column" }
+  status: verified
+- id: C20
+  text: "The animals were measured, sexed, staged, frozen in liquid nitrogen, and stored individually at -80 °C within approximately ten minutes."
+  kind: method
+  source: { locator: "Methods, Field sampling, paragraph 2", page: 42, quote: "the animals were measured, sexed, staged, frozen in liquid nitrogen, and stored individually at – 80 °C within approximately ten minutes" }
+  status: verified
+- id: C21
+  text: "The authors compared the stomach contents of krill (61 samples across 10 stations) and salps (60 samples across 10 stations) to the ambient plankton community (10 samples across 10 stations of 2 L each)."
+  kind: method
+  source: { locator: "Results, paragraph 1", page: 12, quote: "we compared the stomach contents of krill (61 samples across 10 stations) and salps (60 samples across 10 stations) to the ambient plankton community (10 samples across 10 stations of 2 L each)" }
+  status: verified
+- id: C22
+  text: "The composition of fecal pellets produced by krill and salps was also compared (n = 14 for krill fecal pellets, n = 11 for salp fecal pellets)."
+  kind: method
+  source: { locator: "Results, paragraph 1", page: 12, quote: "the composition of fecal pellets (FP) produced by krill and salps were compared (n = 14 for krill FP, n = 11 for salp FP)" }
+  status: verified
+- id: C23
+  text: "Krill fecal pellets were collected from free drifting sediment traps, and freshly produced salp fecal pellets from incubation experiments."
+  kind: method
+  source: { locator: "Methods, Field sampling, paragraph 3", page: 43, quote: "We collected FP produced by krill from free drifting sediment traps (hereafter drift traps), as well as freshly produced salp fecal pellets from incubation experiments" }
+  status: verified
+- id: C24
+  text: "At ten stations across all study regions, the authors collected a subsample of 2 L of water from the chlorophyll maximum layer (15-60 m)."
+  kind: method
+  source: { locator: "Methods, Field sampling, paragraph 4", page: 44, quote: "At ten stations across all study regions, we collected a subsample of 2 L from the chlorophyll maximum layer (15–60 m)" }
+  status: verified
+- id: C25
+  text: "A common methodological issue when sequencing stomach or gut content samples is that predator DNA often swamps prey sequences."
+  kind: method
+  source: { locator: "Methods, DNA isolation, paragraph 2", page: 46, quote: "A common methodological issue when sequencing stomach or gut content samples is that predator DNA often swamps prey sequences" }
+  status: verified
+- id: C26
+  text: "The authors designed a blocking probe binding to the krill rRNA gene between the applied primers."
+  kind: method
+  source: { locator: "Methods, DNA isolation, paragraph 2", page: 46, quote: "we designed a blocking probe (5´-GACGGGCTTTAGCGTTC-3´) binding to the krill rRNA gene between the applied primers" }
+  status: verified
+- id: C27
+  text: "Template controls were randomly included in the library preparation steps, and the authors did not find evidence for contamination."
+  kind: method
+  source: { locator: "Methods, DNA isolation, paragraph 1", page: 45, quote: "template controls were randomly included in the library preparation steps. We did not find evidence for contamination" }
+  status: verified
+- id: C30
+  text: "The authors used long-term dietary markers by extracting fatty acids from tissue samples of krill (n = 21) and salps (n = 22)."
+  kind: method
+  source: { locator: "Results, Fatty acid composition", page: 25, quote: "we used long-term dietary markers by extracting fatty acids from tissue samples of krill (n = 21) and salps (n = 22)" }
+  status: verified
+- id: C31
+  text: "Ivlev's selectivity index ranges from +1, indicating preference of a prey taxon, to -1, indicating avoidance, while 0 denotes random feeding."
+  kind: method
+  source: { locator: "Methods, Sequencing data, last paragraph", page: 53, quote: "Ivlev’s selectivity index ranges from +1 indicating preference of a prey taxon to –1 indicating avoidance, while 0 denotes random feeding" }
+  status: verified
+- id: C32
+  text: "The relative proportion of 18S gene copy numbers is influenced by the relative abundance of the organisms in the sample, as well as by varying gene copy numbers."
+  kind: caveat
+  source: { locator: "Methods, Amplicon sequencing", page: 48, quote: "The relative proportion of 18S gene copy numbers is influenced by the relative abundance of the organisms in the sample, as well as by varying gene copy numbers" }
+  status: verified
+  note: "A sequence share is not a biomass share. The authors go on to argue amplicon sequencing is a reliable tool; do not drop the caveat."
+# ---- results: the plankton ---------------------------------------------------------------
+- id: C33
+  text: "The 18S metabarcoding libraries of the water column were dominated by dinoflagellates, mainly represented by the genus Gyrodinium (Dinophyceae, 39.5%)."
+  kind: result
+  source: { locator: "Results, paragraph 3", page: 16, quote: "The 18S metabarcoding libraries of the water column were dominated by dinoflagellates, mainly represented by the genus Gyrodinium (Dinophyceae, 39.5%" }
+  status: verified
+- id: C34
+  text: "Diatoms (Bacillariophyta, 19.4%) and Prymnesiophyceae (mainly Phaeocystis sp., 10.9%) represented the most abundant taxa in the plankton community."
+  kind: result
+  source: { locator: "Results, paragraph 3", page: 16, quote: "In addition, diatoms (Bacillariophyta, 19.4%), and Prymnesiophyceae (mainly Phaeocystis sp., 10.9%) represented the most abundant taxa" }
+  status: verified
+  note: "The sentence begins 'In addition' after the dinoflagellate sentence: do not rank them (first, second) beyond the percentages."
+- id: C35
+  text: "Copepods, including the genera Oithona and Metridia, accounted for 6.3%, and the parasitic dinoflagellate group Syndiniales for about 5% of all sequences in the plankton community."
+  kind: result
+  source: { locator: "Results, paragraph 3", page: 16, quote: "Copepods, including the genera Oithona and Metridia, accounted for 6.3%, and the parasitic dinoflagellate group Syndiniales for about 5% of all sequences in the plankton community" }
+  status: verified
+# ---- results: stomachs -------------------------------------------------------------------
+- id: C36
+  text: "The sequence libraries from the stomach content of krill and salps did not reflect the dinoflagellate-dominated plankton community nor the high proportion of diatoms observed in the water samples."
+  kind: result
+  source: { locator: "Results, paragraph 4", page: 18, quote: "the sequence libraries obtained from the stomach content of krill and salps did not reflect the dinoflagellate-dominated plankton community nor the high proportion of diatoms observed in the water samples" }
+  status: verified
+- id: C37
+  text: "The krill stomach content included a high share of crustacean sequences (26.5%), mainly assigned to the copepod genera Calanus and Oithona."
+  kind: result
+  source: { locator: "Results, paragraph 4", page: 18, quote: "The 18S metabarcoding libraries of the krill stomach content included a high share of crustacean sequences (26.5%; Fig. 3c), which were mainly assigned to the copepod genera Calanus and Oithona" }
+  status: verified
+- id: C38
+  text: "In krill stomachs the amount of dinoflagellates (Dinophyceae) and diatoms was markedly reduced compared to the plankton community (14.5 and 12.2%, respectively)."
+  kind: result
+  source: { locator: "Results, paragraph 4", page: 18, quote: "The amount of dinoflagellates (Dinophyceae) and diatoms was markedly reduced compared to the plankton community (14.5 and 12.2%, respectively)" }
+  status: verified
+- id: C39
+  text: "The parasitic Syndiniales group was enriched in krill stomachs, accounting for 12.4% of the sequences."
+  kind: result
+  source: { locator: "Results, paragraph 4", page: 18, quote: "the parasitic Syndiniales group was enriched in krill stomachs accounting for 12.4% of the sequences" }
+  status: verified
+- id: C40
+  text: "Salps constituted almost 6% of the stomach content of krill."
+  kind: result
+  source: { locator: "Results, paragraph 4", page: 18, quote: "In addition, salps constituted almost 6% to the stomach content of krill" }
+  status: verified
+- id: C41
+  text: "The sequence libraries from the stomach content of salps were dominated by the parasitic dinoflagellate group Syndiniales (31%)."
+  kind: result
+  source: { locator: "Results, paragraph 5", page: 19, quote: "The sequence libraries obtained from the stomach content of salps were dominated by the parasitic dinoflagellate group Syndiniales (31%" }
+  status: verified
+- id: C42
+  text: "Salp stomach libraries contained a high share of small flagellates (Ebria sp., Filosa-Thecofilosea; 20.7%)."
+  kind: result
+  source: { locator: "Results, paragraph 5", page: 19, quote: "contained a high share of small flagellates (Ebria sp., Filosa-Thecofilosea; 20.7%)" }
+  status: verified
+- id: C43
+  text: "In salp stomachs, other dinoflagellates (Dinophyceae) and diatoms were less abundant compared to the plankton community, accounting for 18.1%, and 7.4% of the sequences, respectively."
+  kind: result
+  source: { locator: "Results, paragraph 5", page: 19, quote: "Other dinoflagellates (Dinophyceae) and diatoms were less abundant compared to the plankton community accounting for 18.1%, and 7.4% of the sequences, respectively" }
+  status: verified
+- id: C44
+  text: "Crustacean remains in salp stomachs contributed 13.1% of all sequences and were mainly assigned to copepods."
+  kind: result
+  source: { locator: "Results, paragraph 5", page: 19, quote: "Crustacean remains in salp stomachs contributed to 13.1% of all sequences and were mainly assigned to copepods" }
+  status: verified
+- id: C45
+  text: "The clusters of stomach content and fecal pellets of both species each largely overlapped."
+  kind: result
+  source: { locator: "Results, paragraph 2", page: 14, quote: "the clusters of stomach content and fecal pellets of both species each largely overlapped" }
+  status: verified
+  note: "The same sentence says the ANOSIM found significant differences between all sampling groups. Do not turn 'largely overlapped' into 'identical'."
+# ---- results: fecal pellets --------------------------------------------------------------
+- id: C48
+  text: "Across all stations, salps showed a strong preference for small flagellates (Filosa-Thecofilosea, Ivlev's selectivity index = +0.88), Syndiniales (+0.73), and Chrysophyceae (+0.78)."
+  kind: result
+  source: { locator: "Results, Feeding selectivity", page: 22, quote: "Across all stations, salps showed a strong preference for small flagellates (Filosa-Thecofilosea, Ivlev’s selectivity index = +0.88; Fig. 4), Syndiniales (+0.73), and Chrysophyceae (+0.78)" }
+  status: verified
+- id: C49
+  text: "Salps avoided Prymnesiophytes (-0.90), Pelagophyceae (-0.87), Picozoa (-0.90), and Cryptophyceae (-0.96)."
+  kind: result
+  source: { locator: "Results, Feeding selectivity", page: 22, quote: "while Prymnesiophytes (–0.90), Pelagophyceae (–0.87), Picozoa (–0.90), and Cryptophyceae (–0.96) were avoided" }
+  status: verified
+- id: C50
+  text: "Krill selectively fed on copepods (+0.61), polychaetes (+0.58), and golden algae (Chrysophyceae, +0.89), while avoiding radiolarian protozoans (Acantharia, -0.85) and Cryptophyceae (-0.71)."
+  kind: result
+  source: { locator: "Results, Feeding selectivity", page: 22, quote: "Krill selectively fed on copepods (+0.61), polychaetes (+0.58), and golden algae (Chrysophyceae, +0.89; Fig. 4), while avoiding radiolarian protozoans (Acantharia, –0.85) and Cryptophyceae (–0.71)" }
+  status: verified
+- id: C51
+  text: "For krill, the preference for copepods was apparent across all depths."
+  kind: result
+  source: { locator: "Results, Feeding selectivity, paragraph 2", page: 24, quote: "For krill, the preference for copepods was apparent across all depths" }
+  status: verified
+- id: C52
+  text: "The feeding selectivity of krill and salps was confirmed across different depths from the surface to 200 m at several stations."
+  kind: result
+  source: { locator: "Discussion, paragraph 2", page: 32, quote: "The feeding selectivity of krill and salps was confirmed across different depths from the surface to 200 m at several stations" }
+  status: verified
+# ---- results: fatty acids ----------------------------------------------------------------
+- id: C53
+  text: "Diatom marker fatty acids were higher in krill (median = 30.6% of total fatty acids, p = 0.002) than in salps (median = 17.1%)."
+  kind: result
+  source: { locator: "Results, Fatty acid composition", page: 25, quote: "Diatom marker fatty acids (16:1(n−7), 20:5(n−3)) differed significantly between both species and were higher in krill (median = 30.6% of total fatty acids, p = 0.002; ANOVA; Fig. 5, Table 2) compared to salps (median = 17.1%)" }
+  status: verified
+- id: C54
+  text: "Dinoflagellate marker fatty acids showed no difference between species (median = 14% for each species)."
+  kind: result
+  source: { locator: "Results, Fatty acid composition", page: 25, quote: "Dinoflagellate marker fatty acids (18:4(n−3), 22:6(n−3)) showed no difference between species (median = 14% for each species" }
+  status: verified
+  note: "Text gives p = 0.665 and Table 2 gives 0.661 for the same test; the panel avoids the p-value."
+- id: C58
+  text: "Neither species' diet reflected the composition of the plankton community, suggesting that, in contrast to the accepted paradigm, not only krill but also salps are selective feeders."
+  kind: interpretation
+  source: { locator: "Abstract", page: 1, quote: "Neither species’ diet reflected the composition of the plankton community, suggesting that in contrast to the accepted paradigm, not only krill but also salps are selective feeders" }
+  status: verified
+  note: "Also stated in the Discussion (page 22)."
+- id: C60
+  text: "Krill and salps had broadly similar diets, potentially enhancing the competition between both species."
+  kind: interpretation
+  source: { locator: "Abstract", page: 1, quote: "we found that krill and salps had broadly similar diets, potentially enhancing the competition between both species" }
+  status: verified
+  note: "The Discussion (page 30) words this more strongly ('enable salps to outcompete krill'); the comic follows the abstract's hedge."
+- id: C61
+  text: "This could be augmented by salps' ability to rapidly reproduce in favorable conditions, posing further risks to krill populations."
+  kind: interpretation
+  source: { locator: "Abstract", page: 1, quote: "This could be augmented by salps’ ability to rapidly reproduce in favorable conditions, posing further risks to krill populations" }
+  status: verified
+- id: C62
+  text: "There was no significant difference between krill and salp diet composition, suggesting that, contrary to previous hypotheses, salps might be as selective in their feeding behavior as krill."
+  kind: interpretation
+  source: { locator: "Discussion, paragraph 2", page: 32, quote: "there was no significant difference between krill and salp diet composition, suggesting that contrary to previous hypotheses salps might be as selective in their feeding behavior as krill" }
+  status: verified
+  note: "Reported alongside an ANOSIM that found significant differences between all five sampling groups (page 11). See CLAIM-CHECK.md."
+- id: C63
+  text: "It remains unclear how salps perform such selective feeding behavior."
+  kind: caveat
+  source: { locator: "Discussion, paragraph 3", page: 33, quote: "It remains unclear how salps perform such selective feeding behavior" }
+  status: verified
+- id: C64
+  text: "On-board video observations showed that salps are agile swimmers, often performing back-flushes to empty their feeding tract."
+  kind: result
+  source: { locator: "Discussion, paragraph 3", page: 33, quote: "On-board video observations obtained during this study showed that salps are agile swimmers, often performing back-flushes to empty their feeding tract" }
+  status: verified
+- id: C65
+  text: "This behavior may allow for selective feeding by rejecting non-desirable food via back-flushing and subsequent swimming to other feeding grounds."
+  kind: interpretation
+  source: { locator: "Discussion, paragraph 3", page: 33, quote: "This behavior may allow for selective feeding by rejecting non-desirable food via back-flushing and subsequent swimming to other feeding grounds" }
+  status: verified
+- id: C66
+  text: "The relative abundance of diatoms was significantly higher in salp fecal pellets (36.2%) compared to their stomachs (7.4%), supporting the notion that salps cannot digest diatoms efficiently."
+  kind: interpretation
+  source: { locator: "Discussion, paragraph 5", page: 35, quote: "The relative abundance of diatoms was significantly higher in salp FP (36.2%) compared to their stomachs (7.4%), supporting the notion that salps cannot digest diatoms efficiently" }
+  status: verified
+- id: C67
+  text: "The authors found 17% of diatom fatty acid markers in salp tissue, indicating the assimilation of diatoms."
+  kind: interpretation
+  source: { locator: "Discussion, paragraph 5", page: 35, quote: "we found 17% of diatom fatty acid markers in salp tissue, indicating the assimilation of diatoms" }
+  status: verified
+- id: C68
+  text: "During visual inspections of some salp stomachs on board, the authors observed krill fecal pellets, suggesting that salps ingested those krill fecal pellets."
+  kind: result
+  source: { locator: "Discussion, paragraph 5", page: 35, quote: "During visual inspections of some salp stomachs on board, we observed krill FP, suggesting that salps ingested those krill FP" }
+  status: verified
+- id: C70
+  text: "The diet of krill contained about 6% salp sequences, suggesting that krill were either directly feeding on salps or on their remains."
+  kind: interpretation
+  source: { locator: "Discussion, paragraph 8", page: 38, quote: "show that the diet of krill contained about 6% salp sequences, suggesting that krill were either directly feeding on salps or on their remains" }
+  status: verified
+- id: C71
+  text: "During on-board video recordings, the authors observed an individual krill holding on to a small chain of salps with its feeding basket and swimming with it for more than one minute before letting go."
+  kind: result
+  source: { locator: "Discussion, paragraph 8", page: 38, quote: "we observed an individual krill holding on to a small chain of salps with its feeding basket and swimming with it for more than one minute before letting go" }
+  status: verified
+- id: C72
+  text: "The authors were not able to observe the krill feeding directly on the salps."
+  kind: caveat
+  source: { locator: "Discussion, paragraph 8", page: 38, quote: "Although we were not able to observe the krill feeding directly on the salps" }
+  status: verified
+- id: C73
+  text: "The parasitic dinoflagellate group Syndiniales accounted for almost one third of the salp and 12.4% of the krill diet, while being less abundant in the plankton community (4.9%)."
+  kind: result
+  source: { locator: "Discussion, paragraph 9", page: 39, quote: "The parasitic dinoflagellate group Syndiniales accounted for almost one third of the salp and 12.4% of the krill diet, while being less abundant in the plankton community (4.9%)" }
+  status: verified
+- id: C74
+  text: "The relative enrichment of Syndiniales sequences in the stomachs of either species versus the plankton community might indicate prior infections of salps or krill."
+  kind: caveat
+  source: { locator: "Discussion, paragraph 9", page: 39, quote: "the relative enrichment of Syndiniales sequences in the stomachs of either species versus the plankton community might indicate prior infections of salps or krill" }
+  status: verified
+- id: C75
+  text: "The authors observed selective feeding behavior of both krill and salps and did not find evidence for more efficient feeding on small prey by salps compared to krill. This indicates that the projected shift in plankton size along the WAP might not favor salps as previously suggested."
+  kind: interpretation
+  source: { locator: "Discussion, paragraph 10", page: 40, quote: "we observed selective feeding behavior of both krill and salps and did not find evidence for more efficient feeding on small prey by salps compared to krill. This indicates that the projected shift in plankton size along the WAP might not favor salps as previously suggested" }
+  status: verified
+- id: C76
+  text: "Future studies should further investigate the selective feeding behavior using both field and laboratory tests."
+  kind: caveat
+  source: { locator: "Discussion, paragraph 10", page: 40, quote: "Future studies should further investigate the selective feeding behavior using both field and laboratory tests" }
+  status: verified
+- id: C78
+  text: "The plankton community was typical for an autumn (March-May) plankton community around the WAP."
+  kind: caveat
+  source: { locator: "Discussion, paragraph 1", page: 31, quote: "which is typical for an autumn (March–May) plankton community around the WAP" }
+  status: verified
+  note: "Scope: one cruise, autumn 2018, along the Antarctic Peninsula."
+- id: C80
+  text: "Crustaceans accounted for about one third of the prey sequences in krill stomachs."
+  kind: result
+  source: { locator: "Discussion, paragraph 7", page: 37, quote: "Crustaceans accounted for about one third of the prey sequences in krill stomachs" }
+  status: unverified
+  note: "Contradicts the Results (26.5%, page 13). No panel draws it; the comic uses 26.5%."
+- id: C81
+  text: "Salp fecal pellets contained a considerably higher share of diatoms than krill pellets (36.2% vs. 13.9%)."
+  kind: result
+  source: { locator: "Discussion, paragraph 6", page: 36, quote: "salp FP contained a considerably higher share of diatoms than krill pellets (36.2% vs. 13.9%)" }
+  status: unverified
+  note: "13.9% is the Dinophyceae share of krill FP in the Results (page 15), not diatoms. The Results say diatoms were only 'reduced' in krill FP. No panel draws it."

@@ -1,0 +1,134 @@
+- id: B1
+  title: "Two grazers"
+  act: problem
+  panels:
+  - id: B1.1
+    weight: wide
+    frame: borderless
+    scene: "Mara stands on the deck of a ship beside Kip the krill and Sal the salp."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Antarctic krill and the salp Salpa thompsoni are among the dominant grazers in the Southern Ocean." }
+      - { speaker: mara, text: "Meet the two grazers." }
+    claim_ids: [C1]
+    staging:
+      props: [ { kind: ship, x: 0.62, y: 0.15, w: 0.36, h: 0.45 } ]
+      characters:
+        - { id: mara, x: 0.12, pose: point, face: smile, facing: right }
+        - { id: kip, x: 0.3, pose: stand, face: neutral, facing: right, scale: 1.2 }
+        - { id: sal, x: 0.52, pose: stand, face: neutral, facing: left }
+  - id: B1.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: "Kip the krill stands between a whale and a penguin."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill is a key species in the Southern Ocean ecosystem and an important link between phytoplankton and higher trophic levels such as whales, seals, and penguins." }
+    claim_ids: [C2]
+    staging:
+      characters:
+        - { id: whale, x: 0.17, pose: stand, face: neutral, facing: right, scale: 0.45 }
+        - { id: kip, x: 0.5, pose: stand, face: neutral, facing: right, scale: 1.4 }
+        - { id: penguin, x: 0.82, pose: stand, face: neutral, facing: left }
+  - id: B1.3
+    weight: small
+    frame: outlined
+    transition: moment-to-moment
+    scene: "Sal the salp stands alone."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Salps are a less important food source for these apex predators." }
+    claim_ids: [C3]
+    staging:
+      characters:
+        - { id: sal, x: 0.5, pose: stand, face: neutral, facing: right }
+  - id: B1.4
+    weight: standard
+    frame: borderless
+    transition: aspect-to-aspect
+    word_picture: additive
+    scene: "Kip and Sal stand back to back, facing away from each other."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill biomass is positively correlated to sea ice and cold temperatures. Opposite to krill, salp abundances are negatively correlated to sea ice cover." }
+    claim_ids: [C5, C6]
+    staging:
+      characters:
+        - { id: kip, x: 0.3, pose: stand, face: neutral, facing: left, scale: 1.4 }
+        - { id: sal, x: 0.7, pose: stand, face: neutral, facing: right }
+  - id: B1.5
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: interdependent
+    scene: "A line marking latitude, with a bar running from 60°S to 65°S for the salps' southern limit; the axis is schematic."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In response to climatic changes, an increase in the abundance of salps was observed and their southern distribution limit has shifted from 60°S to 65°S since 1980." }
+    claim_ids: [C7]
+    staging:
+      props:
+        - kind: axis
+          x: 0.04
+          y: 0.05
+          w: 0.92
+          h: 0.9
+          title: "Latitude (schematic, not to scale)"
+          items:
+            - { label: "60°S", at: 0.2 }
+            - { label: "65°S", at: 0.8 }
+            - { label: "salps' southern limit has shifted", at: 0.2, to: 0.8, style: hollow }
+  - id: B1.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Kip and Sal lean in toward the same bowl of food."
+    speech:
+      - { speaker: narrator, kind: caption, text: "This has resulted in a greater overlap between the ranges of salps and krill, making them direct competitors for food and habitat in the western Antarctic Peninsula (WAP) region." }
+    claim_ids: [C8]
+    staging:
+      props: [ { kind: bowl, x: 0.4, y: 0.62, w: 0.2, h: 0.26 } ]
+      characters:
+        - { id: kip, x: 0.16, pose: stand, face: neutral, facing: right, scale: 1.1 }
+        - { id: sal, x: 0.83, pose: stand, face: neutral, facing: left, scale: 0.8 }
+  - id: B1.7
+    weight: wide
+    frame: borderless
+    height: short
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: "Mara looks on as Kip stands by a bowl and Sal stands by another."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill are selective feeders with a diatom-dominated diet. Salps are assumed to be non-selective, indiscriminate feeders." }
+      - { speaker: mara, text: "Selective? What does that mean?" }
+    claim_ids: [C10, C11]
+    staging:
+      props: [ { kind: bowl, x: 0.42, y: 0.7, w: 0.12, h: 0.22 }, { kind: bowl, x: 0.8, y: 0.7, w: 0.12, h: 0.22 } ]
+      characters:
+        - { id: mara, x: 0.08, pose: think, face: neutral, facing: right }
+        - { id: kip, x: 0.24, pose: stand, face: neutral, facing: right, scale: 1.2 }
+        - { id: sal, x: 0.7, pose: stand, face: neutral, facing: right }
+  - id: B1.8
+    weight: standard
+    frame: outlined
+    transition: action-to-action
+    scene: "Mara points and smiles as she explains."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Selective feeding is the selection of particular prey items while avoiding or rejecting others, and is displayed by most zooplankton." }
+    claim_ids: [C12]
+    staging:
+      characters:
+        - { id: mara, x: 0.3, pose: point, face: smile, facing: right }
+  - id: B1.9
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: "Mara stands thinking, with Kip and Sal side by side."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Studies that simultaneously compare the diet composition of krill and salps from the same region are lacking." }
+      - { speaker: mara, text: "So nobody has put them side by side?" }
+    claim_ids: [C15]
+    staging:
+      characters:
+        - { id: mara, x: 0.15, pose: think, face: neutral, facing: right }
+        - { id: kip, x: 0.6, pose: stand, face: neutral, facing: left, scale: 1.4 }
+        - { id: sal, x: 0.85, pose: stand, face: neutral, facing: left }

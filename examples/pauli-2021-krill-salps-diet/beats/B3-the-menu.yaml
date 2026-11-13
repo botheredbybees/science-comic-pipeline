@@ -1,0 +1,140 @@
+- id: B3
+  title: "The menu"
+  act: result
+  panels:
+  - id: B3.1
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of the plankton community: dinoflagellates, diatoms, Prymnesiophyceae and copepods, as a share of sequences."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The water column was dominated by dinoflagellates, mainly Gyrodinium (Dinophyceae, 39.5%). Diatoms (19.4%) and Prymnesiophyceae (10.9%) were the most abundant taxa, and copepods accounted for 6.3%." }
+    claim_ids: [C33, C34, C35]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Plankton community: share of sequences" }
+        - kind: bars
+          x: 0.05
+          y: 0.12
+          w: 0.9
+          h: 0.86
+          unit: "%"
+          bars:
+            - { label: "dinoflagellates (Dinophyceae)", value: 39.5 }
+            - { label: "diatoms", value: 19.4 }
+            - { label: "Prymnesiophyceae", value: 10.9 }
+            - { label: "copepods", value: 6.3 }
+  - id: B3.2
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Mara asks a question, with Kip and Sal standing beside her."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The sequence libraries from the stomach content of krill and salps did not reflect the dinoflagellate-dominated plankton community nor the high proportion of diatoms observed in the water samples." }
+      - { speaker: mara, text: "So lunch does not match the water?" }
+    claim_ids: [C36]
+    staging:
+      characters:
+        - { id: mara, x: 0.12, pose: think, face: neutral, facing: right }
+        - { id: kip, x: 0.5, pose: stand, face: neutral, facing: left, scale: 1.0 }
+        - { id: sal, x: 0.88, pose: stand, face: neutral, facing: left }
+  - id: B3.3
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of krill stomach contents: crustaceans, dinoflagellates, Syndiniales and diatoms, as a share of sequences."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill stomachs held a high share of crustacean sequences (26.5%), mainly copepods. Dinoflagellates and diatoms were markedly reduced compared to the plankton (14.5 and 12.2%); the parasitic Syndiniales were enriched (12.4%)." }
+    claim_ids: [C37, C38, C39]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Krill stomach contents: share of sequences" }
+        - kind: bars
+          x: 0.05
+          y: 0.12
+          w: 0.9
+          h: 0.86
+          unit: "%"
+          bars:
+            - { label: "crustaceans", value: 26.5 }
+            - { label: "dinoflagellates (Dinophyceae)", value: 14.5 }
+            - { label: "Syndiniales (parasites)", value: 12.4 }
+            - { label: "diatoms", value: 12.2 }
+  - id: B3.4
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of salp stomach contents: Syndiniales, small flagellates, dinoflagellates, crustaceans and diatoms, as a share of sequences."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Salp stomachs were dominated by the parasitic Syndiniales (31%), with a high share of small flagellates (20.7%). Other dinoflagellates and diatoms were less abundant than in the plankton (18.1% and 7.4%); crustaceans made up 13.1%." }
+    claim_ids: [C41, C42, C43, C44]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Salp stomach contents: share of sequences" }
+        - kind: bars
+          x: 0.05
+          y: 0.12
+          w: 0.9
+          h: 0.86
+          unit: "%"
+          bars:
+            - { label: "Syndiniales (parasites)", value: 31, style: hollow }
+            - { label: "small flagellates", value: 20.7, style: hollow }
+            - { label: "other dinoflagellates", value: 18.1, style: hollow }
+            - { label: "crustaceans", value: 13.1, style: hollow }
+            - { label: "diatoms", value: 7.4, style: hollow }
+  - id: B3.5
+    weight: standard
+    frame: borderless
+    height: short
+    transition: scene-to-scene
+    scene: "Kip and Sal stand close together."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The clusters of stomach content and fecal pellets of both species each largely overlapped." }
+    claim_ids: [C45]
+    staging:
+      characters:
+        - { id: kip, x: 0.4, pose: stand, face: neutral, facing: right, scale: 1.0 }
+        - { id: sal, x: 0.58, pose: stand, face: neutral, facing: left }
+  - id: B3.6
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of the share of Syndiniales sequences in the plankton, krill stomachs and salp stomachs."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The parasitic dinoflagellate group Syndiniales accounted for almost one third of the salp and 12.4% of the krill diet, while being less abundant in the plankton community (4.9%)." }
+    claim_ids: [C73, C41]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Syndiniales: share of sequences" }
+        - kind: bars
+          x: 0.05
+          y: 0.12
+          w: 0.9
+          h: 0.86
+          unit: "%"
+          bars:
+            - { label: "plankton", value: 4.9 }
+            - { label: "krill stomachs", value: 12.4 }
+            - { label: "salp stomachs", value: 31, style: hollow }
+  - id: B3.7
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Mara thinks, with Sal standing beside her."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The relative enrichment of Syndiniales sequences in the stomachs of either species versus the plankton community might indicate prior infections of salps or krill." }
+      - { speaker: mara, text: "Or the animals had been infected before." }
+    claim_ids: [C74]
+    staging:
+      characters:
+        - { id: mara, x: 0.25, pose: think, face: neutral, facing: right }
+        - { id: sal, x: 0.72, pose: stand, face: neutral, facing: left }

@@ -1,0 +1,117 @@
+- id: B5
+  title: "After the meal"
+  act: result
+  panels:
+  - id: B5.1
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of median marker fatty acids: diatom markers and dinoflagellate markers, for krill and for salps."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Diatom marker fatty acids were higher in krill (median = 30.6% of total fatty acids) than in salps (median = 17.1%). Dinoflagellate marker fatty acids showed no difference between species (median = 14% for each species)." }
+    claim_ids: [C53, C54]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Marker fatty acids: median share of total fatty acids" }
+        - kind: bars
+          x: 0.05
+          y: 0.12
+          w: 0.9
+          h: 0.86
+          unit: "%"
+          bars:
+            - { label: "diatom markers, krill", value: 30.6 }
+            - { label: "diatom markers, salps", value: 17.1, style: hollow }
+            - { label: "dinoflagellate markers, krill", value: 14 }
+            - { label: "dinoflagellate markers, salps", value: 14, style: hollow }
+  - id: B5.2
+    weight: standard
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of the relative abundance of diatoms in salp stomachs and in salp fecal pellets."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The relative abundance of diatoms was significantly higher in salp fecal pellets (36.2%) compared to their stomachs (7.4%), supporting the notion that salps cannot digest diatoms efficiently." }
+    claim_ids: [C66]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Diatoms in salps" }
+        - kind: bars
+          x: 0.08
+          y: 0.12
+          w: 0.84
+          h: 0.86
+          unit: "%"
+          bars:
+            - { label: "stomachs", value: 7.4, style: hollow }
+            - { label: "fecal pellets", value: 36.2, style: hollow }
+  - id: B5.3
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: "Mara points at Sal and asks a question."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The authors found 17% of diatom fatty acid markers in salp tissue, indicating the assimilation of diatoms." }
+      - { speaker: mara, text: "So some diatoms do get absorbed." }
+    claim_ids: [C67]
+    staging:
+      characters:
+        - { id: mara, x: 0.25, pose: point, face: neutral, facing: right }
+        - { id: sal, x: 0.7, pose: stand, face: neutral, facing: left }
+  - id: B5.4
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Sal stands beside a bowl while Mara holds a clipboard."
+    speech:
+      - { speaker: narrator, kind: caption, text: "During visual inspections of some salp stomachs on board, the authors observed krill fecal pellets, suggesting that salps ingested those krill fecal pellets." }
+    claim_ids: [C68]
+    staging:
+      props: [ { kind: bowl, x: 0.4, y: 0.68, w: 0.2, h: 0.24 } ]
+      characters:
+        - { id: mara, x: 0.15, pose: hold, holding: clipboard, face: neutral, facing: right }
+        - { id: sal, x: 0.82, pose: stand, face: neutral, facing: left }
+  - id: B5.5
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: "Mara looks surprised as Kip stands with Sal behind him."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The diet of krill contained about 6% salp sequences, suggesting that krill were either directly feeding on salps or on their remains." }
+      - { speaker: mara, text: "Krill eating salps?" }
+    claim_ids: [C70, C40]
+    staging:
+      characters:
+        - { id: mara, x: 0.12, pose: stand, face: surprised, facing: right }
+        - { id: kip, x: 0.45, pose: stand, face: neutral, facing: right, scale: 1.1 }
+        - { id: sal, x: 0.88, pose: stand, face: neutral, facing: left }
+  - id: B5.6
+    weight: wide
+    frame: outlined
+    transition: moment-to-moment
+    word_picture: parallel
+    scene: "Kip stands holding on to Sal while Mara watches."
+    speech:
+      - { speaker: narrator, kind: caption, text: "During on-board video recordings, the authors observed an individual krill holding on to a small chain of salps with its feeding basket and swimming with it for more than one minute before letting go." }
+    claim_ids: [C71]
+    staging:
+      characters:
+        - { id: mara, x: 0.12, pose: stand, face: neutral, facing: right }
+        - { id: kip, x: 0.5, pose: stand, face: neutral, facing: right, scale: 1.1 }
+        - { id: sal, x: 0.62, pose: stand, face: neutral, facing: left }
+  - id: B5.7
+    weight: small
+    frame: outlined
+    height: short
+    transition: moment-to-moment
+    scene: "Mara gives a deadpan look."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The authors were not able to observe the krill feeding directly on the salps." }
+      - { speaker: mara, text: "Attached, but not seen eating." }
+    claim_ids: [C72]
+    staging:
+      characters:
+        - { id: mara, x: 0.5, pose: shrug, face: deadpan, facing: right }

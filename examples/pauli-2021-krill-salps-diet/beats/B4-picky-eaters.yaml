@@ -1,0 +1,115 @@
+- id: B4
+  title: "Picky eaters"
+  act: result
+  panels:
+  - id: B4.1
+    weight: wide
+    frame: outlined
+    height: short
+    transition: scene-to-scene
+    word_picture: interdependent
+    scene: "A scale from -1 (avoided) through 0 (random feeding) to +1 (preferred)."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Ivlev's selectivity index ranges from +1, indicating preference of a prey taxon, to -1, indicating avoidance, while 0 denotes random feeding." }
+    claim_ids: [C31]
+    staging:
+      props:
+        - kind: axis
+          x: 0.04
+          y: 0.05
+          w: 0.92
+          h: 0.9
+          title: "Ivlev's selectivity index"
+          items:
+            - { label: "-1 avoided", at: 0.03 }
+            - { label: "0 random feeding", at: 0.5 }
+            - { label: "+1 preferred", at: 0.97 }
+  - id: B4.2
+    weight: full
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A scale of Ivlev's selectivity index for salps, with marks for the preferred prey on the right and the avoided prey on the left."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Across all stations, salps showed a strong preference for small flagellates (+0.88), Syndiniales (+0.73), and Chrysophyceae (+0.78), while Prymnesiophytes, Pelagophyceae, Picozoa and Cryptophyceae were avoided." }
+    claim_ids: [C48, C49, C31]
+    staging:
+      props:
+        - kind: axis
+          x: 0.03
+          y: 0.04
+          w: 0.94
+          h: 0.92
+          title: "Salps: Ivlev's selectivity index"
+          items:
+            - { label: "-1", at: 0.0 }
+            - { label: "0", at: 0.5 }
+            - { label: "+1", at: 1.0 }
+            - { label: "preferred: Syndiniales +0.73, Chrysophyceae +0.78, small flagellates +0.88", at: 0.865, style: mark }
+            - { label: "", at: 0.89, style: mark }
+            - { label: "", at: 0.94, style: mark }
+            - { label: "avoided: Cryptophyceae -0.96, Prymnesiophytes and Picozoa -0.90 each, Pelagophyceae -0.87", at: 0.02, style: mark }
+            - { label: "", at: 0.05, style: mark }
+            - { label: "", at: 0.05, style: mark }
+            - { label: "", at: 0.065, style: mark }
+  - id: B4.3
+    weight: full
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A scale of Ivlev's selectivity index for krill, with marks for the preferred prey on the right and the avoided prey on the left."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill selectively fed on copepods (+0.61), polychaetes (+0.58), and golden algae (Chrysophyceae, +0.89), while avoiding radiolarian protozoans (Acantharia, -0.85) and Cryptophyceae (-0.71)." }
+    claim_ids: [C50, C31]
+    staging:
+      props:
+        - kind: axis
+          x: 0.03
+          y: 0.04
+          w: 0.94
+          h: 0.92
+          title: "Krill: Ivlev's selectivity index"
+          items:
+            - { label: "-1", at: 0.0 }
+            - { label: "0", at: 0.5 }
+            - { label: "+1", at: 1.0 }
+            - { label: "golden algae +0.89", at: 0.945, style: mark }
+            - { label: "copepods +0.61", at: 0.805, style: mark, row: 1 }
+            - { label: "polychaetes +0.58", at: 0.79, style: mark, row: 2 }
+            - { label: "Acantharia -0.85", at: 0.075, style: mark }
+            - { label: "Cryptophyceae -0.71", at: 0.145, style: mark, row: 1 }
+  - id: B4.4
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "An arrow pointing down from the surface to 200 m, with Kip beside it."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The feeding selectivity of krill and salps was confirmed across different depths from the surface to 200 m at several stations." }
+      - { speaker: kip, text: "Copepods, at every depth." }
+    claim_ids: [C52, C51]
+    staging:
+      props:
+        - { kind: arrow, x: 0.2, y: 0.08, x2: 0.2, y2: 0.78 }
+        - { kind: label, x: 0.2, y: 0.84, label: "200 m" }
+      characters:
+        - { id: kip, x: 0.62, pose: stand, face: neutral, facing: left, scale: 1.1 }
+  - id: B4.5
+    weight: full
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: "Mara faces Kip and Sal, with a surprised look."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Neither species' diet reflected the composition of the plankton community, suggesting that, in contrast to the accepted paradigm, not only krill but also salps are selective feeders." }
+      - { speaker: mara, text: "So salps are picky too?" }
+      - { speaker: sal, text: "I have standards." }
+    claim_ids: [C58]
+    humour:
+      note: "Sal answers Mara's question with a prim line while smiling. The caption is the abstract's sentence unchanged. 1: no number, hedge, scope or direction changes. 2: a reader could take 'standards' as the paper saying salps choose by quality; the paper only reports that diets did not match the plankton, so the line is a gag in Sal's own voice, not a finding. 3: the butt is the salp's smugness (an organism). 4: it does not touch a caveat. 5: authors would probably accept it, but 'standards' is the comic's wording, so a human decides."
+      keeps_claims_intact: false
+    staging:
+      characters:
+        - { id: mara, x: 0.2, pose: up, face: surprised, facing: right }
+        - { id: kip, x: 0.55, pose: stand, face: neutral, facing: left, scale: 1.1 }
+        - { id: sal, x: 0.85, pose: stand, face: smile, facing: left }

@@ -1,0 +1,94 @@
+- id: B5
+  title: "A currency converter, by accident"
+  act: discussion
+  panels:
+  - id: B5.1
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Dot, a diatom, stands in a lab beside the physiologist, who holds a mug."
+    speech:
+    - {speaker: narrator, kind: caption, text: "A lab study used proteomics and physiological metrics to explore the cumulative effect of five climate-change stressors on a diatom."}
+    - {speaker: dot, text: "That's me."}
+    claim_ids: [C35]
+    staging:
+      characters:
+      - {id: dot, x: 0.3, pose: stand, face: deadpan, facing: right, scale: 0.9}
+      - {id: physio, x: 0.75, pose: hold, face: neutral, facing: left, holding: mug, scale: 0.85}
+  - id: B5.2
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    word_picture: parallel
+    scene: "Two arrows pull in opposite directions: one labelled 'decreased nutrient supply', the other 'warming'."
+    speech:
+    - {speaker: narrator, kind: caption, text: "A central finding: the effect of decreased nutrient supply in a future ocean was offset by warming."}
+    claim_ids: [C36]
+    staging:
+      props:
+      - {kind: arrow, x: 0.05, y: 0.5, x2: 0.45, y2: 0.5}
+      - {kind: label, x: 0.25, y: 0.4, label: "decreased nutrient supply", size: small}
+      - {kind: arrow, x: 0.95, y: 0.7, x2: 0.55, y2: 0.7}
+      - {kind: label, x: 0.75, y: 0.6, label: "warming", size: small}
+  - id: B5.3
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "A board with a card reading 'P-containing translation proteins' and an arrow pointing down."
+    speech:
+    - {speaker: narrator, kind: caption, text: "Proteomics revealed that a decreased need for P (phosphorus) was driven by lower expression of P-containing proteins associated with translation."}
+    claim_ids: [C37, C13]
+    staging:
+      props:
+      - {kind: board, x: 0.1, y: 0.1, w: 0.8, h: 0.5, title: "proteomics", cards: [{label: "P-containing translation proteins"}]}
+      - {kind: arrow, x: 0.5, y: 0.62, x2: 0.5, y2: 0.92}
+      - {kind: label, x: 0.78, y: 0.82, label: "lower expression", size: small}
+  - id: B5.4
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    scene: "The physiologist holds a mug, with a down arrow beside them labelled 'cellular P quota'."
+    speech:
+    - {speaker: narrator, kind: caption, text: "Physiological metrics corroborated this finding: cellular P quotas were lower under warming."}
+    - {speaker: physio, text: "Lower, as well."}
+    claim_ids: [C38]
+    staging:
+      characters:
+      - {id: physio, x: 0.3, pose: hold, face: smile, facing: right, holding: mug, scale: 0.9}
+      props:
+      - {kind: arrow, x: 0.7, y: 0.2, x2: 0.7, y2: 0.7}
+      - {kind: label, x: 0.78, y: 0.85, label: "cellular P quota", size: small}
+  - id: B5.5
+    weight: full
+    frame: outlined
+    transition: scene-to-scene
+    height: tall
+    word_picture: interdependent
+    scene: "Three boxes joined by arrows: 'protein synthesis', 'P quota', 'biogeochemical cycle of P'. The modeller raises both arms."
+    speech:
+    - {speaker: narrator, kind: caption, text: "Hence, P quotas acted as a currency converter between protein synthesis and the biogeochemical cycle of P."}
+    - {speaker: modeller, text: "A converter!"}
+    claim_ids: [C39]
+    staging:
+      characters:
+      - {id: modeller, x: 0.9, pose: up, face: smile, facing: left, scale: 0.8}
+      props:
+      - {kind: flow, x: 0.03, y: 0.2, w: 0.8, h: 0.6, items: [{label: "protein synthesis"}, {label: "P quota"}, {label: "biogeochemical cycle of P"}]}
+  - id: B5.6
+    weight: wide
+    frame: borderless
+    transition: moment-to-moment
+    word_picture: word-specific
+    scene: "The physiologist, Dot and the modeller stand in a row. Dot shrugs."
+    speech:
+    - {speaker: narrator, kind: caption, text: "The study showed this link serendipitously. The authors say that in future we must actively seek such conceptual linkages, rather than uncovering them by chance."}
+    - {speaker: dot, text: "Lucky."}
+    claim_ids: [C40]
+    humour:
+      note: "Dot shrugs and says 'Lucky.' beside the caption that the link was shown serendipitously and that we must seek linkages rather than rely on chance. (1) Nothing changes: 'serendipitously' is the paper's word and the caption keeps the authors' recommendation. (2) Dot is a stand-in for the lab diatom, and saying 'Lucky.' gives the diatom no motive the paper reports, only comments on the finding, in the comic's voice. (3) The butt is chance. (4) It does not play down the caveat; the caption states it in full. (5) Honest to the authors, who themselves say 'serendipitously'."
+      keeps_claims_intact: true
+    staging:
+      characters:
+      - {id: physio, x: 0.2, pose: stand, face: neutral, facing: right, scale: 0.85}
+      - {id: dot, x: 0.5, pose: shrug, face: deadpan, facing: right, scale: 0.8}
+      - {id: modeller, x: 0.8, pose: point, face: smile, facing: left, scale: 0.85}

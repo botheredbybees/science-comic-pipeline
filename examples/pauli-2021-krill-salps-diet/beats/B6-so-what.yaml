@@ -1,0 +1,121 @@
+- id: B6
+  title: "So what?"
+  act: discussion
+  panels:
+  - id: B6.1
+    weight: wide
+    frame: borderless
+    height: short
+    transition: scene-to-scene
+    word_picture: picture-specific
+    scene: "Sal stands alone with a deadpan face."
+    speech:
+      - { speaker: narrator, kind: caption, text: "It remains unclear how salps perform such selective feeding behavior." }
+      - { speaker: sal, text: "Don't look at me." }
+    claim_ids: [C63]
+    humour:
+      note: "Sal shrugs and deflects, as if asked to explain itself. The caption is the authors' own statement of what is unknown, unchanged. 1: nothing changes. 2: the line is plainly Sal's, but it could be read as the salp being unwilling to say, so a human should confirm it does not imply anything about salp behaviour. 3: the butt is the salp and the authors' own uncertainty is left intact. 4: it plays the caveat straight (the unknown stays unknown), not down. 5: reads as honest, but unsure whether a shrugging salp suggests there is a mechanism to hide."
+      keeps_claims_intact: false
+    staging:
+      characters:
+        - { id: sal, x: 0.5, pose: shrug, face: deadpan, facing: right }
+  - id: B6.2
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Sal faces left while an arrow points right, showing Sal moving backwards."
+    speech:
+      - { speaker: narrator, kind: caption, text: "On-board video observations showed that salps are agile swimmers, often performing back-flushes to empty their feeding tract." }
+    claim_ids: [C64]
+    staging:
+      props: [ { kind: arrow, x: 0.55, y: 0.5, x2: 0.9, y2: 0.5 } ]
+      characters:
+        - { id: sal, x: 0.3, pose: stand, face: neutral, facing: left, scale: 1.3 }
+  - id: B6.3
+    weight: standard
+    frame: borderless
+    transition: action-to-action
+    scene: "Mara thinks while Sal stands behind her."
+    speech:
+      - { speaker: narrator, kind: caption, text: "This behavior may allow for selective feeding by rejecting non-desirable food via back-flushing and subsequent swimming to other feeding grounds." }
+    claim_ids: [C65]
+    staging:
+      characters:
+        - { id: mara, x: 0.3, pose: think, face: neutral, facing: right }
+        - { id: sal, x: 0.75, pose: stand, face: neutral, facing: left }
+  - id: B6.4
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: "Kip and Sal stand side by side while Mara looks at them."
+    speech:
+      - { speaker: narrator, kind: caption, text: "There was no significant difference between krill and salp diet composition, suggesting that, contrary to previous hypotheses, salps might be as selective in their feeding behavior as krill." }
+    claim_ids: [C62]
+    staging:
+      characters:
+        - { id: mara, x: 0.15, pose: stand, face: neutral, facing: right }
+        - { id: kip, x: 0.52, pose: stand, face: neutral, facing: right, scale: 1.1 }
+        - { id: sal, x: 0.82, pose: stand, face: neutral, facing: left }
+  - id: B6.5
+    weight: wide
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: "Kip and Sal face a single bowl from opposite sides."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill and salps had broadly similar diets, potentially enhancing the competition between both species. This could be augmented by salps' ability to rapidly reproduce in favorable conditions, posing further risks to krill populations." }
+    claim_ids: [C60, C61]
+    staging:
+      props: [ { kind: bowl, x: 0.43, y: 0.66, w: 0.14, h: 0.24 } ]
+      characters:
+        - { id: kip, x: 0.2, pose: stand, face: neutral, facing: right, scale: 1.1 }
+        - { id: sal, x: 0.8, pose: stand, face: neutral, facing: left }
+  - id: B6.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Mara stands with a clipboard."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The authors observed selective feeding behavior of both krill and salps and did not find evidence for more efficient feeding on small prey by salps compared to krill. This indicates that the projected shift in plankton size along the WAP might not favor salps as previously suggested." }
+    claim_ids: [C75]
+    staging:
+      characters:
+        - { id: mara, x: 0.5, pose: hold, holding: clipboard, face: neutral, facing: right }
+  - id: B6.7
+    weight: standard
+    frame: borderless
+    transition: scene-to-scene
+    scene: "Mara stands with a deadpan face."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The relative proportion of 18S gene copy numbers is influenced by the relative abundance of the organisms in the sample, as well as by varying gene copy numbers." }
+    claim_ids: [C32]
+    staging:
+      characters:
+        - { id: mara, x: 0.5, pose: stand, face: deadpan, facing: right }
+  - id: B6.8
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Mara stands beside a ship."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The plankton community was typical for an autumn (March-May) plankton community around the WAP." }
+    claim_ids: [C78]
+    staging:
+      props: [ { kind: ship, x: 0.45, y: 0.15, w: 0.5, h: 0.6 } ]
+      characters:
+        - { id: mara, x: 0.2, pose: stand, face: neutral, facing: right }
+  - id: B6.9
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    scene: "Mara, Kip and Sal stand together."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Future studies should further investigate the selective feeding behavior using both field and laboratory tests." }
+    claim_ids: [C76]
+    staging:
+      characters:
+        - { id: mara, x: 0.2, pose: point, face: smile, facing: right }
+        - { id: kip, x: 0.52, pose: stand, face: neutral, facing: right, scale: 1.1 }
+        - { id: sal, x: 0.82, pose: stand, face: neutral, facing: left }

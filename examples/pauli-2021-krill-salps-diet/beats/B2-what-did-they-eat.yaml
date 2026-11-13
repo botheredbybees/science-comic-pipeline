@@ -1,0 +1,142 @@
+- id: B2
+  title: "What did they eat?"
+  act: method
+  panels:
+  - id: B2.1
+    weight: full
+    frame: borderless
+    height: tall
+    transition: scene-to-scene
+    scene: "A research ship on the sea, with Mara standing on the right."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Samples were collected during the research cruise PS112 with RV Polarstern between March and May 2018 along the Antarctic Peninsula." }
+      - { speaker: mara, text: "Time to go fishing for krill and salps." }
+    claim_ids: [C18]
+    staging:
+      props: [ { kind: ship, x: 0.12, y: 0.12, w: 0.55, h: 0.7 } ]
+      characters:
+        - { id: mara, x: 0.85, pose: point, face: smile, facing: left }
+  - id: B2.2
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "An arrow runs down from the top of the panel, labelled as a net tow in the upper 200 m, with Mara beside it."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill and salps were collected by oblique net tows in the upper 200 m of the water column." }
+    claim_ids: [C19]
+    staging:
+      props:
+        - { kind: arrow, x: 0.4, y: 0.08, x2: 0.4, y2: 0.8 }
+        - { kind: label, x: 0.4, y: 0.84, label: "net tow, upper 200 m" }
+      characters:
+        - { id: mara, x: 0.85, pose: stand, face: neutral, facing: left }
+  - id: B2.3
+    weight: small
+    frame: outlined
+    transition: action-to-action
+    scene: "Mara holds up a jar."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The animals were measured, sexed, staged, frozen in liquid nitrogen, and stored individually at -80 °C within approximately ten minutes." }
+      - { speaker: mara, text: "About ten minutes." }
+    claim_ids: [C20]
+    staging:
+      props: [ { kind: jar, x: 0.55, y: 0.55, w: 0.2, h: 0.3 } ]
+      characters:
+        - { id: mara, x: 0.25, pose: hold, face: deadpan, facing: right }
+  - id: B2.4
+    weight: wide
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A bar chart of the number of samples: krill stomachs, salp stomachs, plankton samples, krill fecal pellets and salp fecal pellets."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Stomach contents of krill (61 samples) and salps (60 samples) were compared to the ambient plankton community (10 samples). Fecal pellets were also compared (n = 14 for krill, n = 11 for salps)." }
+    claim_ids: [C21, C22]
+    staging:
+      props:
+        - { kind: label, x: 0.50, y: 0.0, label: "Number of samples" }
+        - kind: bars
+          x: 0.05
+          y: 0.12
+          w: 0.9
+          h: 0.86
+          bars:
+            - { label: "krill stomachs", value: 61 }
+            - { label: "salp stomachs", value: 60, style: hollow }
+            - { label: "plankton", value: 10 }
+            - { label: "krill fecal pellets", value: 14 }
+            - { label: "salp fecal pellets", value: 11, style: hollow }
+  - id: B2.5
+    weight: standard
+    frame: borderless
+    transition: aspect-to-aspect
+    scene: "Mara stands between a jar and a bottle, pointing at them."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Krill fecal pellets were collected from free drifting sediment traps, and freshly produced salp fecal pellets from incubation experiments." }
+      - { speaker: mara, text: "Plus 2 L of water from the chlorophyll maximum layer (15-60 m)." }
+    claim_ids: [C23, C24]
+    staging:
+      props: [ { kind: jar, x: 0.1, y: 0.55, w: 0.16, h: 0.3 }, { kind: bottle, x: 0.78, y: 0.5, w: 0.14, h: 0.38 } ]
+      characters:
+        - { id: mara, x: 0.5, pose: point, face: smile, facing: right }
+  - id: B2.6
+    weight: standard
+    frame: outlined
+    height: tall
+    transition: scene-to-scene
+    word_picture: word-specific
+    scene: "A flow of three boxes: amplify a region of DNA, sequence it, compare it to a reference database."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Metabarcoding is the amplification of a standardized region of the DNA and subsequent sequencing and comparison to a reference database." }
+    claim_ids: [C16]
+    staging:
+      props:
+        - kind: flow
+          x: 0.05
+          y: 0.1
+          w: 0.9
+          h: 0.8
+          items:
+            - { label: "amplify a region of DNA" }
+            - { label: "sequence it" }
+            - { label: "compare to a reference database" }
+  - id: B2.7
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    scene: "Mara holds up a clipboard beside Kip."
+    speech:
+      - { speaker: narrator, kind: caption, text: "A common methodological issue when sequencing stomach or gut content samples is that predator DNA often swamps prey sequences." }
+      - { speaker: mara, text: "So we designed a blocking probe that binds to the krill rRNA gene." }
+    claim_ids: [C25, C26]
+    staging:
+      characters:
+        - { id: mara, x: 0.2, pose: hold, holding: clipboard, face: neutral, facing: right }
+        - { id: kip, x: 0.72, pose: stand, face: neutral, facing: left, scale: 1.1 }
+  - id: B2.8
+    weight: small
+    frame: borderless
+    transition: scene-to-scene
+    scene: "Mara stands with a deadpan face."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Template controls were randomly included in the library preparation steps, and the authors did not find evidence for contamination." }
+    claim_ids: [C27]
+    staging:
+      characters:
+        - { id: mara, x: 0.5, pose: stand, face: deadpan, facing: right }
+  - id: B2.9
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: "Mara stands and speaks."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The authors combined 18S rRNA metabarcoding and fatty acid analyses to reveal long- and short-term diets and to identify feeding preferences of both species." }
+      - { speaker: mara, text: "Fatty acids came from the tissue of krill (n = 21) and salps (n = 22)." }
+    claim_ids: [C17, C30]
+    staging:
+      characters:
+        - { id: mara, x: 0.2, pose: point, face: smile, facing: right }
+        - { id: kip, x: 0.55, pose: stand, face: neutral, facing: left, scale: 1.1 }
+        - { id: sal, x: 0.85, pose: stand, face: neutral, facing: left }

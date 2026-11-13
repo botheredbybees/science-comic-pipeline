@@ -1,0 +1,30 @@
+version: 2
+meta:
+  title: "Who Eats What? Krill, Salps and the Southern Ocean Lunch Menu"
+  audience: "Curious adults with no biology background who have heard of krill and penguins but not of salps."
+  left_out:
+    - "Laboratory protocols (DNA extraction kits, PCR settings, sequencing pipeline, fatty acid chemistry): they matter to specialists but do not change the story."
+    - "Most statistics (ANOVA tables, Wilcoxon and Kruskal-Wallis tests, PCA variance, ANOSIM); the comic gives the paper's percentages and indices only."
+    - "Regional differences between the six sampling areas, and the supplementary figures and movies."
+    - "Depth-by-depth detail of the selectivity results (only the headline that selectivity held across depths is used)."
+    - "The fecal pellet compositions (krill pellets rich in small flagellates, salp pellets in diatoms and flagellates) and the sinking speed and carbon-export discussion; fecal pellets appear only as how the diatom result was read."
+    - "Fatty acid results on copepod markers, lipid content and clustering; the fatty alcohols; the sex and length effects."
+    - "Syndiniales biology beyond one caveat, the possible masking of krill eating krill moults, and the metabarcoding pipeline details (dataset sizes, ASV counts)."
+  source:
+    title: "Selective feeding in Southern Ocean key grazers—diet composition of krill and salps"
+    authors: ["Nora-Charlotte Pauli", "Katja Metfies", "Evgeny A. Pakhomov", "Stefan Neuhaus", "Martin Graeve", "Philipp Wenta", "Clara M. Flintrop", "Thomas H. Badewien", "Morten H. Iversen", "Bettina Meyer"]
+    year: 2021
+    doi: "10.1038/s42003-021-02581-5"
+    url: "https://doi.org/10.1038/s42003-021-02581-5"
+    licence: "CC BY 4.0"
+    licence_checked: "Europe PMC full-text XML (PMC8433442), licence statement 'Creative Commons Attribution 4.0 International License ... permits use, sharing, adaptation', 2026-11-13"
+  spine:
+    and: "Krill and salps are two dominant grazers of the Southern Ocean, krill known as selective feeders and salps assumed to eat whatever the water holds, and a warming Antarctic Peninsula is making their ranges overlap (C1, C8, C10, C11)."
+    but: "Nobody had compared their diets side by side, from the same region and with the same methods, so the assumption that salps are indiscriminate had never been tested head to head (C9, C15)."
+    therefore: "The authors sequenced stomach contents, fecal pellets and the surrounding plankton along the Antarctic Peninsula in autumn 2018, plus fatty acids; neither diet matched the plankton, so salps look selective too, and the two diets were broadly similar (C58, C60, C62)."
+cast:
+  - { id: mara, name: "Mara", role: "A scientist on the ship who asks the reader's questions", look: "Stick figure with long blond hair in a lab coat", appearance: { hair: long, hair_tone: strands, coat: true } }
+  - { id: kip, name: "Kip", role: "An Antarctic krill", look: "A krill", appearance: { body: krill } }
+  - { id: sal, name: "Sal", role: "A salp, the filter-feeding tunicate", look: "A see-through barrel with muscle hoops", appearance: { body: salp } }
+  - { id: whale, name: "Whale", role: "One of the predators that eat krill", look: "A whale", appearance: { body: whale } }
+  - { id: penguin, name: "Penguin", role: "One of the predators that eat krill", look: "A penguin", appearance: { body: penguin } }
