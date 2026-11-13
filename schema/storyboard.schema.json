@@ -213,7 +213,7 @@
               "page": {
                 "type": "integer",
                 "minimum": 1,
-                "description": "Page of the source (PDF page index) where the quote is found; scripts/check_quotes.py checks it."
+                "description": "The numbered page of the source text where the quote is found (a PDF page, or the paragraph file p007.txt that scripts/fetch_source.py writes); scripts/check_quotes.py checks it."
               }
             }
           },
@@ -348,7 +348,7 @@
                     "full"
                   ],
                   "default": "standard",
-                  "description": "How much room and time the moment gets: 1, 2, 3 or 4 units of a four-unit row. A wide, quiet panel reads as a pause."
+                  "description": "How much room and time the moment gets, as a preferred share of a row: a third, a half, two thirds or all of it (4, 6, 8 or 12 of 12 units). A wide, quiet panel reads as a pause."
                 },
                 "transition": {
                   "enum": [

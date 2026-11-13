@@ -6,9 +6,9 @@ Papers and data products reach few people if they only exist as papers. This rep
 repeatable process for the middle step: **read the paper, pull out what it actually
 claims, find the story in it, and hand a structured storyboard to a renderer.**
 
-> **Status: early skeleton.** The storyboard schema and its validator work and are
-> tested, one example has a fully checked draft storyboard, and an xkcd-style renderer turns it
-> into A4 pages. The skills do not exist yet. See
+> **Status: early.** The storyboard schema and its validator work and are tested, two examples have
+> fully checked storyboards, an xkcd-style renderer turns them into A4 pages and a PDF, and five
+> skills describe the judgement steps. See
 > [the design](docs/superpowers/specs/2026-11-13-science-comic-pipeline-design.md).
 
 ## The idea
@@ -49,6 +49,8 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 |---|---|
 | `schema/storyboard.schema.json` | The storyboard format (JSON Schema): beats of panels, each with a weight, an optional transition and word-picture mode |
 | `scripts/validate_storyboard.py` | Schema check plus the accuracy-ledger rules; no limit on panel count |
+| `scripts/fetch_source.py` | Fetches an open-access paper from Europe PMC, checks the licence, splits the text into numbered pages |
+| `scripts/visual_qa.py` | Renders a storyboard and scans the pages for overflowing or overlapping text |
 | `scripts/check_quotes.py` | Confirms every verified claim's quote is on the page it names in the source |
 | `scripts/build_storyboard.py` | Assembles a storyboard from a working folder (head, beats, claims) |
 | `scripts/export_pdf.py` | Exports a storyboard as a PDF, one A4 page per comic page (needs Chrome or Chromium) |
@@ -56,7 +58,7 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 | `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
 | `examples/` | Example papers, each with its licence record, claims ledger, storyboard and claim check |
 | `renderers/` | One folder per drawing style. `xkcd/` draws stick-figure A4 pages from a panel's `staging` |
-| `skills/` | Agent skills for the judgement steps (planned; list in its README) |
+| `skills/` | Five agent skills for the judgement steps, in order: source-to-claims, story-spine, storyboard, humour-pass, visual-qa |
 | `docs/superpowers/` | Design and plans |
 
 ## Licences
