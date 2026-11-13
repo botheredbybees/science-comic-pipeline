@@ -49,7 +49,7 @@ def test_the_page_fit_never_uses_more_pages_than_the_tallest_setting(doc):
 
 def test_attribution_is_printed_on_the_last_page(doc):
     last = R.render_pages(doc)[0][-1]
-    assert "Licence: CC BY 4.0" in last and "endorse this comic" in last
+    assert "Licence: CC BY 4.0" in last and "endorse this document" in last
 
 
 def test_wrapped_lines_fit_their_width():

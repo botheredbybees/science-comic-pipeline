@@ -568,7 +568,7 @@ def build_items(doc, cast, k=0.55):
             + (f', doi {src["doi"]}' if src.get("doi") else "")
             + f'. Licence: {src["licence"]}. '
             "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
-            "the authors did not write or endorse this comic.")
+            "the paper's authors did not write or endorse this document.")
     colo = wrap(note, usable, 15)
     paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
     links = [(f"Read the original paper: {paper}", paper)] if paper else []
@@ -579,13 +579,13 @@ def build_items(doc, cast, k=0.55):
         """The footer in the caption grey. The pipeline's name and the lines below are links (clickable in a browser
         and in the PDF), underlined but not heavier than the text around them."""
         def inline(line):
-            return esc(line).replace(PIPELINE_NAME, f'<a href="{PIPELINE_URL}" target="_blank"><tspan text-decoration="underline">{PIPELINE_NAME}</tspan></a>')
+            return esc(line).replace(PIPELINE_NAME, f'<a href="{PIPELINE_URL}" target="_blank"><tspan style="text-decoration:underline" font-weight="normal">{PIPELINE_NAME}</tspan></a>')
         spans = "".join(f'<tspan x="{MARGIN:.1f}" dy="{(15 if i == 0 else 18):.1f}">{inline(t)}</tspan>' for i, t in enumerate(c))
-        out = [f'<text x="{MARGIN:.1f}" y="{y + 6:.1f}" font-size="15" fill="{MID}">{spans}</text>']
+        out = [f'<text x="{MARGIN:.1f}" y="{y + 6:.1f}" font-size="15" font-weight="normal" fill="{MID}">{spans}</text>']
         for i, (label, href) in enumerate(ls):
             ly = y + 6 + block_h(c, 15) + 4 + i * 15 * 1.3
             out.append(f'<a href="{esc(href)}" target="_blank">'
-                       + text(MARGIN, ly, [label], 15, fill=MID).replace("<text ", '<text text-decoration="underline" ', 1) + "</a>")
+                       + text(MARGIN, ly, [label], 15, fill=MID).replace("<text ", '<text style="text-decoration:underline" ', 1) + "</a>")
         return "".join(out)
 
     items.append({"kind": "colophon", "h": block_h(colo, 15) + len(links) * 15 * 1.3 + 16, "draw": draw_colophon})
