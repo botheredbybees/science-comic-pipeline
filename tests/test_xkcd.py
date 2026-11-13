@@ -287,3 +287,14 @@ def test_every_hair_style_draws_over_the_head_and_raises_the_head_point():
             svg, head = R.figure(pen, 100, 300, 1.0, "stand", "smile", facing, None, {"hair": hair, "glasses": True, "lanyard": True})
             ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
             assert head[1] <= bald[1]
+
+
+def test_light_hair_is_an_outline_and_a_lab_coat_draws():
+    pen = R.Pen("coat")
+    dark, _ = R.figure(pen, 100, 300, 1.0, "stand", "smile", "right", None, {"hair": "bob"})
+    light, _ = R.figure(pen, 100, 300, 1.0, "stand", "smile", "right", None, {"hair": "bob", "hair_tone": "light", "coat": True})
+    plain, _ = R.figure(pen, 100, 300, 1.0, "stand", "smile", "right", None, {"hair": "bob", "hair_tone": "light"})
+    for svg in (dark, light):
+        ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+    assert dark.count(f'fill="{R.INK}"') > light.count(f'fill="{R.INK}"')  # light hair has no black fill
+    assert len(light) > len(plain)  # the coat adds strokes

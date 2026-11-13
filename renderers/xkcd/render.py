@@ -134,21 +134,25 @@ BEANIE = [(-1.2, -0.42), (-1.18, -1.05), (-0.62, -1.62), (0.0, -1.76), (0.62, -1
           (0.6, -0.5), (0.0, -0.54), (-0.6, -0.5)]
 
 
-def _hair(pen, kind, cx, cy, R, w):
-    """The hair or hat for a head of radius R, drawn over the head circle and under the face."""
+def _hair(pen, kind, cx, cy, R, w, tone="dark"):
+    """The hair or hat for a head of radius R, drawn over the head circle and under the face.
+    Dark hair is solid black; light (blond) hair is the same shape as an outline with a white fill."""
+    fill = INK if tone == "dark" else PAPER
+
     def P(pts):
         return [(cx + x * R, cy + y * R) for x, y in pts]
     if kind in ("bob", "long"):
-        return [pen.stroke(P(HAIR_CAP[kind]), w, closed=True, fill=INK)]
+        return [pen.stroke(P(HAIR_CAP[kind]), w, closed=True, fill=fill)]
     if kind in ("ponytail", "bun"):
-        o = [pen.stroke(P(HAIR_CAP["short"]), w, closed=True, fill=INK)]
+        o = []
+        if kind == "bun":  # the bun goes under the cap, so that a light bun's outline does not cross the hair
+            o.append(f'<circle cx="{cx - 0.55 * R:.1f}" cy="{cy - 1.3 * R:.1f}" r="{0.42 * R:.1f}" fill="{fill}" stroke="{INK}" stroke-width="{w:.1f}"/>')
+        o.append(pen.stroke(P(HAIR_CAP["short"]), w, closed=True, fill=fill))
         if kind == "ponytail":
-            o.append(pen.stroke(P(PONYTAIL), w, closed=True, fill=INK))
-        else:
-            o.append(f'<circle cx="{cx - 0.55 * R:.1f}" cy="{cy - 1.3 * R:.1f}" r="{0.42 * R:.1f}" fill="{INK}" stroke="{INK}" stroke-width="{w:.1f}"/>')
+            o.append(pen.stroke(P(PONYTAIL), w, closed=True, fill=fill))
         return o
     if kind == "spiky":
-        return [pen.poly(P(SPIKES), w, fill=INK, jit=0.4)]
+        return [pen.poly(P(SPIKES), w, fill=fill, jit=0.4)]
     if kind == "beanie":
         return [pen.stroke(P(BEANIE), w, closed=True, fill=PAPER),
                 pen.line((cx - 1.2 * R, cy - 0.78 * R), (cx + 1.2 * R, cy - 0.78 * R), w * 0.8, amp=0.3),
@@ -172,9 +176,17 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     w = clamp(2.3 * s, 1.5, 3.0)
     o = [pen.line((cx, hip), (cx - 13 * s, base), w, amp=0.35), pen.line((cx, hip), (cx + 13 * s, base), w, amp=0.35),
          pen.line((cx, neck), (cx, hip), w, amp=0.35)]
+    if app.get("coat"):  # a lab coat: one outline round the torso, hanging over the tops of the legs, a V collar, a pocket
+        o.append(pen.poly([(cx - 4 * s, neck), (cx - 11 * s, neck + 7 * s), (cx - 18 * s, hip + 24 * s), (cx + 18 * s, hip + 24 * s),
+                           (cx + 11 * s, neck + 7 * s), (cx + 4 * s, neck)], w, fill=PAPER, jit=0.3))
+        o += [pen.line((cx - 4 * s, neck), (cx, neck + 15 * s), w * 0.8, amp=0.2), pen.line((cx + 4 * s, neck), (cx, neck + 15 * s), w * 0.8, amp=0.2),
+              pen.line((cx, neck + 15 * s), (cx, hip + 24 * s), w * 0.8, amp=0.3),
+              pen.rect(cx + 6 * s, hip, 8 * s, 9 * s, w * 0.7, fill=PAPER, over=0)]
     back, front = ARMS.get(pose, ARMS["stand"])
     for arm in (back, front):  # an upper arm and a forearm: two straight strokes meeting at the elbow
-        pts = [(cx, sh)] + [(cx + dx * s, sh + dy * s) for dx, dy in arm]
+        side = 1 if arm is front else -1
+        start = (cx + side * 9 * s, sh) if app.get("coat") else (cx, sh)  # a coat's sleeves leave from its shoulders
+        pts = [start] + [(cx + dx * s, sh + dy * s) for dx, dy in arm]
         o += [pen.line(a, b, w, amp=0.35) for a, b in zip(pts, pts[1:])]
     o.append(_holding(pen, holding, cx + front[-1][0] * s, sh + front[-1][1] * s, s, w))
     if app.get("lanyard"):  # a name badge on a short cord, hung from the neck
@@ -182,7 +194,7 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
         o.append(pen.rect(cx - 5 * s, neck + 15 * s, 10 * s, 12 * s, w * 0.7, fill=PAPER, over=0))
     o.append(pen.ellipse(cx, cy, R, R, w, fill=PAPER, jit=0.012))
     hair = app.get("hair", "none")
-    o += _hair(pen, hair, cx, cy, R, w)
+    o += _hair(pen, hair, cx, cy, R, w, app.get("hair_tone", "dark"))
     o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
     top = cy - R * HAIR_TOP.get(hair, 1.0) - 4 * s
     return _flip("".join(o), cx, facing), (cx, top)

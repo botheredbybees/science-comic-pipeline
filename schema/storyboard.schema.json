@@ -153,6 +153,17 @@
               "lanyard": {
                 "type": "boolean"
               },
+              "coat": {
+                "type": "boolean",
+                "description": "a lab coat over the body"
+              },
+              "hair_tone": {
+                "enum": [
+                  "dark",
+                  "light"
+                ],
+                "description": "dark hair is solid black; light (blond) hair is an outline with no fill"
+              },
               "body": {
                 "enum": [
                   "stick",
