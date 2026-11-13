@@ -470,7 +470,8 @@ def _head_offset(c, cast, w, h):
     """How far below the top of the scene a staged character's head sits."""
     body = c.get("body") or (cast.get(c["id"], {}).get("appearance") or {}).get("body")
     s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3) * c.get("scale", 1)
-    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52, "salp": 66}.get(body, 128)  # head height above the feet, at s = 1
+    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52, "salp": 66, "copepod": 52, "fish": 62,
+            "worm": 42, "jellyfish": 108, "urchin": 62}.get(body, 128)  # head height above the feet, at s = 1
     return c.get("y", 0.94) * h - rise * s
 
 

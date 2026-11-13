@@ -102,6 +102,21 @@ def _held(staging):
     return {c["holding"] for c in (staging or {}).get("characters", []) if c.get("holding")}
 
 
+FIGURE_ONLY_LIMIT = 0.25  # more than this share of panels with no picture of the subject is a defect
+MIN_PANELS_FOR_SHARE = 8
+
+
+def _figure_only(panel, cast_bodies):
+    """True if the panel draws nothing but stick figures: no prop and no animal or diatom (or nothing staged at all)."""
+    staging = panel.get("staging") or {}
+    if staging.get("props"):
+        return False
+    for c in staging.get("characters", []):
+        if (c.get("body") or cast_bodies.get(c["id"], "stick")) != "stick":
+            return False
+    return True
+
+
 def validate(doc):
     """Return (errors, warnings) for a parsed storyboard."""
     errors, warnings = [], []
@@ -183,6 +198,13 @@ def validate(doc):
                 if longest > 20 or (len(cards) > 3 and longest > 10):
                     warnings.append(f"{p['id']}: a board with long labels (or more than three medium ones) shrinks its text "
                                     "until it overlaps or is unreadable; use `box` props for sentences")
+
+    cast_bodies = {c["id"]: (c.get("appearance") or {}).get("body", "stick") for c in doc["cast"]}
+    bare = [p["id"] for p in panels if _figure_only(p, cast_bodies)]
+    if len(panels) >= MIN_PANELS_FOR_SHARE and len(bare) > FIGURE_ONLY_LIMIT * len(panels):
+        warnings.append(f"{len(bare)} of {len(panels)} panels ({100 * len(bare) // len(panels)}%) show only stick figures, no prop, chart, "
+                        f"apparatus or animal ({', '.join(bare[:8])}{' ...' if len(bare) > 8 else ''}); characters are the voice, "
+                        "not the picture: draw what each claim is about, or fold the claim into a neighbouring panel that has a picture")
 
     for cid in sorted(used):
         c = claims[cid]

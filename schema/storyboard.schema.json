@@ -177,7 +177,12 @@
                   "krill",
                   "penguin",
                   "whale",
-                  "salp"
+                  "salp",
+                  "copepod",
+                  "fish",
+                  "worm",
+                  "jellyfish",
+                  "urchin"
                 ]
               }
             }
@@ -492,7 +497,12 @@
                   "krill",
                   "penguin",
                   "whale",
-                  "salp"
+                  "salp",
+                  "copepod",
+                  "fish",
+                  "worm",
+                  "jellyfish",
+                  "urchin"
                 ],
                 "description": "draw this character with this body instead of the cast member's (so an `extra` can be an animal)"
               }

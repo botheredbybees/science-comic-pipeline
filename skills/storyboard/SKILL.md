@@ -58,8 +58,33 @@ error that comes back is a misleading schema message, not a YAML one). Panel ids
 - `build_storyboard.py` lists the verified ledger claims that no panel cites. That is a prompt, not an error:
   check that none is a claim you forgot, and leave the rest. (The built storyboard keeps only cited claims, so the
   validator cannot see the others.) Do not delete claims from the ledger to silence it.
+- **At most about a quarter of the panels may show only stick figures** (no prop, chart, apparatus or animal): the
+  validator warns, comic-wide, and lists the panels. See "Draw the subject, not the speaker" below.
 - A joke on a panel that cites claims draws a warning until a reviewer sets `keeps_claims_intact: true`
   (see `humour-pass`). That warning is deliberate: it is how a joke waits for a human.
+
+## Draw the subject, not the speaker
+
+A comic is pictures. A panel that is a caption over two stick figures talking adds nothing to the narrative: the reader
+could have read the caption. The picture should show **what the claim is about**; the characters are the voice and stand
+to one side, or are left out. Before you write a panel, ask "what would I draw if there were no characters?" and draw that.
+
+| The claim is about | Draw |
+|---|---|
+| an organism, or what it did | its body (`extra` with `body`: krill, salp, copepod, fish, worm, jellyfish, urchin, diatom, penguin, whale), alone or in numbers, with the claim's own labels |
+| a number, a share, a comparison | `bars`, `pie`, `plot`, `axis` or `stack`, with only the claim's numbers |
+| a method or a procedure | the apparatus (`net`, `bottle`, `jar`, `microscope`, `laptop`, `ship`, `thermometer`, `flask`), or a `flow` or `steps` diagram of the stages |
+| where, or when | a `ship` with a labelled `arrow`, a `picture`, or a `box` naming the place |
+| a result that two things disagree on | two objects or two bars side by side, each labelled |
+| a caveat or a limit | a `sign` or `box`, or a lone figure with an empty `bars` frame where the data are missing |
+| a definition | the thing, drawn, with a `label` |
+
+- **No more than about a quarter of the panels may be figures only** (the validator warns above that). A figures-only
+  panel is fine when it is the point: a pause, a reaction, a joke that needs a face. It is a defect when it is filler.
+- **A claim with nothing to draw does not need its own panel.** Put it as a second caption in a neighbouring panel that
+  has a picture, instead of staging two figures to say it.
+- The guide should not be in every panel. Many panels should have no character at all, only the picture and the caption.
+- Vary what the characters hold and where they stand; a figure pointing at the picture is better than two facing each other.
 
 ## Writing well
 
@@ -107,9 +132,10 @@ error that comes back is a misleading schema message, not a YAML one). Panel ids
 - **A crowd.** Four krill at scale 1.0 touch in a standard panel (a krill is about 60 units wide at 1.0, so at most two);
   for "ten groups" a row of identical `extra` figures works. A lone small figure in a tall row looks tiny: give it `scale`
   1.0 to 1.5, and `weight: wide` with `scale` beats a wide panel packed beside a three-line caption.
-- **Stand-ins.** The renderer draws diatom, krill, penguin, whale and salp. A copepod, fish, worm or urchin is a labelled
-  stick figure (an `extra` with a label, or a cast entry that says so); do not caption a plain figure as if it were drawn
-  as the animal.
+- **Animals.** The renderer draws diatom, krill, penguin, whale, salp, copepod, fish, worm, jellyfish and urchin. The last
+  five are generic cartoon shapes, not anatomy and not to scale (a copepod is a millimetre long): they say "an animal of
+  this kind", so the caption carries any claim about the real one, and a cast `role` says it is a stand-in. For any other
+  organism use a labelled stick figure and say so; never caption a plain figure as if it were drawn as the animal.
 - Do not invent facts in `scene`, in props, or in a character's face: a worried krill implies the paper
   says krill are at risk, so only draw it if a cited claim does.
 

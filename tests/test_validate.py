@@ -262,3 +262,23 @@ def test_a_speaking_extra_gets_a_helpful_error(doc):
     _panel(doc)["speech"][0]["speaker"] = "extra"
     errors, _ = validate(doc)
     assert any("needs a cast entry" in e for e in errors)
+
+
+def test_a_comic_of_mostly_bare_stick_figures_warns_and_a_picture_comic_does_not(doc):
+    _, warnings = validate(doc)
+    assert not any("show only stick figures" in w for w in warnings)
+    d = copy.deepcopy(doc)
+    for b in d["beats"]:
+        for p in b["panels"]:
+            p["staging"] = {"characters": [{"id": "extra"}]}
+    _, warnings = validate(d)
+    assert any("show only stick figures" in w for w in warnings)
+
+
+def test_an_animal_or_a_prop_counts_as_a_picture(doc):
+    d = copy.deepcopy(doc)
+    for b in d["beats"]:
+        for p in b["panels"]:
+            p["staging"] = {"characters": [{"id": "extra", "body": "copepod"}]}
+    _, warnings = validate(d)
+    assert not any("show only stick figures" in w for w in warnings)

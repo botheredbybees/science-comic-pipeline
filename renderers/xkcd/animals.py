@@ -1,9 +1,11 @@
-"""Animal characters for the xkcd renderer: krill, penguin, whale and salp.
+"""Animal characters for the xkcd renderer: krill, penguin, whale, salp, copepod, fish, worm, jellyfish and urchin.
 
 Each function draws one animal facing right with its feet (or tail, or belly) on `base`, and returns
 (svg, (head_x, head_top_y)) like a stick figure does, so speech lines can point at it. Left-facing is
 done by mirroring around the centre. `s` is the usual figure scale; at s = 1 a penguin is about 100 units
 tall, a whale about 250 long, a krill about 70 long and a salp about 110 long, so give a krill a larger `scale` in the staging.
+The copepod, fish, worm, jellyfish and urchin are generic cartoon shapes, not anatomy: they say "an animal of this kind", and a
+caption carries any claim about the real one. Real copepods are a millimetre or two long; the picture is not to scale.
 
 They stay black and white like the rest of the renderer: ink outlines, white fills, and the light grey
 SOFT for shading, so they sit comfortably next to the stick figures and props.
@@ -183,4 +185,127 @@ def salp(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding
     return _mirror("".join(o), cx, facing), (cx + 30 * s, base - 66 * s)
 
 
-ANIMALS = {"krill": krill, "penguin": penguin, "whale": whale, "salp": salp}
+def copepod(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A calanoid copepod: an oval head-and-body, a slim jointed tail ending in two bristles, and one pair of very long
+    antennae. (A generic cartoon shape, not anatomy.)"""
+    w = clamp(2.1 * s, 1.5, 2.8)
+
+    def P(x, y):
+        return (cx + x * s, base + y * s)
+
+    o = [pen.line(P(-56, -31), P(-72, -40), w * 0.7, amp=0.3), pen.line(P(-56, -29), P(-73, -22), w * 0.7, amp=0.3),
+         pen.line(P(-58, -31), P(-66, -48), w * 0.4, amp=0.2, color=MID), pen.line(P(-58, -29), P(-67, -14), w * 0.4, amp=0.2, color=MID)]
+    for x, rx, ry, fill in ((-48, 6, 4.5, SOFT), (-36, 7.5, 6, SOFT), (-22, 9, 8, PAPER)):  # the tail segments, narrowest last
+        o.append(_blob(pen, *P(x, -30), rx * s, ry * s, 0, w, fill, INK))
+    for x in (-14, -4, 6, 16):  # swimming legs
+        o.append(pen.line(P(x, -17), P(x - 5, -4), w * 0.7, amp=0.2, color=INK))
+    o.append(_blob(pen, *P(8, -30), 29 * s, 15.5 * s, 0, w, PAPER, INK))
+    o.append(pen.stroke([P(30, -30), P(33, -38), P(31, -44)], w * 0.6, color=MID))  # the head's edge
+    o.append(pen.stroke([P(26, -41), P(38, -58), P(47, -82), P(44, -104)], w * 0.8, color=INK))  # the long antennae
+    o.append(pen.stroke([P(30, -38), P(44, -50), P(58, -66), P(66, -84)], w * 0.6, color=MID))
+    o.append(_eye(pen, *P(26, -33), 3.4 * s + 0.6, face, w))
+    if face in ("smile", "worry"):
+        b = 3 if face == "smile" else -3
+        o.append(pen.stroke([P(25, -22), P(31, -22 + b), P(37, -23)], w * 0.7, color=INK))
+    return _mirror("".join(o), cx, facing), (cx + 20 * s, base - 46 * s)
+
+
+def fish(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A plain bony fish: a pointed oval body, a forked tail, a back fin and a belly fin, a gill line and a big eye."""
+    w = clamp(2.2 * s, 1.5, 3.0)
+
+    def P(x, y):
+        return (cx + x * s, base + y * s)
+
+    o = [pen.stroke([P(-44, -34), P(-72, -56), P(-66, -34), P(-72, -12), P(-44, -30)], w, closed=True, fill=SOFT, color=INK)]  # the tail
+    o.append(pen.stroke([P(-16, -54), P(-2, -72), P(14, -70), P(18, -52)], w, closed=True, fill=SOFT, color=INK))  # the back fin
+    o.append(pen.stroke([P(-6, -16), P(-14, -4), P(6, -8)], w * 0.9, closed=True, fill=SOFT, color=INK))  # the belly fin
+    body = [P(*p) for p in ((-48, -32), (-30, -50), (0, -58), (32, -52), (54, -38), (58, -32), (52, -26), (30, -14), (0, -10), (-30, -18))]
+    o.append(pen.stroke(body, w, closed=True, fill=PAPER, color=INK))
+    o.append(pen.stroke([P(30, -50), P(24, -34), P(30, -16)], w * 0.7, color=MID))  # the gill cover
+    for x, y in ((-24, -38), (-12, -30), (-26, -26), (-6, -42)):  # scales, a few marks
+        o.append(pen.stroke([P(x, y), P(x + 4, y - 3), P(x + 8, y)], 1.1, color=MID))
+    o.append(pen.stroke([P(-2, -30), P(14, -32), P(26, -26)], w * 0.5, color=MID))  # the side line
+    o.append(_eye(pen, *P(42, -40), 4.2 * s + 0.6, face, w))
+    mouth = 2 if face == "smile" else (-2 if face == "worry" else 0)
+    o.append(pen.stroke([P(58, -32), P(50, -29 + mouth), P(45, -27 + mouth)], w * 0.7, color=INK))
+    return _mirror("".join(o), cx, facing), (cx + 36 * s, base - 62 * s)
+
+
+def worm(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A bristle worm (a polychaete): a wavy row of segments, each with a pair of bristles, and a head with two feelers."""
+    w = clamp(2.0 * s, 1.5, 2.8)
+    n = 15
+
+    def P(x, y):
+        return (cx + x * s, base + y * s)
+
+    path = []
+    for i in range(n):
+        t = i / (n - 1)  # 0 at the tail, 1 at the head
+        path.append((-66 + 126 * t, -20 - 9 * math.sin(t * math.tau * 1.15)))
+    o = []
+    for i, (x, y) in enumerate(path):
+        r = 4.4 + 4.2 * (i / (n - 1))
+        for sign in (-1, 1):  # bristles, two small strokes per segment
+            o.append(pen.line(P(x, y + sign * r * 0.9), P(x - 3, y + sign * (r + 6.5)), 1.1, amp=0.1, color=MID))
+    for i, (x, y) in enumerate(path):  # the segments, tail first so the nearer ones overlap
+        r = 4.4 + 4.2 * (i / (n - 1))
+        o.append(_blob(pen, *P(x, y), r * 0.8 * s, r * s, 0, w * 0.85, SOFT if i % 2 else PAPER, INK, k=10))
+    hx, hy = path[-1]
+    o.append(_blob(pen, *P(hx + 6, hy), 9 * s, 8.5 * s, 0, w, PAPER, INK))
+    o.append(pen.stroke([P(hx + 11, hy - 6), P(hx + 20, hy - 13), P(hx + 26, hy - 11)], w * 0.7, color=INK))  # the two feelers
+    o.append(pen.stroke([P(hx + 12, hy + 3), P(hx + 21, hy + 8), P(hx + 27, hy + 5)], w * 0.7, color=INK))
+    o.append(_eye(pen, *P(hx + 5, hy - 2), 2.8 * s + 0.5, face, w))
+    if face in ("smile", "worry"):
+        b = 2 if face == "smile" else -2
+        o.append(pen.stroke([P(hx + 3, hy + 5), P(hx + 8, hy + 5 + b), P(hx + 13, hy + 4)], w * 0.6, color=INK))
+    return _mirror("".join(o), cx, facing), (cx + (hx + 4) * s, base + (hy - 12) * s)
+
+
+def jellyfish(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A jellyfish: a domed bell with a scalloped rim, four wavy oral arms and a fringe of thin tentacles hanging to `base`."""
+    w = clamp(2.2 * s, 1.5, 3.0)
+
+    def P(x, y):
+        return (cx + x * s, base + y * s)
+
+    o = []
+    for x in (-26, -14, -3, 8, 19, 29):  # the fringe of tentacles, thin and wavy
+        o.append(pen.stroke([P(x, -54), P(x + 4, -42), P(x - 4, -28), P(x + 3, -14), P(x - 2, -2)], 1.2, color=MID))
+    for x in (-16, -5, 6, 17):  # the oral arms, thicker and shorter
+        o.append(pen.stroke([P(x, -56), P(x + 5, -44), P(x - 3, -32), P(x + 4, -22)], w * 0.8, color=INK))
+    top = [P(*p) for p in ((-42, -56), (-40, -76), (-26, -96), (0, -104), (26, -96), (40, -76), (42, -56))]
+    scallops = [P(36, -54), P(28, -50), P(20, -55), P(10, -50), P(0, -55), P(-10, -50), P(-20, -55), P(-28, -50), P(-36, -54)]
+    o.append(pen.stroke(top + scallops, w, closed=True, fill=PAPER, color=INK))
+    for x in (-24, -8, 8, 24):  # radial canals under the skin
+        o.append(pen.stroke([P(x * 0.3, -60), P(x * 0.8, -78), P(x, -92)], 1.1, color=MID))
+    o.append(_eye(pen, *P(12, -76), 3.8 * s + 0.6, face, w))
+    if face in ("smile", "worry"):
+        b = 3 if face == "smile" else -3
+        o.append(pen.stroke([P(2, -66), P(12, -66 + b), P(22, -67)], w * 0.7, color=INK))
+    return _mirror("".join(o), cx, facing), (cx + 4 * s, base - 108 * s)
+
+
+def urchin(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A sea urchin: a round shell with a halo of spines, shorter underneath where it rests, a face on the front."""
+    w = clamp(2.0 * s, 1.5, 2.8)
+    cxu, cyu, r = cx, base - 26 * s, 22 * s
+
+    o = []
+    for i in range(26):
+        a = math.tau * i / 26
+        low = math.sin(a) > 0.55  # the spines that touch the ground are stubby
+        ln = (7 if low else 20 + 6 * (i % 2)) * s
+        o.append(pen.line((cxu + r * 0.9 * math.cos(a), cyu + r * 0.9 * math.sin(a)), (cxu + (r + ln) * math.cos(a), cyu + (r + ln) * math.sin(a)), w * 0.8, amp=0.2, color=INK))
+    o.append(_blob(pen, cxu, cyu, r, r * 0.92, 0, w, PAPER, INK, k=16))
+    for a in (-2.2, -1.5, -0.8, 0.0, 0.9, 2.0, 2.9):  # the pattern of plates, a few ticks
+        o.append(pen.stroke([(cxu + r * 0.55 * math.cos(a), cyu + r * 0.5 * math.sin(a)), (cxu + r * 0.8 * math.cos(a + 0.12), cyu + r * 0.75 * math.sin(a + 0.12))], 1.0, color=MID))
+    o.append(_eye(pen, cxu + 6 * s, cyu - 4 * s, 3.4 * s + 0.6, face, w))
+    b = 3 if face == "smile" else (-3 if face == "worry" else 0)
+    o.append(pen.stroke([(cxu - 2 * s, cyu + 7 * s), (cxu + 8 * s, cyu + 7 * s + b * s), (cxu + 17 * s, cyu + 6 * s)], w * 0.7, color=INK))
+    return _mirror("".join(o), cx, facing), (cx, base - 62 * s)
+
+
+ANIMALS = {"krill": krill, "penguin": penguin, "whale": whale, "salp": salp, "copepod": copepod, "fish": fish,
+           "worm": worm, "jellyfish": jellyfish, "urchin": urchin}

@@ -366,3 +366,26 @@ def test_steps_labels_wrap_and_bottle_and_jar_keep_their_shape():
         tall = fn(R.Pen(1), 0, 0, 300, 100, {"label": "water"}, 16)  # a wide, short box must not stretch the object
         wide = fn(R.Pen(1), 0, 0, 100, 300, {"label": "water"}, 16)
         assert tall and wide
+
+
+NEW_BODIES = ["copepod", "fish", "worm", "jellyfish", "urchin"]
+
+
+@pytest.mark.parametrize("body", NEW_BODIES)
+def test_every_new_body_draws_with_every_face_and_both_facings(body):
+    from animals import ANIMALS
+    assert body in ANIMALS
+    for face in ("neutral", "smile", "worry", "deadpan", "surprised"):
+        for facing in ("right", "left"):
+            svg, head = ANIMALS[body](R.Pen(1), 200, 300, 1.0, "stand", face, facing, None, {})
+            assert "<path" in svg and len(head) == 2 and head[1] < 300  # the head point is above the base
+
+
+@pytest.mark.parametrize("body", NEW_BODIES)
+def test_a_staged_extra_can_be_each_new_body(doc, body):
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0].setdefault("staging", {}).setdefault("characters", []).append({"id": "extra", "x": 0.6, "body": body, "scale": 1.2})
+    svgs, _ = R.render_pages(d)
+    assert "<svg" in "".join(svgs)
+    from validate_storyboard import validate
+    assert validate(d)[0] == []  # the schema accepts the body name
