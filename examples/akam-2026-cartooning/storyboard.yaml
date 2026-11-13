@@ -268,7 +268,7 @@ beats:
         transition: moment-to-moment
         word_picture: interdependent
         frame: borderless
-        scene: "Dr Okoye lowers the mug and points to a tiny footnote under the chart."
+        scene: "Dr Okoye points to a tiny footnote under the chart."
         staging:
           characters:
             - { id: dr_okoye, x: 0.18, pose: point, face: deadpan, facing: right }

@@ -44,9 +44,16 @@ visuals do the work.
 - Organisms or things that carry the result can be characters (`body: diatom | krill | penguin | whale | salp`
   are drawn; other things are props or `extra`). A walk-on animal that is not a recurring character needs no cast
   entry: stage `{ id: extra, body: penguin }`. If your organism has no body, use a stick figure and caption what it is
-  (and say so in the cast `role`); do not draw a body the renderer cannot. A character must not be made to say something the
+  (and say so in the cast `role`); do not draw a body the renderer cannot. Copepods, fish, worms and urchins have no body:
+use a labelled stick figure. A walk-on that must speak needs a cast entry. A character must not be made to say something the
   organism did not do: playing "Dot, the diatom" is fine; giving it motives the paper does not report is not.
 - Fewer is better. Three or four recurring characters; others are `extra` (with a `body` when they are animals).
+
+**The honest tension may be in the method, not the result.** A methods or intercalibration paper's headline ("the labs
+agree") can depend on a step the authors took themselves (samples removed as contaminated, "based on taxonomic
+composition"). Put that basis in the next panel after the payoff, and let a character ask the reader's question.
+**When the brief names a concept the paper does not** (eDNA, metabarcoding, a model), do not use the word; say so in
+`left_out` and `PLAN.md`.
 
 **Jargon.** A general reader needs terms explained, but the comic may add nothing the paper does not say. Use
 the paper's own gloss ("a parasitic dinoflagellate group"), which you put in the ledger as a definition claim. If the
@@ -71,7 +78,9 @@ small panel a quick beat. Mark where the reader needs a breather, where a chart 
 payoff lands, and where the caveats go (they belong in the comic, near the claim they qualify).
 
 A rule of thumb: about one claim per panel, so a paper with 60 usable claims makes a comic of 30 to 50 panels; a
-perspective piece with fewer facts makes a shorter one. Claim ids may appear in `meta.spine` text, as in the examples.
+perspective piece with fewer facts makes a shorter one. A claim-dense primary paper (100 or more claims) makes 70 to
+85 panels on 13 to 15 pages: that is acceptable, but group two related claims in one panel before you add a page, and
+keep a method paper to what its story needs. Claim ids may appear in `meta.spine` text, as in the examples.
 
 Every claim you plan to use must exist in the ledger. If the story needs a statement that is not in it, go
 back and add it (with a quote), do not write it into a panel.

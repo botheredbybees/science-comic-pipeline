@@ -6,6 +6,7 @@
 
 It loads the rendered pages in headless Chrome or Chromium and reports, per page and panel:
   overflow   text that runs past the edge of its page
+  clipped    text that runs past the edge of its own panel (the panel clips it, so the reader sees it cut off)
   overlap    two pieces of text whose boxes cross
 It exits 1 if there is any defect. It cannot see text running over a drawing, a drawing that
 overlaps another, or a figure that reads badly: look at the pages as well (see skills/visual-qa).
@@ -29,7 +30,7 @@ SCAN = r"""
 <pre id="qa-result"></pre>
 <script>
 window.addEventListener('load', () => document.fonts.ready.then(() => {
-  const out = {pages: [], overflow: [], overlap: []};
+  const out = {pages: [], overflow: [], clipped: [], overlap: []};
   const label = t => (t.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40);
   const panelOf = t => { const g = t.closest('g[id^="panel-"]'); return g ? g.id.replace('panel-', '') : ''; };
   document.querySelectorAll('.page > svg').forEach((svg, i) => {
@@ -37,6 +38,12 @@ window.addEventListener('load', () => document.fonts.ready.then(() => {
     const texts = [...svg.querySelectorAll('text')].map(t => ({t, r: t.getBoundingClientRect()}));
     out.pages.push({page: i + 1, texts: texts.length, panels: svg.querySelectorAll('g[id^="panel-"]').length});
     texts.forEach(({t, r}) => {
+      const g = t.closest('g[id^="panel-"]'), box = g && g.querySelector('rect.qa-box');
+      if (box && r.width) {
+        const b = box.getBoundingClientRect();
+        if (r.left < b.left - 2 || r.right > b.right + 2 || r.top < b.top - 2 || r.bottom > b.bottom + 2)
+          out.clipped.push({page: i + 1, panel: panelOf(t), text: label(t)});
+      }
       if (r.width && (r.left < sr.left - 1 || r.right > sr.right + 1 || r.top < sr.top - 1 || r.bottom > sr.bottom + 1))
         out.overflow.push({page: i + 1, panel: panelOf(t), text: label(t)});
     });
@@ -83,11 +90,11 @@ def main(argv=None):
     res = scan(args.storyboard, args.keep)
     pages = res["pages"]
     print(f"{len(pages)} page(s), {sum(p['panels'] for p in pages)} panel(s), {sum(p['texts'] for p in pages)} text item(s)")
-    for kind in ("overflow", "overlap"):
-        for d in res[kind]:
+    for kind in ("overflow", "clipped", "overlap"):
+        for d in res.get(kind, []):
             extra = f" / {d['other']!r}" if "other" in d else ""
             print(f"{kind}: page {d['page']}, panel {d['panel'] or '?'}: {d['text']!r}{extra}")
-    n = len(res["overflow"]) + len(res["overlap"])
+    n = len(res["overflow"]) + len(res.get("clipped", [])) + len(res["overlap"])
     print("no defects found" if not n else f"{n} defect(s)")
     return 1 if n else 0
 

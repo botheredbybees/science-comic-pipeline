@@ -6,7 +6,7 @@ so the skills stay short. Run them in this order.
 
 | # | Skill | Does | Output | Scripts it uses |
 |---|---|---|---|---|
-| 1 | [`source-to-claims`](source-to-claims/SKILL.md) | Fetches the paper, checks its licence, lists what it claims with a verbatim quote and page for each | `claims.yaml`, `CLAIM-CHECK.md` | `fetch_source.py`, `check_quotes.py` |
+| 1 | [`source-to-claims`](source-to-claims/SKILL.md) | Fetches the paper, checks its licence, lists what it claims with a verbatim quote and page for each | `claims.yaml`, `CLAIM-CHECK.md` | `fetch_source.py`, `pdf_to_pages.py`, `check_quotes.py` |
 | 2 | [`story-spine`](story-spine/SKILL.md) | Finds And / But / Therefore, chooses audience and cast, says what is left out, plans the beats | `head.yaml`, `PLAN.md` | |
 | 3 | [`storyboard`](storyboard/SKILL.md) | Writes the panels, dialogue, captions and staging, citing a claim for every fact | `beats/B*.yaml`, `storyboard.yaml` | `build_storyboard.py`, `validate_storyboard.py`, `preview_storyboard.py` |
 | 4 | [`humour-pass`](humour-pass/SKILL.md) | Proposes a few jokes that leave claims intact; flags each for a human | `humour` blocks | `validate_storyboard.py` |
@@ -31,3 +31,15 @@ and scripts, which were fixed before the next paper. The third run's were: bar l
 field names that were documented nowhere, a `wide` chart that could be packed at a third of a row, a locator separator
 the checker rejected, a licence statement that was cut short, and unclear formats for `PLAN.md` and `ATTRIBUTION.md`.
 The fourth run's were: a locator check that choked on headings with commas, authors and licence URL missing from MDPI's XML, an rRNA label counted as a number, speech lines doubled in the PDF's text layer, and a missing `ATTRIBUTION.md` template. Faults are getting smaller and rarer, but four runs are not proof: the next paper is the next test.
+
+**Cold runs five to ten (a batch of six private comics, from papers by one eDNA group: four CC BY papers and two that are
+not open access, from supplied PDFs).** All six finished (59 to 83 panels, 9 to 15 pages) and passed the checks. They found:
+no script for a PDF source (four agents split pages by hand, so `pdf_to_pages.py` now does it, in the reading order that
+keeps a two-column sentence whole); `check_quotes.py` not joining a soft hyphen at a line end, not matching a real hyphen
+there, and not saying that a quote failed only on its first word (it now does, and a quote may be fragments joined by
+` ... `); locators with a U+2010 hyphen; a validator that split "55, 465" at the comma, did not know the scene might name a
+teapot, laptop, microscope or a held mug, and warned about "jar water"; beat files sorting `B10` before `B2`; no stamp for a
+private comic (`meta.private`); `steps` labels that did not wrap, and a bottle or jar that stretched; and a scan that said
+"no defects found" when a label ran off its panel (it now measures text against its own panel). The skills also now say
+what to do with a PDF source, a paper that is not open access, authors the brief got wrong, a year that differs between the
+record and the paper, the paper's own arithmetic, and jargon the paper never defines.

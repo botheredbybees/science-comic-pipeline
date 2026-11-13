@@ -20,6 +20,7 @@ A full run on a 10-page article has taken an agent about 15 minutes and 300,000 
 | **`curl`** | fetches papers from Europe PMC (or save the paper's XML yourself and use `--xml`) |
 | **An internet connection** | for Europe PMC, and so the handwriting font (Patrick Hand, from Google Fonts) loads when the PDF is made |
 | **`pdftoppm`** (optional, from poppler) | turns PDF pages into images so you or an agent can look at them |
+| **`pdftotext`** (poppler; only for a paper that is not on Europe PMC) | `scripts/pdf_to_pages.py` uses it to turn a PDF into per-page text |
 | **An AI agent that can read and write files and run shell commands** | see section 3. It needs to be capable: the storyboard step is the hardest |
 
 ## 2. Set up
@@ -124,7 +125,8 @@ A person reads the comic. The scripts check that the numbers match the quotes; t
 | `no Chrome or Chromium found` | Install one (`sudo apt install chromium`, or Chrome from google.com/chrome). If the binary has an unusual name, put it on your `PATH` as `google-chrome` |
 | PDF text is in a plain fallback font | Patrick Hand loads from Google Fonts at export time; you were offline. Reconnect and export again |
 | `fetch_source.py` exits 2 | The paper's licence does not allow adaptation. Stop: choose another paper. (Do not use `--force` for anything you will share) |
-| No full text on Europe PMC | Convert the PDF with `pdftotext paper.pdf paper.txt`, then use `check_quotes.py --text paper.txt`; confirm the licence by hand on the article page and write where you found it in `CLAIM-CHECK.md` |
+| No full text on Europe PMC | Get the PDF from the publisher or a repository, run `.venv/bin/python scripts/pdf_to_pages.py paper.pdf -o sources/<slug>` (try `--mode columns` if two columns are interleaved), and use `check_quotes.py --pages-dir sources/<slug>/pages`. Confirm the licence from the article's own text, write where you found it in `licence_checked`, and say in `meta.source.page_basis` that a claim's `page` is the PDF page index |
+| The paper is not open access (the gate refuses it) | Stop, unless you want a **private reading aid** that will never be shared or published: work in `private/<slug>/`, set `meta.private: true` in `head.yaml`, write the real licence ("All rights reserved (...)"), and see `skills/source-to-claims/SKILL.md`. The PDF is stamped "PRIVATE: not for sharing" on every page |
 | The agent cannot reach the network | Download the XML in a browser from `https://www.ebi.ac.uk/europepmc/webservices/rest/<PMCID>/fullTextXML` and run `fetch_source.py --xml saved.xml -o sources/<slug>` |
 | `check_quotes.py` says a quote is not on its page | The claim's quote was not copied from the page file. Copy it from `sources/<slug>/pages/pNNN.txt`; do not retype it |
 | `validate_storyboard.py`: a number appears on the panel but in none of its cited claims | A chart or caption shows a number that no claim contains. Cite the right claim, or take the number out |

@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
-from check_quotes import check, contains, load_pages, main, tokens  # noqa: E402
+from check_quotes import check, contains, contains_quote, dashes, load_pages, main, tokens  # noqa: E402
 
 PAGES = {
     1: "The flash must be short, 100-200 µs,\nlonger than that and downstream carriers fill too.",
@@ -94,3 +94,41 @@ def test_locator_headings_with_commas_and_numbers_and_rrna_labels_are_fine():
                        "source": {"page": 1, "quote": "rRNA gene copies vary", "locator": "3. Results, 3.2. Fv/Fm, light and stress, paragraph 1"}}]}
     locs = {1: ("3. Results / 3.2. Fv/Fm, light and stress", 1)}
     assert cq.check(doc, pages, locs) == ([], [])
+
+
+def test_soft_hyphen_at_a_line_end_joins_the_word():
+    assert tokens("bio\u00ad\nmonitoring is useful") == ["biomonitoring", "is", "useful"]
+    assert contains_quote("bio\u00ad\nmonitoring is useful", "biomonitoring is useful")
+
+
+def test_a_real_hyphen_at_a_line_end_matches_either_reading():
+    page = "a long-\nterm record and ap-\nproximately ten"
+    assert contains_quote(page, "a long-term record")
+    assert contains_quote(page, "approximately ten")
+
+
+def test_fragments_must_all_appear_in_order():
+    page = "alpha beta gamma\n\nunrelated words here\n\ndelta epsilon zeta"
+    assert contains_quote(page, "alpha beta ... delta epsilon")
+    assert contains_quote(page, "alpha beta \u2026 epsilon zeta")
+    assert not contains_quote(page, "delta epsilon ... alpha beta")
+    assert not contains_quote(page, "alpha beta ... theta")
+
+
+def test_hint_when_only_the_first_word_is_wrong():
+    pages = {1: "the previous word-\n\nglued continues with the claim text here"}
+    errors, _ = check({"claims": [claim("C1", "x", "glued continues with the claim text here", 1)]}, pages)
+    assert errors == []  # joined reading finds it
+    pages = {1: "previous continues with the claim text here"}
+    errors, _ = check({"claims": [claim("C1", "x", "wrongword continues with the claim text here", 1)]}, pages)
+    assert errors and "one word later" in errors[0]
+
+
+def test_warns_when_a_quote_contains_a_publisher_footer():
+    pages = {1: "Downloaded from https://example.org by someone on a date"}
+    _, warnings = check({"claims": [claim("C1", "x", "Downloaded from https://example.org by someone", 1)]}, pages)
+    assert any("publisher footer" in w for w in warnings)
+
+
+def test_dashes_are_normalised_for_locators():
+    assert dashes("MZG\u2010ICE and a\u2013b") == "MZG-ICE and a-b"

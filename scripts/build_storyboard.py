@@ -3,7 +3,7 @@
 
 A working folder holds
   head.yaml            version, meta (title, source, spine) and cast
-  beats/B*.yaml        a list of beats, each a list of panels (sorted by file name)
+  beats/B*.yaml        a list of beats, each a list of panels (sorted by the numbers in the file name: B2 before B10)
   claims*.yaml         ledgers (a `claims:` list); also any claims/*.yaml
 and the output keeps only the claims the panels actually cite, so a long ledger can serve several
 comics. It reports any cited claim that is not `verified`, and lists verified claims that no panel cites.
@@ -12,17 +12,23 @@ comics. It reports any cited claim that is not `verified`, and lists verified cl
 """
 import argparse
 import glob
+import re
 import sys
 from pathlib import Path
 
 import yaml
 
 
+def natural(path):
+    """Sort key so that B2-x comes before B10-x (plain text order would put B10 second)."""
+    return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", Path(path).name)]
+
+
 def build(folder):
     folder = Path(folder)
     head = yaml.safe_load((folder / "head.yaml").read_text())
     beats = []
-    for f in sorted(glob.glob(str(folder / "beats" / "B*.yaml"))):
+    for f in sorted(glob.glob(str(folder / "beats" / "B*.yaml")), key=natural):
         beats += yaml.safe_load(Path(f).read_text())
     ledger = {}
     for f in sorted(glob.glob(str(folder / "claims*.yaml")) + glob.glob(str(folder / "claims" / "*.yaml"))):

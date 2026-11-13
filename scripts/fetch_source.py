@@ -116,6 +116,14 @@ def parse(xml_text):
             authors.append(" ".join(filter(None, [text_of(n.find("given-names")) if n.find("given-names") is not None else "",
                                                   text_of(n.find("surname")) if n.find("surname") is not None else ""])))
     year = next((y.text for y in art.findall(".//pub-date/year") if y.text), "")
+    years = {}  # every year the record carries; the paper's own citation line decides which one the comic uses
+    for pd in art.findall(".//pub-date"):
+        y = pd.find("year")
+        if y is not None and y.text:
+            years.setdefault(pd.get("pub-type") or pd.get("date-type") or "date", y.text)
+    cy = art.find(".//permissions/copyright-year")
+    if cy is not None and cy.text:
+        years.setdefault("copyright", cy.text)
     doi = next((i.text for i in art.findall(".//article-id[@pub-id-type='doi']") if i.text), "")
     pmcid = next((i.text for i in art.findall(".//article-id[@pub-id-type='pmcid']") if i.text), "")
     lic = art.find(".//permissions/license")
@@ -124,12 +132,13 @@ def parse(xml_text):
         ref = next((e for e in lic.iter() if e.tag == "license_ref"), None)
         lic_url = (ref.text or "").strip() if ref is not None else (lic.get("href") or "")
     statement = text_of(lic) if lic is not None else ""
+    statement = re.sub(r"(https?://creativecommons\.org/\S*?/)(?=[A-Z])", r"\1 ", statement)  # the XML glues the URL to the next word
     if lic is not None and not lic_url:  # an ext-link inside the licence text, or the URL written in the statement
         lic_url = next((v for e in lic.iter() for k, v in e.attrib.items() if k.endswith("href") and "creativecommons.org" in v), "")
         m = re.search(r"https?://creativecommons\.org/[^\s)<>]+", statement)
         lic_url = lic_url or (m.group(0).rstrip(".,;") if m else "")
     family, label = licence_family(lic_url, statement)
-    meta = {"title": title, "authors": authors, "year": year, "doi": doi, "pmcid": pmcid, "licence": label,
+    meta = {"title": title, "authors": authors, "year": year, "years": years, "doi": doi, "pmcid": pmcid, "licence": label,
             "licence_family": family, "licence_url": lic_url, "licence_statement": statement,
             "licence_checked": f"Europe PMC full-text XML, {date.today().isoformat()}"}
 
@@ -221,6 +230,9 @@ def main(argv=None):
     print(f"Licence: {meta['licence']} {meta['licence_url']}".rstrip())
     print(f"Title:   {meta['title']}")
     print(f"Suggested slug: {suggest_slug(meta)}")
+    if len(set(meta["years"].values())) > 1:
+        shown = ", ".join(f"{k} {v}" for k, v in meta["years"].items())
+        print(f"Years in the record: {shown}. They differ: use the year in the paper's own citation line, and say which in CLAIM-CHECK.md.")
     if meta["licence_statement"]:
         cut = meta["licence_statement"][:300]
         print("Statement: " + (cut if len(meta["licence_statement"]) <= 300 else cut.rsplit(" ", 1)[0] + " ..."))

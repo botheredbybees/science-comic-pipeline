@@ -214,3 +214,51 @@ def test_scene_naming_an_unstaged_prop_warns_and_a_joke_on_a_claim_free_panel_wa
     assert any("joke on a panel that cites no claim" in w for w in warnings)
     panel["staging"]["props"] = [{"kind": "desk"}]
     assert not any("mentions a desk" in w for w in validate(doc)[1])
+
+
+def _panel(doc):
+    return doc["beats"][0]["panels"][0]
+
+
+def test_thousands_separators_match_a_chart_value(doc):
+    doc["claims"][0]["text"] = "There were 55, 465 specimens in total."
+    p = _panel(doc)
+    p["claim_ids"] = ["C1"]
+    p["speech"] = [{"speaker": "narrator", "text": "There were 55,465 specimens."}]
+    p["staging"] = {"props": [{"kind": "bars", "bars": [{"label": "all", "value": 55465}], "max": 60000, "show_max": False}]}
+    _, warnings = validate(doc)
+    assert not any("55465" in w or "465" in w for w in warnings if _panel(doc)["id"] in w)
+
+
+def test_scene_naming_a_held_object_nobody_holds_warns(doc):
+    p = _panel(doc)
+    p["scene"] = "Dr Okoye lowers the mug."
+    p["staging"] = {"characters": [{"id": "extra"}]}
+    _, warnings = validate(doc)
+    assert any("mug but nobody in the staging holds one" in w for w in warnings)
+    p["staging"] = {"characters": [{"id": "extra", "holding": "mug"}]}
+    _, warnings = validate(doc)
+    assert not any("mug but nobody" in w for w in warnings)
+
+
+def test_scene_words_that_are_not_objects_do_not_warn(doc):
+    p = _panel(doc)
+    p["scene"] = "They discuss the jar water samples and the microscope work."
+    _, warnings = validate(doc)
+    assert not any("the scene (the alt text) mentions" in w and p["id"] in w for w in warnings)
+
+
+def test_board_with_long_labels_warns_and_short_ones_do_not(doc):
+    p = _panel(doc)
+    p["staging"] = {"props": [{"kind": "board", "cards": [{"label": "A"}, {"label": "B"}, {"label": "C"}, {"label": "D"}]}]}
+    _, warnings = validate(doc)
+    assert not any("board with long labels" in w for w in warnings)
+    p["staging"]["props"][0]["cards"][0]["label"] = "A whole clause that will not fit on a card"
+    _, warnings = validate(doc)
+    assert any("board with long labels" in w for w in warnings)
+
+
+def test_a_speaking_extra_gets_a_helpful_error(doc):
+    _panel(doc)["speech"][0]["speaker"] = "extra"
+    errors, _ = validate(doc)
+    assert any("needs a cast entry" in e for e in errors)

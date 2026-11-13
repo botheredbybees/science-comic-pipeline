@@ -48,3 +48,13 @@ def test_a_claim_in_two_ledgers_is_an_error(tmp_path):
 def test_cli_writes_storyboard_yaml(tmp_path):
     f = folder(tmp_path, [claim("C2")], BEATS)
     assert main([str(f)]) == 0 and (f / "storyboard.yaml").exists()
+
+
+def test_beat_files_sort_by_number_not_by_text(tmp_path):
+    (tmp_path / "beats").mkdir()
+    (tmp_path / "head.yaml").write_text("version: 2\nmeta: {title: t}\ncast: []\n")
+    for n in (2, 10, 1):
+        (tmp_path / "beats" / f"B{n}-x.yaml").write_text(f"- {{id: B{n}, title: b, panels: []}}\n")
+    (tmp_path / "claims.yaml").write_text("claims: []\n")
+    doc, *_ = build(tmp_path)
+    assert [b["id"] for b in doc["beats"]] == ["B1", "B2", "B10"]

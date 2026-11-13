@@ -24,7 +24,9 @@ Work in `examples/<slug>/` (or `private/<slug>/` if the licence is not confirmed
   `validate_storyboard.py --strict`, `visual_qa.py`. Do not trust a summary from another agent.
 - **Jokes are the user's call.** Leave `keeps_claims_intact: false` unless a joke passes the five questions in the humour skill.
 - Black and white only. No image models: the pictures come from the storyboard's `staging` and the renderer.
-- Do not commit or push unless asked.
+- Do not commit or push unless asked. When a job says "never run git", that includes read-only commands such as `git status`.
+- A paper that is not open access is never worked on in `examples/`. Only if the user asks for a private reading aid:
+  work in `private/<slug>/` with `meta.private: true`, and never publish or share the result (see `skills/source-to-claims`).
 
 ## Commands
 

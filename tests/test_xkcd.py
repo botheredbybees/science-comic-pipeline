@@ -332,3 +332,37 @@ def test_every_held_object_draws_in_every_pose():
             svg, _ = R.figure(pen, 100, 300, 1.0, pose, "neutral", "right", held, {})
             ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
             assert svg.count("<path") > 8  # the figure and something in its hand
+
+
+def test_a_private_comic_is_stamped_on_every_page_and_on_the_last_page_note(doc):
+    d = copy.deepcopy(doc)
+    d["meta"]["private"] = True
+    d["meta"]["source"]["licence"] = "All rights reserved (test)"
+    svgs, _ = R.render_pages(d)
+    assert all("PRIVATE: not for sharing" in s for s in svgs)
+    assert "Licence terms:" not in svgs[-1]  # no Creative Commons deed to link to
+
+
+def test_an_open_comic_carries_no_private_stamp(doc):
+    svgs, _ = R.render_pages(doc)
+    assert not any("PRIVATE" in s for s in svgs)
+    assert "not under an open licence" not in svgs[-1]
+
+
+def test_a_non_open_licence_without_the_flag_still_says_so(doc):
+    d = copy.deepcopy(doc)
+    d["meta"]["source"]["licence"] = "All rights reserved (test)"
+    svgs, _ = R.render_pages(d)
+    assert "not under an open licence" in svgs[-1]
+
+
+def test_steps_labels_wrap_and_bottle_and_jar_keep_their_shape():
+    import props as P
+    pen = R.Pen(1)
+    long = "Detected only by the DNA method in the paper"
+    svg = P.steps(pen, 0, 0, 300, 200, {"items": [{"label": long, "caption": "c"}, {"label": "Both"}]}, 16)
+    assert svg.count("<tspan") >= 5 and long not in svg  # wrapped over several lines, not one long line
+    for fn in (P.bottle, P.jar):
+        tall = fn(R.Pen(1), 0, 0, 300, 100, {"label": "water"}, 16)  # a wide, short box must not stretch the object
+        wide = fn(R.Pen(1), 0, 0, 100, 300, {"label": "water"}, 16)
+        assert tall and wide

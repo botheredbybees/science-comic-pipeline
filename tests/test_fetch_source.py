@@ -88,3 +88,22 @@ def test_authors_and_licence_url_from_mdpi_style_xml():
     assert meta["authors"] == ["Jing Xia", "Haojie Hu"]
     assert meta["licence_url"] == "https://creativecommons.org/licenses/by/4.0/" and meta["licence_family"] == "by"
     assert F.suggest_slug(meta) == "xia-2024-phytoplankton-pearl-river"
+
+
+def test_every_year_in_the_record_is_kept_and_reported(capsys):
+    xml = (XML % "by").replace(
+        '<pub-date pub-type="epub"><year>2017</year></pub-date>',
+        '<pub-date pub-type="epub"><year>2019</year></pub-date><pub-date pub-type="collection"><year>2018</year></pub-date>'
+        '<permissions><copyright-year>2019</copyright-year></permissions>',
+        1,
+    )
+    meta, _ = F.parse(xml)
+    assert meta["years"]["epub"] == "2019" and meta["years"]["collection"] == "2018"
+    assert meta["year"] == "2019"
+
+
+def test_the_licence_url_is_not_glued_to_the_next_word():
+    xml = (XML % "by").replace("Licensed under a Creative Commons licence.",
+                                "https://creativecommons.org/licenses/by/4.0/This is an open-access article.")
+    meta, _ = F.parse(xml)
+    assert "by/4.0/ This is" in meta["licence_statement"]

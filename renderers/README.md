@@ -30,9 +30,16 @@ for the validator: cite the claim that defines the scale.
 
 Things found by using the vocabulary (check the render when you stage these): a character `holding` can only be
 a `marker`, `mug` (held by its handle, with steam), `teacup` (a cup and saucer with a tea-bag tag), `paper`, `clipboard`, `notebook`, `flask` or `magnifier`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
-`label`'s `x` is its centre; an `arrow` is drawn from `x`, `y` to `x2`, `y2`; a `board` shrinks its card text
-in a narrow panel (to about 9 units); a solid `axis` bar can cover its tick labels; `year` in `meta.source`
-is an integer.
+`label`'s `x` is its centre and it does **not** wrap (a long one is cut off at the panel edge: use `box`); an `arrow` is drawn
+from `x`, `y` to `x2`, `y2`; a `board` shrinks its card text in a narrow panel (to about 9 units) and is unreadable
+with more than three cards or a clause on a card (use `box` props); `steps` labels and captions wrap, but keep the labels
+short; a `bottle` (0.55 wide to 1) and a `jar` (0.8 to 1) keep their shape in any box and put their `label` underneath,
+inside the box you give; `laptop`, `microscope`, `teapot`, `net` and `thermometer` keep theirs too; a solid `axis` bar can
+cover its tick labels; `year` in `meta.source` is an integer; `meta.source.page_basis` says what a PDF claim's `page` means.
+
+`meta.private: true` stamps "PRIVATE: not for sharing" in every page's footer and on the last page. A `meta.source.licence`
+with no Creative Commons deed to link to (for example "All rights reserved") also makes the last page say the paper is not
+under an open licence, and prints no "Licence terms" link.
 
 ## Character vocabulary
 

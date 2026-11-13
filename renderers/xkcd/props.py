@@ -122,9 +122,10 @@ def steps(pen, x, y, w, h, p, fs):
         sh = h * (0.4 + 0.6 * (i + 1) / n)
         sx, sy = x + i * sw, y + h - sh
         o.append(pen.rect(sx, sy, sw, sh, 2.4, fill=PAPER, over=0))
-        o.append(text(sx + sw / 2, sy + 6, [it.get("label", "")], fs, anchor="middle", weight="bold"))
+        lab = wrap(it.get("label", ""), sw - 8, fs) or [""]
+        o.append(text(sx + sw / 2, sy + 6, lab, fs, anchor="middle", weight="bold"))
         if it.get("caption"):
-            o.append(text(sx + sw / 2, sy + 16 + fs, wrap(it["caption"], sw - 12, fsb), fsb, anchor="middle", lh=1.1))
+            o.append(text(sx + sw / 2, sy + 10 + len(lab) * fs * 1.2 + 4, wrap(it["caption"], sw - 12, fsb), fsb, anchor="middle", lh=1.1))
     return "".join(o)
 
 
@@ -160,22 +161,34 @@ def ship(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+def _labelled_fit(x, y, w, h, ratio, label, fs):
+    """Fit an object of width/height `ratio` into the box, leaving room under it for its label; return the fitted
+    box and the lines of the label, so the label never crosses the object or leaves the box."""
+    fsb = max(11.0, fs * 0.93)
+    lines = wrap(label, max(w, 60) * 1.2, fsb) if label else []
+    room = len(lines) * fsb * 1.1 + 6 if lines else 0
+    fx, fy, fw, fh = _fit(x, y, w, max(h - room, h * 0.4), ratio)
+    return (fx, fy, fw, fh), lines, fsb
+
+
 def bottle(pen, x, y, w, h, p, fs):
+    (x, y, w, h), lines, fsb = _labelled_fit(x, y, w, h, 0.55, p.get("label"), fs)
     nw = w * 0.34
     pts = [(x + w / 2 - nw / 2, y), (x + w / 2 - nw / 2, y + h * 0.3), (x, y + h * 0.45), (x, y + h), (x + w, y + h),
            (x + w, y + h * 0.45), (x + w / 2 + nw / 2, y + h * 0.3), (x + w / 2 + nw / 2, y)]
     o = [pen.stroke(pts, 2.4, closed=True, fill=PAPER), pen.line((x + w / 2 - nw / 2 - 3, y), (x + w / 2 + nw / 2 + 3, y), 2.4)]
     o.append(pen.line((x + 4, y + h * 0.7), (x + w - 4, y + h * 0.7), 1.4, amp=0.6, color=MID))
-    if p.get("label"):
-        o.append(text(x + w / 2, y + h + 4, wrap(p["label"], w * 2.2, max(11.0, fs * 0.93)), max(11.0, fs * 0.93), anchor="middle", lh=1.1))
+    if lines:
+        o.append(text(x + w / 2, y + h + 6, lines, fsb, anchor="middle", lh=1.1))
     return "".join(o)
 
 
 def jar(pen, x, y, w, h, p, fs):
+    (x, y, w, h), lines, fsb = _labelled_fit(x, y, w, h, 0.8, p.get("label"), fs)
     o = [pen.rect(x, y + h * 0.12, w, h * 0.88, 2.4, over=1), pen.rect(x + w * 0.1, y, w * 0.8, h * 0.12, 2.4, fill=PAPER, over=1)]
     o.append(pen.stroke([(x + w * 0.15, y + h * 0.3), (x + w * 0.15, y + h * 0.6)], 1.6, color=MID))
-    if p.get("label"):
-        o.append(text(x + w / 2, y + h + 4, [p["label"]], max(11.0, fs * 0.93), anchor="middle"))
+    if lines:
+        o.append(text(x + w / 2, y + h + 6, lines, fsb, anchor="middle", lh=1.1))
     return "".join(o)
 
 

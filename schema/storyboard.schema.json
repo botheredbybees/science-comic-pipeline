@@ -77,6 +77,10 @@
             "licence_checked": {
               "type": "string",
               "description": "Where and when the licence was confirmed."
+            },
+            "page_basis": {
+              "type": "string",
+              "description": "What a claim's `page` number means when the source is a PDF, e.g. \"PDF page index; journal page = index + 3139\"."
             }
           }
         },
@@ -103,6 +107,10 @@
               "minLength": 1
             }
           }
+        },
+        "private": {
+          "type": "boolean",
+          "description": "A private reading aid: the PDF footer on every page says PRIVATE: not for sharing, and the last page says so. Use it for a paper whose licence does not allow adaptation."
         }
       }
     },

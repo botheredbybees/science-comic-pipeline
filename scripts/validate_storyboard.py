@@ -24,8 +24,17 @@ WORDS = {"one": "1", "single": "1", "two": "2", "three": "3", "four": "4", "five
          "seven": "7", "eight": "8", "nine": "9", "ten": "10"}
 
 
+THOUSANDS = re.compile(r"(?<=\d),\s?(?=\d{3}(?!\d))")
+
+
+def _norm(text):
+    """Join thousands separators ("55,465" and the PDF's "55, 465") so a chart value 55465 matches either."""
+    return THOUSANDS.sub("", text)
+
+
 def _supported_numbers(text):
     """Numbers a cited claim supports: its digits, its number words, and rounded forms of its decimals."""
+    text = _norm(text)
     out = set(NUMBER.findall(text))
     out |= {WORDS[w] for w in re.findall(r"[a-z]+", text.lower()) if w in WORDS}
     for n in list(out):
@@ -75,7 +84,10 @@ def _staging_texts(staging):
 # Words in a `scene` that name a prop the renderer can draw. If the scene says it and the staging lacks it, the alt text
 # describes something the reader cannot see.
 SCENE_OBJECTS = {"ship": "ship", "bowl": "bowl", "bottle": "bottle", "jar": "jar", "desk": "desk", "phone": "phone",
-                 "slide": "slide", "pie": "pie", "board": "board"}
+                 "slide": "slide", "pie": "pie", "board": "board", "teapot": "teapot", "laptop": "laptop",
+                 "microscope": "microscope", "thermometer": "thermometer"}
+# Objects a character holds rather than a prop; the scene may name one only if someone in the staging holds it.
+SCENE_HELD = ("mug", "teacup", "clipboard", "notebook", "flask", "magnifier")
 
 
 def _prop_kinds(staging):
@@ -84,6 +96,10 @@ def _prop_kinds(staging):
         kinds.add(prop["kind"])
         kinds |= _prop_kinds(prop.get("staging"))
     return kinds
+
+
+def _held(staging):
+    return {c["holding"] for c in (staging or {}).get("characters", []) if c.get("holding")}
 
 
 def validate(doc):
@@ -121,14 +137,15 @@ def validate(doc):
     for p in panels:
         for line in p.get("speech", []):
             if line["speaker"] != "narrator" and line["speaker"] not in cast_ids:
-                errors.append(f"{p['id']}: speaker '{line['speaker']}' is not in the cast")
+                extra = " (a speaking walk-on needs a cast entry; the staged `extra` cannot speak)" if line["speaker"] == "extra" else ""
+                errors.append(f"{p['id']}: speaker '{line['speaker']}' is not in the cast{extra}")
         cited = p.get("claim_ids", [])
         for cid in cited:
             if cid not in claims:
                 errors.append(f"{p['id']}: cites unknown claim {cid}")
             else:
                 used.add(cid)
-        text = " ".join([line["text"] for line in p.get("speech", [])] + _staging_texts(p.get("staging")))
+        text = _norm(" ".join([line["text"] for line in p.get("speech", [])] + _staging_texts(p.get("staging"))))
         if HAS_NUMBER.search(text) and not cited:
             errors.append(f"{p['id']}: text or chart values contain a number but the panel cites no claim")
         if cited:  # a number drawn on the panel should come from one of its cited claims, not from the artist
@@ -150,9 +167,22 @@ def validate(doc):
             warnings.append(f"{p['id']}: joke on a panel that cites {', '.join(cited) if cited else 'no claim'}; "
                             "a reviewer must confirm it keeps the claims intact")
         drawn = _prop_kinds(p.get("staging"))
+        scene = p.get("scene", "")
         for word, kind in SCENE_OBJECTS.items():
-            if re.search(rf"\b{word}s?\b", p.get("scene", ""), re.I) and kind not in drawn:
+            # "jar water" names a sample, "microscope work" a topic: neither is an object to draw
+            if re.search(rf"\b{word}s?\b(?!\s+(?:water|work))", scene, re.I) and kind not in drawn:
                 warnings.append(f"{p['id']}: the scene (the alt text) mentions a {word} but no {kind} prop is staged")
+        held = _held(p.get("staging"))
+        for word in SCENE_HELD:
+            if re.search(rf"\b{word}s?\b(?!\s+(?:water|work))", scene, re.I) and word not in held and word not in drawn:
+                warnings.append(f"{p['id']}: the scene (the alt text) mentions a {word} but nobody in the staging holds one")
+        for prop in (p.get("staging") or {}).get("props", []):
+            if prop["kind"] == "board":
+                cards = prop.get("cards", [])
+                longest = max((len(c["label"]) for c in cards), default=0)
+                if longest > 20 or (len(cards) > 3 and longest > 10):
+                    warnings.append(f"{p['id']}: a board with long labels (or more than three medium ones) shrinks its text "
+                                    "until it overlaps or is unreadable; use `box` props for sentences")
 
     for cid in sorted(used):
         c = claims[cid]

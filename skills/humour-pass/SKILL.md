@@ -35,6 +35,12 @@ forecaster's catchphrase) is the comic's voice: question 3's "butt" is then a fi
 say so in the note. A joke that gives a real organism a feeling, a motive or an attitude the paper does not report
 (a diatom taking a result "personally") is the comic speaking for the organism: flag it for a human and say why.
 
+**An organism that speaks** (a ploughfish saying "Just passing through") is the clearest case of question 3 being a
+"no": it needs a cast entry, and the joke is flagged for a human rather than set `true`.
+
+**Callback lines** that carry no fact ("Remember this one. It comes back.") are not jokes and need no `humour` block;
+add one if you are unsure, and the validator will then hold the panel for a human.
+
 ## 3. Attach and flag each one
 
 ```yaml

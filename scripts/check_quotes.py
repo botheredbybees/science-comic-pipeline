@@ -12,9 +12,13 @@ file whose pages are separated by form feeds (what `pdftotext` writes).
     python scripts/check_quotes.py storyboard.yaml --pages-dir sources/<slug>/pages
     python scripts/check_quotes.py storyboard.yaml --text source.txt
 
+A quote may be several fragments joined by " ... " (or an ellipsis): each fragment must appear on the
+page, in that order. Use this when a sentence is split by a column break, a page number or a figure.
+
 Errors: a verified claim with no quote or page, or whose quote is not on its page.
 Warnings: a quote found only on another page; a claim with no quote; a number in the claim's
-text that is not in its quote (a common sign of a misquote). Exit code 1 on errors.
+text that is not in its quote (a common sign of a misquote); a quote that contains a publisher's
+"Downloaded from" footer. Exit code 1 on errors.
 """
 import argparse
 import re
@@ -28,11 +32,17 @@ NUMBER = re.compile(r"\d+(?:\.\d+)?")
 SVEDBERG = re.compile(r"\b\d+S\b")  # 16S, 18S, 28S: ribosomal RNA labels
 
 
-def tokens(text):
-    """Lower-case word and number tokens, with hyphenated line breaks joined and ligatures undone."""
-    text = unicodedata.normalize("NFKC", text).replace("­", "")
-    text = re.sub(r"(\w)-\s*\n\s*(\w)", r"\1\2", text)
-    text = text.lower().replace("−", "-")
+def tokens(text, join_hyphens=True):
+    """Lower-case word and number tokens, with hyphenated line breaks joined and ligatures undone.
+
+    A soft hyphen at a line end always joins the word. A visible hyphen at a line end is ambiguous
+    ("ap-/proximately" against "long-/term"), so `join_hyphens` picks one reading; `contains_any`
+    tries both."""
+    text = unicodedata.normalize("NFKC", text)
+    text = re.sub("\u00ad\\s*\\n\\s*", "", text).replace("\u00ad", "")
+    if join_hyphens:
+        text = re.sub(r"(\w)-\s*\n\s*(\w)", r"\1\2", text)
+    text = text.lower().replace("\u2212", "-")
     return re.findall(r"[^\W_]+(?:\.\d+)?", text)
 
 
@@ -43,9 +53,55 @@ def load_pages(pages_dir=None, text_file=None):
     return {i: t for i, t in enumerate(Path(text_file).read_text(errors="ignore").split("\f"), 1)}
 
 
-def contains(page_tokens, quote_tokens):
+def find(page_tokens, quote_tokens, start=0):
+    """Index just past the first run of quote_tokens at or after `start`, or -1."""
     n = len(quote_tokens)
-    return bool(n) and any(page_tokens[i:i + n] == quote_tokens for i in range(len(page_tokens) - n + 1))
+    if not n:
+        return -1
+    for i in range(start, len(page_tokens) - n + 1):
+        if page_tokens[i:i + n] == quote_tokens:
+            return i + n
+    return -1
+
+
+def fragments(quote):
+    """Split a quote into fragments on " ... " or an ellipsis; each must appear, in order."""
+    return [f for f in re.split(r"\s*(?:\.\.\.|\u2026)\s*", quote) if f.strip()]
+
+
+def contains(page_tokens, quote_tokens):
+    return find(page_tokens, quote_tokens) >= 0
+
+
+def contains_quote(page_text, quote):
+    """True if every fragment of `quote` is on the page text, in order (either hyphen reading)."""
+    for join in (True, False):
+        pos, ok = 0, True
+        page_tokens = tokens(page_text, join)
+        for frag in fragments(quote):
+            pos = find(page_tokens, tokens(frag, join), pos)
+            if pos < 0:
+                ok = False
+                break
+        if ok:
+            return True
+    return False
+
+
+def edge_hint(page_text, quote):
+    """If the quote fails only because of its first or last word, say so (line-end hyphens glue words)."""
+    for frag in fragments(quote)[:1]:
+        t = tokens(frag)
+        if len(t) > 3 and contains_quote(page_text, " ".join(t[1:])):
+            return "; it is found without its first word (a line-end hyphen can glue the word to the one before), so start the quote one word later"
+        if len(t) > 3 and contains_quote(page_text, " ".join(t[:-1])):
+            return "; it is found without its last word, so end the quote one word earlier"
+    return ""
+
+
+def dashes(text):
+    """One kind of hyphen for locator comparison (page-map.txt may carry U+2010 or an en dash)."""
+    return re.sub("[\u2010-\u2015\u2212]", "-", text)
 
 
 def load_locators(pages_dir):
@@ -63,7 +119,6 @@ def load_locators(pages_dir):
 def check(doc, pages, locators=None):
     """Return (errors, warnings)."""
     errors, warnings = [], []
-    toks = {n: tokens(t) for n, t in pages.items()}
     for c in doc["claims"]:
         src, cid = c["source"], c["id"]
         quote, page = src.get("quote"), src.get("page")
@@ -73,12 +128,13 @@ def check(doc, pages, locators=None):
         if not page:
             (errors if c["status"] == "verified" else warnings).append(f"{cid}: has a quote but no page")
             continue
-        q = tokens(quote)
-        if page not in toks:
+        if "downloaded from" in quote.lower():
+            warnings.append(f"{cid}: the quote contains a publisher footer (\"Downloaded from ...\"); quote the article, not the page furniture")
+        if page not in pages:
             errors.append(f"{cid}: page {page} is not in the source")
-        elif not contains(toks[page], q):
-            elsewhere = [n for n, t in toks.items() if contains(t, q)]
-            hint = f"; the quote is on page(s) {elsewhere}" if elsewhere else "; the quote is not on any page"
+        elif not contains_quote(pages[page], quote):
+            elsewhere = [n for n, t in pages.items() if contains_quote(t, quote)]
+            hint = f"; the quote is on page(s) {elsewhere}" if elsewhere else "; the quote is not on any page" + edge_hint(pages[page], quote)
             (errors if c["status"] == "verified" else warnings).append(f"{cid}: quote not found on page {page}{hint}")
             continue
         m = re.match(r"^(.*?),? paragraph (\d+)$", src.get("locator", "") or "")
@@ -86,8 +142,8 @@ def check(doc, pages, locators=None):
             sec, n = locators[page]
             # every part of the locator must appear in the section's path; headings with commas or numbers
             # ("3.2. Feeding, selectivity") are fine, since each comma-separated piece is looked for on its own
-            path = re.sub(r"\s+", " ", sec.lower())
-            want = [x.strip().lower() for x in re.split(r", | / ", m.group(1)) if x.strip()]
+            path = re.sub(r"\s+", " ", dashes(sec.lower()))
+            want = [dashes(x.strip().lower()) for x in re.split(r", | / ", m.group(1)) if x.strip()]
             if not all(w in path for w in want) or int(m.group(2)) != n:
                 warnings.append(f"{cid}: locator \"{src['locator']}\" but page {page} is {sec}, paragraph {n}")
         # a label such as the 18S in "18S rRNA" is a name, not a quantity the quote has to contain

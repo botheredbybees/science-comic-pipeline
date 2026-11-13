@@ -17,8 +17,11 @@ need eyes. Do both.
 python scripts/visual_qa.py examples/<slug>/storyboard.yaml --keep output/<slug>
 ```
 
-It reports **overflow** (text past the page edge) and **overlap** (text boxes crossing), by page and
-panel, and exits 1 when there is any. Fix each, then re-run until it says `no defects found`.
+It reports **overflow** (text past the page edge), **clipped** (text past the edge of its own panel, where the panel
+cuts it off) and **overlap** (text boxes crossing), by page and panel, and exits 1 when there is any. Fix each, then
+re-run until it says `no defects found`. Re-running into the same `--keep` folder overwrites the sheet, but PNGs you
+made there with `pdftoppm` stay; use a fresh folder per round if you want to be sure which page you are looking at
+(the sandbox may refuse `rm` with a glob).
 
 ## 2. Look at every page
 
@@ -38,7 +41,8 @@ The scan cannot see the following, so check them yourself, page by page:
 - Reading order: left to right, then down. Two rows made only of open (borderless) panels adjacent, or two
   rows with the same widths, make a page hard to read.
 - Pages with a big blank band at the bottom (except the last), or a last page nearly empty.
-- Text running through the border of its own sign or box (the scan compares text with other text only).
+- Text running through the border of its own sign or box, or a prop's label crossing the object it labels (the scan
+  compares text with text and with the panel's edge, not with a drawing).
 - Garbled characters (accents, quotes, "mojibake").
 - Faces and poses that imply something the paper does not say (a worried animal).
 
@@ -56,6 +60,8 @@ Most defects are fixed in `staging` or on the panel:
 | Two open rows adjacent / same-width rows | change a panel's `frame` or `weight` |
 | Blank band under a page | `height: tall` on a significant panel (the layout repacks, so look at the next page too) |
 | A caption too long | split into two panels |
+| A label cut off at the panel edge | use a `box` prop (it wraps) instead of `label`, or move it left |
+| A `board` with unreadable cards | `box` props in a grid |
 
 If the cause is a renderer bug (a prop that cannot be staged correctly), fix `renderers/xkcd/` and add a
 test in `tests/test_xkcd.py` that fails before the fix.
@@ -71,7 +77,8 @@ python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o examples/<slug>/
 
 One A4 page per comic page. The PDF is the finished comic and lives in the example's folder, where git keeps it (`output/` is not kept). Check the page count and that the attribution for the source is printed on
 the last page, complete: title, authors, year, DOI, licence, and two clickable links (the original paper and the licence terms), and the line that the comic
-is an adaptation the authors did not write or endorse.
+is an adaptation the authors did not write or endorse. A comic made with `meta.private: true` also says
+"PRIVATE: not for sharing" in every page's footer and on the last page.
 
 ## Output
 
@@ -96,6 +103,12 @@ Any error in it is ours.
 The storyboard and anything rendered from it are shared under <the same licence as the paper; CC BY-SA if the paper is
 ShareAlike>. The paper itself is not copied into this repository.
 ```
+
+If the source did not come from Europe PMC, change the second paragraph to say where it did: "read from the publisher's
+PDF (<repository or publisher>) on <date>; the licence statement is in the footer of its page <n>", and link the DOI
+or the repository record instead of a PMCID. For a private reading aid (`meta.private: true`; see `source-to-claims`),
+start the file with **PRIVATE: not for sharing**, give the real licence ("All rights reserved ..."), say where the PDF
+came from, and do not claim the comic is shared under any licence.
 
 `QA.md` in the working folder (or your reply): the defects found, what you did, and what is left (known
 limits, such as text wrapped by average glyph width, not measured). **Done when** the scan is clean, you

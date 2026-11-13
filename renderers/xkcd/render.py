@@ -552,6 +552,7 @@ def draw_panel(panel, plan, w, h, cast):
     alt = esc(panel["scene"])
     alt_attr = escape(str(panel["scene"]), quote=True)
     return (f'<g id="panel-{pid}" role="img" aria-label="{alt_attr}"><title>{alt}</title>'
+            f'<rect class="qa-box" x="0" y="0" width="{w:.1f}" height="{h:.1f}" fill="none" stroke="none"/>'  # the panel's true box, for visual_qa
             f'<clipPath id="{cid}"><rect x="-4" y="-4" width="{w + 8:.1f}" height="{h + 8:.1f}"/></clipPath>'
             f'<g clip-path="url(#{cid})">{"".join(o)}</g></g>')
 
@@ -598,6 +599,10 @@ def build_items(doc, cast, k=0.55):
             + f'. Licence: {src["licence"]}. '
             "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
             "the paper's authors did not write or endorse this document.")
+    if doc["meta"].get("private"):
+        note += " PRIVATE: not for sharing."
+    elif not lic_url:  # no Creative Commons deed to link to: say plainly that it is not an open licence
+        note += " This paper is not under an open licence: keep this comic private and do not publish it."
     colo = wrap(note, usable, 15)
     paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
     links = [(f"Read the original paper: {paper}", paper)] if paper else []
@@ -733,7 +738,8 @@ def render_pages(doc):
         for y, it, h in page:
             body.append(it["draw"](y, h - it["label_h"]) if it["kind"] == "row" else it["draw"](y))
             placements.append({"page": n, "y": y, "h": h, "kind": it["kind"], "beat": it.get("beat")})
-        foot = text(PAGE_W / 2, PAGE_H - MARGIN - 8, [f'{doc["meta"]["title"]} · page {n} of {len(pages)}'], 14, anchor="middle", fill=MID)
+        stamp = " · PRIVATE: not for sharing" if doc["meta"].get("private") else ""
+        foot = text(PAGE_W / 2, PAGE_H - MARGIN - 8, [f'{doc["meta"]["title"]} · page {n} of {len(pages)}{stamp}'], 14, anchor="middle", fill=MID)
         svgs.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {PAGE_W} {PAGE_H}" width="210mm" height="297mm" '
                     f'font-family=\'{FONT}\' role="group" aria-label="Page {n} of {len(pages)}">'
                     f'<rect width="{PAGE_W}" height="{PAGE_H}" fill="{PAPER}"/>{"".join(body)}{foot}</svg>')
