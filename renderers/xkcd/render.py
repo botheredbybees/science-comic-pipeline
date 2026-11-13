@@ -234,6 +234,8 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
         o += [pen.line((cx - 4 * s, neck), (cx, neck + 15 * s), w * 0.8, amp=0.2), pen.line((cx + 4 * s, neck), (cx, neck + 15 * s), w * 0.8, amp=0.2),
               pen.line((cx, neck + 15 * s), (cx, hip + 24 * s), w * 0.8, amp=0.3),
               pen.rect(cx + 6 * s, hip, 8 * s, 9 * s, w * 0.7, fill=PAPER, over=0)]
+    if pose == "think" and holding:  # the thinking hand rests on the chin; with something in it, hold it out instead
+        pose = "hold"
     back, front = ARMS.get(pose, ARMS["stand"])
     for arm in (back, front):  # an upper arm and a forearm: two straight strokes meeting at the elbow
         side = 1 if arm is front else -1
