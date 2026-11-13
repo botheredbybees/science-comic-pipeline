@@ -564,11 +564,22 @@ def build_items(doc, cast, k=0.55):
     lic_url = _licence_url(src["licence"])
     note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
             + (f', doi {src["doi"]}' if src.get("doi") else "")
-            + f'. Licence: {src["licence"]}' + (f' ({lic_url})' if lic_url else "") + ". "
+            + f'. Licence: {src["licence"]}. '
             "Condensed into a comic with invented characters and scenes; the authors did not write or endorse it.")
     colo = wrap(note, usable, 15)
-    items.append({"kind": "colophon", "h": block_h(colo, 15) + 12,
-                  "draw": lambda y, c=colo: text(MARGIN, y + 6, c, 15, fill=MID)})
+    paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
+    links = [(f"Read the original paper: {paper}", paper)] if paper else []
+    if lic_url:
+        links.append((f"Licence terms: {lic_url}", lic_url))
+
+    def draw_colophon(y, c=colo, ls=links):
+        out = [text(MARGIN, y + 6, c, 15, fill=MID)]
+        for i, (label, href) in enumerate(ls):  # clickable in a browser and in the PDF
+            ly = y + 6 + block_h(c, 15) + 4 + i * 15 * 1.3
+            out.append(f'<a href="{esc(href)}" target="_blank">{text(MARGIN, ly, [label], 15, fill=INK).replace("<text ", "<text text-decoration=\"underline\" ", 1)}</a>')
+        return "".join(out)
+
+    items.append({"kind": "colophon", "h": block_h(colo, 15) + len(links) * 15 * 1.3 + 16, "draw": draw_colophon})
     return items
 
 

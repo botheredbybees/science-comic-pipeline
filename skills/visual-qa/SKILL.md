@@ -70,7 +70,7 @@ python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o output/<slug>.pd
 ```
 
 One A4 page per comic page. Check the page count and that the attribution for the source is printed on
-the last page, complete: title, authors, year, DOI, licence **and the licence's URL**, and the line that the comic
+the last page, complete: title, authors, year, DOI, licence, and two clickable links (the original paper and the licence terms), and the line that the comic
 is an adaptation the authors did not write or endorse.
 
 ## Output

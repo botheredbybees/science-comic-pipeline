@@ -309,3 +309,11 @@ def test_strand_hair_clipboard_and_a_mug_with_steam_draw():
     clip = R._holding(pen, "clipboard", 100, 100, 1.0, 2.3)
     assert mug.count("<path") >= 5  # the handle, the cup (4 edges) and three wisps of steam
     assert clip.count("<path") >= 8
+
+
+def test_the_last_page_links_to_the_paper_and_its_licence(doc):
+    svgs, _ = R.render_pages(doc)
+    last = svgs[-1]
+    ET.fromstring(last)
+    assert 'href="https://doi.org/' in last or 'href="http' in last
+    assert last.count("<a ") >= 1
