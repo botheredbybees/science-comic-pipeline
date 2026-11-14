@@ -720,7 +720,7 @@ beats:
     height: tall
     transition: scene-to-scene
     word_picture: interdependent
-    scene: A line marking latitude, with a bar running from 60°S to 65°S for the salps' southern limit; the axis is schematic.
+    scene: A line marking latitude, with a bar running from 60°S to 65°S for the salps' southern limit.
     speech:
     - speaker: narrator
       kind: caption
@@ -734,7 +734,7 @@ beats:
         y: 0.05
         w: 0.92
         h: 0.9
-        title: Latitude (schematic, not to scale)
+        title: Latitude
         items:
         - label: 60°S
           at: 0.2
