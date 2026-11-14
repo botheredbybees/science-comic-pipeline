@@ -633,7 +633,7 @@ def build_items(doc, cast, k=0.55):
             first = False
     lic_urls = [_licence_url(s["licence"]) for s in srcs]
     if len(srcs) > 1:
-        cites = " ".join(f'“{s["title"]}” by {", ".join(s["authors"])} ({s["year"]})'
+        cites = " ".join(f'“{s["title"]}” by {_short_authors(s)} ({s["year"]})'
                          + (f', doi {s["doi"]}' if s.get("doi") else "") + f'. Licence: {s["licence"]}.' for s in srcs)
         note = ("Drawn from these sources: " + cites + " Condensed into a comic with invented characters and scenes using the "
                 "science-comic-pipeline; the sources' authors did not write or endorse this document. ")

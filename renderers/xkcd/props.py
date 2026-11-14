@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic"}
+EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes"}
 
 
 def _dot(x, y, r=5):
@@ -1422,22 +1422,22 @@ def molecule(pen, x, y, w, h, p, fs):
 
 
 def clay(pen, x, y, w, h, p, fs):
-    """Clay on a table: a lump with thumbprints, a few small balls and a rolled-out slab cut into squares. Arts and making."""
+    """Clay on a board: a pinch pot with a thumb dent, a smooth ball, a rolled coil and a small slab with a tool mark. Making with clay."""
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.5, p, fs)
-    base = y + h * 0.82
-    o = [pen.line((x, base), (x + w, base), 2.6, amp=0.4)]
-    lump = [(x + w * 0.05, base), (x + w * 0.04, y + h * 0.5), (x + w * 0.14, y + h * 0.18), (x + w * 0.3, y + h * 0.1),
-            (x + w * 0.42, y + h * 0.3), (x + w * 0.44, base)]
-    o.append(pen.poly(lump, 2.6, fill=SOFT, jit=0.5))
-    for tx, ty in ((0.16, 0.45), (0.28, 0.35), (0.22, 0.62)):  # thumbprints
-        o.append(f'<ellipse cx="{x + w * tx:.1f}" cy="{y + h * ty:.1f}" rx="{w * 0.035:.1f}" ry="{h * 0.05:.1f}" fill="{MID}" stroke="none" opacity="0.8"/>')
-    for bx, by, br in ((0.55, 0.72, 0.07), (0.66, 0.74, 0.055), (0.6, 0.58, 0.05)):  # pinched balls
-        o.append(pen.ellipse(x + w * bx, y + h * by, w * br, w * br * 0.95, 2.2, fill=SOFT))
-    slab = [(x + w * 0.72, base - h * 0.06), (x + w * 0.74, base - h * 0.18), (x + w * 0.98, base - h * 0.18), (x + w, base - h * 0.06)]
-    o.append(pen.poly(slab, 2.4, fill=PAPER, jit=0.3))
-    for k in (1, 2):
-        sx = x + w * (0.72 + 0.09 * k)
-        o.append(pen.line((sx, base - h * 0.18), (sx + w * 0.005, base - h * 0.06), 1.4, amp=0.1, color=MID))
+    U, sw = _u(x, y, w, h), 2.4
+    base = 0.88
+    o = [pen.line(U(0.0, base), U(1.0, base), 2.6, amp=0.4)]
+    pot = [U(0.04, 0.38), U(0.06, 0.62), U(0.16, 0.82), U(0.3, 0.88), U(0.44, 0.82), U(0.52, 0.62), U(0.5, 0.38)]
+    o.append(pen.stroke(pot, sw, closed=True, fill=SOFT))  # the pinch pot's body
+    o.append(pen.ellipse(*U(0.27, 0.38), w * 0.24, h * 0.1, sw, fill=PAPER))  # its rim
+    o.append(pen.ellipse(*U(0.27, 0.4), w * 0.15, h * 0.055, 1.4, fill=MID))  # the thumb dent inside
+    o.append(pen.ellipse(*U(0.66, 0.72), w * 0.095, w * 0.095, sw, fill=SOFT))  # a ball
+    o.append(f'<ellipse cx="{x + w * 0.63:.1f}" cy="{y + h * 0.68:.1f}" rx="{w * 0.02:.1f}" ry="{h * 0.03:.1f}" fill="{PAPER}"/>')
+    coil = [U(0.8, 0.84), U(0.94, 0.84), U(0.98, 0.76), U(0.9, 0.7), U(0.82, 0.74), U(0.84, 0.8), U(0.9, 0.78)]
+    o.append(pen.stroke(coil, sw * 1.6, color=INK))
+    o.append(pen.stroke(coil, sw * 0.9, color=SOFT))  # a rolled coil
+    slab = [U(0.56, 0.9), U(0.58, 0.86), U(0.78, 0.86), U(0.8, 0.9)]
+    o.append(pen.poly(slab, 1.8, fill=PAPER, jit=0.2))
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
@@ -1462,11 +1462,174 @@ def mosaic(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+def _u(x, y, w, h):
+    """A function from unit coordinates (0 to 1, y down) to the box, for props drawn from a plan."""
+    return lambda u, v: (x + w * u, y + h * v)
+
+
+def armchair(pen, x, y, w, h, p, fs):
+    """An armchair seen from the front: a tall back, two rounded arms, a seat cushion and short legs. Care homes, waiting rooms, the listener."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.05, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.poly([U(0.14, 0.62), U(0.14, 0.12), U(0.2, 0.04), U(0.8, 0.04), U(0.86, 0.12), U(0.86, 0.62)], sw, fill=SOFT, jit=0.4)]  # the back
+    for a, b in ((0.0, 0.14), (0.86, 1.0)):  # the arms
+        o.append(pen.poly([U(a, 0.38), U(a + (b - a) * 0.5, 0.3), U(b, 0.38), U(b, 0.84), U(a, 0.84)], sw, fill=PAPER, jit=0.4))
+    o.append(pen.poly([U(0.14, 0.55), U(0.86, 0.55), U(0.88, 0.76), U(0.12, 0.76)], sw, fill=PAPER, jit=0.4))  # the seat cushion
+    for a in (0.04, 0.9):  # the legs
+        o.append(pen.line(U(a + 0.03, 0.84), U(a + 0.03, 0.97), sw, amp=0.3))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def wheelchair(pen, x, y, w, h, p, fs):
+    """A wheelchair in side view: a big wheel with a push rim, a small front wheel, a seat, a back with a push handle and a footrest."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.0, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = []
+    cx, cy = U(0.4, 0.68)
+    o.append(pen.ellipse(cx, cy, w * 0.3, h * 0.3, sw, fill="none"))  # the big wheel
+    o.append(pen.ellipse(cx, cy, w * 0.24, h * 0.24, 1.2, fill="none"))  # its push rim
+    o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{w * 0.025:.1f}" fill="{INK}"/>')
+    for k in range(6):  # spokes
+        a = math.pi * k / 3
+        o.append(pen.line((cx - w * 0.24 * math.cos(a), cy - h * 0.24 * math.sin(a)), (cx + w * 0.24 * math.cos(a), cy + h * 0.24 * math.sin(a)), 1.0, amp=0.1, color=MID))
+    fx, fy = U(0.86, 0.88)
+    o.append(pen.ellipse(fx, fy, w * 0.07, h * 0.07, sw * 0.9, fill=SOFT))  # the small front wheel
+    o.append(pen.stroke([U(0.18, 0.04), U(0.2, 0.42), U(0.74, 0.44)], sw, color=INK))  # the back and seat
+    o.append(pen.poly([U(0.2, 0.4), U(0.74, 0.42), U(0.74, 0.5), U(0.2, 0.48)], sw * 0.8, fill=SOFT, jit=0.2))  # the seat cushion
+    o.append(pen.line(U(0.18, 0.04), U(0.08, 0.04), sw, amp=0.2))  # the push handle
+    o.append(pen.stroke([U(0.74, 0.46), U(0.84, 0.64), U(0.86, 0.84)], sw, color=INK))  # the leg support
+    o.append(pen.line(U(0.86, 0.84), U(0.96, 0.84), sw, amp=0.2))  # the footrest
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def piano(pen, x, y, w, h, p, fs):
+    """An upright piano from the front: a lid, a music stand, a row of white keys with black keys between and two legs."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.4, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.rect(*U(0.0, 0.02), w, h * 0.5, sw, fill=SOFT, over=1.5),  # the case
+         pen.poly([U(0.08, 0.14), U(0.92, 0.14), U(0.9, 0.34), U(0.1, 0.34)], 1.6, fill=PAPER, jit=0.2)]  # the music stand
+    kx0, kx1, ky0, ky1 = 0.04, 0.96, 0.52, 0.66
+    o.append(pen.rect(*U(kx0, ky0), w * (kx1 - kx0), h * (ky1 - ky0), sw * 0.8, fill=PAPER, over=0.6))
+    n = 14
+    for i in range(1, n):
+        o.append(pen.line(U(kx0 + (kx1 - kx0) * i / n, ky0), U(kx0 + (kx1 - kx0) * i / n, ky1), 1.0, amp=0.05, color=INK))
+    for i in range(n):
+        if i % 7 in (2, 6):
+            continue  # no black key after E and B
+        bx = U(kx0 + (kx1 - kx0) * (i + 0.68) / n, ky0)[0]
+        o.append(f'<rect x="{bx:.1f}" y="{y + h * ky0:.1f}" width="{w * (kx1 - kx0) / n * 0.6:.1f}" height="{h * (ky1 - ky0) * 0.6:.1f}" fill="{INK}"/>')
+    for a in (0.04, 0.9):
+        o.append(pen.rect(*U(a, 0.66), w * 0.06, h * 0.32, sw * 0.8, fill=SOFT, over=0.8))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def guitar(pen, x, y, w, h, p, fs):
+    """An acoustic guitar standing up: a figure-of-eight body with a sound hole and bridge, a long neck with frets and a headstock."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 0.4, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    body = [U(0.5, 0.48), U(0.74, 0.5), U(0.8, 0.58), U(0.68, 0.66), U(0.96, 0.78), U(0.9, 0.94), U(0.5, 0.99), U(0.1, 0.94), U(0.04, 0.78), U(0.32, 0.66), U(0.2, 0.58), U(0.26, 0.5)]
+    o = [pen.rect(*U(0.42, 0.1), w * 0.16, h * 0.46, sw * 0.9, fill=SOFT, over=0.8),  # the neck
+         pen.poly([U(0.4, 0.0), U(0.6, 0.0), U(0.62, 0.1), U(0.38, 0.1)], sw * 0.9, fill=INK, jit=0.15),  # the headstock
+         pen.stroke(body, sw, closed=True, fill=PAPER)]
+    cx, cy = U(0.5, 0.79)
+    o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{w * 0.14:.1f}" fill="{INK}"/>')  # the sound hole
+    o.append(pen.rect(*U(0.36, 0.93), w * 0.28, h * 0.025, 1.6, fill=MID, over=0.4))  # the bridge
+    for v in (0.2, 0.3, 0.4, 0.5):
+        o.append(pen.line(U(0.42, v), U(0.58, v), 1.0, amp=0.05, color=INK))  # frets
+    for u in (0.46, 0.5, 0.54):
+        o.append(pen.line(U(u, 0.08), U(u, 0.93), 0.8, amp=0.05, color=MID))  # strings
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def easel(pen, x, y, w, h, p, fs):
+    """An artist's easel: three legs, a canvas with a simple painting (hills and a sun) and a small tray under it."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 0.85, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.line(U(0.2, 0.02), U(0.02, 0.99), sw, amp=0.3), pen.line(U(0.8, 0.02), U(0.98, 0.99), sw, amp=0.3),
+         pen.line(U(0.5, 0.1), U(0.5, 0.99), sw * 0.9, amp=0.3),
+         pen.rect(*U(0.16, 0.08), w * 0.68, h * 0.6, sw, fill=PAPER, over=1.2),  # the canvas
+         pen.stroke([U(0.18, 0.6), U(0.32, 0.4), U(0.46, 0.55), U(0.62, 0.34), U(0.82, 0.6)], 1.8, color=MID),  # the hills
+         pen.rect(*U(0.08, 0.72), w * 0.84, h * 0.04, sw * 0.9, fill=SOFT, over=0.8)]  # the tray
+    sx, sy = U(0.68, 0.22)
+    o.append(pen.ellipse(sx, sy, w * 0.06, w * 0.06, 1.6, fill=SOFT))  # the sun
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def camera(pen, x, y, w, h, p, fs):
+    """A camera from the front: a body with a top hump and shutter button, a big lens (rings and a glint), a flash and a viewfinder."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.4, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.poly([U(0.3, 0.22), U(0.36, 0.08), U(0.64, 0.08), U(0.7, 0.22)], sw, fill=SOFT, jit=0.2),
+         pen.rect(*U(0.0, 0.22), w, h * 0.72, sw, fill=PAPER, over=1.5),
+         pen.rect(*U(0.08, 0.3), w * 0.14, h * 0.12, 1.6, fill=SOFT, over=0.5),  # the flash
+         pen.rect(*U(0.74, 0.3), w * 0.14, h * 0.1, 1.6, fill=SOFT, over=0.5),  # the viewfinder
+         pen.rect(*U(0.78, 0.02), w * 0.1, h * 0.06, 1.8, fill=INK, over=0.3)]  # the shutter button
+    cx, cy = U(0.5, 0.6)
+    r = min(w * 0.2, h * 0.3)
+    o += [pen.ellipse(cx, cy, r * 1.2, r * 1.2, sw, fill=SOFT), pen.ellipse(cx, cy, r * 0.85, r * 0.85, 1.8, fill=PAPER),
+          pen.ellipse(cx, cy, r * 0.45, r * 0.45, 1.6, fill=INK),
+          f'<circle cx="{cx - r * 0.2:.1f}" cy="{cy - r * 0.22:.1f}" r="{r * 0.14:.1f}" fill="{PAPER}"/>']
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def brain(pen, x, y, w, h, p, fs):
+    """A brain in side view: a lobed cloud-like outline, folds drawn as curved lines, a cerebellum and a stem. Neuroscience, memory, ageing."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.3, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    outline = [U(0.1, 0.5), U(0.1, 0.3), U(0.24, 0.12), U(0.46, 0.06), U(0.7, 0.1), U(0.9, 0.24), U(0.94, 0.46), U(0.86, 0.62), U(0.62, 0.66), U(0.4, 0.68), U(0.2, 0.66)]
+    o = [pen.stroke([U(0.6, 0.64), U(0.66, 0.9), U(0.76, 0.96), U(0.8, 0.84), U(0.76, 0.64)], sw * 0.9, fill=SOFT),  # the stem
+         pen.stroke([U(0.42, 0.62), U(0.54, 0.8), U(0.7, 0.82), U(0.74, 0.66)], sw * 0.9, fill=SOFT),  # the cerebellum
+         pen.stroke(outline, sw, closed=True, fill=PAPER)]
+    for fold in (((0.22, 0.4), (0.3, 0.26), (0.42, 0.34), (0.5, 0.2)), ((0.3, 0.56), (0.42, 0.46), (0.54, 0.54), (0.66, 0.42)),
+                 ((0.56, 0.2), (0.66, 0.32), (0.78, 0.22), (0.84, 0.36)), ((0.7, 0.56), (0.78, 0.46), (0.86, 0.52))):
+        o.append(pen.stroke([U(*q) for q in fold], 1.6, color=MID))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def headphones(pen, x, y, w, h, p, fs):
+    """Headphones: a headband arc and two ear cups."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.0, p, fs)
+    U, sw = _u(x, y, w, h), 2.8
+    arc = [U(0.12, 0.62), U(0.12, 0.34), U(0.3, 0.08), U(0.5, 0.04), U(0.7, 0.08), U(0.88, 0.34), U(0.88, 0.62)]
+    o = [pen.stroke(arc, sw + 1.6, color=INK), pen.stroke(arc, sw - 1.0, color=SOFT)]
+    for u in (0.12, 0.88):
+        cx, cy = U(u, 0.72)
+        o.append(pen.ellipse(cx, cy, w * 0.13, h * 0.24, sw, fill=PAPER))
+        o.append(pen.ellipse(cx, cy, w * 0.07, h * 0.14, 1.4, fill=SOFT))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def notes(pen, x, y, w, h, p, fs):
+    """Music notes: a pair of eighth notes joined by a beam, and a single note."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.1, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = []
+    for hx, hy, stem in ((0.18, 0.82, 0.18), (0.5, 0.74, 0.5)):  # the pair
+        cx, cy = U(hx, hy)
+        o.append(pen.ellipse(cx, cy, w * 0.1, h * 0.07, sw, fill=INK))
+        o.append(pen.line(U(hx + 0.09, hy - 0.02), U(hx + 0.09, 0.1), sw, amp=0.2))
+    o.append(pen.poly([U(0.27, 0.1), U(0.59, 0.04), U(0.59, 0.14), U(0.27, 0.2)], sw * 0.6, fill=INK, jit=0.1))  # the beam
+    cx, cy = U(0.82, 0.88)
+    o.append(pen.ellipse(cx, cy, w * 0.09, h * 0.065, sw, fill=INK))
+    o.append(pen.line(U(0.9, 0.86), U(0.9, 0.38), sw, amp=0.2))
+    o.append(pen.stroke([U(0.9, 0.38), U(0.97, 0.5), U(0.99, 0.62)], sw * 0.9, color=INK))  # the flag
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
 _DRAW = {"stake": stake, "emsled": emsled, "fieldcamp": fieldcamp, "molecule": molecule, "iceberg": iceberg, "mixedlayer": mixedlayer, "seaice": seaice, "iceshelf": iceshelf, "map": map_, "currents": currents, "desk": desk, "phone": phone, "bowl": bowl, "bongo": bongo, "trawl": trawl, "rmt": rmt, "ctd": ctd, "satellite": satellite, "radar": radar, "radarscreen": radarscreen, "icecore": icecore, "massspec": massspec, "helicopter": helicopter, "drone": drone,
          "aquarium": aquarium, "freezer": freezer, "tag": tag, "scatter": scatter, "boxplot": boxplot, "modelgrid": modelgrid,
          "sequence": sequence, "tree": tree, "clusters": clusters, "network": network, "database": database, "filter": filter_rig, "tubes": tubes,
          "sequencer": sequencer, "cpr": cpr, "echosounder": echosounder, "venn": venn, "laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
-         "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic}
+         "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic, "armchair": armchair, "wheelchair": wheelchair, "piano": piano, "guitar": guitar, "easel": easel, "camera": camera, "brain": brain, "headphones": headphones, "notes": notes}
 
 
 def extra_prop(pen, x, y, w, h, p, fs):
