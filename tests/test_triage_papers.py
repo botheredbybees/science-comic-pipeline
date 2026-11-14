@@ -47,3 +47,14 @@ def test_offline_run_writes_both_tables(tmp_path, capsys):
     assert main([str(src), "-o", str(tmp_path / "out"), "--offline"]) == 0
     assert (tmp_path / "out" / "papers.csv").exists() and (tmp_path / "out" / "topics.csv").exists()
     assert "PDF(s) read" in capsys.readouterr().out
+
+
+def test_pick_candidate_accepts_only_a_title_that_is_on_the_page():
+    from triage_papers import pick_candidate, query_text
+    page = "Bacterial epibiont communities of panmictic Antarctic krill are spatially structured\nLaurence Clarke and others\nAbstract"
+    items = [{"DOI": "10.1/wrong", "title": ["A completely different paper about sea ice thickness"]},
+             {"DOI": "10.1/right", "title": ["Bacterial epibiont communities of panmictic Antarctic krill are spatially structured"]}]
+    assert pick_candidate(items, page) == ("10.1/right", items[1]["title"][0])
+    assert pick_candidate(items[:1], page) == ("", "")
+    assert pick_candidate([{"DOI": "10.1/x", "title": ["Short title"]}], "Short title here") == ("", "")  # too few words to trust
+    assert query_text("12\n\nA long enough title line for a query\nx\n").startswith("A long enough title")

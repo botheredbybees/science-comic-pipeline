@@ -83,12 +83,13 @@ def _staging_texts(staging):
 
 # Words in a `scene` that name a prop the renderer can draw. If the scene says it and the staging lacks it, the alt text
 # describes something the reader cannot see.
-SCENE_OBJECTS = {"ship": "ship", "bowl": "bowl", "bottle": "bottle", "jar": "jar", "desk": "desk", "phone": "phone",
-                 "slide": "slide", "pie": "pie", "board": "board", "teapot": "teapot", "laptop": "laptop",
+SCENE_OBJECTS = {"ship": "ship", "bowl": "bowl", "bottle": "bottle", "jar": "jar", "desk": "desk", "pie": "pie", "board": "board", "teapot": "teapot", "laptop": "laptop",
                  "microscope": "microscope", "thermometer": "thermometer", "sequencer": "sequencer",
-                 "database": "database", "echosounder": "echosounder"}
+                 "database": "database", "echosounder": "echosounder", "helicopter": "helicopter", "drone": "drone",
+                 "aquarium": "aquarium", "freezer": "freezer", "satellite": "satellite", "rosette": "ctd", "bongo": "bongo",
+                 "iceberg": "iceberg", "map": "map"}
 # Objects a character holds rather than a prop; the scene may name one only if someone in the staging holds it.
-SCENE_HELD = ("mug", "teacup", "clipboard", "notebook", "flask", "magnifier")
+SCENE_HELD = ("mug", "teacup", "clipboard", "flask", "magnifier")
 
 
 def _prop_kinds(staging):
@@ -132,6 +133,13 @@ def validate(doc):
     cast_ids = {c["id"] for c in doc["cast"]}
     claims = {c["id"]: c for c in doc["claims"]}
     panels = [p for beat in doc["beats"] for p in beat["panels"]]
+
+    for c in doc["cast"]:  # a combination that reads badly
+        app = c.get("appearance") or {}
+        if app.get("outfit") and app.get("coat"):
+            warnings.append(f"cast {c['id']}: both `coat` (the lab coat) and `outfit` are set; only the outfit is drawn")
+        if app.get("hair") == "bun" and app.get("hair_tone") == "strands":
+            warnings.append(f"cast {c['id']}: strand hair on a bun reads as a mess; use the default or light tone for a bun")
 
     for kind, ids in (
         ("cast", [c["id"] for c in doc["cast"]]),

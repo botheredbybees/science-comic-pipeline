@@ -71,17 +71,22 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
 
 | The claim is about | Draw |
 |---|---|
-| an organism, or what it did | its body (`extra` with `body`: krill, salp, copepod, fish, worm, jellyfish, urchin, diatom, penguin, whale), alone or in numbers, with the claim's own labels |
+| an organism, or what it did | its body (`extra` with `body`: krill, salp, copepod, amphipod, squid, fish, worm, jellyfish, urchin, seal, seabird, moss, bacterium, seastar, dinoflagellate, diatom, penguin, whale), alone or in numbers, with the claim's own labels |
 | a number, a share, a comparison | `bars`, `pie`, `plot`, `axis` or `stack`, with only the claim's numbers |
-| a method or a procedure | the apparatus (`net`, `cpr`, `echosounder`, `filter`, `bottle`, `jar`, `tubes`, `sequencer`, `microscope`, `laptop`, `ship`, `thermometer`, `flask`), or a `flow` or `steps` diagram of the stages |
-| an analysis step | `sequence` (a marker gene, a read), `tree` (a phylogeny), `clusters` (sequence clusters, an ordination), `network` (a neural network or embedding), `database` (a reference library), `venn` (what two methods share), or a `flow` of the steps |
-| where, or when | a `ship` with a labelled `arrow`, a `picture`, or a `box` naming the place |
+| a method or a procedure | the apparatus (`ctd`, `net`, `bongo`, `trawl`, `rmt`, `cpr`, `echosounder`, `filter`, `bottle`, `jar`, `tubes`, `sequencer`, `massspec`, `freezer`, `aquarium`, `microscope`, `laptop`, `ship`, `helicopter`, `drone`, `radar`, `satellite`, `tag`, `icecore`, `thermometer`, `flask`), or a `flow` or `steps` diagram of the stages |
+| an analysis step | `sequence` (a marker gene, a read), `tree` (a phylogeny), `clusters` (sequence clusters, an ordination), `network` (a neural network or embedding), `database` (a reference library), `venn` (what two methods share), `scatter` (a relationship or calibration), `boxplot` (a comparison of groups), `modelgrid` (a numerical model), or a `flow` of the steps |
+| where | a `map` (`view: polar` for Antarctica, `view: wide` to include Australia), pinning only the places a cited claim names, with `currents` laid over it for the ocean circulation; or a `ship` with a labelled `arrow`, a `picture`, or a `box` naming the place |
+| the sea or the ice | `mixedlayer` (the layers of the upper ocean), `seaice` (`condition`: pancake, pack, drift, fast), `iceberg`, `iceshelf` |
+| when | an `axis` of time, or a `flow` of the stages |
 | a result that two things disagree on | two objects or two bars side by side, each labelled |
 | a caveat or a limit | a `sign` or `box`, or a lone figure with an empty `bars` frame where the data are missing |
+| a polar field method | `stake`, `emsled`, `fieldcamp`, `icecore`, `helicopter` |
+| a chemical, a lipid or a compound | a `molecule` (generic, labelled) |
 | a definition | the thing, drawn, with a `label` |
 
 - The schematic props (`sequence`, `tree`, `clusters`, `network`, `database`, `filter`, `tubes`, `sequencer`, `cpr`,
-  `echosounder`, `venn`) are generic: say "schematic" and let the caption carry the claim (see `renderers/README.md`).
+  `echosounder`, `ctd`, `bongo`, `trawl`, `rmt`, `venn`, `map`, `currents`, `iceberg`, `iceshelf`, `seaice`, `mixedlayer`, `stake`, `emsled`, `fieldcamp`, `molecule`, `satellite`, `radar`, `icecore`, `massspec`, `helicopter`, `drone`, `aquarium`, `freezer`, `tag`,
+  `scatter`, `boxplot`, `modelgrid`) are generic: say "schematic" and let the caption carry the claim (see `renderers/README.md`).
 - **No more than about a quarter of the panels may be figures only** (the validator warns above that). A figures-only
   panel is fine when it is the point: a pause, a reaction, a joke that needs a face. It is a defect when it is filler.
 - **A claim with nothing to draw does not need its own panel.** Put it as a second caption in a neighbouring panel that
@@ -115,8 +120,8 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
 - **The `scene` text is the panel's alt text: describe only what is staged.** The validator warns when
   a scene names a prop (ship, bowl, bottle, jar, desk, phone, slide, pie, board, teapot, laptop, microscope, thermometer) that is not staged, but it cannot see
   anything else, so a scene that mentions a calendar or an ocean that is not drawn is a defect you must catch. It
-  also warns when a scene names an object (mug, notebook, clipboard, flask, magnifier) that nobody in the staging holds. A character holds
-  only a `marker`, `mug`, `teacup`, `paper`, `clipboard`, `notebook`, `flask` or `magnifier` (vary them: one object for a
+  also warns when a scene names an object (mug, teacup, clipboard, flask, magnifier) that nobody in the staging holds. A character holds
+  only a `marker`, `mug`, `teacup`, `clipboard`, `flask` or `magnifier` (vary them: one object for a
   whole comic goes stale); the room's props are in `renderers/README.md`; stage anything else as a prop.
 - **Shortening a long claim.** A caption is 12 to 35 words, and some claims are longer. Cut examples, asides and
   the second of two parallel facts, and keep, whole, anything that carries a hedge ("may", "suggests"), a number with

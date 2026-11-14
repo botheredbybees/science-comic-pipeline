@@ -327,7 +327,7 @@ def test_bar_labels_print_the_number_as_written():
 
 def test_every_held_object_draws_in_every_pose():
     pen = R.Pen("held")
-    for held in ("marker", "mug", "paper", "clipboard", "teacup", "flask", "magnifier", "notebook"):
+    for held in ("marker", "mug", "clipboard", "teacup", "flask", "magnifier"):
         for pose in ("stand", "hold", "think", "sip", "point", "shrug", "up"):
             svg, _ = R.figure(pen, 100, 300, 1.0, pose, "neutral", "right", held, {})
             ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
@@ -368,7 +368,7 @@ def test_steps_labels_wrap_and_bottle_and_jar_keep_their_shape():
         assert tall and wide
 
 
-NEW_BODIES = ["copepod", "fish", "worm", "jellyfish", "urchin"]
+NEW_BODIES = ["copepod", "fish", "worm", "jellyfish", "urchin", "seal", "seabird", "moss", "bacterium", "seastar", "dinoflagellate", "squid", "amphipod"]
 
 
 @pytest.mark.parametrize("body", NEW_BODIES)
@@ -391,7 +391,9 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
     assert validate(d)[0] == []  # the schema accepts the body name
 
 
-SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn"]
+SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn",
+                   "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
+                   "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -420,3 +422,39 @@ def test_the_validator_knows_the_new_objects_when_a_scene_names_them(doc):
     d["beats"][0]["panels"][0]["scene"] = "A sequencer stands next to a database."
     _, warnings = validate(d)
     assert any("mentions a sequencer" in w for w in warnings) and any("mentions a database" in w for w in warnings)
+
+
+@pytest.mark.parametrize("outfit", ["floatcoat", "parka", "hivis"])
+def test_each_outfit_and_the_hard_hat_draw_in_every_pose_in_the_palette_only(outfit):
+    import draw
+    palette = {draw.INK, draw.PAPER, draw.SOFT, draw.MID, "none"}
+    for pose in ("stand", "point", "hold", "think", "shrug", "sip", "up"):
+        svg, head = R.figure(R.Pen(1), 200, 300, 1.0, pose, "smile", "right", "clipboard", {"outfit": outfit, "hair": "hardhat"})
+        assert "<path" in svg and head[1] < 300
+        colours = set(re.findall(r'(?:fill|stroke)="(#[0-9a-fA-F]{3,6}|[a-z]+)"', svg))
+        assert colours <= palette, colours - palette  # black, white and grey only
+
+
+def test_a_map_pins_places_and_a_wide_map_includes_australia():
+    import props as P
+    spec = {"kind": "map", "view": "wide", "places": [{"lon": 147.3, "lat": -42.9, "label": "Hobart"}]}
+    wide = P.extra_prop(R.Pen(1), 0, 0, 300, 300, spec, 16)
+    polar = P.extra_prop(R.Pen(1), 0, 0, 300, 300, {"kind": "map"}, 16)
+    assert "Hobart" in wide
+    assert wide.count("<path") > polar.count("<path")  # more land outlines in the wide view than in the polar cap
+
+
+def test_a_map_and_its_currents_share_one_geometry():
+    """Currents laid over a map must line up with it: both place the pole at the same point for the same box and view."""
+    import props as P
+    for view in ("polar", "wide"):
+        box = (10, 20, 300, 300)
+        edge, x, y, w, h, lines, fsb, cx, cy, R = P._map_frame(*box, {"view": view}, 16)
+        assert (cx, cy) == (x + w / 2, y + h / 2) and R == min(w, h) / 2
+        assert P._polar(0, -90, cx, cy, R, edge) == (cx, cy)  # the pole is the centre
+
+
+@pytest.mark.parametrize("cond", ["pancake", "pack", "drift", "fast"])
+def test_each_sea_ice_condition_draws(cond):
+    import props as P
+    assert P.extra_prop(R.Pen(1), 0, 0, 300, 200, {"kind": "seaice", "condition": cond}, 16)

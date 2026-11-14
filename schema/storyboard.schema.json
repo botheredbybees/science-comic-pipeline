@@ -111,6 +111,10 @@
         "private": {
           "type": "boolean",
           "description": "A private reading aid: the PDF footer on every page says PRIVATE: not for sharing, and the last page says so. Use it for a paper whose licence does not allow adaptation."
+        },
+        "gallery": {
+          "type": "boolean",
+          "description": "A catalogue of the renderer's bodies and props, not a comic: the last page prints no adaptation note."
         }
       }
     },
@@ -152,7 +156,8 @@
                   "ponytail",
                   "bun",
                   "spiky",
-                  "beanie"
+                  "beanie",
+                  "hardhat"
                 ]
               },
               "glasses": {
@@ -182,8 +187,24 @@
                   "fish",
                   "worm",
                   "jellyfish",
-                  "urchin"
+                  "urchin",
+                  "seal",
+                  "seabird",
+                  "moss",
+                  "bacterium",
+                  "seastar",
+                  "dinoflagellate",
+                  "squid",
+                  "amphipod"
                 ]
+              },
+              "outfit": {
+                "enum": [
+                  "floatcoat",
+                  "parka",
+                  "hivis"
+                ],
+                "description": "A garment over the torso, instead of the lab coat: floatcoat (a chunky float jacket), parka (a quilted jacket with the hood up) or hivis (a high-visibility vest)."
               }
             }
           }
@@ -477,12 +498,10 @@
                 "enum": [
                   "marker",
                   "mug",
-                  "paper",
                   "clipboard",
                   "teacup",
                   "flask",
-                  "magnifier",
-                  "notebook"
+                  "magnifier"
                 ]
               },
               "scale": {
@@ -502,7 +521,15 @@
                   "fish",
                   "worm",
                   "jellyfish",
-                  "urchin"
+                  "urchin",
+                  "seal",
+                  "seabird",
+                  "moss",
+                  "bacterium",
+                  "seastar",
+                  "dinoflagellate",
+                  "squid",
+                  "amphipod"
                 ],
                 "description": "draw this character with this body instead of the cast member's (so an `extra` can be an animal)"
               }
@@ -521,12 +548,9 @@
               "kind": {
                 "enum": [
                   "board",
-                  "slide",
                   "bars",
                   "paper",
-                  "phone",
                   "bowl",
-                  "wall",
                   "sign",
                   "picture",
                   "desk",
@@ -559,7 +583,34 @@
                   "sequencer",
                   "cpr",
                   "echosounder",
-                  "venn"
+                  "venn",
+                  "satellite",
+                  "radar",
+                  "icecore",
+                  "massspec",
+                  "helicopter",
+                  "drone",
+                  "aquarium",
+                  "freezer",
+                  "tag",
+                  "scatter",
+                  "boxplot",
+                  "modelgrid",
+                  "radarscreen",
+                  "bongo",
+                  "trawl",
+                  "rmt",
+                  "ctd",
+                  "map",
+                  "currents",
+                  "iceberg",
+                  "mixedlayer",
+                  "seaice",
+                  "iceshelf",
+                  "stake",
+                  "emsled",
+                  "fieldcamp",
+                  "molecule"
                 ]
               },
               "x": {
@@ -773,6 +824,45 @@
               "show_max": {
                 "type": "boolean",
                 "description": "Print the chart's axis maximum. Turn it off when the maximum is only a drawing choice and not a number from the source."
+              },
+              "view": {
+                "enum": [
+                  "polar",
+                  "wide"
+                ],
+                "description": "map and currents only: polar (the south polar cap, to 50 degrees S) or wide (to 10 degrees S, with Australia, New Zealand and the other southern lands)."
+              },
+              "places": {
+                "type": "array",
+                "description": "map only: named spots to pin, each with a longitude, a latitude (degrees; south and west negative) and a label.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "lon",
+                    "lat"
+                  ],
+                  "properties": {
+                    "lon": {
+                      "type": "number"
+                    },
+                    "lat": {
+                      "type": "number"
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "condition": {
+                "enum": [
+                  "pancake",
+                  "pack",
+                  "drift",
+                  "fast"
+                ],
+                "description": "seaice only: which ice condition to draw (pancake ice, packed floes, drifting floes with open water, or a sheet of fast ice)."
               }
             }
           }

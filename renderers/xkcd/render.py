@@ -54,7 +54,7 @@ def _holding(pen, holding, hx, hy, s, w):
                              (hx + x * s, top - 18 * s)], w * 0.5) for x in (8, 12.5, 17)]
         return (pen.stroke([(hx + 4 * s, hy - 8 * s), (hx - 3 * s, hy - 7 * s), (hx - 3 * s, hy - 1 * s), (hx + 4 * s, hy)], w * 0.8)
                 + pen.rect(hx + 4 * s, top, 17 * s, 19 * s, w * 0.8, fill=PAPER, over=0) + "".join(steam))
-    if holding == "teacup":  # a small cup held by its handle, a saucer under it, the tea bag's tag over the rim, and steam
+    if holding == "teacup":  # a small cup held by its handle, the tea bag's tag over the rim, and steam
         top = hy - 8 * s
         tag = [pen.stroke([(hx + 14 * s, top), (hx + 18 * s, top + 5 * s), (hx + 18.5 * s, top + 9 * s)], w * 0.4),
                pen.rect(hx + 16.5 * s, top + 9 * s, 4 * s, 4 * s, w * 0.4, fill=PAPER, over=0)]
@@ -62,7 +62,7 @@ def _holding(pen, holding, hx, hy, s, w):
                  for x in (8, 12)]
         return (pen.stroke([(hx + 4 * s, hy - 5 * s), (hx - 2 * s, hy - 4 * s), (hx - 2 * s, hy + 1 * s), (hx + 4 * s, hy + 1.5 * s)], w * 0.7)
                 + pen.stroke([(hx + 3 * s, top), (hx + 5 * s, hy + 6 * s), (hx + 17 * s, hy + 6 * s), (hx + 19 * s, top)], w * 0.8, closed=True, fill=PAPER)
-                + pen.line((hx + 1 * s, hy + 8 * s), (hx + 21 * s, hy + 8 * s), w * 0.8, amp=0.2) + "".join(tag) + "".join(steam))
+                + "".join(tag) + "".join(steam))
     if holding == "flask":  # a conical flask with a stopper and some liquid
         return (pen.stroke([(hx + 4 * s, hy - 19 * s), (hx + 4 * s, hy - 8 * s), (hx - 3 * s, hy + 6 * s), (hx + 15 * s, hy + 6 * s),
                             (hx + 8 * s, hy - 8 * s), (hx + 8 * s, hy - 19 * s)], w * 0.8, closed=True, fill=PAPER)
@@ -72,17 +72,11 @@ def _holding(pen, holding, hx, hy, s, w):
         return (pen.line((hx - 1 * s, hy + 3 * s), (hx + 6 * s, hy - 7 * s), w * 1.1, amp=0.2)
                 + pen.ellipse(hx + 11 * s, hy - 13 * s, 8 * s, 8 * s, w * 0.9, fill=PAPER, jit=0.01)
                 + pen.stroke([(hx + 7 * s, hy - 15 * s), (hx + 9 * s, hy - 18 * s)], w * 0.4, color=MID))
-    if holding == "notebook":  # a closed notebook with a band round it
-        return (pen.rect(hx - 2 * s, hy - 16 * s, 15 * s, 21 * s, w * 0.8, fill=PAPER, over=0)
-                + pen.line((hx + 1.5 * s, hy - 16 * s), (hx + 1.5 * s, hy + 5 * s), w * 0.6, amp=0.1)
-                + pen.line((hx + 8 * s, hy - 16 * s), (hx + 8 * s, hy + 5 * s), w * 0.5, amp=0.1, color=MID))
     if holding == "clipboard":
         return (pen.rect(hx - 3 * s, hy - 17 * s, 17 * s, 23 * s, w * 0.8, fill=PAPER, over=0)
                 + pen.rect(hx + 1.5 * s, hy - 19.5 * s, 8 * s, 4 * s, w * 0.7, fill=INK, over=0)
                 + "".join(pen.line((hx - 0 * s, hy - 11 * s + i * 5 * s), (hx + 11 * s, hy - 11 * s + i * 5 * s), w * 0.45, amp=0.15)
                           for i in range(3)))
-    if holding == "paper":
-        return pen.rect(hx - 2 * s, hy - 15 * s, 16 * s, 21 * s, w * 0.8, fill=PAPER, over=0)
     return ""
 
 
@@ -166,6 +160,7 @@ BEANIE = [(-1.2, -0.42), (-1.18, -1.05), (-0.62, -1.62), (0.0, -1.76), (0.62, -1
           (0.6, -0.5), (0.0, -0.54), (-0.6, -0.5)]
 
 
+HARDHAT = [(-1.04, -0.78), (-1.05, -1.12), (-0.62, -1.62), (0.0, -1.78), (0.62, -1.62), (1.05, -1.12), (1.04, -0.78)]  # the dome of a hard hat, clear of the eyes and glasses
 HAIR_OUTER_N = {"bob": 7, "long": 8, "short": 6}  # how many of a cap's points run along its outside (the rest are the fringe)
 
 
@@ -180,12 +175,23 @@ def _strands(pen, cap, cx, cy, R, w, n=11):
     out = [pen.stroke(full, 0.1, closed=True, fill=PAPER, color=PAPER)]
     part = (cx + 0.3 * R, cy - 1.14 * R)
 
-    def strand(end, bow):
-        mid = ((part[0] + end[0]) / 2, (part[1] + end[1]) / 2)
-        away = (mid[0] - cx, mid[1] - cy)
-        norm = math.hypot(*away) or 1
-        mid = (mid[0] + away[0] / norm * bow * R, mid[1] + away[1] / norm * bow * R)
-        return pen.stroke([(part[0] + pen.n(0.25), part[1] + pen.n(0.25)), mid, end], w * 0.6)
+    wave = 0.07 if cap == "long" else 0.03  # how far a strand swings to each side: long hair flows, gently
+
+    def strand(end, bow, wave=wave):
+        """A strand from the parting to `end`: bowed out from the head and given a gentle S-curve, so none is straight."""
+        dx, dy = end[0] - part[0], end[1] - part[1]
+        norm = math.hypot(dx, dy) or 1
+        perp = (-dy / norm, dx / norm)
+        pts = [(part[0] + pen.n(0.25), part[1] + pen.n(0.25))]
+        for t, sgn in ((0.28, 1), (0.55, -1), (0.8, 1)):
+            bx, by = part[0] + dx * t, part[1] + dy * t
+            away = (bx - cx, by - cy)
+            an = math.hypot(*away) or 1
+            k = bow * R * (1 - abs(2 * t - 1) * 0.3)
+            pts.append((bx + away[0] / an * k + perp[0] * sgn * wave * R + pen.n(0.02 * R),
+                        by + away[1] / an * k + perp[1] * sgn * wave * R + pen.n(0.02 * R)))
+        pts.append(end)
+        return pen.stroke(pts, w * 0.6)
 
     for k in range(n):
         d, i = total * (k + 0.5) / n, 0
@@ -193,8 +199,8 @@ def _strands(pen, cap, cx, cy, R, w, n=11):
             d -= seg[i]
             i += 1
         t = d / seg[i]
-        out.append(strand((outer[i][0] + (outer[i + 1][0] - outer[i][0]) * t, outer[i][1] + (outer[i + 1][1] - outer[i][1]) * t), 0.12))
-    out += [strand(p, 0.05) for p in full[-2:]]  # across the forehead
+        out.append(strand((outer[i][0] + (outer[i + 1][0] - outer[i][0]) * t, outer[i][1] + (outer[i + 1][1] - outer[i][1]) * t), 0.12 if cap == "long" else 0.11))
+    out += [strand(p, 0.05, 0.0) for p in full[-2:]]  # across the forehead
     return out
 
 
@@ -231,10 +237,66 @@ def _hair(pen, kind, cx, cy, R, w, tone="dark"):
         return [pen.stroke(P(BEANIE), w, closed=True, fill=PAPER),
                 pen.line((cx - 1.2 * R, cy - 0.78 * R), (cx + 1.2 * R, cy - 0.78 * R), w * 0.8, amp=0.3),
                 f'<circle cx="{cx + 0.05 * R:.1f}" cy="{cy - 1.9 * R:.1f}" r="{0.3 * R:.1f}" fill="{INK}"/>']
+    if kind == "hardhat":  # a dome with a ridge, and a brim that sticks out in front
+        return [pen.stroke(P(HARDHAT), w, closed=True, fill=SOFT),
+                pen.stroke([(cx + 0.0 * R, cy - 1.76 * R), (cx + 0.05 * R, cy - 1.3 * R), (cx + 0.02 * R, cy - 0.8 * R)], w * 0.7, color=INK),
+                pen.poly([(cx - 1.12 * R, cy - 0.78 * R), (cx + 1.5 * R, cy - 0.78 * R), (cx + 1.54 * R, cy - 0.6 * R), (cx - 1.1 * R, cy - 0.62 * R)], w, fill=SOFT, jit=0.1)]
     return []
 
 
-HAIR_TOP = {"bob": 1.2, "long": 1.2, "ponytail": 1.2, "bun": 1.75, "spiky": 1.55, "beanie": 1.85}  # head radii above the head's centre
+HAIR_TOP = {"bob": 1.2, "long": 1.2, "ponytail": 1.2, "bun": 1.75, "spiky": 1.55, "beanie": 1.85, "hardhat": 1.85}  # head radii above the head's centre
+
+
+def _outfit(pen, kind, cx, neck, hip, s, w):
+    """A garment over the torso, drawn after the torso line and before the arms: `floatcoat` (a chunky float jacket with a
+    collar, waist strap and reflective patches), `parka` (a long quilted jacket; its hood is drawn by `_hood`) or `hivis`
+    (a sleeveless high-visibility vest with reflective bands)."""
+    if kind == "parka":
+        o = [pen.poly([(cx - 6 * s, neck), (cx - 14 * s, neck + 6 * s), (cx - 18 * s, hip + 22 * s), (cx + 18 * s, hip + 22 * s),
+                       (cx + 14 * s, neck + 6 * s), (cx + 6 * s, neck)], w, fill=SOFT, jit=0.3)]
+        for dy in (16, 28, 40):  # the quilting
+            o.append(pen.stroke([(cx - 14 * s, neck + dy * s), (cx, neck + (dy + 2) * s), (cx + 14 * s, neck + dy * s)], w * 0.5, color=MID))
+        o += [pen.line((cx, neck + 6 * s), (cx, hip + 22 * s), w * 0.8, amp=0.25),
+              pen.line((cx + 5 * s, hip + 4 * s), (cx + 13 * s, hip + 11 * s), w * 0.6, amp=0.1),
+              pen.line((cx - 5 * s, hip + 4 * s), (cx - 13 * s, hip + 11 * s), w * 0.6, amp=0.1)]
+        return o
+    if kind == "floatcoat":
+        o = [pen.poly([(cx - 7 * s, neck), (cx - 15 * s, neck + 4 * s), (cx - 17 * s, neck + 24 * s), (cx - 15 * s, hip + 8 * s),
+                       (cx + 15 * s, hip + 8 * s), (cx + 17 * s, neck + 24 * s), (cx + 15 * s, neck + 4 * s), (cx + 7 * s, neck)], w, fill=INK, jit=0.3)]
+        o += [pen.line((cx, neck + 6 * s), (cx, hip + 8 * s), w * 0.8, amp=0.2, color=PAPER),
+              pen.rect(cx - 16 * s, hip - 4 * s, 32 * s, 5 * s, w * 0.7, fill=PAPER, over=0.2),  # the waist strap
+              pen.rect(cx - 3 * s, hip - 5 * s, 6 * s, 7 * s, w * 0.6, fill=INK, over=0),  # its buckle
+              pen.rect(cx - 12 * s, neck + 10 * s, 7 * s, 6 * s, w * 0.5, fill=PAPER, over=0),  # reflective patches
+              pen.rect(cx + 5 * s, neck + 10 * s, 7 * s, 6 * s, w * 0.5, fill=PAPER, over=0),
+              pen.ellipse(cx, neck + 1 * s, 11 * s, 4 * s, w * 0.8, fill=MID)]  # the collar
+        return o
+    if kind == "hivis":
+        o = [pen.poly([(cx - 9 * s, neck), (cx - 14 * s, neck + 10 * s), (cx - 14 * s, hip + 8 * s), (cx + 14 * s, hip + 8 * s),
+                       (cx + 14 * s, neck + 10 * s), (cx + 9 * s, neck)], w, fill=SOFT, jit=0.4)]
+        for sgn in (-1, 1):  # the V of the neck, as two soft curves
+            o.append(pen.stroke([(cx + sgn * 9 * s, neck), (cx + sgn * (4.5 + pen.n(0.4)) * s, neck + 5 * s), (cx, neck + 11 * s)], w * 0.7))
+        for dy in (19, 32):  # the reflective bands wrap round the body, so each one sags in the middle and wobbles
+            y0 = neck + dy * s
+            top = [(cx + x * s, y0 + sag * s + pen.n(0.25 * s)) for x, sag in ((-14, 0), (-7, 0.8), (0, 1.2), (7, 0.8), (14, 0))]
+            bot = [(x, y + 3.4 * s) for x, y in reversed(top)]
+            o.append(pen.stroke(top + bot, w * 0.6, closed=True, fill=PAPER))
+        for dx in (-7, 7):  # the shoulder-to-hem stripes: loose white bands with an outline, not rulers
+            xs = [(neck + 8 * s, 0.0), (neck + 22 * s, 0.12), (hip + 8 * s, 0.05)]
+            left = [(cx + (dx - 1.3) * s * (1 + k) + pen.n(0.3 * s), y) for y, k in xs]
+            right = [(cx + (dx + 1.3) * s * (1 + k) + pen.n(0.3 * s), y) for y, k in reversed(xs)]
+            o.append(pen.stroke(left + right, w * 0.5, closed=True, fill=PAPER))
+        return o
+    return []
+
+
+def _hood(pen, cx, cy, R, w):
+    """The hood of a parka, up: a ring round the head with a fur edge. Drawn before the head, so the face shows inside it."""
+    o = [pen.ellipse(cx - 0.05 * R, cy + 0.05 * R, 1.45 * R, 1.42 * R, w, fill=SOFT)]
+    for k in range(18):  # the fur trim: short strokes round the edge
+        a = math.tau * k / 18
+        r0, r1 = 1.42 * R, 1.62 * R
+        o.append(pen.line((cx - 0.05 * R + r0 * math.cos(a), cy + 0.05 * R + r0 * math.sin(a)), (cx - 0.05 * R + r1 * math.cos(a), cy + 0.05 * R + r1 * math.sin(a)), w * 0.6, amp=0.1))
+    return o
 
 
 def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
@@ -250,7 +312,10 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     w = clamp(2.3 * s, 1.5, 3.0)
     o = [pen.line((cx, hip), (cx - 13 * s, base), w, amp=0.35), pen.line((cx, hip), (cx + 13 * s, base), w, amp=0.35),
          pen.line((cx, neck), (cx, hip), w, amp=0.35)]
-    if app.get("coat"):  # a lab coat: one outline round the torso, hanging over the tops of the legs, a V collar, a pocket
+    outfit = app.get("outfit")
+    if outfit:
+        o += _outfit(pen, outfit, cx, neck, hip, s, w)
+    elif app.get("coat"):  # a lab coat: one outline round the torso, hanging over the tops of the legs, a V collar, a pocket
         o.append(pen.poly([(cx - 4 * s, neck), (cx - 11 * s, neck + 7 * s), (cx - 18 * s, hip + 24 * s), (cx + 18 * s, hip + 24 * s),
                            (cx + 11 * s, neck + 7 * s), (cx + 4 * s, neck)], w, fill=PAPER, jit=0.3))
         o += [pen.line((cx - 4 * s, neck), (cx, neck + 15 * s), w * 0.8, amp=0.2), pen.line((cx + 4 * s, neck), (cx, neck + 15 * s), w * 0.8, amp=0.2),
@@ -261,15 +326,18 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     back, front = ARMS.get(pose, ARMS["stand"])
     for arm in (back, front):  # an upper arm and a forearm: two straight strokes meeting at the elbow
         side = 1 if arm is front else -1
-        start = (cx + side * 9 * s, sh) if app.get("coat") else (cx, sh)  # a coat's sleeves leave from its shoulders
+        sleeved = app.get("coat") or outfit in ("parka", "floatcoat", "hivis")
+        start = (cx + side * 9 * s, sh) if sleeved else (cx, sh)  # a coat's sleeves leave from its shoulders
         pts = [start] + [(cx + dx * s, sh + dy * s) for dx, dy in arm]
         o += [pen.line(a, b, w, amp=0.35) for a, b in zip(pts, pts[1:])]
     o.append(_holding(pen, holding, cx + front[-1][0] * s, sh + front[-1][1] * s, s, w))
+    if outfit == "parka":
+        o += _hood(pen, cx, cy, R, w)
     o.append(pen.ellipse(cx, cy, R, R, w, fill=PAPER, jit=0.012))
     hair = app.get("hair", "none")
     o += _hair(pen, hair, cx, cy, R, w, app.get("hair_tone", "dark"))
     o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
-    top = cy - R * HAIR_TOP.get(hair, 1.0) - 4 * s
+    top = cy - R * max(HAIR_TOP.get(hair, 1.0), 1.7 if outfit == "parka" else 0) - 4 * s
     return _flip("".join(o), cx, facing), (cx, top)
 
 
@@ -354,20 +422,6 @@ def prop(pen, x, y, w, h, p, cast, fs):
                     o.append(pen.rect(cx0, top, cw, ch, 2, fill=PAPER, over=1))
                     fc = clamp((cw - 8) / (max(len(c["label"]), 1) * CHAR_W), 9.0, fs)  # shrink a label to fit its card
                     o.append(text(cx0 + cw / 2, top + ch / 2 - fc * 0.55, [c["label"]], fc, anchor="middle"))
-    elif k == "slide":
-        sh = h * 0.86
-        o += [pen.line((x + w / 2, y + sh), (x + w * 0.35, y + h), 2.2), pen.line((x + w / 2, y + sh), (x + w * 0.65, y + h), 2.2)]
-        o.append(pen.rect(x, y, w, sh, 2.6, fill=PAPER))
-        if p.get("title"):
-            o.append(text(x + w / 2, y + 5, [p["title"]], fs, anchor="middle"))
-        boxes = [(0.1, 0.38), (0.4, 0.52), (0.7, 0.34), (0.55, 0.74)]
-        bw, bh = w * 0.18, sh * 0.15
-        for bx, by in boxes:
-            o.append(pen.rect(x + w * bx, y + sh * by, bw, bh, 1.8, over=1))
-        for (a, b) in ((0, 1), (1, 2), (2, 3), (0, 3)):
-            ax_, ay_ = x + w * (boxes[a][0]) + bw, y + sh * boxes[a][1] + bh / 2
-            bx_, by_ = x + w * boxes[b][0], y + sh * boxes[b][1] + bh / 2
-            o.append(pen.arrow((ax_, ay_), (bx_ if bx_ > ax_ else bx_ + bw, by_), 1.6, head=7))
     elif k == "paper":
         o.append(pen.rect(x, y, w, h, 2.4, fill=PAPER, over=1))
         o.append(pen.line((x + w - 14, y), (x + w, y + 14), 1.6, amp=0.2))
@@ -377,30 +431,6 @@ def prop(pen, x, y, w, h, p, cast, fs):
             top += fs * 1.4
         o += [pen.line((x + 10, yy), (x + w - 10, yy), 1.2, amp=0.5, color=MID) for yy in
               [top + i * 13 for i in range(max(0, int((y + h - 10 - top) / 13)))]]
-    elif k == "phone":
-        o.append(pen.rect(x, y, w, h, 2.6, fill=PAPER, over=1))
-        for i in range(3):
-            yy = y + 16 + i * (h - 30) / 3
-            o.append(pen.rect(x + 8, yy, 8, 8, 1.6, over=0))
-            o.append(pen.line((x + 22, yy + 5), (x + w - 8, yy + 5), 1.4, amp=0.4, color=MID))
-        if lab:
-            o.append(text(x + w / 2, y + h + 4, [lab], fs * 0.9, anchor="middle"))
-    elif k == "bowl":
-        rim = y + h * 0.35
-        o += [f'<ellipse cx="{x + w * (0.25 + 0.25 * i) + pen.n(2):.1f}" cy="{rim - 4 + pen.n(2):.1f}" rx="6" ry="5" fill="{INK}"/>' for i in range(3)]
-        o.append(pen.stroke([(x, rim), (x + w * 0.1, y + h * 0.85), (x + w / 2, y + h), (x + w * 0.9, y + h * 0.85), (x + w, rim)], 2.4, fill=PAPER))
-        o.append(pen.line((x - 3, rim), (x + w + 3, rim), 2.4))
-        if lab:
-            o.append(text(x + w / 2, y + h + 4, [lab], fs * 0.9, anchor="middle"))
-    elif k == "wall":
-        o.append(pen.rect(x, y, w, h, 2.2, fill=SOFT, over=1))
-        cols, rows = 3, 2
-        pw, ph = (w - 20 - (cols - 1) * 12) / cols, (h - 24 - 12) / rows
-        for r in range(rows):
-            for c in range(cols):
-                px, py = x + 10 + c * (pw + 12), y + 12 + r * (ph + 12)
-                o.append(pen.rect(px, py, pw, ph, 1.8, fill=PAPER, over=0))
-                o.append(pen.stroke([(px + pw * 0.3, py + ph * 0.55), (px + pw * 0.45, py + ph * 0.75), (px + pw * 0.72, py + ph * 0.3)], 1.8))
     elif k == "sign":
         o.append(pen.line((x + w / 2, y + h * 0.5), (x + w / 2, y + h), 2.4))
         o.append(pen.rect(x, y, w, h * 0.5, 2.4, fill=PAPER, over=1))
@@ -470,8 +500,9 @@ def _head_offset(c, cast, w, h):
     """How far below the top of the scene a staged character's head sits."""
     body = c.get("body") or (cast.get(c["id"], {}).get("appearance") or {}).get("body")
     s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3) * c.get("scale", 1)
-    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52, "salp": 66, "copepod": 52, "fish": 62,
-            "worm": 42, "jellyfish": 108, "urchin": 62}.get(body, 128)  # head height above the feet, at s = 1
+    rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52, "salp": 66, "copepod": 92, "fish": 62,
+            "worm": 42, "jellyfish": 108, "urchin": 62, "seal": 56, "seabird": 88, "moss": 62, "bacterium": 50, "seastar": 48,
+            "dinoflagellate": 100, "squid": 54, "amphipod": 82}.get(body, 128)  # head height above the feet, at s = 1
     return c.get("y", 0.94) * h - rise * s
 
 
@@ -600,14 +631,16 @@ def build_items(doc, cast, k=0.55):
             + f'. Licence: {src["licence"]}. '
             "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
             "the paper's authors did not write or endorse this document.")
+    if doc["meta"].get("gallery"):
+        note = "A catalogue of the bodies and props the xkcd renderer can draw (science-comic-pipeline). The animals and apparatus are generic cartoon shapes, not accurate or to scale."
     if doc["meta"].get("private"):
         note += " PRIVATE: not for sharing."
-    elif not lic_url:  # no Creative Commons deed to link to: say plainly that it is not an open licence
+    elif not lic_url and not doc["meta"].get("gallery"):  # no Creative Commons deed to link to: say plainly that it is not an open licence
         note += " This paper is not under an open licence: keep this comic private and do not publish it."
     colo = wrap(note, usable, 15)
     paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
-    links = [(f"Read the original paper: {paper}", paper)] if paper else []
-    if lic_url:
+    links = [(f"Read the original paper: {paper}", paper)] if paper and not doc["meta"].get("gallery") else []
+    if lic_url and not doc["meta"].get("gallery"):
         links.append((f"Licence terms: {lic_url}", lic_url))
 
     def draw_colophon(y, c=colo, ls=links):

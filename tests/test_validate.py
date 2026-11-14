@@ -282,3 +282,18 @@ def test_an_animal_or_a_prop_counts_as_a_picture(doc):
             p["staging"] = {"characters": [{"id": "extra", "body": "copepod"}]}
     _, warnings = validate(d)
     assert not any("show only stick figures" in w for w in warnings)
+
+
+def test_strand_hair_on_a_bun_warns(doc):
+    doc["cast"][0]["appearance"] = {"hair": "bun", "hair_tone": "strands"}
+    _, warnings = validate(doc)
+    assert any("strand hair on a bun" in w for w in warnings)
+    doc["cast"][0]["appearance"] = {"hair": "long", "hair_tone": "strands"}
+    _, warnings = validate(doc)
+    assert not any("strand hair on a bun" in w for w in warnings)
+
+
+def test_a_lab_coat_and_an_outfit_together_warn(doc):
+    doc["cast"][0]["appearance"] = {"coat": True, "outfit": "parka"}
+    _, warnings = validate(doc)
+    assert any("only the outfit is drawn" in w for w in warnings)
