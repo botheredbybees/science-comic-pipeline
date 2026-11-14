@@ -11,6 +11,7 @@ file whose pages are separated by form feeds (what `pdftotext` writes).
 
     python scripts/check_quotes.py storyboard.yaml --pages-dir sources/<slug>/pages
     python scripts/check_quotes.py storyboard.yaml --text source.txt
+    python scripts/check_quotes.py storyboard.yaml --pages-root sources     # a comic with meta.sources: sources/<id>/pages
 
 A quote may be several fragments joined by " ... " (or an ellipsis): each fragment must appear on the
 page, in that order. Use this when a sentence is split by a column break, a page number or a figure.
@@ -117,10 +118,18 @@ def load_locators(pages_dir):
 
 
 def check(doc, pages, locators=None):
-    """Return (errors, warnings)."""
+    """Return (errors, warnings). For a comic with meta.sources, `pages` and `locators` are dicts keyed by source id."""
     errors, warnings = [], []
+    multi = bool(doc.get("meta", {}).get("sources"))
+    all_pages, all_locators = pages, locators
     for c in doc["claims"]:
         src, cid = c["source"], c["id"]
+        if multi:
+            ref = src.get("ref")
+            if ref not in all_pages:
+                errors.append(f"{cid}: no source text was loaded for ref '{ref}'")
+                continue
+            pages, locators = all_pages[ref], (all_locators or {}).get(ref)
         quote, page = src.get("quote"), src.get("page")
         if not quote:
             (errors if c["status"] == "verified" else warnings).append(f"{cid}: no quote to check")
@@ -158,11 +167,19 @@ def main(argv=None):
     ap.add_argument("storyboard")
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--pages-dir")
+    g.add_argument("--pages-root", help="folder holding <source id>/pages for each entry in meta.sources")
     g.add_argument("--text")
     ap.add_argument("--strict", action="store_true")
     args = ap.parse_args(argv)
     doc = yaml.safe_load(Path(args.storyboard).read_text())
-    errors, warnings = check(doc, load_pages(args.pages_dir, args.text), load_locators(args.pages_dir) if args.pages_dir else None)
+    if args.pages_root:
+        ids = [s["id"] for s in doc["meta"].get("sources", [])]
+        root = Path(args.pages_root)
+        pages = {i: load_pages(root / i / "pages") for i in ids if (root / i / "pages").is_dir()}
+        locs = {i: load_locators(root / i / "pages") for i in pages}
+        errors, warnings = check(doc, pages, locs)
+    else:
+        errors, warnings = check(doc, load_pages(args.pages_dir, args.text), load_locators(args.pages_dir) if args.pages_dir else None)
     for e in errors:
         print(f"ERROR   {e}")
     for w in warnings:

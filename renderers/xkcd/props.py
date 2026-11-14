@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer"}
+EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic"}
 
 
 def _dot(x, y, r=5):
@@ -1387,11 +1387,52 @@ def molecule(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+def clay(pen, x, y, w, h, p, fs):
+    """Clay on a table: a lump with thumbprints, a few small balls and a rolled-out slab cut into squares. Arts and making."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.5, p, fs)
+    base = y + h * 0.82
+    o = [pen.line((x, base), (x + w, base), 2.6, amp=0.4)]
+    lump = [(x + w * 0.05, base), (x + w * 0.04, y + h * 0.5), (x + w * 0.14, y + h * 0.18), (x + w * 0.3, y + h * 0.1),
+            (x + w * 0.42, y + h * 0.3), (x + w * 0.44, base)]
+    o.append(pen.poly(lump, 2.6, fill=SOFT, jit=0.5))
+    for tx, ty in ((0.16, 0.45), (0.28, 0.35), (0.22, 0.62)):  # thumbprints
+        o.append(f'<ellipse cx="{x + w * tx:.1f}" cy="{y + h * ty:.1f}" rx="{w * 0.035:.1f}" ry="{h * 0.05:.1f}" fill="{MID}" stroke="none" opacity="0.8"/>')
+    for bx, by, br in ((0.55, 0.72, 0.07), (0.66, 0.74, 0.055), (0.6, 0.58, 0.05)):  # pinched balls
+        o.append(pen.ellipse(x + w * bx, y + h * by, w * br, w * br * 0.95, 2.2, fill=SOFT))
+    slab = [(x + w * 0.72, base - h * 0.06), (x + w * 0.74, base - h * 0.18), (x + w * 0.98, base - h * 0.18), (x + w, base - h * 0.06)]
+    o.append(pen.poly(slab, 2.4, fill=PAPER, jit=0.3))
+    for k in (1, 2):
+        sx = x + w * (0.72 + 0.09 * k)
+        o.append(pen.line((sx, base - h * 0.18), (sx + w * 0.005, base - h * 0.06), 1.4, amp=0.1, color=MID))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def mosaic(pen, x, y, w, h, p, fs):
+    """A mosaic: a frame of irregular tiles with grout between them and a few places still empty, as a work in progress."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.2, p, fs)
+    o = [pen.rect(x, y, w, h, 3.0, fill=PAPER, over=1)]
+    cols, rows = 6, 5
+    tw, th = (w - 14) / cols, (h - 14) / rows
+    tones = [SOFT, PAPER, MID, SOFT, PAPER, SOFT]
+    empty = {(1, 4), (2, 4), (4, 3), (5, 4), (3, 4)}
+    for r in range(rows):
+        for c in range(cols):
+            if (r, c) in empty:
+                continue
+            tx, ty = x + 7 + c * tw + 1.5, y + 7 + r * th + 1.5
+            wob = ((r * 7 + c * 3) % 5 - 2) * 0.04
+            pts = [(tx + tw * (0.04 + wob), ty + th * 0.05), (tx + tw * 0.9, ty + th * (0.02 - wob)), (tx + tw * (0.92 + wob), ty + th * 0.9), (tx + tw * 0.06, ty + th * (0.92 - wob))]
+            o.append(pen.poly(pts, 1.6, fill=tones[(r * 2 + c) % len(tones)], jit=0.15))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
 _DRAW = {"stake": stake, "emsled": emsled, "fieldcamp": fieldcamp, "molecule": molecule, "iceberg": iceberg, "mixedlayer": mixedlayer, "seaice": seaice, "iceshelf": iceshelf, "map": map_, "currents": currents, "desk": desk, "phone": phone, "bowl": bowl, "bongo": bongo, "trawl": trawl, "rmt": rmt, "ctd": ctd, "satellite": satellite, "radar": radar, "radarscreen": radarscreen, "icecore": icecore, "massspec": massspec, "helicopter": helicopter, "drone": drone,
          "aquarium": aquarium, "freezer": freezer, "tag": tag, "scatter": scatter, "boxplot": boxplot, "modelgrid": modelgrid,
          "sequence": sequence, "tree": tree, "clusters": clusters, "network": network, "database": database, "filter": filter_rig, "tubes": tubes,
          "sequencer": sequencer, "cpr": cpr, "echosounder": echosounder, "venn": venn, "laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
-         "bottle": bottle, "jar": jar, "flash": flash, "cups": cups}
+         "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic}
 
 
 def extra_prop(pen, x, y, w, h, p, fs):

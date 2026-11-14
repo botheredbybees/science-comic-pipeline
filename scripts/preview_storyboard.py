@@ -188,7 +188,8 @@ def build(doc, standalone=False):
     for p in panels:
         for cid in p.get("claim_ids", []):
             used.setdefault(cid, []).append(p["id"])
-    meta, src = doc["meta"], doc["meta"]["source"]
+    meta = doc["meta"]
+    srcs = meta["sources"] if meta.get("sources") else [meta["source"]]
     n_ver = sum(c["status"] == "verified" for c in doc["claims"])
     n_joke = sum("humour" in p for p in panels)
 
@@ -199,9 +200,9 @@ def build(doc, standalone=False):
     spine = meta["spine"]
     out.append(
         f'<header><span class="label">Storyboard</span><h1>{e(meta["title"])}</h1>'
-        f'<p class="source">From <i>{e(src["title"])}</i> by {e(", ".join(src["authors"]))} ({src["year"]}). '
-        f'Licence: {e(src["licence"])}.'
-        + (f' <a href="{e(src["url"])}">Read the paper</a>.' if src.get("url") else "")
+        '<p class="source">' + " ".join(
+            f'From <i>{e(s["title"])}</i> by {e(", ".join(s["authors"]))} ({s["year"]}). Licence: {e(s["licence"])}.'
+            + (f' <a href="{e(s["url"])}">Read the paper</a>.' if s.get("url") else "") for s in srcs)
         + "</p>"
         f'<div class="spine"><div><b>And</b><p>{e(spine["and"])}</p></div>'
         f'<div><b>But</b><p>{e(spine["but"])}</p></div><div><b>Therefore</b><p>{e(spine["therefore"])}</p></div></div>'

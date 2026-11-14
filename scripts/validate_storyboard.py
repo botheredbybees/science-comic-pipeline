@@ -150,6 +150,24 @@ def validate(doc):
 
     cast_ids = {c["id"] for c in doc["cast"]}
     claims = {c["id"]: c for c in doc["claims"]}
+
+    meta = doc.get("meta", {})
+    if meta.get("sources"):  # a topic comic: every claim says which paper it comes from
+        ids = [x["id"] for x in meta["sources"]]
+        for d in _dupes(ids):
+            errors.append(f"duplicate source id: {d}")
+        if meta.get("source"):
+            errors.append("meta has both `source` and `sources`; use `sources` for a comic drawn from several papers")
+        for c in doc["claims"]:
+            ref = c["source"].get("ref")
+            if not ref:
+                errors.append(f"{c['id']}: this comic has several sources, so the claim's source needs a `ref` naming one of {ids}")
+            elif ref not in ids:
+                errors.append(f"{c['id']}: source ref '{ref}' is not in meta.sources {ids}")
+    else:
+        for c in doc["claims"]:
+            if c["source"].get("ref"):
+                errors.append(f"{c['id']}: `ref` is only for comics with meta.sources")
     panels = [p for beat in doc["beats"] for p in beat["panels"]]
 
     for c in doc["cast"]:  # a combination that reads badly

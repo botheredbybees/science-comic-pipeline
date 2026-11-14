@@ -394,3 +394,41 @@ def test_the_variety_flag_prints_a_report_without_changing_the_default(doc, tmp_
     assert "variety:" not in capsys.readouterr().out
     main([str(f), "--variety"])
     assert "variety:" in capsys.readouterr().out
+
+
+def _topic(doc):
+    d = copy.deepcopy(doc)
+    src = d["meta"].pop("source")
+    d["meta"]["sources"] = [{"id": "one", **src}, {"id": "two", **src}]
+    for c in d["claims"]:
+        c["source"]["ref"] = "one"
+    return d
+
+
+def test_a_topic_comic_validates_when_every_claim_names_its_paper(doc):
+    errors, _ = validate(_topic(doc))
+    assert errors == []
+
+
+def test_a_topic_comic_claim_needs_a_known_ref(doc):
+    d = _topic(doc)
+    d["claims"][0]["source"]["ref"] = "three"
+    del d["claims"][1]["source"]["ref"]
+    errors, _ = validate(d)
+    assert any("'three' is not in meta.sources" in e for e in errors)
+    assert any("needs a `ref`" in e for e in errors)
+
+
+def test_a_one_paper_comic_does_not_use_ref_and_the_two_forms_do_not_mix(doc):
+    d = copy.deepcopy(doc)
+    d["claims"][0]["source"]["ref"] = "x"
+    assert any("only for comics with meta.sources" in e for e in validate(d)[0])
+    both = _topic(doc)
+    both["meta"]["source"] = {"title": "s", "authors": ["a"], "year": 2026, "licence": "x"}
+    assert any("both `source` and `sources`" in e for e in validate(both)[0])
+
+
+def test_argument_and_practice_are_claim_kinds(doc):
+    d = copy.deepcopy(doc)
+    d["claims"][0]["kind"], d["claims"][1]["kind"] = "argument", "practice"
+    assert validate(d)[0] == []

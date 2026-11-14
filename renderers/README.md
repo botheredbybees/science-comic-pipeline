@@ -119,6 +119,8 @@ stays `25.0`).
 | `helicopter`, `drone` | the vehicle; `label` under it |
 | `aquarium` | a tank with water, bubbles and gravel; `label` under it |
 | `freezer` | an upright freezer with a snowflake; `label` under it |
+| `clay` | a lump of clay with thumbprints, pinched balls and a slab cut into squares; `label` under it |
+| `mosaic` | a framed mosaic of tiles with a few places still empty; `label` under it |
 | `tag` | an animal satellite tag: a streamlined case on a base plate, a strip of solar cells on top, a whip antenna with signal arcs; `label` under it |
 | `scatter` | dots round a dashed fitted line on two axes; `x_label`, `y_label` name the axes |
 | `boxplot` | box-and-whisker plots for two to four groups; `items`: each `label` names a group |

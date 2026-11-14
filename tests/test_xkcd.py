@@ -393,7 +393,7 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
 
 SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn",
                    "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
-                   "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer"]
+                   "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -496,3 +496,18 @@ def test_a_box_grows_to_hold_a_long_label_and_there_is_no_sign_prop(doc):
     panel["staging"]["props"][0]["kind"] = "sign"
     errors, _ = V.validate(d)
     assert any("sign" in e for e in errors)  # retired: a sign is a box
+
+
+def test_a_topic_comic_names_every_source_in_the_header_and_footer(doc):
+    d = copy.deepcopy(doc)
+    src = d["meta"].pop("source")
+    d["meta"]["sources"] = [
+        {"id": "one", **src, "authors": ["Craig, C.", "Killick, J."], "year": 2011, "licence": "CC BY 4.0"},
+        {"id": "two", **src, "title": "Another reading", "authors": ["Beard, R."], "year": 2012, "licence": "All rights reserved"},
+    ]
+    for c in d["claims"]:
+        c["source"]["ref"] = "one"
+    svgs, _ = R.render_pages(d)
+    assert "Drawn from 2 sources: Craig &amp; Killick (2011); Beard (2012)" in svgs[0].replace("&amp;amp;", "&amp;")
+    assert "Another reading" in svgs[-1] and "Licence: All rights reserved." in svgs[-1]
+    assert "Some of these sources are not under an open licence" in svgs[-1]

@@ -132,3 +132,16 @@ def test_warns_when_a_quote_contains_a_publisher_footer():
 
 def test_dashes_are_normalised_for_locators():
     assert dashes("MZG\u2010ICE and a\u2013b") == "MZG-ICE and a-b"
+
+
+def test_a_topic_comic_checks_each_claim_against_its_own_source():
+    pages = {"a": {1: "Clay invites touch."}, "b": {1: "Music recalls memories."}}
+    doc = {"meta": {"sources": [{"id": "a"}, {"id": "b"}]}, "claims": [
+        {"id": "C1", "text": "x", "kind": "argument", "status": "verified", "source": {"locator": "x", "ref": "a", "quote": "Clay invites touch", "page": 1}},
+        {"id": "C2", "text": "x", "kind": "argument", "status": "verified", "source": {"locator": "x", "ref": "b", "quote": "Clay invites touch", "page": 1}},
+        {"id": "C3", "text": "x", "kind": "argument", "status": "verified", "source": {"locator": "x", "ref": "c", "quote": "Anything", "page": 1}},
+    ]}
+    errors, _ = check(doc, pages)
+    assert not any(e.startswith("C1") for e in errors)  # right paper
+    assert any(e.startswith("C2") and "not found on page 1" in e for e in errors)  # a quote from paper a cannot be credited to paper b
+    assert any(e.startswith("C3") and "no source text" in e for e in errors)

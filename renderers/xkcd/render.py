@@ -598,11 +598,16 @@ def row_geometry(row, usable):
 
 def build_items(doc, cast, k=0.55):
     """The flow of the comic: header, beat labels, rows, colophon, each with its height."""
-    meta, src = doc["meta"], doc["meta"]["source"]
+    meta = doc["meta"]
+    srcs = sources_of(meta)
+    src = srcs[0]
     usable = PAGE_W - 2 * MARGIN
     items = []
     title_lines = wrap(meta["title"], usable, 46)
-    sub = wrap(f'From “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})', usable, 17)
+    if len(srcs) > 1:
+        sub = wrap(f"Drawn from {len(srcs)} sources: " + "; ".join(f'{_short_authors(s)} ({s["year"]})' for s in srcs), usable, 17)
+    else:
+        sub = wrap(f'From “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})', usable, 17)
     h = block_h(title_lines, 46, 1.1) + block_h(sub, 17) + 24
     items.append({"kind": "header", "h": h, "draw": lambda y, tl=title_lines, sb=sub: (
         text(MARGIN, y, tl, 46, lh=1.1) + text(MARGIN, y + block_h(tl, 46, 1.1) + 6, sb, 17, fill=MID))})
@@ -626,24 +631,35 @@ def build_items(doc, cast, k=0.55):
                           **_row_limits(row, plans, rh),
                           "draw": _row_drawer(row, widths, plans, rh, label, cast)})
             first = False
-    lic_url = _licence_url(src["licence"])
-    note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
-            + (f', doi {src["doi"]}' if src.get("doi") else "")
-            + f'. Licence: {src["licence"]}. '
-            "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
-            "the paper's authors did not write or endorse this document. "
-            "The pictures are simple cartoons: animals and apparatus are stand-ins and not to scale.")
+    lic_urls = [_licence_url(s["licence"]) for s in srcs]
+    if len(srcs) > 1:
+        cites = " ".join(f'“{s["title"]}” by {", ".join(s["authors"])} ({s["year"]})'
+                         + (f', doi {s["doi"]}' if s.get("doi") else "") + f'. Licence: {s["licence"]}.' for s in srcs)
+        note = ("Drawn from these sources: " + cites + " Condensed into a comic with invented characters and scenes using the "
+                "science-comic-pipeline; the sources' authors did not write or endorse this document. ")
+    else:
+        note = (f'Adapted from “{src["title"]}” by {", ".join(src["authors"])} ({src["year"]})'
+                + (f', doi {src["doi"]}' if src.get("doi") else "")
+                + f'. Licence: {src["licence"]}. '
+                "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
+                "the paper's authors did not write or endorse this document. ")
+    note += "The pictures are simple cartoons: animals and apparatus are stand-ins and not to scale."
     if doc["meta"].get("gallery"):
         note = "A catalogue of the bodies and props the xkcd renderer can draw (science-comic-pipeline). The animals and apparatus are generic cartoon shapes, not accurate or to scale."
     if doc["meta"].get("private"):
         note += " PRIVATE: not for sharing."
-    elif not lic_url and not doc["meta"].get("gallery"):  # no Creative Commons deed to link to: say plainly that it is not an open licence
-        note += " This paper is not under an open licence: keep this comic private and do not publish it."
+    elif not all(lic_urls) and not doc["meta"].get("gallery"):  # no Creative Commons deed to link to: say plainly that it is not an open licence
+        note += (" Some of these sources are not under an open licence: keep this comic private and do not publish it."
+                 if len(srcs) > 1 else " This paper is not under an open licence: keep this comic private and do not publish it.")
     colo = wrap(note, usable, 15)
-    paper = src.get("url") or (f'https://doi.org/{src["doi"]}' if src.get("doi") else "")
-    links = [(f"Read the original paper: {paper}", paper)] if paper and not doc["meta"].get("gallery") else []
-    if lic_url and not doc["meta"].get("gallery"):
-        links.append((f"Licence terms: {lic_url}", lic_url))
+    links = []
+    if not doc["meta"].get("gallery"):
+        for s in srcs:
+            paper = s.get("url") or (f'https://doi.org/{s["doi"]}' if s.get("doi") else "")
+            if paper:
+                links.append((f"Read the original paper: {paper}" if len(srcs) == 1 else f"{_short_authors(s)} ({s['year']}): {paper}", paper))
+        for u in dict.fromkeys(u for u in lic_urls if u):
+            links.append((f"Licence terms: {u}", u))
 
     def draw_colophon(y, c=colo, ls=links):
         """The footer in the caption grey. The pipeline's name and the lines below are links (clickable in a browser
@@ -806,6 +822,17 @@ h1 { margin: 0; font-size: 1.3rem; text-wrap: balance; } p { margin: 0; color: v
   .page svg { display: block; width: 210mm; height: 297mm; }
 }
 """
+
+
+def sources_of(meta):
+    """The source records of a comic: the one `source`, or the list `sources` of a comic drawn from several papers."""
+    return list(meta["sources"]) if meta.get("sources") else [meta["source"]]
+
+
+def _short_authors(s):
+    """'Craig & Killick', 'Beard et al.': the surnames' list kept short for a subtitle."""
+    names = [a.split(",")[0].strip() if "," in a else a.split()[-1] for a in s["authors"]]
+    return names[0] if len(names) == 1 else (f"{names[0]} & {names[1]}" if len(names) == 2 else f"{names[0]} et al.")
 
 
 def _licence_url(label):

@@ -21,7 +21,6 @@
       "additionalProperties": false,
       "required": [
         "title",
-        "source",
         "spine"
       ],
       "properties": {
@@ -115,8 +114,75 @@
         "gallery": {
           "type": "boolean",
           "description": "A catalogue of the renderer's bodies and props, not a comic: the last page prints no adaptation note."
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "authors",
+              "year",
+              "licence"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "description": "A short key the claims use in `source.ref`, and the folder name under --pages-root."
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "authors": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "year": {
+                "type": "integer"
+              },
+              "doi": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "licence": {
+                "type": "string",
+                "minLength": 1
+              },
+              "licence_checked": {
+                "type": "string",
+                "description": "Where and when the licence was confirmed."
+              },
+              "page_basis": {
+                "type": "string",
+                "description": "What a claim's `page` number means when the source is a PDF, e.g. \"PDF page index; journal page = index + 3139\"."
+              }
+            }
+          },
+          "description": "A comic drawn from several papers (a topic comic). Every claim then names its paper in `source.ref`. Use `source` for a comic about one paper."
         }
-      }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "source"
+          ]
+        },
+        {
+          "required": [
+            "sources"
+          ]
+        }
+      ]
     },
     "cast": {
       "type": "array",
@@ -238,8 +304,11 @@
               "method",
               "result",
               "interpretation",
-              "caveat"
-            ]
+              "caveat",
+              "argument",
+              "practice"
+            ],
+            "description": "argument: what an author contends or theorises (attribute it: 'X argues'); practice: what an author recommends doing; the others suit an empirical paper."
           },
           "source": {
             "type": "object",
@@ -260,6 +329,10 @@
                 "type": "integer",
                 "minimum": 1,
                 "description": "The numbered page of the source text where the quote is found (a PDF page, or the paragraph file p007.txt that scripts/fetch_source.py writes); scripts/check_quotes.py checks it."
+              },
+              "ref": {
+                "type": "string",
+                "description": "The `id` of the entry in meta.sources this claim comes from (required when the comic has `sources`)."
               }
             }
           },
@@ -602,6 +675,8 @@
                   "helicopter",
                   "drone",
                   "aquarium",
+                  "clay",
+                  "mosaic",
                   "freezer",
                   "tag",
                   "scatter",

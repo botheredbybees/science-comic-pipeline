@@ -71,6 +71,12 @@ in the abstract and the Discussion against the Results and the tables, and every
 - **The paper's own arithmetic.** Check percentages, totals and counts against the totals the paper gives
   (980,071 of 2.16 million reads is about 45%, not the stated 43%; 26 sites plus 6 replicates is not 35 samples;
   degrees of freedom that imply a different number of pairs). A number that does not add up is not drawn; log it.
+- A book chapter or theory piece argues and recommends rather than measures. Use `argument` (what the author contends:
+  attribute it, "Craig says…") and `practice` (what the author recommends doing); never draw an argument as a finding.
+- A comic drawn from several papers (a topic comic) lists them under `meta.sources` (each with an `id`, in place of
+  `meta.source`), and every claim names its paper in `source.ref`. Keep each paper's pages in `sources/<id>/pages` and check with
+  `check_quotes.py <storyboard> --pages-root sources --strict`. Draw a claim from the paper that says it; do not credit paper B
+  with what paper A found.
 - A perspective, review or opinion piece has no methods or results. Its claims are mostly `interpretation` and
   `caveat` ("in our opinion"), and the authors' hedges are the content: keep them.
 
@@ -86,7 +92,7 @@ lists agree. Caveats are claims too; they are usually the most honest and often 
 claims:
 - id: C12
   text: "Diatoms dominated the community, an average of 41% of all reads."   # what the comic may say
-  kind: result            # background | method | result | interpretation | caveat
+  kind: result            # background | method | result | interpretation | caveat | argument | practice
   source:
     locator: "Results, paragraph 2"   # as in page-map.txt
     page: 9

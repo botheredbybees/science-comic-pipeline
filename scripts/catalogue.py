@@ -118,7 +118,8 @@ def load_comic(db, root, loc, folder, rversion, newest_renderer):
     slug = folder.name
     sb = folder / "storyboard.yaml"
     doc = yaml.safe_load(sb.read_text())
-    meta, src = doc.get("meta", {}), doc.get("meta", {}).get("source", {})
+    meta = doc.get("meta", {})
+    src = meta.get("source") or (meta.get("sources") or [{}])[0]  # a topic comic is catalogued under its first source
     errors, warnings = validate(doc)
     panels = [p for b in doc["beats"] for p in b["panels"]]
     cast_bodies = {c["id"]: (c.get("appearance") or {}).get("body", "stick") for c in doc["cast"]}

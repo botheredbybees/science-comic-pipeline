@@ -64,6 +64,7 @@ PROPS = [
     ("The ship, after the RSV Nuyina, and its echosounder", [("ship", {}), ("echosounder", {})]),
     ("Remote sensing and ice", [("satellite", {}), ("radar", {}), ("radarscreen", {}), ("icecore", {}), ("massspec", {}), ("helicopter", {})]),
     ("Lab and field", [("aquarium", {}), ("freezer", {}), ("tag", {}), ("drone", {}), ("microscope", {}), ("laptop", {}), ("thermometer", {})]),
+    ("Making and the arts", [("clay", {}), ("mosaic", {})]),
     ("Everyday props", [("desk", {}), ("bowl", {}), ("board", {"cards": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}), ("paper", {"label": "paper"}), ("box", {"label": "text box"})]),
     ("More everyday props", [("box", {"label": "box"}), ("teapot", {}), ("cups", {"items": [{"label": "a", "value": 1}, {"label": "b", "value": 2}]}), ("flash", {"label": "flash"})]),
     ("Pictures, labels and arrows", [("picture", {"staging": {"props": [{"kind": "bottle", "x": 0.3, "y": 0.1, "w": 0.4, "h": 0.8}]}}), ("label", {"label": "label"}), ("arrow", {"x2": 0.95, "y2": 0.3})]),
