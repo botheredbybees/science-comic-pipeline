@@ -142,7 +142,25 @@ A person reads the comic. The scripts check that the numbers match the quotes; t
 | `visual_qa.py` reports overflow or overlap | Shorten the caption, move a character or prop in `staging`, or give a crowded chart a `full` panel. `skills/visual-qa/SKILL.md` has a table |
 | The agent says it finished but you doubt it | Re-run the four commands in section 4 yourself and read their output. An agent's report is a claim, not evidence |
 
-## 7. What next
+## 7. Keeping track of what you have made
+
+Once there is more than a couple of comics, `scripts/catalogue.py` keeps a local index of them. It rebuilds `private/catalogue.db`
+(SQLite, not committed) from the comics' files and the triage tables, so it can never disagree with them:
+
+```bash
+.venv/bin/python scripts/catalogue.py                  # a summary: each comic, its checks, whether its PDF is stale
+.venv/bin/python scripts/catalogue.py --stale          # PDFs older than their storyboard or the renderer
+.venv/bin/python scripts/catalogue.py --uses ctd       # which comics use an asset, before you change or retire it
+.venv/bin/python scripts/catalogue.py --pending-jokes  # jokes waiting for a person
+.venv/bin/python scripts/catalogue.py --todo-papers    # open-licence papers from the triage that are not comics yet
+.venv/bin/python scripts/catalogue.py --editions       # when each comic was last made, and against which renderer
+```
+
+The one table it does not rebuild is `editions`: every time a comic's PDF has changed, a row records the date, the
+renderer's version and the validator's counts, so you can see what changed since a comic was last made. Run
+`--stale` after changing the renderer and before sharing a PDF; re-export what it lists.
+
+## 8. What next
 
 - Add a drawing style: a renderer reads `storyboard.yaml` and never the paper. `renderers/xkcd/` is the model.
 - Improve a skill: they are plain Markdown. Each of the three cold runs found faults in them; the notes are in

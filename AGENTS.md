@@ -32,4 +32,5 @@ Work in `examples/<slug>/` (or `private/<slug>/` if the licence is not confirmed
 
 Use the repo's interpreter, `.venv/bin/python` (setup is in the HOWTO). `python -m pytest tests -q` runs the tests; run
 them after any change to `scripts/` or `renderers/`. The staging vocabulary (characters, appearance, props, charts) is in
-`renderers/README.md`.
+`renderers/README.md`. `scripts/catalogue.py --stale` lists comics whose PDF is out of date, and `--uses <asset>` shows which comics use an
+asset before you change or retire it.

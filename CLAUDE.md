@@ -24,7 +24,7 @@ The rules above apply. This section adds what a Claude Code session needs that o
 ## Setup and checks
 
 ```bash
-.venv/bin/python -m pytest tests -q        # 133 tests; run after any change to scripts/ or renderers/
+.venv/bin/python -m pytest tests -q        # 269 tests; run after any change to scripts/ or renderers/
 .venv/bin/python scripts/validate_storyboard.py examples/<slug>/storyboard.yaml --strict
 .venv/bin/python scripts/visual_qa.py examples/<slug>/storyboard.yaml --keep output/<slug>
 .venv/bin/python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o examples/<slug>/<slug>.pdf
@@ -47,6 +47,9 @@ artifacts are previews only. The PDF is produced by scripts alone, with no model
   `private/` comic into a public commit. Commit and push only when asked.
 - The repo's git author email is the GitHub noreply address; leave it. The commit trailers in this repo are fine (a
   personal GitHub repo, unlike the user's shared Bitbucket repos).
+- **After changing the renderer, schema or an asset, run `scripts/catalogue.py --stale`** and re-export what it lists; before retiring
+  or changing an asset run `--uses <asset>` to see which comics depend on it (this session's retirement of three props only
+  surfaced because a test fixture, the public Akam example, used them). The catalogue (`private/catalogue.db`) is local and not committed.
 - **Characters may be silly, but breakout boxes and captions must be accurate.** The user approves jokes that keep the
   claims intact; the scripts cannot judge a joke, so never set `keeps_claims_intact: true` yourself.
 - Staging vocabulary (hair, coats, bodies, poses, held objects, props, charts) is in `renderers/README.md`; the schema is
