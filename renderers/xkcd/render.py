@@ -431,10 +431,6 @@ def prop(pen, x, y, w, h, p, cast, fs):
             top += fs * 1.4
         o += [pen.line((x + 10, yy), (x + w - 10, yy), 1.2, amp=0.5, color=MID) for yy in
               [top + i * 13 for i in range(max(0, int((y + h - 10 - top) / 13)))]]
-    elif k == "sign":
-        o.append(pen.line((x + w / 2, y + h * 0.5), (x + w / 2, y + h), 2.4))
-        o.append(pen.rect(x, y, w, h * 0.5, 2.4, fill=PAPER, over=1))
-        o.append(text(x + w / 2, y + h * 0.25 - fs * 0.5, wrap(lab, w - 6, fs * 0.85), fs * 0.85, anchor="middle"))
     elif k == "picture":
         o.append(pen.rect(x, y, w, h, 2.8, fill=PAPER, over=1))
         if "staging" in p:
@@ -444,15 +440,20 @@ def prop(pen, x, y, w, h, p, cast, fs):
     elif k == "label":
         size = {"small": 0.8, "large": 1.3}.get(p.get("size"), 1.0)
         o.append(text(x, y - fs * size * 0.5, [lab], fs * size, anchor="middle"))
-    else:  # box: the fallback for anything else
-        o.append(pen.rect(x, y, w, h, 2.2, fill=PAPER))
-        o.append(text(x + w / 2, y + 6, wrap(lab, w - 10, fs), fs, anchor="middle"))
+    else:  # box: the fallback for anything else; it grows to hold its words and centres them
+        blines = wrap(lab, w - 10, fs)
+        bh = max(h, block_h(blines, fs, 1.2) + 12)
+        o.append(pen.rect(x, y, w, bh, 2.2, fill=PAPER))
+        o.append(text(x + w / 2, y + max(6, (bh - block_h(blines, fs, 1.2)) / 2), blines, fs, anchor="middle"))
     return "".join(o)
 
 
 def stage(pen, x, y, w, h, st, cast, fs):
     """Draw a staging block into the box; return (svg, {character id: head position})."""
     props = st.get("props", [])
+    split = next((i for i, p in enumerate(props) if p["kind"] == "desk"), len(props))
+    front = [p for i, p in enumerate(props) if p.get("front") and i < split]  # drawn after the characters, whatever their place in the list
+    props = [p for i, p in enumerate(props) if not (p.get("front") and i < split)]
     split = next((i for i, p in enumerate(props) if p["kind"] == "desk"), len(props))
     out, heads = [], {}
 
@@ -479,7 +480,7 @@ def stage(pen, x, y, w, h, st, cast, fs):
                            c.get("holding"), app)
         out.append(svg)
         heads.setdefault(c["id"], head)
-    for p in props[split:]:
+    for p in props[split:] + front:
         draw(p)
     return "".join(out), heads
 
@@ -630,7 +631,8 @@ def build_items(doc, cast, k=0.55):
             + (f', doi {src["doi"]}' if src.get("doi") else "")
             + f'. Licence: {src["licence"]}. '
             "Condensed into a comic with invented characters and scenes using the science-comic-pipeline; "
-            "the paper's authors did not write or endorse this document.")
+            "the paper's authors did not write or endorse this document. "
+            "The pictures are simple cartoons: animals and apparatus are stand-ins and not to scale.")
     if doc["meta"].get("gallery"):
         note = "A catalogue of the bodies and props the xkcd renderer can draw (science-comic-pipeline). The animals and apparatus are generic cartoon shapes, not accurate or to scale."
     if doc["meta"].get("private"):

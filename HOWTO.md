@@ -142,7 +142,25 @@ A person reads the comic. The scripts check that the numbers match the quotes; t
 | `visual_qa.py` reports overflow or overlap | Shorten the caption, move a character or prop in `staging`, or give a crowded chart a `full` panel. `skills/visual-qa/SKILL.md` has a table |
 | The agent says it finished but you doubt it | Re-run the four commands in section 4 yourself and read their output. An agent's report is a claim, not evidence |
 
-## 7. Keeping track of what you have made
+## 7. Approving the jokes
+
+Jokes the agent proposes wait for a person. Read, reword and approve them with `scripts/jokes.py`; you never edit YAML:
+
+```bash
+.venv/bin/python scripts/jokes.py list                  # each waiting joke, with the line that carries it
+.venv/bin/python scripts/jokes.py show nester B6.13     # scene, caption, the cited claims, and the five questions to judge by
+.venv/bin/python scripts/jokes.py approve nester B6.13  # or --all for a whole comic; `revoke` undoes it
+.venv/bin/python scripts/jokes.py edit nester B6.13 --line 2 --text "New wording."   # reword a line (--note for the note)
+.venv/bin/python scripts/jokes.py cut nester B6.13 --line 2   # reject: delete that line and the joke flag
+.venv/bin/python scripts/jokes.py review                # step through them (below)
+```
+
+In `review`, **Enter accepts** (the default). `e` rewords a line and shows the joke again, so you can edit and then accept;
+`r` rejects: it deletes the joke's line (Enter picks the last character line; type numbers to choose others), or type `keep` to keep
+the lines and drop only the joke flag; `s` skips; `q` quits. A comic is found by a unique part of its name. Every change rewrites
+only what it must and rebuilds `storyboard.yaml`; re-export the PDF after.
+
+## 8. Keeping track of what you have made
 
 Once there is more than a couple of comics, `scripts/catalogue.py` keeps a local index of them. It rebuilds `private/catalogue.db`
 (SQLite, not committed) from the comics' files and the triage tables, so it can never disagree with them:
@@ -160,7 +178,7 @@ The one table it does not rebuild is `editions`: every time a comic's PDF has ch
 renderer's version and the validator's counts, so you can see what changed since a comic was last made. Run
 `--stale` after changing the renderer and before sharing a PDF; re-export what it lists.
 
-## 8. What next
+## 9. What next
 
 - Add a drawing style: a renderer reads `storyboard.yaml` and never the paper. `renderers/xkcd/` is the model.
 - Improve a skill: they are plain Markdown. Each of the three cold runs found faults in them; the notes are in

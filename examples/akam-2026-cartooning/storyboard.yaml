@@ -160,7 +160,7 @@ beats:
                   - { id: extra, x: 0.28, face: smile }
                   - { id: extra, x: 0.5, face: neutral }
                 props:
-                  - { kind: sign, x: 0.74, y: 0.12, w: 0.2, h: 0.55, label: "receptor" }
+                  - { kind: box, x: 0.74, y: 0.12, w: 0.2, h: 0.28, label: "receptor" }
         speech:
           - { speaker: dr_okoye, text: "Concept cartoons date from the late 1990s. They start discussions." }
         claim_ids: [C2]

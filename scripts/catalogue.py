@@ -4,7 +4,8 @@
     python scripts/catalogue.py                      # rebuild private/catalogue.db and print a summary
     python scripts/catalogue.py --stale              # comics whose PDF is older than their storyboard or the renderer
     python scripts/catalogue.py --uses ctd           # comics that use an asset (a prop, body, held object, outfit or hair)
-    python scripts/catalogue.py --pending-jokes      # jokes still waiting for a person
+    python scripts/catalogue.py --pending-jokes      # jokes still waiting for a person (approve them with scripts/jokes.py)
+    python scripts/catalogue.py --variety            # each comic's McCloud mix: scene-to-scene, moments, glosses
     python scripts/catalogue.py --todo-papers 30     # open-licence papers from the triage that are not comics yet
     python scripts/catalogue.py --editions           # when each comic was last made, and against which renderer
     python scripts/catalogue.py --sql "select slug, panels from comics order by panels desc"
@@ -28,7 +29,7 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from validate_storyboard import _figure_only, validate  # noqa: E402
+from validate_storyboard import _figure_only, validate, variety  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -42,7 +43,8 @@ CREATE TABLE papers (triage_set TEXT, file TEXT, doi TEXT, doi_source TEXT, titl
 CREATE TABLE topics (triage_set TEXT, category TEXT, term TEXT, papers INTEGER, mentions INTEGER);
 CREATE TABLE comics (slug TEXT PRIMARY KEY, location TEXT, private INTEGER, title TEXT, paper_title TEXT, doi TEXT, year INTEGER, licence TEXT,
                      beats INTEGER, panels INTEGER, claims INTEGER, jokes INTEGER, jokes_pending INTEGER, errors INTEGER, warnings INTEGER,
-                     figures_only_pct INTEGER, pdf TEXT, pdf_time TEXT, storyboard_time TEXT, stale INTEGER, stale_reason TEXT);
+                     figures_only_pct INTEGER, pdf TEXT, pdf_time TEXT, storyboard_time TEXT, stale INTEGER, stale_reason TEXT,
+                     scene_pct INTEGER, moment_pct INTEGER, no_word_picture_pct INTEGER, devices TEXT);
 CREATE TABLE comic_assets (slug TEXT, kind TEXT, name TEXT, uses INTEGER);
 CREATE TABLE jokes (slug TEXT, panel TEXT, note TEXT, confirmed INTEGER);
 """
@@ -133,10 +135,13 @@ def load_comic(db, root, loc, folder, rversion, newest_renderer):
         stale, reason = 1, "storyboard changed after the PDF"
     elif pdf.stat().st_mtime < newest_renderer:
         stale, reason = 1, "renderer or schema changed after the PDF"
-    db.execute("INSERT INTO comics VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    vstats, _ = variety(doc)
+    devs = ", ".join(f"{k} {v}" for k, v in sorted(vstats["devices"].items()))
+    db.execute("INSERT INTO comics VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                (slug, loc, int(loc == "private" or bool(meta.get("private"))), meta.get("title"), src.get("title"), (src.get("doi") or "").lower(), src.get("year"),
                 src.get("licence"), len(doc["beats"]), len(panels), len(doc["claims"]), len(jokes), pending, len(errors), len(warnings),
-                round(100 * bare / max(len(panels), 1)), str(pdf.relative_to(root)) if pdf else "", stamp(pdf.stat().st_mtime) if pdf else "", stamp(sb_time), stale, reason))
+                round(100 * bare / max(len(panels), 1)), str(pdf.relative_to(root)) if pdf else "", stamp(pdf.stat().st_mtime) if pdf else "", stamp(sb_time), stale, reason,
+                vstats["scene_pct"], vstats["moment_pct"], vstats["no_word_picture_pct"], devs))
     use = {}
 
     def add(kind, name):
@@ -219,6 +224,7 @@ def main(argv=None):
     g.add_argument("--stale", action="store_true")
     g.add_argument("--uses", metavar="ASSET")
     g.add_argument("--pending-jokes", action="store_true")
+    g.add_argument("--variety", action="store_true")
     g.add_argument("--todo-papers", nargs="?", const=25, type=int, metavar="N")
     g.add_argument("--editions", action="store_true")
     g.add_argument("--sql", metavar="QUERY")
@@ -229,6 +235,9 @@ def main(argv=None):
     elif args.uses:
         show(db.execute("select c.slug, a.kind, a.name, a.uses from comic_assets a join comics c using(slug) where a.name=? order by a.uses desc", (args.uses,)).fetchall(),
              ["comic", "kind", "asset", "uses"])
+    elif args.variety:
+        show(db.execute("select slug, panels, scene_pct, moment_pct, no_word_picture_pct, devices from comics order by scene_pct desc").fetchall(),
+             ["comic", "panels", "scene-to-scene%", "moments%", "no word-picture%", "devices"])
     elif args.pending_jokes:
         show(db.execute("select slug, panel, note from jokes where confirmed=0 order by slug, panel").fetchall(), ["comic", "panel", "note"])
     elif args.todo_papers is not None:

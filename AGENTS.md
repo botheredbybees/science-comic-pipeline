@@ -22,7 +22,9 @@ Work in `examples/<slug>/` (or `private/<slug>/` if the licence is not confirmed
 - **Only CC BY, CC BY-SA and CC0 papers.** If `fetch_source.py` refuses a licence, stop and tell the user.
 - **Run the checks yourself and report what they print**, never what you expect: `check_quotes.py --strict`,
   `validate_storyboard.py --strict`, `visual_qa.py`. Do not trust a summary from another agent.
-- **Jokes are the user's call.** Leave `keeps_claims_intact: false` unless a joke passes the five questions in the humour skill.
+- **Jokes are the user's call.** Leave `keeps_claims_intact: false` unless a joke passes the five questions in the humour skill; the user
+  reads and approves them with `scripts/jokes.py` (`list`, `show`, `approve`, `review`). **Vary the frames**: label every transition and
+  word-picture honestly, use the `gloss` and `moment` devices, and check with `validate_storyboard.py --variety` (see `skills/storyboard`).
 - Black and white only. No image models: the pictures come from the storyboard's `staging` and the renderer.
 - Do not commit or push unless asked. When a job says "never run git", that includes read-only commands such as `git status`.
 - A paper that is not open access is never worked on in `examples/`. Only if the user asks for a private reading aid:

@@ -64,7 +64,7 @@ PROPS = [
     ("The ship, after the RSV Nuyina, and its echosounder", [("ship", {}), ("echosounder", {})]),
     ("Remote sensing and ice", [("satellite", {}), ("radar", {}), ("radarscreen", {}), ("icecore", {}), ("massspec", {}), ("helicopter", {})]),
     ("Lab and field", [("aquarium", {}), ("freezer", {}), ("tag", {}), ("drone", {}), ("microscope", {}), ("laptop", {}), ("thermometer", {})]),
-    ("Everyday props", [("desk", {}), ("bowl", {}), ("board", {"cards": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}), ("paper", {"label": "paper"}), ("sign", {"label": "sign"})]),
+    ("Everyday props", [("desk", {}), ("bowl", {}), ("board", {"cards": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}), ("paper", {"label": "paper"}), ("box", {"label": "text box"})]),
     ("More everyday props", [("box", {"label": "box"}), ("teapot", {}), ("cups", {"items": [{"label": "a", "value": 1}, {"label": "b", "value": 2}]}), ("flash", {"label": "flash"})]),
     ("Pictures, labels and arrows", [("picture", {"staging": {"props": [{"kind": "bottle", "x": 0.3, "y": 0.1, "w": 0.4, "h": 0.8}]}}), ("label", {"label": "label"}), ("arrow", {"x2": 0.95, "y2": 0.3})]),
 ]
@@ -116,6 +116,22 @@ def build():
                    "speech": [{"speaker": "narrator", "kind": "caption", "text": "Looks: set `appearance` on a cast member in head.yaml."}] if n == 1 else [],
                    "staging": {"characters": chars, "props": props}})
     beats.append({"id": "B4", "title": "Looks", "act": "method", "panels": lp})
+    def comp_panel(n, weight, caption, chars, props=None):
+        return {"id": f"B5.{n}", "weight": weight, "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
+                "scene": caption, "speech": [{"speaker": "narrator", "kind": "caption", "text": caption}],
+                "staging": {"characters": chars, "props": props or []}}
+
+    beats.append({"id": "B5", "title": "Composition: scale, cropping and layering", "act": "method", "panels": [
+        comp_panel(1, "wide", "A large animal shown larger, its tail cropped by the edge.",
+                   [{"id": "extra", "body": "whale", "x": 0.2, "y": 0.9, "scale": 1.6}, {"id": "extra", "body": "krill", "x": 0.85, "y": 0.55, "scale": 0.9, "facing": "left"}]),
+        comp_panel(2, "wide", "The other way: a krill much larger than the diatoms.",
+                   [{"id": "extra", "body": "krill", "x": 0.35, "y": 0.92, "scale": 2.6}, {"id": "extra", "body": "diatom", "x": 0.8, "y": 0.9, "scale": 0.45},
+                    {"id": "extra", "body": "diatom", "x": 0.92, "y": 0.62, "scale": 0.4}]),
+        comp_panel(3, "wide", "A character placed in a prop: krill in the aquarium.",
+                   [{"id": "extra", "body": "krill", "x": 0.4, "y": 0.62, "scale": 1.5}, {"id": "extra", "body": "krill", "x": 0.64, "y": 0.74, "scale": 1.2, "facing": "left"}],
+                   [{"kind": "aquarium", "x": 0.12, "y": 0.1, "w": 0.76, "h": 0.8}]),
+        comp_panel(4, "wide", "A close-up: the krill cropped by the panel's edge.",
+                   [{"id": "extra", "body": "krill", "x": 0.2, "y": 1.55, "scale": 6.0}])]})
     panels = []
     for n, (title, row) in enumerate(PROPS, 1):
         props = []

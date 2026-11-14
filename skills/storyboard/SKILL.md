@@ -79,20 +79,67 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
 | the sea or the ice | `mixedlayer` (the layers of the upper ocean), `seaice` (`condition`: pancake, pack, drift, fast), `iceberg`, `iceshelf` |
 | when | an `axis` of time, or a `flow` of the stages |
 | a result that two things disagree on | two objects or two bars side by side, each labelled |
-| a caveat or a limit | a `sign` or `box`, or a lone figure with an empty `bars` frame where the data are missing |
+| a caveat or a limit | a `box`, or a lone figure with an empty `bars` frame where the data are missing |
 | a polar field method | `stake`, `emsled`, `fieldcamp`, `icecore`, `helicopter` |
 | a chemical, a lipid or a compound | a `molecule` (generic, labelled) |
 | a definition | the thing, drawn, with a `label` |
 
 - The schematic props (`sequence`, `tree`, `clusters`, `network`, `database`, `filter`, `tubes`, `sequencer`, `cpr`,
   `echosounder`, `ctd`, `bongo`, `trawl`, `rmt`, `venn`, `map`, `currents`, `iceberg`, `iceshelf`, `seaice`, `mixedlayer`, `stake`, `emsled`, `fieldcamp`, `molecule`, `satellite`, `radar`, `icecore`, `massspec`, `helicopter`, `drone`, `aquarium`, `freezer`, `tag`,
-  `scatter`, `boxplot`, `modelgrid`) are generic: say "schematic" and let the caption carry the claim (see `renderers/README.md`).
+  `scatter`, `boxplot`, `modelgrid`) are generic pictures: let the caption carry the claim (see `renderers/README.md`). Do not label a panel "schematic", "stand-in"
+  or "not to scale": the footer of every comic says once that the pictures are cartoon stand-ins and not to scale, and
+  `validate_storyboard.py` warns on a label that only repeats it. A label names the thing ("mid-water trawl"), nothing more.
 - **No more than about a quarter of the panels may be figures only** (the validator warns above that). A figures-only
   panel is fine when it is the point: a pause, a reaction, a joke that needs a face. It is a defect when it is filler.
 - **A claim with nothing to draw does not need its own panel.** Put it as a second caption in a neighbouring panel that
   has a picture, instead of staging two figures to say it.
 - The guide should not be in every panel. Many panels should have no character at all, only the picture and the caption.
 - Vary what the characters hold and where they stand; a figure pointing at the picture is better than two facing each other.
+
+## Vary the frames (McCloud)
+
+A comic made of facts drifts into one rhythm: a caption over two figures talking, panel after panel. The cure is in the frame, not
+the story. Label each panel honestly, then plan the mix. (Check it with `validate_storyboard.py --variety`.)
+
+**Label the transition by what changes from the previous panel.** Most panels that stay in one scene are *not* scene-to-scene:
+
+| `transition` | What changed | Use it for |
+|---|---|---|
+| `moment-to-moment` | the same subject, a beat later; almost nothing | a pause, suspense, the instant itself |
+| `action-to-action` | the same subject, a bigger step in an action | the sample is taken, then filtered |
+| `subject-to-subject` | a new subject in the same place or idea | the guide, then the krill she is talking about |
+| `scene-to-scene` | a jump in place or time | the ship, then the lab, then a year later |
+| `aspect-to-aspect` | the eye wanders over one place or mood | the tank, the net, the clipboard: three looks at one moment |
+| `non-sequitur` | nothing connects them | avoid |
+
+**Label every panel's `word_picture`** (how the words and the picture relate): `word-specific` (the picture adds little), `picture-specific`
+(the picture carries it; little or no caption), `duo-specific` (both say the same), `additive` (one enlarges the other),
+`parallel` (they follow separate tracks), `interdependent` (neither works alone), `montage` (words are part of the picture).
+
+**Targets for a comic of 20 or more panels** (what `--variety` checks): no more than half of the transitions scene-to-scene; at
+least a twentieth of the panels moment-to-moment or aspect-to-aspect, counting only panels that say something; every panel's
+word-picture labelled; at least three picture-specific panels; at least one `gloss`; and, from 30 panels, at least one `moment`.
+**These are signs of a comic with no rhythm, not quotas.** Meet them only where the paper describes an instant, an action or a
+place worth a look. **Every panel must say something** (a caption, a character's line, or a label that names a thing); a frame
+whose only text is "schematic" or "not to scale" is a filler, the validator warns on it, and it is cut, not kept to reach a
+number. A picture-specific panel has a short caption or a one-line label, never none. If the paper has nothing to show, a
+comic with fewer moments is better than one padded with empty frames.
+
+**Devices** (the optional `device` field names a kind of frame, so it can be asked for and counted):
+- **`gloss`**: the caption carries the paper's technical term; a character restates it in plain English ("So it's the..."). The
+  best-liked device. It rests on the paper's own definition (cite that claim), adds no fact, and keeps the paper's hedge.
+- **`moment`**: the instant itself, close in on the apparatus when it matters: the flash firing, the net closing, the filter
+  catching DNA. It carries the caption or line that says what is happening; a picture alone is not a moment. Use the `flash` prop, a big `scale`, a cropped `y`.
+- **`close-up`**: an enlargement, cropped by the panel's edge (`scale` 4 to 8, `y` beyond 1).
+- **`aside`**: a dry one-line comment from a character that adds no fact (see `humour-pass`).
+- **`reveal`**: the payoff of a sequence: a `full` panel, silent or one line.
+
+**Scale, cropping and layering.** Show the larger organism larger, and crop it at the panel's edge when it will not fit: `x`
+beyond 0 or 1 puts the figure partly outside the panel, `y` beyond 1 puts its feet below it, and `scale` goes up to 8. A whale
+at `scale` 1.2 to 1.6 with its tail cropped at one edge, and a krill at 0.8 to 1.0 by its head, reads as large against small; a
+krill at 2 to 3 with diatoms at about 0.4 reads the other way. These sizes are cartoon sizes (the footer already says so; do not repeat
+it on the panel); if a claim gives the real sizes, draw to them. Characters are drawn over props, so a krill placed inside an `aquarium` swims in it; a prop with
+`front: true` is drawn in front of the characters (the glass of a tank, a desk's edge).
 
 ## Writing well
 
@@ -104,8 +151,7 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
   the reading, and the first panel has no transition.
 - Mix `frame`: some outlined, some borderless. (The renderer outlines a panel itself when two rows of only open panels would run together.)
 - Put a chart where the data is the point. Draw it honestly:
-  - never draw a value that is not in a cited claim; a schematic line is dashed or dotted and its panel says "schematic" or shows only the
-    claim's own numbers;
+  - never draw a value that is not in a cited claim; a schematic line is dashed or dotted and shows only the claim's own numbers;
   - set `max` only when it is in a claim (percent charts may use 100); use `show_max: false` to hide an axis maximum you cannot cite;
   - a chart with several bars is better in a `full` panel: `weight` is only a preference, so a `wide` panel can be packed at a
     third of a row and the chart will collide (the field names every prop reads are in `renderers/README.md`);
@@ -151,7 +197,7 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
 
 ```bash
 python scripts/build_storyboard.py examples/<slug>                       # writes storyboard.yaml, keeps cited claims
-python scripts/validate_storyboard.py examples/<slug>/storyboard.yaml --strict
+python scripts/validate_storyboard.py examples/<slug>/storyboard.yaml --strict --variety
 python scripts/check_quotes.py examples/<slug>/claims.yaml --pages-dir sources/<slug>/pages --strict
 python scripts/preview_storyboard.py examples/<slug>/storyboard.yaml -o output/<slug>-preview.html   # a readable page to review the story
 ```
@@ -159,6 +205,6 @@ python scripts/preview_storyboard.py examples/<slug>/storyboard.yaml -o output/<
 Fix every error and warning before the next step. Reading the preview as a stranger would, ask: does the
 story make sense without the paper? Is any caption stronger than its claim?
 
-**Done when:** `check_quotes.py --strict` is clean and `validate_storyboard.py --strict` has no errors and
-no warnings except one per joke still awaiting a human. Then run
+**Done when:** `check_quotes.py --strict` is clean and `validate_storyboard.py --strict --variety` has no errors and
+no warnings except one per joke still awaiting a human (the variety checks included: see "Vary the frames"). Then run
 `humour-pass` (optional) and `visual-qa`.

@@ -430,6 +430,16 @@
                   ],
                   "default": "standard",
                   "description": "How much of a page's spare height this panel's row asks for: a quick beat is short, a significant one is tall. Layout may also vary row heights on its own."
+                },
+                "device": {
+                  "enum": [
+                    "gloss",
+                    "moment",
+                    "close-up",
+                    "aside",
+                    "reveal"
+                  ],
+                  "description": "The kind of frame this is, where it is a recognised device: gloss (a character restates a technical term, which a cited definition claim gives, in plain English), moment (the instant itself: the flash firing, the net closing), close-up (an enlargement, cropped by the panel's edge), aside (a wry comment from a character that adds no fact), reveal (the payoff of a sequence). Used to ask for, and count, variety."
                 }
               }
             }
@@ -459,14 +469,15 @@
               },
               "x": {
                 "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "minimum": -0.6,
+                "maximum": 1.6,
+                "description": "Where the figure stands across the panel, 0 left to 1 right. Beyond 0 or 1 the figure is cropped by the panel's edge, as a very large animal can be."
               },
               "y": {
                 "type": "number",
                 "minimum": 0,
-                "maximum": 1,
-                "description": "Where the feet stand; default 0.94."
+                "maximum": 3,
+                "description": "Where the feet stand, 0 top to 1 bottom; default 0.94. Above 1 the feet are below the panel, so a close-up crops the figure."
               },
               "pose": {
                 "enum": [
@@ -507,7 +518,8 @@
               "scale": {
                 "type": "number",
                 "exclusiveMinimum": 0,
-                "maximum": 3
+                "maximum": 8,
+                "description": "A multiplier on the figure's size. Use a large one, cropped by the panel's edge, to show the larger of two organisms as larger."
               },
               "body": {
                 "enum": [
@@ -551,7 +563,6 @@
                   "bars",
                   "paper",
                   "bowl",
-                  "sign",
                   "picture",
                   "desk",
                   "label",
@@ -615,23 +626,23 @@
               },
               "x": {
                 "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "minimum": -0.6,
+                "maximum": 1.6
               },
               "y": {
                 "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "minimum": -0.6,
+                "maximum": 1.6
               },
               "w": {
                 "type": "number",
                 "minimum": 0,
-                "maximum": 1
+                "maximum": 3
               },
               "h": {
                 "type": "number",
                 "minimum": 0,
-                "maximum": 1
+                "maximum": 3
               },
               "x2": {
                 "type": "number",
@@ -863,6 +874,10 @@
                   "fast"
                 ],
                 "description": "seaice only: which ice condition to draw (pancake ice, packed floes, drifting floes with open water, or a sheet of fast ice)."
+              },
+              "front": {
+                "type": "boolean",
+                "description": "Draw this prop in front of the characters (for example the glass of a tank, or a desk's edge); props are otherwise behind them."
               }
             }
           }

@@ -98,7 +98,7 @@ def test_editions_are_kept_across_rebuilds_and_added_only_for_a_new_pdf(repo):
 
 
 def test_the_command_line_prints_a_summary_and_runs_each_query(repo, capsys):
-    for args in ([], ["--stale"], ["--uses", "bars"], ["--pending-jokes"], ["--todo-papers", "5"], ["--editions"], ["--sql", "select 1 as one"]):
+    for args in ([], ["--stale"], ["--uses", "bars"], ["--pending-jokes"], ["--variety"], ["--todo-papers", "5"], ["--editions"], ["--sql", "select 1 as one"]):
         assert catalogue.main(["--root", str(repo)] + args) == 0
     out = capsys.readouterr().out
     assert "1 comic(s)" in out and "Not yet a comic" in out

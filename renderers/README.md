@@ -17,7 +17,7 @@ A renderer turns a validated `storyboard.yaml` into pages. One exists so far.
 A sentence cannot be drawn by a program, so a panel can carry a `staging` block: who stands where
 (`characters`: cast id or `extra`, `x`, `pose`, `face`, `facing`, `holding`, `scale`) and which
 props appear (`props`: objects `board`, `paper`, `bowl`, `bottle`, `jar`, `ship`,
-`sign`, `desk`, `flash`, `cups`, `picture` (a small nested staging), `label`, `arrow`, `box`, `laptop`, `microscope`, `teapot`, `net`, `thermometer`; charts
+`desk`, `flash`, `cups`, `picture` (a small nested staging), `label`, `arrow`, `box`, `laptop`, `microscope`, `teapot`, `net`, `thermometer`; charts
 and diagrams `bars`, `plot`, `axis`, `pie`, `flow`, `steps`, `stack`). Positions are fractions of the
 panel's scene area. In the pipeline the agent writes the staging as the "artist" step. Numbers
 in a chart or label need a claim, exactly as dialogue does. A panel without staging falls back to
@@ -29,7 +29,7 @@ say so in the caption or give them the same `max`. Axis tick numbers (and a `min
 for the validator: cite the claim that defines the scale.
 
 Things found by using the vocabulary (check the render when you stage these): a character `holding` can only be
-a `marker`, `mug` (held by its handle, with steam), `teacup` (a cup with a tea-bag tag), `clipboard`, `flask` or `magnifier`; a `sign`'s text sits in the top half of its `h` (the lower half is the post); a
+a `marker`, `mug` (held by its handle, with steam), `teacup` (a cup with a tea-bag tag), `clipboard`, `flask` or `magnifier`; a `box` grows taller than its `h` if its words need it and centres them; a
 `label`'s `x` is its centre and it does **not** wrap (a long one is cut off at the panel edge: use `box`); an `arrow` is drawn
 from `x`, `y` to `x2`, `y2`; a `board` shrinks its card text in a narrow panel (to about 9 units) and is unreadable
 with more than three cards or a clause on a card (use `box` props); `steps` labels and captions wrap, but keep the labels
@@ -40,6 +40,18 @@ cover its tick labels; `year` in `meta.source` is an integer; `meta.source.page_
 `meta.private: true` stamps "PRIVATE: not for sharing" in every page's footer and on the last page. A `meta.source.licence`
 with no Creative Commons deed to link to (for example "All rights reserved") also makes the last page say the paper is not
 under an open licence, and prints no "Licence terms" link.
+
+## Composition: scale, cropping and layering
+
+A staged character takes `scale` up to 8, and `x` and `y` may lie beyond the panel (`x` from -0.6 to 1.6, `y` to 3): the panel clips
+whatever sticks out, so a large animal can be cropped by the edge, and `y` beyond 1 puts the feet below the panel for a close-up.
+To show one organism larger than another, give it a larger `scale` and let it be cropped: a whale at 1.2 to 1.6 (tail cropped at an
+edge) beside a krill at 0.8 to 1.0; a krill at 2 to 3 beside diatoms at about 0.4. They are cartoon sizes, not measurements.
+
+Props are drawn first and characters over them, so a character can be placed on or in a prop (a krill inside an `aquarium`).
+`front: true` on a prop draws it in front of the characters instead (the glass of a tank, a desk's edge); a prop listed after a
+`desk` is also drawn in front, as before. A panel's `device` (`gloss`, `moment`, `close-up`, `aside` or `reveal`) names the kind
+of frame it is, so a comic's variety can be asked for and counted (`validate_storyboard.py --variety`).
 
 ## Character vocabulary
 
@@ -55,7 +67,7 @@ A staged character takes `pose`, `face` and `facing`; the enums are in the schem
 | `body` | overrides the cast member's body, so an `extra` can be an animal: `stick`, `diatom`, `krill`, `penguin`, `whale`, `salp`, `copepod`, `fish`, `worm`, `jellyfish`, `urchin`, `seal`, `seabird`, `moss`, `bacterium`, `seastar`, `dinoflagellate`, `squid`, `amphipod` |
 
 A character's look (hair, hair tone, glasses, coat, body) belongs to the cast member in `head.yaml`; see the appearance
-options above. Wording a label: use `box` for a multi-word label (it wraps inside its border) and `sign` for a short one.
+options above. Wording a label: use `box` for a multi-word label (it wraps inside its border, grows to hold its words and centres them; there is no signpost: a sign is a `box`).
 A number prints the way YAML reads it: `25.0` stays `25.0` and `17.5` stays `17.5`, but `17.60` is read as `17.6`, so put the
 exact figure in the caption.
 
@@ -75,7 +87,7 @@ stays `25.0`).
 | `steps` | `items`: each `label`, `caption`; a rising staircase |
 | `stack` | `items`: each `label`, `value`, `style`; a column of segments, bottom to top |
 | `board` | `cards`: each `label`, `covered` (a hatched, hidden card); `title`; labels shrink to fit |
-| `paper`, `sign`, `box`, `label`, `picture` | `label` or `title`; `picture` takes a nested `staging`; `label`'s `x` is its centre and `size` is small, normal or large |
+| `paper`, `box`, `label`, `picture` | `label` or `title`; `picture` takes a nested `staging`; `label`'s `x` is its centre and `size` is small, normal or large |
 | `arrow` | from `x`, `y` to `x2`, `y2` |
 | `sequence` | a strip of DNA letters in four grey tones with one stretch bracketed; `label` names the bracketed stretch (the marker gene) |
 | `tree` | a branching tree (a phylogeny); `items`: each `label` names a tip (3 to 9 tips; none gives six unnamed ones) |
@@ -116,7 +128,7 @@ stays `25.0`).
 
 **The schematic props** (`sequence` to `mixedlayer`, above) are generic pictures of common equipment and analysis steps. Their
 shape, count and size mean nothing: the dots in `clusters`, the letters in `sequence`, the nodes in `network`, the tips
-of an unnamed `tree` and the dots in `echosounder` are decoration. So say "schematic" in the label or the caption, put every
+of an unnamed `tree` and the dots in `echosounder` are decoration. The footer of every comic says the pictures are cartoon stand-ins, so do not label a panel "schematic" (the validator warns); put every
 claim in the caption, and never read a number or a result off one. A `map`'s coastlines are real but simplified, and a pinned `place` states a location: only pin a place that a cited claim names, and take its coordinates from a reference, not from memory. None of them draws a number, so they never need a claim
 by themselves; a `label` you add that contains a number does.
 

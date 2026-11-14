@@ -41,6 +41,14 @@ say so in the note. A joke that gives a real organism a feeling, a motive or an 
 **Callback lines** that carry no fact ("Remember this one. It comes back.") are not jokes and need no `humour` block;
 add one if you are unsure, and the validator will then hold the panel for a human.
 
+**Where the wit comes from.** Two devices give this comic its voice and need no risky claim: the **gloss** (a character restates a
+technical term in plain English, see the `device: gloss` frame in `storyboard`) and the **wry aside** (a short dry comment that
+adds no fact). A gloss is often funnier than a gag because it is also useful. Give them room before reaching for a joke.
+
+**Approving.** The jokes you leave waiting are for a person to read: `python scripts/jokes.py list` shows each with the line that
+carries it, `show <comic> <panel>` gives the scene, caption, claims and the five questions, and `review` steps through them
+(approve, cut, skip). Approving changes one flag; you never edit YAML by hand.
+
 ## 3. Attach and flag each one
 
 ```yaml

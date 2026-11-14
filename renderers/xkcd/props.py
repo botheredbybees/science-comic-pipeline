@@ -148,7 +148,7 @@ def stack(pen, x, y, w, h, p, fs):
 
 
 def ship(pen, x, y, w, h, p, fs):
-    """A research icebreaker in side view, drawn after the RSV Nuyina: a raked bow, a pale upper hull over a dark underbody,
+    """A research icebreaker in side view, drawn after the RSV Nuyina: a raked bow, a pale upper hull over a dark grey underbody,
     a bridge tower with two radomes, two louvred funnels, a crane at each end of the deck, two lifeboats and rescue-boat bays
     in the hull. A stylised line drawing, not to scale; it keeps its proportions in any box."""
     (fx, fy, fw, fh), lines, fsb = _labelled_fit(x, y, w, h, 3.3, p.get("label"), fs)
@@ -164,7 +164,7 @@ def ship(pen, x, y, w, h, p, fs):
     sw = clamp(fw / 110, 1.6, 2.6)
     hull = [N(*q) for q in ((252, 588), (1745, 585), (1745, 690), (1700, 745), (1685, 795), (430, 795), (430, 745), (300, 715), (262, 690), (256, 640))]
     under = [N(*q) for q in ((262, 690), (1745, 690), (1700, 745), (1685, 795), (430, 795), (430, 745), (300, 715))]
-    o = [pen.poly(hull, sw, fill=SOFT, jit=0.25), pen.poly(under, sw, fill=INK, jit=0.2)]
+    o = [pen.poly(hull, sw, fill=SOFT, jit=0.25), pen.poly(under, sw, fill=MID, jit=0.2)]
     o.append(pen.poly([N(*q) for q in ((360, 572), (440, 580), (450, 590), (362, 586))], sw * 0.8, fill=MID, jit=0.1))  # the raised bow edge
     o.append(pen.line(N(278, 585), N(278, 445), sw * 0.9, amp=0.2))  # the foremast
     # the long deckhouse, the funnel casing, and the bridge tower with its sloped front and wings
@@ -205,7 +205,7 @@ def ship(pen, x, y, w, h, p, fs):
         for cxn in (485, 512, 540, 1497, 1526, 1555):  # thruster and sonar windows low on the hull
             cx, cy = N(cxn, 777)
             o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{max(2.0, fw * 0.006):.1f}" fill="{PAPER}" stroke="{PAPER}" stroke-width="1"/>')
-        o.append(pen.stroke([N(1668, 745), N(1700, 735), N(1706, 795), N(1672, 795)], sw * 0.8, closed=True, fill=INK, color=INK))  # the rudder skeg
+        o.append(pen.stroke([N(1668, 745), N(1700, 735), N(1706, 795), N(1672, 795)], sw * 0.8, closed=True, fill=MID, color=INK))  # the rudder skeg
     if lines:
         o.append(text(fx + fw / 2, fy + fh + 6, lines, fsb, anchor="middle", lh=1.1))
     return "".join(o)

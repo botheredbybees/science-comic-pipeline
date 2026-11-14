@@ -7,7 +7,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
-from validate_storyboard import main, validate  # noqa: E402
+from validate_storyboard import main, validate, variety  # noqa: E402
 
 EXAMPLE = ROOT / "examples" / "akam-2026-cartooning" / "storyboard.yaml"
 
@@ -297,3 +297,100 @@ def test_a_lab_coat_and_an_outfit_together_warn(doc):
     doc["cast"][0]["appearance"] = {"coat": True, "outfit": "parka"}
     _, warnings = validate(doc)
     assert any("only the outfit is drawn" in w for w in warnings)
+
+
+def _long_comic(doc, transition="scene-to-scene", n=24):
+    """The example stretched to n panels, every one with the same transition and no word-picture label or device."""
+    d = copy.deepcopy(doc)
+    first = d["beats"][0]["panels"][0]
+    d["beats"] = [{"id": "B1", "title": "t", "act": "problem", "panels": [
+        {**copy.deepcopy(first), "id": f"B1.{i}", "transition": transition, "word_picture": None} for i in range(1, n + 1)]}]
+    for p in d["beats"][0]["panels"]:
+        p.pop("word_picture", None)
+        p.pop("humour", None)
+        p.pop("device", None)
+    d["beats"][0]["panels"][0].pop("transition", None)  # the first panel follows nothing
+    return d
+
+
+def test_a_monotonous_long_comic_is_flagged_for_variety_and_a_short_one_is_not(doc):
+    stats, warnings = variety(_long_comic(doc))
+    text = " ".join(warnings)
+    assert stats["scene_pct"] == 100 and "scene-to-scene" in text and "moment-to-moment" in text and "word_picture" in text and "gloss" in text
+    assert variety(doc)[1] == []  # the 11-panel example is below the threshold
+
+
+def test_variety_is_satisfied_by_a_varied_comic(doc):
+    d = _long_comic(doc, "action-to-action")
+    kinds = ["moment-to-moment", "aspect-to-aspect", "subject-to-subject", "action-to-action"]
+    for i, p in enumerate(d["beats"][0]["panels"]):
+        p["transition"] = kinds[i % 4]
+        p["word_picture"] = "picture-specific" if i % 5 == 0 else "additive"
+    d["beats"][0]["panels"][3]["device"] = "gloss"
+    d["beats"][0]["panels"][3]["claim_ids"] = ["C1"]
+    d["beats"][0]["panels"][3]["speech"].append({"speaker": "sam", "text": "In other words, plain English."})
+    d["beats"][0]["panels"][7]["device"] = "moment"
+    assert variety(d)[1] == []
+
+
+def test_a_gloss_must_cite_a_claim_and_have_a_character_line(doc):
+    d = _long_comic(doc)
+    p = d["beats"][0]["panels"][0]
+    p.update(device="gloss", claim_ids=[])
+    p["speech"] = [l for l in p["speech"] if l.get("kind") == "caption"]
+    text = " ".join(variety(d)[1])
+    assert "must cite the definition claim" in text and "has none" in text
+
+
+def _first_panel(doc):
+    return doc["beats"][0]["panels"][0]
+
+
+def test_a_label_that_only_says_schematic_or_stand_in_warns(doc):
+    p = _first_panel(doc)
+    p["staging"] = {"props": [{"kind": "tubes", "x": 0.1, "y": 0.1, "w": 0.5, "h": 0.5, "label": "schematic"},
+                              {"kind": "label", "x": 0.1, "y": 0.8, "label": "stand-ins, not to scale"}]}
+    text = " ".join(validate(doc)[1])
+    assert "'schematic' repeats what the footer already says" in text and "'stand-ins, not to scale' repeats" in text
+
+
+def test_a_bracketed_stand_in_on_a_real_label_also_warns_but_a_plain_name_does_not(doc):
+    p = _first_panel(doc)
+    p["staging"] = {"props": [{"kind": "rmt", "x": 0.1, "y": 0.1, "w": 0.5, "h": 0.5, "label": "mid-water trawl (schematic)"}]}
+    assert any("repeats what the footer" in w for w in validate(doc)[1])
+    p["staging"]["props"][0]["label"] = "mid-water trawl"
+    assert not any("repeats what the footer" in w for w in validate(doc)[1])
+
+
+def test_a_panel_with_no_words_but_a_boilerplate_label_is_a_filler(doc):
+    p = _first_panel(doc)
+    p.pop("speech", None)
+    p.pop("humour", None)
+    p["staging"] = {"props": [{"kind": "filter", "x": 0.1, "y": 0.1, "w": 0.8, "h": 0.8, "label": "schematic"}]}
+    assert any(f"{p['id']}: the panel has no caption, speech or label" in w for w in validate(doc)[1])
+    p["staging"]["props"][0]["label"] = "water filter"  # a label that names the thing is words
+    assert not any("has no caption, speech or label" in w for w in validate(doc)[1])
+
+
+def test_a_silent_panel_is_allowed_when_it_is_a_joke(doc):
+    p = _first_panel(doc)
+    p.pop("speech", None)
+    p["humour"] = {"note": "a silent beat", "keeps_claims_intact": True}
+    assert not any("has no caption, speech or label" in w for w in validate(doc)[1])
+
+
+def test_a_wordless_panel_does_not_count_as_a_moment(doc):
+    d = _long_comic(doc, "moment-to-moment")
+    for p in d["beats"][0]["panels"]:
+        p["speech"] = []
+        p["staging"] = {"props": [{"kind": "filter", "x": 0.1, "y": 0.1, "w": 0.8, "h": 0.8, "label": "schematic"}]}
+    assert variety(d)[0]["moment_pct"] == 0
+
+
+def test_the_variety_flag_prints_a_report_without_changing_the_default(doc, tmp_path, capsys):
+    f = tmp_path / "s.yaml"
+    f.write_text(yaml.safe_dump(_long_comic(doc), sort_keys=False))
+    assert main([str(f)]) in (0, 1)
+    assert "variety:" not in capsys.readouterr().out
+    main([str(f), "--variety"])
+    assert "variety:" in capsys.readouterr().out

@@ -458,3 +458,41 @@ def test_a_map_and_its_currents_share_one_geometry():
 def test_each_sea_ice_condition_draws(cond):
     import props as P
     assert P.extra_prop(R.Pen(1), 0, 0, 300, 200, {"kind": "seaice", "condition": cond}, 16)
+
+
+def test_a_figure_can_be_enlarged_and_cropped_by_the_panels_edge(doc):
+    """x beyond 0 or 1, y beyond 1 and a large scale are accepted: the panel clips what sticks out."""
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    panel = d["beats"][0]["panels"][0]
+    panel.setdefault("staging", {})["characters"] = [{"id": "extra", "body": "whale", "x": -0.3, "y": 0.9, "scale": 3.0},
+                                                      {"id": "extra", "body": "krill", "x": 1.2, "y": 1.6, "scale": 7.0}]
+    assert validate(d)[0] == []
+    svgs, _ = R.render_pages(d)
+    assert 'clip-path="url(#clip-B1-1)"' in "".join(svgs)  # what overflows is clipped by the panel
+    panel["staging"]["characters"][0]["scale"] = 9.0
+    assert validate(d)[0]  # beyond the limit is refused
+
+
+def test_a_prop_marked_front_is_drawn_after_the_characters(doc):
+    d = copy.deepcopy(doc)
+    st = d["beats"][0]["panels"][0].setdefault("staging", {})
+    st["characters"] = [{"id": "extra", "body": "krill", "x": 0.5}]
+    st["props"] = [{"kind": "label", "x": 0.5, "y": 0.5, "label": "FRONTMARK"}]
+    behind = "".join(R.render_pages(d)[0])
+    st["props"][0]["front"] = True
+    in_front = "".join(R.render_pages(d)[0])
+    assert in_front.index("FRONTMARK") > behind.index("FRONTMARK")  # drawn later, so on top
+
+
+def test_a_box_grows_to_hold_a_long_label_and_there_is_no_sign_prop(doc):
+    import validate_storyboard as V
+    d = copy.deepcopy(doc)
+    panel = d["beats"][0]["panels"][0]
+    panel["staging"] = {"props": [{"kind": "box", "x": 0.1, "y": 0.1, "w": 0.2, "h": 0.05,
+                                   "label": "a rather long label that needs several lines inside a narrow box"}]}
+    svgs, _ = R.render_pages(d)
+    assert "narrow" in "".join(svgs) and "several" in "".join(svgs)  # the whole label is drawn, wrapped over lines
+    panel["staging"]["props"][0]["kind"] = "sign"
+    errors, _ = V.validate(d)
+    assert any("sign" in e for e in errors)  # retired: a sign is a box

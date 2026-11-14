@@ -56,6 +56,24 @@ def _dupes(ids):
     return dupes
 
 
+# The footer of every comic already says the pictures are simple cartoons, stand-ins and not to scale, so a label that says
+# it again on a panel is noise, and a panel whose only words are that label is a filler.
+BOILERPLATE = re.compile(r"\b(?:schematics?|stand-?ins?|not to scale)\b", re.I)
+
+
+def _boilerplate_only(text):
+    """True if nothing is left of a label once the boilerplate words, brackets and joining words are removed."""
+    rest = BOILERPLATE.sub("", text)
+    return not re.sub(r"\b(?:are|is|a|an|the|of)\b|[\s,;:().\-]", "", rest, flags=re.I)
+
+
+def _real_words(panel):
+    """The words a reader gets from a panel: its caption and speech lines, and any label that says more than 'schematic'."""
+    texts = [l["text"] for l in panel.get("speech", [])]
+    texts += [t for t in _staging_texts(panel.get("staging")) if t.strip() and not _boilerplate_only(t)]
+    return [t for t in texts if re.search(r"[A-Za-z]", t)]
+
+
 def _staging_texts(staging):
     """Every string and number a renderer would draw as text from a staging block."""
     out = []
@@ -190,6 +208,13 @@ def validate(doc):
         if "humour" in p and not p["humour"].get("keeps_claims_intact"):
             warnings.append(f"{p['id']}: joke on a panel that cites {', '.join(cited) if cited else 'no claim'}; "
                             "a reviewer must confirm it keeps the claims intact")
+        for t in _staging_texts(p.get("staging")):
+            if BOILERPLATE.search(t):
+                warnings.append(f"{p['id']}: the label '{t}' repeats what the footer already says (the pictures are cartoon stand-ins, not "
+                                "to scale): name the thing, or drop the label")
+        if not _real_words(p) and "humour" not in p:  # a silent beat that is a joke is the one wordless panel a person approves
+            warnings.append(f"{p['id']}: the panel has no caption, speech or label of its own; a panel that says nothing is a filler, "
+                            "so give it a line the claims support or cut it (a deliberate silent joke carries a `humour` note instead)")
         drawn = _prop_kinds(p.get("staging"))
         scene = p.get("scene", "")
         for word, kind in SCENE_OBJECTS.items():
@@ -228,14 +253,67 @@ def validate(doc):
     return errors, warnings
 
 
+def variety(doc):
+    """McCloud-style variety of a comic: return (stats, warnings). Transitions and word-picture labels are notes about the
+    reading, but they are how a comic's rhythm is planned, so a comic that is nearly all scene-to-scene with no moments, no
+    silent pictures and no plain-English glosses is a defect of variety. Applies from 20 panels."""
+    panels = [p for b in doc["beats"] for p in b["panels"]]
+    n = len(panels)
+    trans = {}
+    for p in panels:
+        if p.get("transition"):
+            trans[p["transition"]] = trans.get(p["transition"], 0) + 1
+    labelled = sum(trans.values())
+    # only a panel that says something counts: a wordless picture is a filler, not a moment
+    moments = sum(1 for p in panels if p.get("transition") in ("moment-to-moment", "aspect-to-aspect") and _real_words(p))
+    no_wp = sum(1 for p in panels if not p.get("word_picture"))
+    picture = sum(1 for p in panels if p.get("word_picture") == "picture-specific")
+    devices = {}
+    for p in panels:
+        if p.get("device"):
+            devices[p["device"]] = devices.get(p["device"], 0) + 1
+    stats = {"panels": n, "scene_pct": round(100 * trans.get("scene-to-scene", 0) / max(labelled, 1)), "moment_pct": round(100 * moments / max(n, 1)),
+             "no_word_picture_pct": round(100 * no_wp / max(n, 1)), "picture_specific": picture, "devices": devices}
+    warnings = []
+    if n >= 20:
+        if labelled and stats["scene_pct"] > 50:
+            warnings.append(f"variety: {stats['scene_pct']}% of the transitions are scene-to-scene; most panels continue the same scene, so label "
+                            "them by what actually changes (same subject a moment later, a bigger action, a new subject in the same place)")
+        if moments < 0.05 * n:
+            warnings.append(f"variety: only {moments} of {n} panels are moment-to-moment or aspect-to-aspect; if the paper describes an instant or an action, "
+                            "show it (the flash, the net closing) with a caption or a line; do not add empty frames to meet a number")
+        if no_wp > 0.25 * n:
+            warnings.append(f"variety: {no_wp} of {n} panels have no word_picture label; say how words and picture relate in each one")
+        if n >= 30 and picture < 3:
+            warnings.append(f"variety: {picture} picture-specific panel(s); let the picture carry a few panels with little or no caption")
+        if not devices.get("gloss"):
+            warnings.append("variety: no panel is marked device: gloss; have a character restate a technical term in plain English "
+                            "(on a definition claim) at least once")
+        if n >= 30 and not devices.get("moment"):
+            warnings.append("variety: no panel is marked device: moment; show the instant itself at least once (the flash, the net closing)")
+    for p in panels:
+        if p.get("device") == "gloss":
+            if not p.get("claim_ids"):
+                warnings.append(f"{p['id']}: a gloss restates a term the paper defines, so it must cite the definition claim")
+            if not any(l.get("kind", "say") != "caption" and l["speaker"] != "narrator" for l in p.get("speech", [])):
+                warnings.append(f"{p['id']}: a gloss is a character's line, but this panel has none")
+    return stats, warnings
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("storyboard")
     ap.add_argument("--strict", action="store_true", help="treat warnings as errors")
+    ap.add_argument("--variety", action="store_true", help="also check the comic's McCloud variety (transitions, moments, glosses); see skills/storyboard")
     args = ap.parse_args(argv)
 
     doc = yaml.safe_load(Path(args.storyboard).read_text())
     errors, warnings = validate(doc)
+    if args.variety and not errors:
+        stats, vwarn = variety(doc)
+        warnings += vwarn
+        print(f"variety: {stats['scene_pct']}% scene-to-scene, {stats['moment_pct']}% moments, {stats['no_word_picture_pct']}% unlabelled word-picture, "
+              f"{stats['picture_specific']} picture-specific, devices {stats['devices'] or 'none'}")
     for e in errors:
         print(f"ERROR   {e}")
     for w in warnings:
