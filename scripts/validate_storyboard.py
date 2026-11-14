@@ -233,6 +233,9 @@ def validate(doc):
         if not _real_words(p) and "humour" not in p:  # a silent beat that is a joke is the one wordless panel a person approves
             warnings.append(f"{p['id']}: the panel has no caption, speech or label of its own; a panel that says nothing is a filler, "
                             "so give it a line the claims support or cut it (a deliberate silent joke carries a `humour` note instead)")
+        for prop in (p.get("staging") or {}).get("props", []):
+            if prop.get("kind") == "net" and re.search(r"\bCPR\b|plankton recorder", prop.get("label", ""), re.I):
+                warnings.append(f"{p['id']}: a plankton net is labelled '{prop['label']}'; a continuous plankton recorder is not a net, use the `cpr` prop")
         drawn = _prop_kinds(p.get("staging"))
         scene = p.get("scene", "")
         for word, kind in SCENE_OBJECTS.items():

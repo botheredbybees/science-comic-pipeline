@@ -89,6 +89,11 @@ to one side, or are left out. Before you write a panel, ask "what would I draw i
   `scatter`, `boxplot`, `modelgrid`) are generic pictures: let the caption carry the claim (see `renderers/README.md`). Do not label a panel "schematic", "stand-in"
   or "not to scale": the footer of every comic says once that the pictures are cartoon stand-ins and not to scale, and
   `validate_storyboard.py` warns on a label that only repeats it. A label names the thing ("mid-water trawl"), nothing more.
+- **Draw the right thing, at the right size.** A continuous plankton recorder is the `cpr` prop, not a `net` (the validator warns on a
+  net labelled CPR). When a claim is about a difference in size ("animals range in size enormously"), scale the bodies so the difference
+  shows (a small `krill` beside a large `whale`). When a claim is about several species, do not stage the same body once per
+  species as if they differed: show what separates them (here, an `axis` of when each was detected) and name them in labels.
+  A thing that sits inside a container (a copepod in a `jar`) is staged inside it, small enough to be contained.
 - **No more than about a quarter of the panels may be figures only** (the validator warns above that). A figures-only
   panel is fine when it is the point: a pause, a reaction, a joke that needs a face. It is a defect when it is filler.
 - **A claim with nothing to draw does not need its own panel.** Put it as a second caption in a neighbouring panel that

@@ -432,3 +432,13 @@ def test_argument_and_practice_are_claim_kinds(doc):
     d = copy.deepcopy(doc)
     d["claims"][0]["kind"], d["claims"][1]["kind"] = "argument", "practice"
     assert validate(d)[0] == []
+
+
+def test_a_net_labelled_cpr_is_a_warning(doc):
+    d = copy.deepcopy(doc)
+    p = d["beats"][0]["panels"][0]
+    p.setdefault("staging", {}).setdefault("props", []).append({"kind": "net", "x": 0.5, "y": 0.1, "w": 0.2, "h": 0.5, "label": "CPR"})
+    _, warnings = validate(d)
+    assert any("use the `cpr` prop" in w for w in warnings)
+    p["staging"]["props"][-1]["kind"] = "cpr"
+    assert not any("use the `cpr` prop" in w for w in validate(d)[1])

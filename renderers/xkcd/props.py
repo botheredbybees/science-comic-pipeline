@@ -157,19 +157,35 @@ def ship(pen, x, y, w, h, p, fs):
     def N(px, py):  # a point in the reference drawing (1500 wide, 455 tall) to the box
         return (fx + (px - 250) / 1500 * fw, fy + (py - 345) / 455 * fh)
 
+    sw = clamp(fw / 110, 1.6, 2.6)
+    amp = clamp(fw / 330, 0.5, 1.2)  # how far a hand-drawn edge wanders
+
+    def P(pts, w, fill="none", jit=0.0):
+        """A closed shape drawn as separate wobbly strokes that overshoot at the corners, the way a pen draws it by hand."""
+        pts = [(a + pen.n(max(jit, 0.3)), b + pen.n(max(jit, 0.3))) for a, b in pts]
+        out = []
+        if fill != "none":
+            out.append(f'<path d="M{" L".join(f"{a:.1f} {b:.1f}" for a, b in pts)}Z" fill="{fill}" stroke="none"/>')
+        for i in range(len(pts)):
+            (x1, y1), (x2, y2) = pts[i], pts[(i + 1) % len(pts)]
+            ln = math.hypot(x2 - x1, y2 - y1) or 1
+            ux, uy = (x2 - x1) / ln, (y2 - y1) / ln
+            e0, e1 = pen.r.uniform(-0.5, 1.6), pen.r.uniform(-0.5, 1.6)
+            out.append(pen.line((x1 - ux * e0, y1 - uy * e0), (x2 + ux * e1, y2 + uy * e1), w, amp=amp))
+        return "".join(out)
+
     def R(px0, py0, px1, py1, sw=2.0, fill=PAPER):
         (a, b), (c, d) = N(px0, py0), N(px1, py1)
-        return pen.rect(a, b, c - a, d - b, sw, fill=fill, over=0.6)
+        return pen.rect(a, b, c - a, d - b, sw, fill=fill, over=1.8)
 
-    sw = clamp(fw / 110, 1.6, 2.6)
     hull = [N(*q) for q in ((252, 588), (1745, 585), (1745, 690), (1700, 745), (1685, 795), (430, 795), (430, 745), (300, 715), (262, 690), (256, 640))]
     under = [N(*q) for q in ((262, 690), (1745, 690), (1700, 745), (1685, 795), (430, 795), (430, 745), (300, 715))]
-    o = [pen.poly(hull, sw, fill=SOFT, jit=0.25), pen.poly(under, sw, fill=MID, jit=0.2)]
-    o.append(pen.poly([N(*q) for q in ((360, 572), (440, 580), (450, 590), (362, 586))], sw * 0.8, fill=MID, jit=0.1))  # the raised bow edge
+    o = [P(hull, sw, fill=SOFT, jit=0.25), P(under, sw, fill=MID, jit=0.2)]
+    o.append(P([N(*q) for q in ((360, 572), (440, 580), (450, 590), (362, 586))], sw * 0.8, fill=MID, jit=0.1))  # the raised bow edge
     o.append(pen.line(N(278, 585), N(278, 445), sw * 0.9, amp=0.2))  # the foremast
     # the long deckhouse, the funnel casing, and the bridge tower with its sloped front and wings
     o += [R(668, 522, 1385, 584, sw), R(1005, 462, 1150, 525, sw)]
-    o.append(pen.poly([N(*q) for q in ((745, 525), (742, 484), (766, 470), (862, 470), (962, 490), (966, 525))], sw, fill=PAPER, jit=0.15))
+    o.append(P([N(*q) for q in ((745, 525), (742, 484), (766, 470), (862, 470), (962, 490), (966, 525))], sw, fill=PAPER, jit=0.15))
     o.append(R(752, 480, 858, 500, sw * 0.8, fill=SOFT))  # the bridge windows
     if big:
         for xx in range(766, 858, 18):
@@ -185,18 +201,18 @@ def ship(pen, x, y, w, h, p, fs):
                 o.append(pen.line(N(a + 4, yy), N(b - 4, yy), 1.0, amp=0.05, color=PAPER))
     # the foredeck crane: a pedestal, a long boom and a truss under it
     o.append(R(682, 505, 734, 583, sw))
-    o.append(pen.poly([N(*q) for q in ((476, 498), (734, 494), (734, 514), (476, 512))], sw * 0.9, fill=PAPER, jit=0.1))
-    o.append(pen.poly([N(*q) for q in ((482, 512), (606, 548), (690, 516))], sw * 0.8, fill="none", jit=0.1))
+    o.append(P([N(*q) for q in ((476, 498), (734, 494), (734, 514), (476, 512))], sw * 0.9, fill=PAPER, jit=0.1))
+    o.append(P([N(*q) for q in ((482, 512), (606, 548), (690, 516))], sw * 0.8, fill="none", jit=0.1))
     # the aft crane: its pedestal, boom and a blue cover
     o.append(R(1330, 468, 1384, 524, sw))
-    o.append(pen.poly([N(*q) for q in ((1214, 482), (1384, 462), (1384, 478), (1214, 496))], sw * 0.9, fill=PAPER, jit=0.1))
+    o.append(P([N(*q) for q in ((1214, 482), (1384, 462), (1384, 478), (1214, 496))], sw * 0.9, fill=PAPER, jit=0.1))
     o.append(R(1232, 494, 1352, 516, sw * 0.8, fill=SOFT))
     for a, b in ((932, 1010), (1030, 1126)):  # the two orange lifeboats, as pods under the bridge
         o.append(pen.stroke([N(a, 562), N(a + 6, 542), N(b - 10, 540), N(b, 556), N(b - 4, 566)], sw * 0.9, closed=True, fill=SOFT))
     for a, b in ((1145, 1250), (1262, 1365)):  # rescue-boat bays in the hull, each with a small boat
         o.append(R(a, 592, b, 638, sw * 0.9))
         if big:
-            o.append(pen.poly([N(a + 12, 622), N(b - 12, 622), N(b - 22, 634), N(a + 22, 634)], 1.4, fill=SOFT, jit=0.1))
+            o.append(P([N(a + 12, 622), N(b - 12, 622), N(b - 22, 634), N(a + 22, 634)], 1.4, fill=SOFT, jit=0.1))
     o.append(R(1600, 592, 1740, 638, sw * 0.9))
     o.append(R(1430, 592, 1505, 638, sw * 0.9, fill=INK))
     if big:
@@ -751,19 +767,37 @@ def sequencer(pen, x, y, w, h, p, fs):
 
 
 def cpr(pen, x, y, w, h, p, fs):
-    """A towed plankton recorder, schematic: a torpedo-shaped body with an open funnel at the front, a tail with fins
-    and a line to the ship. (A generic drawing, not the real instrument.)"""
-    x, y, w, h, lines, fsb = _under(x, y, w, h, 2.6, p, fs)
-    cy = y + h * 0.55
-    o = [pen.stroke([(x, y + h * 0.05), (x + w * 0.2, cy - h * 0.1)], 1.8, color=MID),
-         pen.stroke([(x + w * 0.16, cy - h * 0.28), (x + w * 0.62, cy - h * 0.3), (x + w * 0.9, cy - h * 0.12), (x + w * 0.9, cy + h * 0.12),
-                     (x + w * 0.62, cy + h * 0.3), (x + w * 0.16, cy + h * 0.28), (x + w * 0.1, cy)], 2.6, closed=True, fill=PAPER),
-         pen.stroke([(x + w * 0.16, cy - h * 0.28), (x + w * 0.1, cy), (x + w * 0.16, cy + h * 0.28)], 2.6, fill=SOFT),
-         pen.stroke([(x + w * 0.9, cy - h * 0.12), (x + w * 0.99, cy - h * 0.34), (x + w * 0.95, cy - h * 0.02)], 2.2, closed=True, fill=SOFT),
-         pen.stroke([(x + w * 0.9, cy + h * 0.12), (x + w * 0.99, cy + h * 0.34), (x + w * 0.95, cy + h * 0.02)], 2.2, closed=True, fill=SOFT),
-         pen.line((x + w * 0.3, cy), (x + w * 0.6, cy), 1.4, amp=0.3, color=MID),
-         pen.line((x + w * 0.3, cy - h * 0.12), (x + w * 0.6, cy - h * 0.12), 1.4, amp=0.3, color=MID),
-         pen.line((x + w * 0.3, cy + h * 0.12), (x + w * 0.6, cy + h * 0.12), 1.4, amp=0.3, color=MID)]
+    """A continuous plankton recorder in side view, drawn after the real instrument (front on the left): a tow wire and weight, a nose
+    cone with a small intake, a box holding two silk reels and the preservation tank, a gear box on top driven by a long shaft from a
+    propeller behind, a tapering tail and a tail fin. Water and plankton run in at the nose and are trapped between two moving sheets of silk. A generic drawing, not to scale."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 2.3, p, fs)
+    U = lambda u, v: (x + w * u, y + h * v)  # noqa: E731
+    cy = 0.62
+    sw = clamp(w / 90, 1.6, 2.6)
+    o = []
+    o.append(pen.poly([U(0.86, cy - 0.38), U(1.0, cy - 0.38), U(1.0, cy + 0.3), U(0.86, cy + 0.3)], sw, fill=MID, jit=0.3))  # the tail fin
+    o.append(pen.poly([U(0.1, cy - 0.06), U(0.3, cy - 0.21), U(0.3, cy + 0.21), U(0.1, cy + 0.06)], sw, fill=SOFT, jit=0.25))  # the nose cone
+    o.append(pen.poly([U(0.62, cy - 0.21), U(0.88, cy - 0.07), U(0.88, cy + 0.07), U(0.62, cy + 0.21)], sw, fill=SOFT, jit=0.25))  # the tail cone
+    ax, ay = U(0.3, cy - 0.25)
+    o.append(pen.rect(ax, ay, w * 0.32, h * 0.49, sw, fill=PAPER, over=1.2))  # the box with the silk and the tank
+    for rx_, ry_, r_ in ((0.37, cy - 0.1, 0.055), (0.37, cy + 0.11, 0.055)):  # the two silk reels
+        cx, cyy = U(rx_, ry_)
+        o.append(pen.ellipse(cx, cyy, w * r_ * 0.6, h * r_ * 1.4, sw * 0.8, fill=SOFT))
+    tx, ty = U(0.52, cy - 0.03)
+    o.append(pen.ellipse(tx, ty, w * 0.06, h * 0.15, sw * 0.9, fill=SOFT))  # the preservation tank reel
+    o.append(pen.stroke([U(0.4, cy - 0.12), U(0.46, cy - 0.17), U(0.52, cy - 0.17), U(0.58, cy - 0.06)], sw * 0.9, color=INK))  # cover silk
+    o.append(pen.stroke([U(0.4, cy + 0.15), U(0.46, cy + 0.08), U(0.52, cy + 0.1), U(0.57, cy - 0.06)], sw * 0.9, color=MID))  # collecting silk
+    gx, gy = U(0.42, cy - 0.37)
+    o.append(pen.rect(gx, gy, w * 0.09, h * 0.12, sw * 0.9, fill=SOFT, over=0.8))  # the gear box
+    o.append(pen.line(U(0.51, cy - 0.31), U(0.9, cy - 0.31), sw * 0.8, amp=0.3))  # the drive shaft
+    o.append(pen.line(U(0.88, cy - 0.07), U(0.88, cy - 0.33), sw, amp=0.3))  # the propeller stand
+    px, py = U(0.915, cy - 0.31)
+    o.append(pen.ellipse(px, py, w * 0.014, h * 0.11, sw * 0.9, fill=PAPER))  # the propeller
+    wx, wy = U(0.2, cy - 0.38)
+    o.append(pen.line(U(0.05, 0.0), (wx, wy - h * 0.075), 1.8, amp=0.4, color=MID))  # the tow wire
+    o.append(pen.ellipse(wx, wy, w * 0.022, h * 0.075, sw * 0.9, fill=SOFT))  # the weight on the tow wire
+    o.append(pen.line((wx, wy + h * 0.075), U(0.24, cy - 0.25), sw * 0.8, amp=0.2))  # its hook to the body
+    o.append(pen.arrow(U(0.0, cy), U(0.1, cy), 1.6, head=5))  # water and plankton in
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
