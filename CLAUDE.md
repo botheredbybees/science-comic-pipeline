@@ -24,7 +24,7 @@ The rules above apply. This section adds what a Claude Code session needs that o
 ## Setup and checks
 
 ```bash
-.venv/bin/python -m pytest tests -q        # 269 tests; run after any change to scripts/ or renderers/
+.venv/bin/python -m pytest tests -q        # run after any change to scripts/ or renderers/
 .venv/bin/python scripts/validate_storyboard.py examples/<slug>/storyboard.yaml --strict
 .venv/bin/python scripts/visual_qa.py examples/<slug>/storyboard.yaml --keep output/<slug>
 .venv/bin/python scripts/export_pdf.py examples/<slug>/storyboard.yaml -o examples/<slug>/<slug>.pdf

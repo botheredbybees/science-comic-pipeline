@@ -124,6 +124,31 @@ Rules for the quote:
 - It must not start or end on a word with a digit stuck to it (older text keeps footnote digits, "density1").
 - The page is the page it is on. Do not guess.
 
+### Drafting the ledger with a model (cards): optional
+
+You may draft claims with the card tools instead of typing every quote. They work on any PDF, for one paper or several, with whatever
+model the user has set up (`docs/SETUP.md`; test it with `python scripts/llm.py --ping`):
+
+```bash
+python scripts/intake_check.py paper.pdf                          # scanned, a reference list or a fragment? stop and say so
+python scripts/extract_cards.py paper.pdf -o cards/<id> --ref <id>   # drafts cards.yaml; every quote is forced onto the real page text
+python scripts/verify_cards.py cards/<id>/cards.yaml              # optional second opinion from another model (model_check)
+python scripts/cards_to_claims.py --from <id>=cards/<id>:3,7,11-14 -o <folder>/claims.yaml --pages-root sources --show
+```
+
+What the tools guarantee and what they do not:
+- **Guaranteed:** every card's quote is a real run of words on the page it names. A quote the model invented is dropped, not repaired.
+- **Not guaranteed:** that the paraphrase is fair to its quote. Cards come out `unverified`. `model_check` (supported, overstated, different,
+  unclear) is a reading list: read every flagged card first, but read the unflagged ones too, because a passing card is still unreviewed.
+- **You must do the read.** For each card you will use, put the claim and its quote side by side (`--show`), ask "what would make this
+  overstated?", and edit the wording until it says no more than the quote: keep the hedge, the number and its scope ("for a person living
+  with dementia", "appeared to remain stable"). Then set `status: verified` (or use `--reviewed-by` once you have read them).
+- A card that names a participant in a study of people with dementia, mental illness or another vulnerable group: leave the name out and say "one attendee". A study's pseudonym is still a real person's story.
+- The tools read text only. A number that comes from a figure still needs a human look at the figure.
+- Pick cards for the story, not all of them: a 40-page report can yield 150 cards, and a comic uses 30 to 70 claims.
+- `cards_to_claims.py` renumbers the claims C1, C2, ... across papers (the schema wants `C<number>`), sets `source.ref`, maps the
+  extractor's `future_research` kind to `argument`, and writes `claims-map.yaml` so any claim traces back to its card.
+
 ## 4. Check by script, then by reading
 
 ```bash

@@ -41,7 +41,7 @@ paper ──> claims ledger ──> story spine ──> storyboard.yaml ──> 
 ## Make a comic
 
 The full guide, with set-up for Claude Code, Codex, Gemini CLI, Cursor, Copilot and others, a prompt to paste, and
-troubleshooting, is [HOWTO.md](HOWTO.md). The short version:
+troubleshooting, is [HOWTO.md](HOWTO.md). Setting up your own machine, models and hardware (or none) is [docs/SETUP.md](docs/SETUP.md). The short version:
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
@@ -79,11 +79,15 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 | `scripts/check_quotes.py` | Confirms every verified claim's quote is on the page it names in the source |
 | `scripts/build_storyboard.py` | Assembles a storyboard from a working folder (head, beats, claims) |
 | `scripts/export_pdf.py` | Exports a storyboard as a PDF, one A4 page per comic page (needs Chrome or Chromium) |
+| `scripts/intake_check.py` | Flags a PDF that is scanned, a reference list or a fragment, and gives licence hints (optional, with the card tools) |
+| `scripts/extract_cards.py`, `scripts/verify_cards.py`, `scripts/snap_quotes.py`, `scripts/llm.py` | Optional: draft claims with quotes from a PDF using any model you choose, force every quote onto the real page text, and ask a second model whether each paraphrase is fair. `llm.py` is the one client for Ollama, any OpenAI-compatible server and Anthropic |
+| `scripts/cards_to_claims.py` | Picks cards from one paper or several and writes the claims ledger (renumbered, with `source.ref`) |
 | `scripts/layout.py` | Packs panels into rows, left to right then down: no blanks, at most 3 across, looks ahead |
 | `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
 | `examples/` | Example papers, each with its licence record, claims ledger, storyboard and claim check |
 | `renderers/` | One folder per drawing style. `xkcd/` draws stick-figure A4 pages from a panel's `staging` |
-| `HOWTO.md`, `AGENTS.md` | How to run it end to end in your AI environment; the briefing every agent reads first |
+| `HOWTO.md`, `AGENTS.md` | How to run it end to end in your AI environment (including one paper or several); the briefing every agent reads first |
+| `docs/SETUP.md`, `.env.example` | Setting up your own machine: the core install, choosing an agent, and choosing a model and hardware for the optional card tools |
 | `skills/` | Five agent skills for the judgement steps, in order: source-to-claims, story-spine, storyboard, humour-pass, visual-qa |
 | `docs/superpowers/` | Design and plans |
 

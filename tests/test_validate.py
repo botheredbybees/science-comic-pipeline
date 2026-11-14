@@ -442,3 +442,13 @@ def test_a_net_labelled_cpr_is_a_warning(doc):
     assert any("use the `cpr` prop" in w for w in warnings)
     p["staging"]["props"][-1]["kind"] = "cpr"
     assert not any("use the `cpr` prop" in w for w in validate(d)[1])
+
+
+def test_scene_word_that_is_a_staged_label_is_not_a_missing_prop(doc):
+    """'compare to a reference database' drawn as a flow label is text on the panel, not a promised picture of a database."""
+    panel = doc["beats"][0]["panels"][0]
+    panel["scene"] = "A flow of two boxes: sequence it, compare it to a reference database."
+    panel["staging"] = {"props": [{"kind": "flow", "items": [{"label": "sequence it"}, {"label": "compare to a reference database"}]}]}
+    assert not any("mentions a database" in w for w in validate(doc)[1])
+    panel["staging"] = {"props": [{"kind": "flow", "items": [{"label": "sequence it"}]}]}
+    assert any("mentions a database" in w for w in validate(doc)[1])

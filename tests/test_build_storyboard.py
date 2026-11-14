@@ -58,3 +58,10 @@ def test_beat_files_sort_by_number_not_by_text(tmp_path):
     (tmp_path / "claims.yaml").write_text("claims: []\n")
     doc, *_ = build(tmp_path)
     assert [b["id"] for b in doc["beats"]] == ["B1", "B2", "B10"]
+
+
+def test_id_key_sorts_any_prefix_by_number():
+    """Claim ids may carry any letters (the schema now reads C<number>, but ledgers are sorted by prefix then number)."""
+    from build_storyboard import _id_key
+    ids = ["C10", "C2", "CA3", "K11", "K2"]
+    assert sorted(ids, key=_id_key) == ["C2", "C10", "CA3", "K2", "K11"]

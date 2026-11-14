@@ -238,9 +238,10 @@ def validate(doc):
                 warnings.append(f"{p['id']}: a plankton net is labelled '{prop['label']}'; a continuous plankton recorder is not a net, use the `cpr` prop")
         drawn = _prop_kinds(p.get("staging"))
         scene = p.get("scene", "")
+        labels = " ".join(_staging_texts(p.get("staging")))  # a word that is a drawn label ("compare to a reference database") is not a missing object
         for word, kind in SCENE_OBJECTS.items():
             # "jar water" names a sample, "microscope work" a topic: neither is an object to draw
-            if re.search(rf"\b{word}s?\b(?!\s+(?:water|work))", scene, re.I) and kind not in drawn:
+            if re.search(rf"\b{word}s?\b(?!\s+(?:water|work))", scene, re.I) and kind not in drawn and not re.search(rf"\b{word}s?\b", labels, re.I):
                 warnings.append(f"{p['id']}: the scene (the alt text) mentions a {word} but no {kind} prop is staged")
         held = _held(p.get("staging"))
         for word in SCENE_HELD:

@@ -19,6 +19,12 @@ from pathlib import Path
 import yaml
 
 
+
+def _id_key(cid):
+    """Sort claim ids by prefix then number, so C2 < C10 and K3 < CA2 < TA13 all work."""
+    m = re.match(r"^(\D*)(\d+)$", str(cid))
+    return (m.group(1), int(m.group(2))) if m else (str(cid), 0)
+
 def natural(path):
     """Sort key so that B2-x comes before B10-x (plain text order would put B10 second)."""
     return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", Path(path).name)]
@@ -36,7 +42,7 @@ def build(folder):
             if c["id"] in ledger:
                 raise ValueError(f"claim {c['id']} appears in more than one ledger file")
             ledger[c["id"]] = c
-    used = sorted({cid for b in beats for p in b["panels"] for cid in p.get("claim_ids", [])}, key=lambda s: int(s[1:]))
+    used = sorted({cid for b in beats for p in b["panels"] for cid in p.get("claim_ids", [])}, key=_id_key)
     missing = [c for c in used if c not in ledger]
     if missing:
         raise ValueError(f"panels cite claims that are not in any ledger: {missing}")
@@ -44,7 +50,7 @@ def build(folder):
     doc["claims"] = [ledger[c] for c in used]
     doc["beats"] = beats
     # only verified claims are worth a second look; an unverified one is left out on purpose
-    unused = sorted((c for c in ledger if c not in used and ledger[c]["status"] == "verified"), key=lambda s: int(s[1:]))
+    unused = sorted((c for c in ledger if c not in used and ledger[c]["status"] == "verified"), key=_id_key)
     return doc, [c for c in used if ledger[c]["status"] != "verified"], len(ledger), unused
 
 

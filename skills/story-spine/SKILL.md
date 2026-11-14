@@ -88,6 +88,23 @@ keep a method paper to what its story needs. Claim ids may appear in `meta.spine
 Every claim you plan to use must exist in the ledger. If the story needs a statement that is not in it, go
 back and add it (with a quote), do not write it into a panel.
 
+## When the comic covers several papers (a topic comic)
+
+Decide this in step 1 of the pipeline, before the claims (`HOWTO.md`, "One paper, or several?"). A topic comic answers one question
+from two to six papers. Its spine is about the question, not any one paper:
+
+- **And:** what the papers take as the ordinary world (background claims, from any of them).
+- **But:** what the papers' evidence cannot settle: a measure that showed little, a method that was hard to apply, studies too small or
+  too thinly described. Take it from the papers' own caveats; do not invent a controversy. Where two papers pull in different directions,
+  that is the tension: put both claims side by side and do not decide between them unless a paper does.
+- **Therefore:** what the papers say follows, and what they say is still needed.
+
+Rules: name the paper in a caption whenever the claim is one paper's finding; never credit one paper with another's result; do not rank
+the studies unless a source does, and list in `meta.left_out` that they differ in design and size; and **end on the topic's open
+question**, taken from what the papers themselves call for (the claims where the authors say further research is needed), cited.
+Plan the beats by theme (what they set out to do, what they found, what is hard to measure, what is open), not paper by paper.
+Give each claim id in the spine a paper, since a reader of `PLAN.md` will want to know whose it is.
+
 ## head.yaml skeleton
 
 ```yaml
@@ -107,6 +124,21 @@ meta:
   spine: { and: "...", but: "...", therefore: "..." }
 cast:
   - { id: ines, name: "Ines", role: "A scientist on the ship", look: "Stick figure in a woolly hat", appearance: { hair: beanie } }
+```
+
+For a topic comic, replace `meta.source` with a list, and give every claim a `source.ref` naming one entry:
+
+```yaml
+meta:
+  title: "..."
+  audience: "..."
+  private: true            # when any paper is not open access
+  sources:
+    - { id: smith-2020, title: "...", authors: ["A Smith"], year: 2020, doi: "10.xxxx/xxxx", licence: "CC BY 4.0",
+        licence_checked: "where you read it, date", page_basis: "PDF page index, 1 to 12" }
+    - { id: jones-2019, title: "...", authors: ["B Jones", "C Lee"], year: 2019, licence: "All rights reserved (Publisher)",
+        licence_checked: "where you read it, date", page_basis: "PDF page index, 1 to 9" }
+  spine: { and: "...", but: "...", therefore: "..." }
 ```
 
 ## Output

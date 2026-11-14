@@ -13,6 +13,8 @@ A full run on a 10-page article has taken an agent about 15 minutes and 300,000 
 
 ## 1. What you need
 
+**Setting up your own machine, models and hardware (a local model, a hosted one, or none)? See [docs/SETUP.md](docs/SETUP.md).** The table below is the short version.
+
 | | |
 |---|---|
 | **Python 3.10 or newer**, and `git` | the scripts and tests |
@@ -76,6 +78,41 @@ Pick a short **slug** for the paper, such as `xia-2024-phytoplankton-pearl-river
 not know the title yet, fetch into `sources/_new` first: `fetch_source.py` prints a suggested slug, and you can rename the
 folder. Everything lives under that name: `sources/<slug>/` (the paper's text, never committed) and `examples/<slug>/` (your work).
 
+### One paper, or several?
+
+Most comics here retell **one paper**: what was done, what was found, what it left open. A **topic comic** retells what
+**several papers** say about **one question**. You choose before you write any claims, because it changes the files:
+
+| | One paper | A topic comic (several papers) |
+|---|---|---|
+| Choose it when | you want one study's story | you want the state of a question: where studies agree, differ or leave gaps |
+| `head.yaml` | `meta.source` (one record) | `meta.sources` (a list, each with an `id`) and no `meta.source` |
+| Each claim | no `source.ref` (the validator errors if one is present) | `source.ref` is its paper's `id` |
+| Pages for the quote check | `--pages-dir sources/<slug>/pages` | `sources/<id>/pages` per paper, and `--pages-root sources` |
+| Licence | the paper's | the **least open** of the papers: one paper that is not open access makes the whole comic private (`meta.private: true`) |
+| Footer of the PDF | one citation | one line per paper, with its licence |
+| The spine (And / But / Therefore) | the paper's own | one question across the papers |
+
+**Why a topic comic.** A reader's question is usually about a topic ("do gallery visits help people living with dementia?"), and
+studies differ in design, so the honest picture is often a contrast: one study found no significant change on its measures,
+another reports what participants said. Nothing that keeps a one-paper comic accurate is lost: every fact still cites a claim, every
+claim still has a quote on a page, and the claim names the paper it came from.
+
+**Rules for a topic comic** (the checks enforce the first; the rest are judgement):
+- Every claim has a `source.ref` that matches a paper in `meta.sources`. The validator errors on a missing or unknown one, and on a head
+  that has both `meta.source` and `meta.sources`.
+- **One topic, two to six papers that are really about it.** Choose the topic first, then the papers, not the other way round.
+- **Draw a claim from the paper that says it.** Never credit paper B with what paper A found; name the paper in the caption ("Camic's
+  team found...").
+- **Where the papers differ, put both claims side by side and do not settle it** unless a paper does. Do not rank the studies unless a
+  source does, and say in `meta.left_out` that they differ in design.
+- **End on the topic's open question**, taken from what the papers themselves say is still needed (claims where the authors call for
+  further research), and cited. Do not take it from a summary page that is not one of the papers.
+- Keep each paper's pages in `sources/<id>/pages` and check with `check_quotes.py <storyboard> --pages-root sources --strict`.
+
+`story-spine` explains how to write the head and the spine for each form, and `source-to-claims` how to build a ledger from several
+papers. There is no public example of a topic comic yet; the first ones are private, because the readings they used are copyrighted.
+
 ### The one-prompt way
 
 Paste this into your agent, filling in the DOI and slug:
@@ -113,6 +150,15 @@ licence and refuses anything that does not allow adaptation. Step 5 ends with
 
 The validator exits with code 1 while a joke awaits you, which is the correct end state.
 
+### Drafting claims with a model (optional)
+
+Step 1 can be done by an agent, by you, or with a **card** tool that drafts claims from a PDF using any language model you choose:
+a local model, a server you run, or a hosted service. `extract_cards.py` asks the model for claims with quotes and forces every quote
+onto the real words of its page (a quote that is not on the page is dropped); `verify_cards.py` asks a second model whether each
+paraphrase says more than its quote; `cards_to_claims.py` picks the cards you want, from one paper or several, and writes the ledger.
+The cards are drafts: nothing is a verified claim until a person has read its paraphrase against its quote.
+[docs/SETUP.md](docs/SETUP.md) covers choosing a model and the hardware it needs, and `skills/source-to-claims` the review.
+
 ## 5. Before you share it
 
 A person reads the comic. The scripts check that the numbers match the quotes; they cannot check that the story is fair.
@@ -134,7 +180,7 @@ A person reads the comic. The scripts check that the numbers match the quotes; t
 | `no Chrome or Chromium found` | Install one (`sudo apt install chromium`, or Chrome from google.com/chrome). If the binary has an unusual name, put it on your `PATH` as `google-chrome` |
 | PDF text is in a plain fallback font | Patrick Hand loads from Google Fonts at export time; you were offline. Reconnect and export again |
 | `fetch_source.py` exits 2 | The paper's licence does not allow adaptation. Stop: choose another paper. (Do not use `--force` for anything you will share) |
-| A comic from several papers, or a book chapter | List the papers in `meta.sources` (each with an `id`) and give every claim `source.ref`; check with `scripts/check_quotes.py <storyboard> --pages-root sources --strict`. Use claim kinds `argument` and `practice` for what an author contends or recommends. A paper that is not open access makes the comic private (`meta.private: true`). |
+| A comic from several papers, or a book chapter | See "One paper, or several?" in section 4: `meta.sources` and a `source.ref` on every claim. Use claim kinds `argument` and `practice` for what an author contends or recommends. |
 | No full text on Europe PMC | Get the PDF from the publisher or a repository, run `.venv/bin/python scripts/pdf_to_pages.py paper.pdf -o sources/<slug>` (try `--mode columns` if two columns are interleaved), and use `check_quotes.py --pages-dir sources/<slug>/pages`. Confirm the licence from the article's own text, write where you found it in `licence_checked`, and say in `meta.source.page_basis` that a claim's `page` is the PDF page index |
 | The paper is not open access (the gate refuses it) | Stop, unless you want a **private reading aid** that will never be shared or published: work in `private/<slug>/`, set `meta.private: true` in `head.yaml`, write the real licence ("All rights reserved (...)"), and see `skills/source-to-claims/SKILL.md`. The PDF is stamped "PRIVATE: not for sharing" on every page |
 | The agent cannot reach the network | Download the XML in a browser from `https://www.ebi.ac.uk/europepmc/webservices/rest/<PMCID>/fullTextXML` and run `fetch_source.py --xml saved.xml -o sources/<slug>` |

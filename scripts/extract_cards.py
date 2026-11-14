@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Draft a claims ledger from a PDF with a local language model, then force every quote onto the page text or drop it.
 
-    OLLAMA_HOST=http://localhost:11434 python scripts/extract_cards.py paper.pdf -o cards/<slug>
-    python scripts/extract_cards.py paper.pdf -o cards/<slug> --model qwen3.8:latest --ref smith-2020
+    LLM_MODEL=<model name> python scripts/extract_cards.py paper.pdf -o cards/<slug>
+    python scripts/extract_cards.py paper.pdf -o cards/<slug> --backend openai --base-url http://localhost:8080/v1 --model <name> --ref smith-2020
 
 Steps: split the PDF into numbered pages (scripts/pdf_to_pages.py), ask the model for claims with quotes (long documents in
 overlapping page windows), snap each quote to the exact words of its page (scripts/snap_quotes.py), drop any that cannot be found,
@@ -10,20 +10,21 @@ and write `cards.yaml`. Every card has status `unverified`: the quote is real, b
 fair to it. Run scripts/check_quotes.py on the result, then have a person or a second pass read the claims against their quotes
 before any is marked `verified` and drawn.
 
-The model's host and name come from OLLAMA_HOST (default http://localhost:11434) and OLLAMA_MODEL, or --host and --model.
+Any model will do (see scripts/llm.py and docs/SETUP.md): a local server or a hosted service, chosen with --backend, --base-url and
+--model or the LLM_* environment variables. A model with a small context window needs a smaller --window-words (about 3000 for 8k).
+Test the connection first with `python scripts/llm.py --ping`.
 """
 import argparse
 import json
-import os
 import subprocess
 import sys
-import urllib.request
 from pathlib import Path
 
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from check_quotes import load_pages  # noqa: E402
+from llm import add_arguments, chat, settings, LLMError  # noqa: E402
 from snap_quotes import snap_claim  # noqa: E402
 
 KINDS = ["background", "method", "result", "interpretation", "caveat", "argument", "practice", "future_research"]
@@ -39,12 +40,12 @@ TEXT:
 {body}"""
 
 
-def windows(pages):
-    """Split {page: text} into lists of page numbers of about WINDOW_WORDS words, overlapping by one page."""
+def windows(pages, window_words=WINDOW_WORDS):
+    """Split {page: text} into lists of page numbers of about window_words words, overlapping by one page."""
     nums, out, cur, size = sorted(pages), [], [], 0
     for n in nums:
         w = len(pages[n].split())
-        if cur and size + w > WINDOW_WORDS:
+        if cur and size + w > window_words:
             out.append(cur)
             cur, size = [cur[-1]], len(pages[cur[-1]].split())
         cur.append(n)
@@ -52,14 +53,6 @@ def windows(pages):
     if cur:
         out.append(cur)
     return out
-
-
-def ask(host, model, prompt):
-    payload = {"model": model, "stream": False, "think": False, "format": "json",
-               "options": {"num_ctx": 32768, "temperature": 0.1, "num_predict": 30000},
-               "messages": [{"role": "user", "content": prompt}]}
-    req = urllib.request.Request(host.rstrip("/") + "/api/chat", data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"})
-    return json.load(urllib.request.urlopen(req, timeout=3000))["message"]["content"]
 
 
 def parse_claims(text):
@@ -71,10 +64,10 @@ def parse_claims(text):
         return json.loads(text[:cut + 1] + "]}")["claims"] if cut > 0 else []
 
 
-def extract(pages, ref, ask_fn, min_ratio=0.75):
+def extract(pages, ref, ask_fn, min_ratio=0.75, window_words=WINDOW_WORDS):
     """Return (cards, stats) from the pages using ask_fn(prompt) -> model reply text."""
     cards, seen, stats = [], set(), {"asked": 0, "exact": 0, "snapped": 0, "dropped": 0, "duplicate": 0}
-    for window in windows(pages):
+    for window in windows(pages, window_words):
         body = "\n".join(f"=== PAGE {n} ===\n{pages[n]}" for n in window)
         for c in parse_claims(ask_fn(PROMPT.format(kinds=" | ".join(KINDS), body=body))):
             stats["asked"] += 1
@@ -106,7 +99,9 @@ def run_one(pdf, out, args):
     if not (out / "pages").is_dir():
         subprocess.run([sys.executable, str(Path(__file__).with_name("pdf_to_pages.py")), str(pdf), "-o", str(out)], check=True, capture_output=True)
     pages = load_pages(out / "pages")
-    cards, stats = extract(pages, args.ref or Path(pdf).stem, lambda p: ask(args.host, args.model, p), args.min_ratio)
+    cfg = settings(args.backend, args.base_url, args.model)
+    ask = lambda p: chat(p, cfg, temperature=0.1, max_tokens=args.max_tokens, num_ctx=args.num_ctx)  # noqa: E731
+    cards, stats = extract(pages, args.ref or Path(pdf).stem, ask, args.min_ratio, args.window_words)
     (out / "cards.yaml").write_text(yaml.dump({"claims": cards}, sort_keys=False, width=100, allow_unicode=True))
     return len(cards), len(pages), stats
 
@@ -119,11 +114,17 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("pdf", help="a PDF, or a folder of PDFs (each is checked by intake_check first and skipped if it is scanned, a reference list or a fragment)")
     ap.add_argument("-o", "--out", required=True, help="folder for pages/ and cards.yaml")
-    ap.add_argument("--host", default=os.environ.get("OLLAMA_HOST", "http://localhost:11434"))
-    ap.add_argument("--model", default=os.environ.get("OLLAMA_MODEL", "qwen3.8:latest"))
+    add_arguments(ap, model_help="the model that drafts the cards")
+    ap.add_argument("--window-words", type=int, default=WINDOW_WORDS, help="words of page text per model call (default %(default)s; about 3000 suits an 8k-token context)")
+    ap.add_argument("--max-tokens", type=int, default=16000, help="the longest reply to ask for (default %(default)s)")
+    ap.add_argument("--num-ctx", type=int, default=32768, help="context size to request from Ollama (ignored by other backends)")
     ap.add_argument("--ref", default="")
     ap.add_argument("--min-ratio", type=float, default=0.75)
     args = ap.parse_args(argv)
+    try:
+        settings(args.backend, args.base_url, args.model)
+    except LLMError as e:
+        sys.exit(str(e))
     src, out = Path(args.pdf), Path(args.out)
     if not src.is_dir():
         n, pages, stats = run_one(src, out, args)

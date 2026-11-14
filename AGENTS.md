@@ -15,6 +15,14 @@ Given a DOI, follow the five skills in `skills/`, in order, and finish with a PD
 
 Work in `examples/<slug>/` (or `private/<slug>/` if the licence is not confirmed). Sources go in `sources/<slug>/`.
 
+## Two choices to make before step 1
+
+- **One paper or several?** A comic retells one paper (`meta.source`) or what several papers say about one question, a topic comic
+  (`meta.sources`, and a `source.ref` on every claim). `HOWTO.md` ("One paper, or several?") says when to choose each and the rules.
+- **A model for drafting claims?** Optional. `scripts/extract_cards.py` drafts claims with quotes from a PDF using any model the user has
+  set up; its quotes are real page text, but its paraphrases are drafts until you have read each against its quote. Setup, model
+  choice and hardware are in `docs/SETUP.md`; nothing in the pipeline requires a particular vendor or machine.
+
 ## Rules that are not negotiable
 
 - **Every fact in a panel traces to a claim, and every claim to a quote on a page of the paper.** Do not write a fact from
