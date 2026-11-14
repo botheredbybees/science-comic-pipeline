@@ -42,7 +42,7 @@ cast:
   look: Stick figure with long blond hair in a lab coat
   appearance:
     hair: long
-    hair_tone: strands
+    hair_tone: light
     coat: true
 - id: kip
   name: Kip

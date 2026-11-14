@@ -1468,15 +1468,21 @@ def _u(x, y, w, h):
 
 
 def armchair(pen, x, y, w, h, p, fs):
-    """An armchair seen from the front: a tall back, two rounded arms, a seat cushion and short legs. Care homes, waiting rooms, the listener."""
+    """An armchair seen from the front, drawn as a hand would: a rounded back, two plump arms, a seat cushion you can sit on and
+    short legs. Care homes, waiting rooms, the listener. A figure with `pose: sit` rests on the top of the cushion (see the
+    gallery for where to stand it)."""
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.05, p, fs)
     U, sw = _u(x, y, w, h), 2.6
-    o = [pen.poly([U(0.14, 0.62), U(0.14, 0.12), U(0.2, 0.04), U(0.8, 0.04), U(0.86, 0.12), U(0.86, 0.62)], sw, fill=SOFT, jit=0.4)]  # the back
-    for a, b in ((0.0, 0.14), (0.86, 1.0)):  # the arms
-        o.append(pen.poly([U(a, 0.38), U(a + (b - a) * 0.5, 0.3), U(b, 0.38), U(b, 0.84), U(a, 0.84)], sw, fill=PAPER, jit=0.4))
-    o.append(pen.poly([U(0.14, 0.55), U(0.86, 0.55), U(0.88, 0.76), U(0.12, 0.76)], sw, fill=PAPER, jit=0.4))  # the seat cushion
-    for a in (0.04, 0.9):  # the legs
-        o.append(pen.line(U(a + 0.03, 0.84), U(a + 0.03, 0.97), sw, amp=0.3))
+    o = [pen.stroke([U(0.15, 0.6), U(0.13, 0.28), U(0.17, 0.09), U(0.3, 0.03), U(0.5, 0.02), U(0.7, 0.03), U(0.83, 0.09), U(0.87, 0.28), U(0.85, 0.6)],
+                    sw, closed=True, fill=SOFT)]  # the back
+    for a, b in ((0.0, 0.17), (0.83, 1.0)):  # the arms: rounded rolls with a drop to the seat
+        m = (a + b) / 2
+        o.append(pen.stroke([U(a, 0.78), U(a - 0.01, 0.46), U(m, 0.36), U(b, 0.46), U(b + 0.01 * (1 if a else -1), 0.78)], sw, closed=True, fill=PAPER))
+    o.append(pen.stroke([U(0.12, 0.7), U(0.16, 0.58), U(0.36, 0.52), U(0.64, 0.52), U(0.84, 0.58), U(0.88, 0.7), U(0.86, 0.8), U(0.5, 0.83), U(0.14, 0.8)],
+                        sw, closed=True, fill=PAPER))  # the seat cushion: plump, its top at about half the chair's height
+    o.append(pen.stroke([U(0.2, 0.63), U(0.5, 0.67), U(0.8, 0.63)], 1.3, color=MID))  # the front edge of the cushion
+    for a in (0.06, 0.88):  # the legs
+        o.append(pen.line(U(a + 0.03, 0.84), U(a + 0.04, 0.97), sw, amp=0.3))
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 

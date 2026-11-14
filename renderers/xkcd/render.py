@@ -25,6 +25,7 @@ from layout import pack_rows  # noqa: E402
 from draw import (CHAR_W, FONT, INK, MID, PAPER, SOFT, Pen, block_h, clamp, esc, text, wrap)  # noqa: E402
 from props import EXTRA, extra_prop  # noqa: E402
 from animals import ANIMALS  # noqa: E402
+from faces import ANIMAL_FACE, FACES, draw_face  # noqa: E402
 
 PAGE_W, PAGE_H, MARGIN, GUTTER = 1000, 1414, 40, 16  # A4 at 1000 units wide
 FOOTER_H = 30
@@ -34,14 +35,17 @@ FIT_FACTORS = (0.55, 0.5, 0.45, 0.4, 0.36)  # scene height as a fraction of pane
 
 
 # ---------------------------------------------------------------- stick figures
+HEAD_SCALE = 1.2  # the default head size: a little bigger than the original 1.0, as in a newspaper strip
+
 ARMS = {  # (back arm, front arm): points relative to the shoulder, for a figure facing right
     "stand": ([(-13, 16), (-17, 38)], [(13, 16), (17, 38)]),
-    "point": ([(-13, 16), (-17, 38)], [(24, 0), (50, -4)]),
+    "point": ([(-13, 16), (-17, 38)], [(21, 0), (43, -3)]),
     "hold": ([(-13, 16), (-17, 38)], [(20, 12), (36, 2)]),
-    "think": ([(-13, 16), (-17, 38)], [(18, 14), (6, -18)]),
+    "think": ([(-13, 16), (-17, 38)], [(14, 10), (4, -10)]),
     "shrug": ([(-22, 10), (-26, -6)], [(22, 10), (26, -6)]),
     "up": ([(-18, -10), (-24, -34)], [(18, -10), (24, -34)]),
     "sip": ([(-13, 16), (-17, 38)], [(20, 8), (13, -4)]),  # the mug stops just in front of the mouth, clear of the face
+    "sit": ([(-2, 20), (14, 33)], [(10, 20), (27, 32)]),  # hands resting on the lap
 }
 
 
@@ -81,7 +85,10 @@ def _holding(pen, holding, hx, hy, s, w):
 
 
 def _face(pen, cx, cy, s, face, w, glasses=False):
-    """Eyes, optional glasses and a mouth, for a face centred near (cx, cy), looking right."""
+    """Eyes, optional glasses and a mouth, for a face centred near (cx, cy), looking right. The five original faces are
+    drawn here; every other face is drawn by faces.draw_face (brows, marks and more eye and mouth shapes)."""
+    if face in FACES:
+        return draw_face(pen, cx, cy, s, face, w, glasses)
     o = []
     ex, ey = (cx - 1 * s, cx + 8.5 * s), cy - 3 * s
     if face == "deadpan":
@@ -126,7 +133,7 @@ def _diatom(pen, cx, base, s, pose, face, facing, holding, app):
         pts.append((cx + W / 2 * math.copysign(abs(c) ** 0.55, c) * (1 + pen.n(0.015)),
                     mid + H / 2 * math.copysign(abs(sn) ** 0.75, sn) * (1 + pen.n(0.015))))
     o = [pen.line((cx - 9 * s, bot), (cx - 11 * s, base), w), pen.line((cx + 9 * s, bot), (cx + 11 * s, base), w)]
-    back, front = ARMS.get(pose, ARMS["stand"])
+    back, front = ARMS.get("stand" if pose == "sit" else pose, ARMS["stand"])
     sh = mid - 4 * s
     for arm, side in ((back, -1), (front, 1)):
         x0 = cx + side * W / 2
@@ -145,91 +152,52 @@ def _diatom(pen, cx, base, s, pose, face, facing, holding, app):
 # Hair and hats are one big simple shape laid over the head, as in a newspaper-strip stick figure: solid black
 # hair (the face is what is left uncovered), or a plain white hat that overhangs the head. Points are in head
 # radii from the head's centre, for a figure facing right, so the back of the head is to the left.
-HAIR_CAP = {  # the outline of hair that covers the top and back of the head, ending in a fringe across the forehead
-    "bob": [(0.95, -0.28), (0.62, -0.98), (0.0, -1.2), (-0.85, -0.98), (-1.24, -0.2), (-1.22, 0.55), (-0.85, 0.8),
-            (-0.6, 0.3), (-0.5, -0.2), (0.0, -0.5), (0.5, -0.45)],
-    "long": [(0.95, -0.28), (0.62, -0.98), (0.0, -1.2), (-0.85, -0.98), (-1.28, -0.1), (-1.3, 1.1), (-1.05, 1.9),
-             (-0.5, 1.95), (-0.55, 0.6), (-0.5, -0.2), (0.0, -0.5), (0.5, -0.45)],
-    "short": [(0.92, -0.25), (0.6, -0.97), (0.0, -1.16), (-0.85, -0.92), (-1.14, -0.2), (-0.92, 0.2), (-0.5, -0.15),
-              (0.0, -0.45), (0.5, -0.4)],
+HAIR_CAP = {  # the outline of hair that covers the top and back of the head, ending in a fringe that stops well above the eyes
+    "bob": [(0.95, -0.4), (0.62, -0.95), (0.0, -1.1), (-0.8, -0.95), (-1.14, -0.25), (-1.12, 0.5), (-0.8, 0.7), (-0.6, 0.25),
+            (-0.5, -0.3), (0.0, -0.74), (0.5, -0.7)],
+    "long": [(0.95, -0.4), (0.62, -0.95), (0.0, -1.1), (-0.8, -0.95), (-1.18, -0.15), (-1.2, 1.0), (-1.0, 1.8), (-0.5, 1.85),
+             (-0.55, 0.55), (-0.5, -0.3), (0.0, -0.74), (0.5, -0.7)],
+    "shoulder": [(0.95, -0.4), (0.62, -0.95), (0.0, -1.1), (-0.8, -0.95), (-1.16, -0.15), (-1.2, 0.7), (-1.05, 1.35), (-0.6, 1.4),
+                 (-0.55, 0.5), (-0.5, -0.3), (0.0, -0.74), (0.5, -0.7)],
+    "short": [(0.92, -0.38), (0.6, -0.92), (0.0, -1.06), (-0.8, -0.9), (-1.06, -0.25), (-0.88, 0.15), (-0.5, -0.2), (0.0, -0.68), (0.5, -0.64)],
 }
-PONYTAIL = [(-1.0, -0.5), (-1.7, -0.45), (-2.15, 0.15), (-2.1, 0.95), (-1.8, 1.25), (-1.65, 0.55), (-1.15, 0.05)]
-SPIKES = [(-1.1, -0.1), (-1.4, -0.65), (-0.95, -0.8), (-0.95, -1.3), (-0.4, -1.0), (0.0, -1.5), (0.35, -1.0), (0.9, -1.3),
-          (0.92, -0.78), (1.22, -0.62), (0.9, -0.3), (0.45, -0.6), (0.0, -0.4), (-0.45, -0.6), (-0.85, -0.2)]
+PONYTAIL = [(-1.02, -0.58), (-1.5, -0.5), (-1.88, -0.12), (-2.05, 0.5), (-2.2, 1.18), (-1.98, 0.98), (-1.9, 1.42), (-1.7, 1.02), (-1.5, 1.3), (-1.42, 0.7), (-1.2, -0.2), (-1.02, -0.4)]  # narrow at the tie, flaring to pointed locks
+SPIKES = [(-1.0, -0.1), (-1.25, -0.6), (-0.85, -0.74), (-0.85, -1.15), (-0.36, -0.94), (0.0, -1.32), (0.32, -0.94), (0.8, -1.15),
+          (0.82, -0.74), (1.08, -0.6), (0.82, -0.36), (0.45, -0.78), (0.0, -0.66), (-0.45, -0.78), (-0.78, -0.25)]
+
 BEANIE = [(-1.2, -0.42), (-1.18, -1.05), (-0.62, -1.62), (0.0, -1.76), (0.62, -1.62), (1.18, -1.05), (1.22, -0.42),
           (0.6, -0.5), (0.0, -0.54), (-0.6, -0.5)]
 
 
 HARDHAT = [(-1.04, -0.78), (-1.05, -1.12), (-0.62, -1.62), (0.0, -1.78), (0.62, -1.62), (1.05, -1.12), (1.04, -0.78)]  # the dome of a hard hat, clear of the eyes and glasses
-HAIR_OUTER_N = {"bob": 7, "long": 8, "short": 6}  # how many of a cap's points run along its outside (the rest are the fringe)
 
 
-def _strands(pen, cap, cx, cy, R, w, n=11):
-    """Hair as a handful of curved strokes combed from a parting at the front of the crown, back over the head and
-    down to points spaced along the outside of the hair, plus a few across the forehead. A white patch underneath
-    hides the top of the head circle, as the hair does."""
-    full = [(cx + x * R, cy + y * R) for x, y in HAIR_CAP[cap]]
-    outer = full[:HAIR_OUTER_N[cap]]
-    seg = [math.dist(outer[i], outer[i + 1]) for i in range(len(outer) - 1)]
-    total = sum(seg)
-    out = [pen.stroke(full, 0.1, closed=True, fill=PAPER, color=PAPER)]
-    part = (cx + 0.3 * R, cy - 1.14 * R)
-
-    wave = 0.07 if cap == "long" else 0.03  # how far a strand swings to each side: long hair flows, gently
-
-    def strand(end, bow, wave=wave):
-        """A strand from the parting to `end`: bowed out from the head and given a gentle S-curve, so none is straight."""
-        dx, dy = end[0] - part[0], end[1] - part[1]
-        norm = math.hypot(dx, dy) or 1
-        perp = (-dy / norm, dx / norm)
-        pts = [(part[0] + pen.n(0.25), part[1] + pen.n(0.25))]
-        for t, sgn in ((0.28, 1), (0.55, -1), (0.8, 1)):
-            bx, by = part[0] + dx * t, part[1] + dy * t
-            away = (bx - cx, by - cy)
-            an = math.hypot(*away) or 1
-            k = bow * R * (1 - abs(2 * t - 1) * 0.3)
-            pts.append((bx + away[0] / an * k + perp[0] * sgn * wave * R + pen.n(0.02 * R),
-                        by + away[1] / an * k + perp[1] * sgn * wave * R + pen.n(0.02 * R)))
-        pts.append(end)
-        return pen.stroke(pts, w * 0.6)
-
-    for k in range(n):
-        d, i = total * (k + 0.5) / n, 0
-        while d > seg[i]:
-            d -= seg[i]
-            i += 1
-        t = d / seg[i]
-        out.append(strand((outer[i][0] + (outer[i + 1][0] - outer[i][0]) * t, outer[i][1] + (outer[i + 1][1] - outer[i][1]) * t), 0.12 if cap == "long" else 0.11))
-    out += [strand(p, 0.05, 0.0) for p in full[-2:]]  # across the forehead
-    return out
+def _bun(pen, cx, cy, R, w, fill):
+    """A hair bun on the crown: a small ball with a curl in it (in the contrasting colour) so that a dark bun still reads as a bun."""
+    bx, by, br = cx - 0.5 * R, cy - 1.18 * R, 0.34 * R
+    curl = INK if fill != INK else PAPER
+    return [f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{br:.1f}" fill="{fill}" stroke="{INK}" stroke-width="{w:.1f}"/>',
+            pen.stroke([(bx - 0.55 * br, by + 0.1 * br), (bx, by - 0.5 * br), (bx + 0.55 * br, by + 0.1 * br)], w * 0.45, color=curl)]
 
 
 def _hair(pen, kind, cx, cy, R, w, tone="dark"):
     """The hair or hat for a head of radius R, drawn over the head circle and under the face.
     Dark hair is solid black; light (blond) hair is the same shape as an outline with a white fill."""
-    fill = INK if tone == "dark" else PAPER
-    if tone == "strands" and kind in ("bob", "long", "ponytail", "bun"):
-        o = _strands(pen, "short" if kind in ("ponytail", "bun") else kind, cx, cy, R, w, n=9 if kind == "long" else 8)
-        if kind == "ponytail":  # the tail: three strokes from the nape to the tip
-            o += [pen.stroke([(cx - 1.0 * R, cy - 0.45 * R), (cx - 1.75 * R, cy - 0.2 * R + dy * R), (cx - 1.8 * R + dx * R, cy + 1.2 * R)], w * 0.6)
-                  for dx, dy in ((0, 0), (0.25, 0.25), (-0.2, -0.2))]
-        elif kind == "bun":
-            o.append(f'<circle cx="{cx - 0.55 * R:.1f}" cy="{cy - 1.3 * R:.1f}" r="{0.42 * R:.1f}" fill="{PAPER}" stroke="{INK}" stroke-width="{w * 0.6:.1f}"/>')
-        return o
-    if tone == "strands":
-        tone, fill = "dark", INK  # spiky hair and hats have no strand form
+    fill = {"dark": INK, "grey": HAIR_GREY}.get(tone, PAPER)
 
     def P(pts):
         return [(cx + x * R, cy + y * R) for x, y in pts]
-    if kind in ("bob", "long"):
+    if kind in ("bob", "long", "shoulder", "short"):
         return [pen.stroke(P(HAIR_CAP[kind]), w, closed=True, fill=fill)]
+    if kind in ("beret", "boater", "flatcap"):  # hats take the tone as their colour: dark is black, light is white, grey is grey
+        return _hat(pen, kind, cx, cy, R, w, fill, tone)
     if kind in ("ponytail", "bun"):
         o = []
         if kind == "bun":  # the bun goes under the cap, so that a light bun's outline does not cross the hair
-            o.append(f'<circle cx="{cx - 0.55 * R:.1f}" cy="{cy - 1.3 * R:.1f}" r="{0.42 * R:.1f}" fill="{fill}" stroke="{INK}" stroke-width="{w:.1f}"/>')
+            o += _bun(pen, cx, cy, R, w, fill)
         o.append(pen.stroke(P(HAIR_CAP["short"]), w, closed=True, fill=fill))
         if kind == "ponytail":
-            o.append(pen.stroke(P(PONYTAIL), w, closed=True, fill=fill))
+            o.append(pen.poly(P(PONYTAIL), w, fill=fill, jit=0.12))
         return o
     if kind == "spiky":
         return [pen.poly(P(SPIKES), w, fill=fill, jit=0.4)]
@@ -244,7 +212,36 @@ def _hair(pen, kind, cx, cy, R, w, tone="dark"):
     return []
 
 
-HAIR_TOP = {"bob": 1.2, "long": 1.2, "ponytail": 1.2, "bun": 1.75, "spiky": 1.55, "beanie": 1.85, "hardhat": 1.85}  # head radii above the head's centre
+HAIR_GREY = MID  # grey hair: the palette's mid grey, with the usual outline
+
+
+def _hat(pen, kind, cx, cy, R, w, fill, tone):
+    """A beret (a soft flat disc with a stalk), a boater (a flat-topped crown, a wide flat brim and a band) or a flat cap (a low
+    dome with a short peak). Each is drawn a little smaller than the head's width and tilted, as a hat is worn, not level."""
+    trim = PAPER if tone == "dark" else INK  # the band and the stalk show against the hat
+
+    def T(pts, size, tilt, dx=0.0):  # scale about where the hat sits on the head, tilt it (negative lifts the front), shift it (negative: back), place it on the head
+        px, py = 0.0, -0.8
+        c, sn = math.cos(tilt), math.sin(tilt)
+        return [(cx + (px + dx + (x - px) * size * c - (y - py) * size * sn) * R, cy + (py + (x - px) * size * sn + (y - py) * size * c) * R) for x, y in pts]
+    if kind == "beret":
+        body = [(-1.4, -0.62), (-1.45, -1.0), (-1.0, -1.42), (-0.2, -1.58), (0.7, -1.42), (1.2, -1.05), (1.18, -0.7), (0.5, -0.78), (-0.4, -0.72)]
+        a, b = T([(-0.15, -1.58), (-0.1, -1.88)], 0.68, -0.3, -0.25)
+        return [pen.stroke(T(body, 0.68, -0.3, -0.25), w, closed=True, fill=fill), pen.line(a, b, w * 0.9, amp=0.1)]
+    if kind == "boater":
+        brim = [(1.8 * math.cos(t * math.tau / 20), -0.86 + 0.2 * math.sin(t * math.tau / 20)) for t in range(20)]
+        crown = [(-0.9, -0.88), (-0.88, -1.95), (0.9, -1.95), (0.92, -0.88)]
+        band = [(-0.895, -1.18), (0.905, -1.18), (0.9, -1.42), (-0.89, -1.42)]  # outlined at both ends so the crown does not float
+        return [pen.stroke(T(brim, 0.8, -0.15), w, closed=True, fill=fill), pen.poly(T(crown, 0.8, -0.15), w, fill=fill, jit=0.15),
+                pen.poly(T(band, 0.8, -0.15), w * 0.8, fill=trim, jit=0.1)]
+    body = [(-1.2, -0.7), (-1.15, -1.1), (-0.6, -1.45), (0.3, -1.55), (1.0, -1.25), (1.2, -0.85), (1.05, -0.7)]  # flat cap
+    peak = [(0.55, -0.85), (1.9, -0.72), (1.95, -0.52), (0.7, -0.6)]
+    return [pen.stroke(T(peak, 0.8, -0.1), w, closed=True, fill=fill),  # the peak first, so the dome covers where they meet
+            pen.stroke(T(body, 0.8, -0.1), w, closed=True, fill=fill)]
+
+
+HAIR_TOP = {"bob": 1.1, "long": 1.1, "shoulder": 1.1, "short": 1.06, "ponytail": 1.1, "bun": 1.65, "spiky": 1.4, "beanie": 1.85, "hardhat": 1.85,
+            "beret": 1.6, "boater": 1.75, "flatcap": 1.45}  # head radii above the head's centre
 
 
 def _outfit(pen, kind, cx, neck, hip, s, w):
@@ -305,13 +302,21 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     if app.get("body") == "diatom":
         return _diatom(pen, cx, base, s, pose, face, facing, holding, app)
     if app.get("body") in ANIMALS:
-        return ANIMALS[app["body"]](pen, cx, base, s, pose, face, facing, holding, app)
-    R, BODY, LEG = 15 * s, 46 * s, 48 * s
+        return ANIMALS[app["body"]](pen, cx, base, s, pose, ANIMAL_FACE.get(face, face), facing, holding, app)
+    seated = pose == "sit"  # sitting: the hips at seat height, the thighs forward, the shins down
+    hs = float(app.get("head_scale", HEAD_SCALE))  # the head relative to the body: the face and hair scale with it
+    R, BODY, LEG = 15 * s * hs, 46 * s, (37 if seated else 48) * s
     cy, neck, hip = base - LEG - BODY - R, base - LEG - BODY, base - LEG
     sh = neck + 9 * s
     w = clamp(2.3 * s, 1.5, 3.0)
-    o = [pen.line((cx, hip), (cx - 13 * s, base), w, amp=0.35), pen.line((cx, hip), (cx + 13 * s, base), w, amp=0.35),
-         pen.line((cx, neck), (cx, hip), w, amp=0.35)]
+    if seated:
+        legs = [pen.line((cx, hip), (cx + 25 * s, hip + 1 * s), w, amp=0.35), pen.line((cx + 25 * s, hip + 1 * s), (cx + 26 * s, base), w, amp=0.35),
+                pen.line((cx + 26 * s, base), (cx + 32 * s, base), w, amp=0.2),
+                pen.line((cx, hip), (cx + 20 * s, hip + 4 * s), w, amp=0.35), pen.line((cx + 20 * s, hip + 4 * s), (cx + 21 * s, base), w, amp=0.35),
+                pen.line((cx + 21 * s, base), (cx + 27 * s, base), w, amp=0.2)]
+    else:
+        legs = [pen.line((cx, hip), (cx - 13 * s, base), w, amp=0.35), pen.line((cx, hip), (cx + 13 * s, base), w, amp=0.35)]
+    o = legs + [pen.line((cx, neck), (cx, hip), w, amp=0.35)]
     outfit = app.get("outfit")
     if outfit:
         o += _outfit(pen, outfit, cx, neck, hip, s, w)
@@ -336,7 +341,7 @@ def figure(pen, cx, base, s, pose="stand", face="neutral", facing="right", holdi
     o.append(pen.ellipse(cx, cy, R, R, w, fill=PAPER, jit=0.012))
     hair = app.get("hair", "none")
     o += _hair(pen, hair, cx, cy, R, w, app.get("hair_tone", "dark"))
-    o += _face(pen, cx, cy, s, face, w, app.get("glasses", False))
+    o += _face(pen, cx, cy, s * hs, face, w, app.get("glasses", False))
     top = cy - R * max(HAIR_TOP.get(hair, 1.0), 1.7 if outfit == "parka" else 0) - 4 * s
     return _flip("".join(o), cx, facing), (cx, top)
 

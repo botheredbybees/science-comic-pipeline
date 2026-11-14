@@ -23,7 +23,7 @@ meta:
     but: "Nobody had compared their diets side by side, from the same region and with the same methods, so the assumption that salps are indiscriminate had never been tested head to head (C9, C15)."
     therefore: "The authors sequenced stomach contents, fecal pellets and the surrounding plankton along the Antarctic Peninsula in autumn 2018, plus fatty acids; neither diet matched the plankton, so salps look selective too, and the two diets were broadly similar (C58, C60, C62)."
 cast:
-  - { id: mara, name: "Mara", role: "A scientist on the ship who asks the reader's questions", look: "Stick figure with long blond hair in a lab coat", appearance: { hair: long, hair_tone: strands, coat: true } }
+  - { id: mara, name: "Mara", role: "A scientist on the ship who asks the reader's questions", look: "Stick figure with long blond hair in a lab coat", appearance: { hair: long, hair_tone: light, coat: true } }
   - { id: kip, name: "Kip", role: "An Antarctic krill", look: "A krill", appearance: { body: krill } }
   - { id: sal, name: "Sal", role: "A salp, the filter-feeding tunicate", look: "A see-through barrel with muscle hoops", appearance: { body: salp } }
   - { id: whale, name: "Whale", role: "One of the predators that eat krill", look: "A whale", appearance: { body: whale } }

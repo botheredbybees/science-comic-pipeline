@@ -27,16 +27,29 @@ HELD = [("marker", "marker (pen)"), ("mug", "mug"), ("teacup", "teacup"), ("clip
 # Cast looks: every hair style, each hair tone, glasses and the lab coat, as cast members with appearance options.
 LOOKS = [
     [("hair_none", "no hair", {"hair": "none"}), ("hair_bob", "bob", {"hair": "bob"}), ("hair_long", "long", {"hair": "long"}),
-     ("hair_ponytail", "ponytail", {"hair": "ponytail"}), ("hair_bun", "bun", {"hair": "bun"}), ("hair_spiky", "spiky", {"hair": "spiky"}),
+     ("hair_ponytail", "ponytail", {"hair": "ponytail"}), ("hair_bun", "grey bun", {"hair": "bun", "hair_tone": "grey"}), ("hair_spiky", "spiky", {"hair": "spiky"}),
      ("hair_beanie", "beanie", {"hair": "beanie"})],
     [("tone_light_bob", "light bob", {"hair": "bob", "hair_tone": "light"}), ("tone_light_long", "light long", {"hair": "long", "hair_tone": "light"}),
-     ("tone_strands_ponytail", "strand ponytail", {"hair": "ponytail", "hair_tone": "strands"}), ("tone_strands_long", "strand long", {"hair": "long", "hair_tone": "strands"}),
-     ("glasses", "glasses", {"hair": "bob", "glasses": True}), ("coat", "lab coat", {"hair": "bun", "coat": True}),
+     ("tone_light_ponytail", "light ponytail", {"hair": "ponytail", "hair_tone": "light"}), ("tone_light_shoulder", "light shoulder", {"hair": "shoulder", "hair_tone": "light"}),
+     ("glasses", "glasses", {"hair": "bob", "glasses": True}), ("coat", "lab coat", {"hair": "shoulder", "coat": True}),
      ("coat_glasses", "coat + glasses", {"hair": "ponytail", "glasses": True, "coat": True})],
     [("hardhat", "hard hat", {"hair": "hardhat"}), ("floatcoat", "float coat", {"hair": "bob", "outfit": "floatcoat"}),
      ("parka", "parka", {"hair": "none", "outfit": "parka"}), ("hivis", "hi-vis vest", {"hair": "none", "outfit": "hivis"}),
      ("hivis_hardhat", "hi-vis + hard hat", {"hair": "hardhat", "outfit": "hivis"}), ("parka_glasses", "parka + glasses", {"hair": "bob", "glasses": True, "outfit": "parka"}),
      ("floatcoat_beanie", "float coat + beanie", {"hair": "beanie", "outfit": "floatcoat"})],
+    [("hair_short", "short", {"hair": "short"}), ("hair_shoulder", "shoulder", {"hair": "shoulder"}),
+     ("grey_short", "grey short", {"hair": "short", "hair_tone": "grey"}), ("grey_bob", "grey bob", {"hair": "bob", "hair_tone": "grey"}),
+     ("beret", "beret", {"hair": "beret"}), ("boater", "boater", {"hair": "boater"}), ("boater_light", "light boater", {"hair": "boater", "hair_tone": "light"})],
+    [("flatcap", "flat cap", {"hair": "flatcap"}), ("flatcap_grey", "grey flat cap", {"hair": "flatcap", "hair_tone": "grey"}),
+     ("head_small", "original head", {"hair": "bob", "head_scale": 1.0}), ("head_default", "default head", {"hair": "bob"}),
+     ("head_big", "bigger head", {"hair": "bob", "head_scale": 1.4})],
+]
+# Faces, grouped by what they say.
+FACE_ROWS = [
+    ["neutral", "smile", "laugh", "content", "wink", "smirk"],
+    ["smug", "sceptical", "squint", "stare", "eyeroll", "sleepy"],
+    ["worry", "sad", "tearful", "angry", "determined"],
+    ["disgust", "puzzled", "plead", "surprised", "deadpan"],
 ]
 PROPS = [
     ("Analysis steps", [("sequence", {"label": "marker gene"}), ("tree", {"items": [{"label": "a"}, {"label": "b"}, {"label": "c"}, {"label": "d"}]}),
@@ -118,6 +131,29 @@ def build():
                    "speech": [{"speaker": "narrator", "kind": "caption", "text": "Looks: set `appearance` on a cast member in head.yaml."}] if n == 1 else [],
                    "staging": {"characters": chars, "props": props}})
     beats.append({"id": "B4", "title": "Looks", "act": "method", "panels": lp})
+    fp = []
+    for n, row in enumerate(FACE_ROWS, 1):
+        chars, props = [], []
+        for i, face in enumerate(row):
+            x = round(0.09 + i * (0.82 / (len(row) - 1)), 3)
+            chars.append({"id": "extra", "x": x, "y": 0.8, "face": face})
+            props.append({"kind": "label", "x": x, "y": 0.86, "label": face})
+        fp.append({"id": f"B6.{n}", "weight": "full", "height": "short", "frame": "outlined", "transition": "scene-to-scene",
+                   "scene": "A row of stick figures, each labelled with the face it shows.",
+                   "speech": [{"speaker": "narrator", "kind": "caption", "text": "Faces: set `face` on a staged character. Animals use the nearest of the five original faces."}] if n == 1 else [],
+                   "staging": {"characters": chars, "props": props}})
+    beats.append({"id": "B6", "title": "Faces", "act": "method", "panels": fp})
+    def sit_panel(n, caption, chars, props):
+        return {"id": f"B7.{n}", "weight": "standard", "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
+                "scene": caption, "speech": [{"speaker": "narrator", "kind": "caption", "text": caption}] if n == 1 else [{"speaker": "narrator", "kind": "caption", "text": caption}],
+                "staging": {"characters": chars, "props": props}}
+
+    beats.append({"id": "B7", "title": "Sitting", "act": "method", "panels": [
+        sit_panel(1, "Sitting: set `pose: sit`, and stand the figure at the prop's seat. An armchair.", [{"id": "extra", "x": 0.46, "pose": "sit", "face": "content", "scale": 1.3}],
+                  [{"kind": "armchair", "x": 0.2, "y": 0.34, "w": 0.5, "h": 0.6}]),
+        sit_panel(2, "At a desk.", [{"id": "extra", "x": 0.4, "pose": "sit", "face": "smile", "scale": 1.12}], [{"kind": "desk", "x": 0.15, "y": 0.4, "w": 0.7, "h": 0.54}]),
+        sit_panel(3, "At a piano.", [{"id": "extra", "x": 0.35, "pose": "sit", "face": "smile", "scale": 1.3}], [{"kind": "piano", "x": 0.3, "y": 0.34, "w": 0.6, "h": 0.6}]),
+    ]})
     def comp_panel(n, weight, caption, chars, props=None):
         return {"id": f"B5.{n}", "weight": weight, "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
                 "scene": caption, "speech": [{"speaker": "narrator", "kind": "caption", "text": caption}],

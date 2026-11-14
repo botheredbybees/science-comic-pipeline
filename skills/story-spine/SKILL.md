@@ -40,7 +40,7 @@ visuals do the work.
 ## 3. Choose the cast
 
 - Usually one **guide**, a person in the paper's world (a scientist on the ship, a student), who asks the
-  reader's questions. Give them a simple look (`appearance`: `hair` is one of none, bob, long, ponytail, bun, spiky, beanie, hardhat; `hair_tone` is dark (the default, solid black), light (an outline only) or strands (curved strokes; both are blond; not for spiky); `glasses` and `coat` (a lab coat) are true or false, and `outfit` (floatcoat, parka or hivis) replaces the lab coat for work on a ship's deck or the ice: dress a character for where they are standing; `body` is stick by default).
+  reader's questions. Give them a simple look (`appearance`: `hair` is one of none, short, bob, shoulder, long, ponytail, bun (grey hair only), spiky, beanie, hardhat, beret, boater, flatcap; `hair_tone` is dark (the default, solid black), light (an outline only, blond) or grey (older hair); `head_scale` (default 1.2) sets the head's size; `glasses` and `coat` (a lab coat) are true or false, and `outfit` (floatcoat, parka or hivis) replaces the lab coat for work on a ship's deck or the ice: dress a character for where they are standing; `body` is stick by default).
 - Organisms or things that carry the result can be characters (`body: diatom | krill | penguin | whale | salp | copepod | fish | worm | jellyfish | urchin | seal | seabird | moss | bacterium | seastar | dinoflagellate | squid | amphipod`
   are drawn, from copepod on as generic cartoon shapes; other things are props or `extra`). A walk-on animal that is not a recurring character needs no cast
   entry: stage `{ id: extra, body: penguin }`. If your organism has no body, use a stick figure and caption what it is

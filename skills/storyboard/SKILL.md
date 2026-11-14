@@ -197,6 +197,11 @@ it on the panel); if a claim gives the real sizes, draw to them. Characters are 
   organism use a labelled stick figure and say so; never caption a plain figure as if it were drawn as the animal.
 - Do not invent facts in `scene`, in props, or in a character's face: a worried krill implies the paper
   says krill are at risk, so only draw it if a cited claim does.
+- **Faces.** There are 22 (`renderers/README.md`, "Faces"; `scripts/asset_gallery.py` shows them). A face is part of what the panel says, so
+  choose it for the line it sits with. A strong face (`angry`, `disgust`, `surprised`, `tearful`) belongs on a character reacting, not on
+  the subject of a cited claim, and never on a person with an illness or a disability whose condition the claim describes. Most panels need
+  `smile`, `neutral`, `deadpan`, `sceptical` or `puzzled`; vary them, and let a face do the work of a caption where it can (a `sceptical` Otto
+  asks the reader's question without a word). Use `pose: sit` for a figure at an `armchair`, `desk` or `piano`.
 
 ## Build, validate, look
 

@@ -69,13 +69,15 @@ def _enums_containing(value):
 def test_the_gallery_shows_every_hair_style_tone_and_clothing_option():
     doc = asset_gallery.build()
     looks = [c.get("appearance", {}) for c in doc["cast"]]
-    for enum_value, field in (("beanie", "hair"), ("strands", "hair_tone")):
+    for enum_value, field in (("beanie", "hair"), ("light", "hair_tone")):
         enums = _enums_containing(enum_value)
         assert enums, enum_value
         shown = {a.get(field) for a in looks}
         for enum in enums:
             assert not enum - shown - {None, "dark"}, (field, enum - shown)  # "dark" is the default tone
     assert any(a.get("glasses") for a in looks) and any(a.get("coat") for a in looks)
+    assert any(a.get("head_scale") for a in looks)
+    assert {"grey"} <= {a.get("hair_tone") for a in looks}
     outfits = _enums_containing("floatcoat")
     assert outfits
     for enum in outfits:
@@ -92,3 +94,12 @@ def test_the_whole_gallery_uses_only_black_white_and_grey():
     for svg in svgs:
         used |= set(re.findall(r'(?:fill|stroke)="(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)"', svg))
     assert used <= palette, used - palette
+
+
+def test_the_gallery_shows_every_face_and_a_seated_figure():
+    import faces
+    doc = asset_gallery.build()
+    shown = {c.get("face") for beat in doc["beats"] for p in beat["panels"] for c in p.get("staging", {}).get("characters", [])}
+    assert set(faces.SHOWN) <= shown
+    poses = {c.get("pose") for beat in doc["beats"] for p in beat["panels"] for c in p.get("staging", {}).get("characters", [])}
+    assert "sit" in poses

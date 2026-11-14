@@ -223,7 +223,12 @@
                   "bun",
                   "spiky",
                   "beanie",
-                  "hardhat"
+                  "hardhat",
+                  "short",
+                  "shoulder",
+                  "beret",
+                  "boater",
+                  "flatcap"
                 ]
               },
               "glasses": {
@@ -237,9 +242,9 @@
                 "enum": [
                   "dark",
                   "light",
-                  "strands"
+                  "grey"
                 ],
-                "description": "dark hair is solid black; light is the same shape as an outline with no fill; strands is a few curved strokes laid over the head (not for spiky hair)"
+                "description": "dark hair is solid black; light is the same shape as an outline with a white fill (blond); grey is a light grey fill (older hair). A beret, boater or flat cap takes the tone as its colour: dark is black, light is white, grey is grey"
               },
               "body": {
                 "enum": [
@@ -271,6 +276,12 @@
                   "hivis"
                 ],
                 "description": "A garment over the torso, instead of the lab coat: floatcoat (a chunky float jacket), parka (a quilted jacket with the hood up) or hivis (a high-visibility vest)."
+              },
+              "head_scale": {
+                "type": "number",
+                "minimum": 0.8,
+                "maximum": 1.6,
+                "description": "a bigger or smaller head on the same body (the default is 1.2; 1.0 is the original size); the face and hair scale with it"
               }
             }
           }
@@ -560,7 +571,8 @@
                   "think",
                   "shrug",
                   "sip",
-                  "up"
+                  "up",
+                  "sit"
                 ]
               },
               "face": {
@@ -569,6 +581,23 @@
                   "smile",
                   "worry",
                   "deadpan",
+                  "laugh",
+                  "content",
+                  "wink",
+                  "smirk",
+                  "smug",
+                  "sceptical",
+                  "squint",
+                  "stare",
+                  "eyeroll",
+                  "sleepy",
+                  "sad",
+                  "tearful",
+                  "angry",
+                  "determined",
+                  "disgust",
+                  "puzzled",
+                  "plead",
                   "surprised"
                 ]
               },

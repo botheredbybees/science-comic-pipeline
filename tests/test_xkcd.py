@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "renderers" / "xkcd"))
 sys.path.insert(0, str(ROOT / "scripts"))
 import render as R  # noqa: E402
+import faces as F  # noqa: E402
 
 EXAMPLE = ROOT / "examples" / "akam-2026-cartooning" / "storyboard.yaml"
 
@@ -80,7 +81,7 @@ def test_text_is_escaped(doc):
 def test_every_figure_pose_and_face_draws():
     pen = R.Pen("t")
     for pose in R.ARMS:
-        for face in ("neutral", "smile", "worry", "deadpan", "surprised"):
+        for face in F.ALL:
             for facing in ("left", "right"):
                 svg, head = R.figure(pen, 100, 200, 1.0, pose, face, facing, "mug", {"glasses": True, "hair": "bun"})
                 ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
@@ -301,10 +302,10 @@ def test_light_hair_is_an_outline_and_a_lab_coat_draws():
     assert len(light) > len(plain)  # the coat adds strokes
 
 
-def test_strand_hair_clipboard_and_a_mug_with_steam_draw():
+def test_light_hair_clipboard_and_a_mug_with_steam_draw():
     pen = R.Pen("props")
     for hair in ("bob", "long", "ponytail", "bun", "spiky"):
-        svg, _ = R.figure(pen, 100, 300, 1.0, "hold", "smile", "right", "mug", {"hair": hair, "hair_tone": "strands", "coat": True})
+        svg, _ = R.figure(pen, 100, 300, 1.0, "hold", "smile", "right", "mug", {"hair": hair, "hair_tone": "light", "coat": True})
         ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
     mug = R._holding(pen, "mug", 100, 100, 1.0, 2.3)
     clip = R._holding(pen, "clipboard", 100, 100, 1.0, 2.3)
@@ -511,3 +512,100 @@ def test_a_topic_comic_names_every_source_in_the_header_and_footer(doc):
     assert "Drawn from 2 sources: Craig &amp; Killick (2011); Beard (2012)" in svgs[0].replace("&amp;amp;", "&amp;")
     assert "Another reading" in svgs[-1] and "Licence: All rights reserved." in svgs[-1]
     assert "Some of these sources are not under an open licence" in svgs[-1]
+
+
+def test_the_new_faces_are_separate_from_the_five_original_ones_and_match_the_schema():
+    import json
+    assert not set(F.NEW) & set(F.LEGACY) and set(F.ALL) == set(F.LEGACY) | set(F.NEW)
+    schema = json.loads((ROOT / "schema" / "storyboard.schema.json").read_text())
+    enums = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            if "properties" in o and "face" in o["properties"] and "enum" in o["properties"]["face"]:
+                enums.append(set(o["properties"]["face"]["enum"]))
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(schema)
+    assert enums and all(e == set(F.ALL) for e in enums)
+
+
+def test_every_new_face_draws_with_and_without_glasses_on_a_stick_figure_and_a_diatom():
+    pen = R.Pen("faces")
+    for face in F.NEW:
+        for glasses in (False, True):
+            svg, head = R.figure(pen, 100, 200, 1.0, "stand", face, "right", None, {"glasses": glasses, "hair": "bob"})
+            ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+        svg, head = R.figure(pen, 100, 200, 1.0, "stand", face, "left", None, {"body": "diatom"})
+        ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+
+
+def test_every_new_face_has_an_animal_stand_in_among_the_five_original_faces():
+    from animals import ANIMALS
+    assert set(F.ANIMAL_FACE) == set(F.NEW) - {"surprised"} and set(F.ANIMAL_FACE.values()) <= set(F.ANIMAL_NATIVE)
+    pen = R.Pen("animals2")
+    for name in ANIMALS:
+        for face in F.NEW:
+            svg, head = R.figure(pen, 100, 200, 1.0, "stand", face, "right", None, {"body": name})
+            ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+
+
+def test_brows_stay_inside_the_head_and_the_original_faces_have_none():
+    import math
+    for face in F.NEW:
+        out = F.draw_face(R.Pen(face), 100, 100, 1.0, face, 2.3)
+        assert out
+    for face in F.LEGACY:
+        assert 'stroke="#ffffff"' not in "".join(R._face(R.Pen(face), 100, 100, 1.0, face, 2.3))  # the halo of a brow
+    # an extreme brow is clamped to the head's outline (radius 15 s)
+    checked = 0
+    for style in (k for k, v in F.BROWS.items() if v):
+        for seg in F._brows(R.Pen("b"), style, (99, 108.5), 97, 1.0, 2.3, False, 100, 100):
+            for m in re.finditer(r'M([\d.]+) ([\d.]+)C.*? ([\d.]+) ([\d.]+)"', seg):
+                x0, y0, x1, y1 = map(float, m.groups())
+                for x, y in ((x0, y0), (x1, y1)):
+                    checked += 1
+                    assert math.hypot(x - 100, y - 100) <= 15.5, (style, x, y)
+    assert checked > 20  # the pattern really found the brow ends
+
+
+@pytest.mark.parametrize("hair", ["short", "shoulder", "beret", "boater", "flatcap"])
+@pytest.mark.parametrize("tone", ["dark", "light", "grey"])
+def test_the_new_hair_and_hats_draw_in_every_tone(hair, tone):
+    svg, head = R.figure(R.Pen("hair"), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": hair, "hair_tone": tone})
+    ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
+    assert head[1] < 200 - 100  # the head point is above the head
+
+
+def test_a_hat_takes_the_tone_as_its_colour_and_grey_uses_the_palettes_mid_grey():
+    import draw
+    black = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "boater"})[0]
+    white = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "boater", "hair_tone": "light"})[0]
+    grey = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "flatcap", "hair_tone": "grey"})[0]
+    assert black != white and f'fill="{draw.INK}"' in black and f'fill="{draw.MID}"' in grey and R.HAIR_GREY == draw.MID
+
+
+
+
+def test_a_seated_figure_sits_lower_and_a_diatom_ignores_the_pose():
+    stand = R.figure(R.Pen(1), 100, 300, 1.0, "stand", "smile", "right", None, {})
+    sit = R.figure(R.Pen(1), 100, 300, 1.0, "sit", "smile", "right", "mug", {})
+    assert sit[1][1] > stand[1][1] + 8  # its head is lower: the hips are at seat height, not standing height
+    ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{sit[0]}</g>")
+    R.figure(R.Pen(1), 100, 300, 1.0, "sit", "smile", "right", None, {"body": "diatom"})
+    R.figure(R.Pen(1), 100, 300, 1.0, "sit", "smile", "right", None, {"body": "krill"})
+
+
+def test_head_scale_enlarges_the_head_and_the_default_is_1_2():
+    default = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "bob"})
+    explicit = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "bob", "head_scale": R.HEAD_SCALE})
+    original = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "bob", "head_scale": 1.0})
+    big = R.figure(R.Pen(1), 100, 200, 1.0, "stand", "smile", "right", None, {"hair": "bob", "head_scale": 1.4})
+    assert R.HEAD_SCALE == 1.2 and default == explicit
+    assert big[1][1] < default[1][1] < original[1][1] - 2  # the head point is higher the bigger the head
+    ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{big[0]}</g>")
+
+

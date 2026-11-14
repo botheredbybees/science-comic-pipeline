@@ -284,13 +284,15 @@ def test_an_animal_or_a_prop_counts_as_a_picture(doc):
     assert not any("show only stick figures" in w for w in warnings)
 
 
-def test_strand_hair_on_a_bun_warns(doc):
-    doc["cast"][0]["appearance"] = {"hair": "bun", "hair_tone": "strands"}
-    _, warnings = validate(doc)
-    assert any("strand hair on a bun" in w for w in warnings)
-    doc["cast"][0]["appearance"] = {"hair": "long", "hair_tone": "strands"}
-    _, warnings = validate(doc)
-    assert not any("strand hair on a bun" in w for w in warnings)
+def test_a_bun_only_reads_well_in_grey(doc):
+    for tone in (None, "dark", "light"):
+        doc["cast"][0]["appearance"] = {"hair": "bun", **({"hair_tone": tone} if tone else {})}
+        _, warnings = validate(doc)
+        assert any("a bun only reads well in grey" in w for w in warnings), tone
+    doc["cast"][0]["appearance"] = {"hair": "bun", "hair_tone": "grey"}
+    assert not any("a bun only reads well" in w for w in validate(doc)[1])
+    doc["cast"][0]["appearance"] = {"hair": "shoulder", "hair_tone": "light"}
+    assert not any("a bun only reads well" in w for w in validate(doc)[1])
 
 
 def test_a_lab_coat_and_an_outfit_together_warn(doc):

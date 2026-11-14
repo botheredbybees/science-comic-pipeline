@@ -174,8 +174,8 @@ def validate(doc):
         app = c.get("appearance") or {}
         if app.get("outfit") and app.get("coat"):
             warnings.append(f"cast {c['id']}: both `coat` (the lab coat) and `outfit` are set; only the outfit is drawn")
-        if app.get("hair") == "bun" and app.get("hair_tone") == "strands":
-            warnings.append(f"cast {c['id']}: strand hair on a bun reads as a mess; use the default or light tone for a bun")
+        if app.get("hair") == "bun" and app.get("hair_tone") != "grey":
+            warnings.append(f"cast {c['id']}: a bun only reads well in grey hair (hair_tone: grey); use shoulder, short, bob or ponytail for other hair")
 
     for kind, ids in (
         ("cast", [c["id"] for c in doc["cast"]]),
