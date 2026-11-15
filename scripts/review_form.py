@@ -3,7 +3,7 @@
 
 A page made here shows, for each item, its pictures, a list of things to check, a keep / fix / drop verdict and a notes box, and saves
 each answer as it is given. Published as an Artifact with the `db` capability, the answers are stored in the artifact's database under the
-collection `review` (one document per item id, plus `review/general`), where Claude can read them back with the ArtifactData tool.
+collection `review` (or `collection=`; one document per item id, plus `general`, and `_submitted` when the Submit button is pressed), where Claude can read them back with the ArtifactData tool.
 Open the same file in a plain browser and it still works, keeping answers in that browser only.
 
     from review_form import build_html
@@ -36,14 +36,14 @@ def item_html(it):
             f'<div class="saved" aria-live="polite"></div></div></div></article>')
 
 
-def build_html(title, intro, groups):
+def build_html(title, intro, groups, collection="review"):
     n = sum(len(items) for _, items in groups)
     body = []
     for gt, items in groups:
         body.append(f'<section><h2>{H.escape(gt)}</h2>' + "".join(item_html(it) for it in items) + "</section>")
     ids = [it["id"] for _, items in groups for it in items]
     page = TEMPLATE
-    for k, v in (("%%TITLE%%", H.escape(title)), ("%%INTRO%%", H.escape(intro)), ("%%BODY%%", "".join(body)), ("%%IDS%%", json.dumps(ids)), ("%%N%%", str(n))):
+    for k, v in (("%%TITLE%%", H.escape(title)), ("%%INTRO%%", H.escape(intro)), ("%%BODY%%", "".join(body)), ("%%IDS%%", json.dumps(ids)), ("%%N%%", str(n)), ("%%COLL%%", collection)):
         page = page.replace(k, v)
     return page
 
@@ -77,7 +77,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .card header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .tag{font:600 .75rem Inter,sans-serif;letter-spacing:.05em;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--mute)}
 .verdict{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.verdict label{cursor:pointer}.verdict input{position:absolute;opacity:0;pointer-events:none}
+.verdict label{cursor:pointer;position:relative}.verdict input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
 .verdict span{display:block;padding:7px 16px;font-weight:500;font-size:.9rem;border-left:1px solid var(--line);min-width:64px;text-align:center}
 .verdict label:first-child span{border-left:0}
 .verdict input:focus-visible+span{outline:2px solid var(--accent);outline-offset:-2px}
@@ -98,6 +98,9 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 .card.done{border-left:4px solid var(--accent)}
 .general{margin-top:28px}
 .hide{display:none}
+.submit{font:inherit;font-weight:600;padding:7px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}
+.submit.big{padding:12px 28px;font-size:1rem}
+.end{margin-top:24px;display:grid;gap:8px;justify-items:start}
 </style>
 <main>
 <h1>%%TITLE%%</h1>
@@ -105,14 +108,16 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 <div class="bar" role="region" aria-label="Progress">
   <div class="prog"><span><b id="done">0</b> of %%N%% judged</span> &middot; <span id="tally"></span><div class="meter" aria-hidden="true"><i class="k"></i><i class="f"></i><i class="d"></i></div></div>
   <div class="filters" role="group" aria-label="Filter"><button data-f="all" aria-pressed="true">All</button><button data-f="open" aria-pressed="false">To do</button><button data-f="fix" aria-pressed="false">Fix</button><button data-f="drop" aria-pressed="false">Drop</button></div>
+  <button class="submit" type="button">Submit review</button>
 </div>
 <div id="banner" class="banner hide" role="status"></div>
 %%BODY%%
+<section class="end"><button class="submit big" type="button">Submit review</button><div class="saved" id="submit-note" aria-live="polite">Everything saves as you go. Submit tells Claude you are finished.</div></section>
 <section class="general"><h2>Anything else</h2><textarea id="general" rows="4" placeholder="Anything not tied to one asset" aria-label="General notes"></textarea><div class="saved" id="general-saved" aria-live="polite"></div></section>
 </main>
 <script>
 (function(){
-  var IDS=%%IDS%%, LS="asset-review-v1", state={}, db=null, timers={}, busy={}, dirty={};
+  var IDS=%%IDS%%, LS="asset-review-v1", state={}, db=null, timers={}, busy={}, dirty={}, pending={}, lastWritten={};
   function card(id){return document.getElementById("item-"+id)}
   function read(id){var c=card(id),o={checks:{},notes:c.querySelector("textarea").value,verdict:""};
     c.querySelectorAll(".checks input").forEach(function(b){if(b.checked)o.checks[b.dataset.k]=true});
@@ -136,11 +141,11 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
   function flush(id){
     if(!db){say(id,"Kept in this browser only");return}
     if(busy[id]){dirty[id]=true;return}
-    busy[id]=true;
+    busy[id]=true;pending[id]=false;
     var body=id==="general"?{notes:document.getElementById("general").value,updated:new Date().toISOString()}:Object.assign({},state[id],{item:id,updated:new Date().toISOString()});
-    say(id,"Saving...");
-    db.doc("review/"+id).set(body).then(function(){say(id,"Saved")},function(e){say(id,"Not saved: "+((e&&e.message)||"error"))}).then(function(){busy[id]=false;if(dirty[id]){dirty[id]=false;flush(id)}})}
-  function changed(id){state[id]=read(id);card(id).classList.toggle("done",!!state[id].verdict);tally();stash();save(id)}
+    lastWritten[id]=body.updated;say(id,"Saving...");
+    db.doc("%%COLL%%/"+id).set(body).then(function(){say(id,"Saved")},function(e){say(id,"Not saved: "+((e&&e.message)||"error"))}).then(function(){busy[id]=false;if(dirty[id]){dirty[id]=false;flush(id)}})}
+  function changed(id){pending[id]=true;state[id]=read(id);card(id).classList.toggle("done",!!state[id].verdict);tally();stash();save(id)}
   IDS.forEach(function(id){var c=card(id);c.addEventListener("change",function(){changed(id)});c.querySelector("textarea").addEventListener("input",function(){changed(id)})});
   var g=document.getElementById("general");g.addEventListener("input",function(){stash();save("general")});
   try{var old=JSON.parse(localStorage.getItem(LS)||"null");if(old){state=old.s||{};IDS.forEach(function(id){if(state[id])paint(id,state[id])});g.value=old.g||""}}catch(e){}
@@ -153,15 +158,30 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
     window.claude.use("db").then(function(d){
       if(!d){clearTimeout(slow);return show("Answers are kept in this browser only (sign in to the artifact to save them where Claude can read them).")}
       db=d;
-      db.collection("review").onSnapshot(function(snap){
+      db.collection("%%COLL%%").onSnapshot(function(snap){
         if(!snap.metadata.fromCache){clearTimeout(slow);show("")}
         snap.docs.forEach(function(s){var id=s.id,o=s.data();if(!o||(s.metadata&&s.metadata.hasPendingWrites))return;
           if(id==="general"){if(document.activeElement!==g)g.value=o.notes||"";return}
-          if(IDS.indexOf(id)<0||busy[id]||dirty[id])return;state[id]={checks:o.checks||{},notes:o.notes||"",verdict:o.verdict||""};paint(id,state[id])});
+          if(IDS.indexOf(id)<0||busy[id]||dirty[id]||pending[id])return;if(o.updated&&lastWritten[id]&&o.updated<lastWritten[id])return;state[id]={checks:o.checks||{},notes:o.notes||"",verdict:o.verdict||""};paint(id,state[id])});
         tally();
       },function(e){clearTimeout(slow);show("Saved answers could not be loaded ("+((e&&e.code)||"error")+"). What you enter is kept in this browser.")});
     },function(){clearTimeout(slow);show("Answers are kept in this browser only.")});
   }
+  var armed=false,armTimer=null;
+  function setBtn(t){document.querySelectorAll(".submit").forEach(function(b){b.textContent=t})}
+  function setNote(t){document.getElementById("submit-note").textContent=t}
+  function submitReview(){
+    var k=0,f=0,d=0;IDS.forEach(function(id){var v=(state[id]||{}).verdict;if(v==="keep")k++;else if(v==="fix")f++;else if(v==="drop")d++});
+    var un=IDS.length-k-f-d;
+    if(un>0&&!armed){armed=true;setBtn(un+" not judged. Submit anyway?");clearTimeout(armTimer);armTimer=setTimeout(function(){armed=false;setBtn("Submit review")},5000);return}
+    armed=false;clearTimeout(armTimer);
+    IDS.forEach(function(id){if(pending[id])flush(id)});
+    var body={at:new Date().toISOString(),keep:k,fix:f,drop:d,unjudged:un};
+    var when=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),sum=k+" keep, "+f+" fix, "+d+" drop, "+un+" not judged";
+    if(!db){setNote("Not submitted: answers are only in this browser, so Claude cannot see them.");return}
+    setNote("Submitting...");
+    db.doc("%%COLL%%/_submitted").set(body).then(function(){setNote("Submitted at "+when+" ("+sum+"). You can still change answers and submit again.");setBtn("Submit again")},function(e){setNote("Not submitted: "+((e&&e.message)||"error"))})}
+  document.querySelectorAll(".submit").forEach(function(b){b.addEventListener("click",submitReview)});
   connect();
 })();
 </script>

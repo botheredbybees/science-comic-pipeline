@@ -596,7 +596,7 @@ def _head_offset(c, cast, w, h):
 
 def split_cells(st, x, y, w, h, fs):
     """Where the two halves of a split screen go, for `split_direction`: `side` (the default: left and right, a vertical divider), `stack` (top and
-    bottom, a horizontal divider) or `slope` (two wedges cut by a slanted divider, each staging drawn over the whole scene and clipped).
+    bottom, a horizontal divider) or `slope` (two wedges cut by a slanted divider; each staging is drawn in the widest rectangle that fits its wedge, so nothing crosses the line).
     Returns two dicts: `frame` (`rect` x y w h, or `poly` points), `sub` (the box the half's staging is drawn into) and `label` (x, y, anchor)."""
     labelled = any(st.get("split_labels") or [])
     top = fs * 1.3 if labelled else 0.0
@@ -614,8 +614,9 @@ def split_cells(st, x, y, w, h, fs):
         tx, bx = x + w / 2 + lean, x + w / 2 - lean
         left = [(x, y), (tx - gap / 2, y), (bx - gap / 2, y + h), (x, y + h)]
         right = [(tx + gap / 2, y), (x + w, y), (x + w, y + h), (bx + gap / 2, y + h)]
-        return [{"frame": ("poly", left), "sub": (x, y, w, h), "label": (x + 8, y + 4, "start")},
-                {"frame": ("poly", right), "sub": (x, y, w, h), "label": (x + w - 8, y + h - fs * 1.3, "end")}]
+        inner = w / 2 - lean - gap / 2  # the widest rectangle that fits each wedge: figures placed in it cannot cross the divider
+        return [{"frame": ("poly", left), "sub": (x, y, inner, h), "label": (x + 8, y + 4, "start")},
+                {"frame": ("poly", right), "sub": (x + w - inner, y, inner, h), "label": (x + w - 8, y + h - fs * 1.3, "end")}]
     half = (w - gap) / 2
     return [{"frame": ("rect", (x + i * (half + gap), y + top, half, h - top)), "sub": (x + i * (half + gap) + 6, y + top + 6, half - 12, h - top - 12),
              "label": (x + i * (half + gap) + half / 2, y, "middle")} for i in range(2)]

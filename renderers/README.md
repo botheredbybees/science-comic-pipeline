@@ -101,7 +101,7 @@ Four original faces (`neutral`, `smile`, `worry`, `deadpan`) are drawn exactly a
 enough, that a strip of forehead is left for them. Animals draw only the five original faces, `surprised` among them, with their own eyes and mouths; a newer face on an animal uses the nearest of them (`sad` becomes `worry`, `laugh` becomes
 `smile`), and a diatom draws all of them. `scripts/asset_gallery.py` shows every face.
 
-A staging can also be a **split screen**: `split` is a list of exactly two stagings (first, then second) with a frame round each, and `split_labels` prints a few words with them. `split_direction` cuts it `side` (the default: left and right), `stack` (top and bottom) or `slope` (two wedges cut by a slanted line; each half is drawn over the whole scene and clipped, so keep its figures in its own wedge). Each half is a full staging with its own characters, props and `shot`. A speech line can point at a figure in either half. `scripts/asset_gallery.py` shows all three.
+A staging can also be a **split screen**: `split` is a list of exactly two stagings (first, then second) with a frame round each, and `split_labels` prints a few words with them. `split_direction` cuts it `side` (the default: left and right), `stack` (top and bottom) or `slope` (two wedges cut by a slanted line; each half is drawn in the widest rectangle that fits its wedge, so nothing crosses the line). Each half is a full staging with its own characters, props and `shot`. A speech line can point at a figure in either half. `scripts/asset_gallery.py` shows all three.
 
 
 A character's look (hair, hair tone, head size, glasses, coat, body) belongs to the cast member in `head.yaml`; see the appearance
@@ -170,8 +170,9 @@ stays `25.0`).
 | `hospitalroom` | a bed, a bedside table, a window and a floor line; `drip` adds a drip stand; a sibling of `livingroom` |
 | `bridge` | a bridge between two blocks; `items` label the blocks; `broken` leaves a gap in the deck |
 | `eye` | an eye; `lens` puts a lens in front, `thought` a thought bubble (a string puts words in it) |
-| `bookshelf` | two shelves of books; `gap` leaves one slot empty (dashed), `lit` adds rays round it |
+| `bookshelf` | two shelves of books; `gap` leaves a slot about two books wide empty (dashed, with a question mark) |
 | `spinalcord` | a schematic cross-section: white matter, grey horns, central canal; `laminae` dashes layers across a dorsal horn, `hemisection` darkens one half |
+| `brain` | a side-view brain (front at the left) with a frontal, temporal, parietal and occipital lobe, the lateral fissure and central sulcus, folds, a ridged cerebellum and the stem; `highlight` (a lobe, or `left` or `right`), `labels` (name the lobes), `tracts` (fibre bundles), `signal` (an arrowed route); `view: top` or `highlight: left`/`right` draws it from above as two hemispheres |
 | `gallery`, `book`, `brain` | options for missing things: `gallery` `empty: n` (the last n frames dashed with a question mark), `book` `blank` (a dashed silhouette on the cover), `brain` `signal` (one arrowed route) |
 | `desk`, `ship`, `bowl`, `bottle`, `jar`, `flash`, `cups`, `laptop`, `microscope`, `teapot`, `thermometer` | objects; `label` where one is shown; `cups` takes `items` with a `value` (how full). `laptop`, `microscope`, `teapot`, `net` and `thermometer` keep their proportions inside the box you give them |
 

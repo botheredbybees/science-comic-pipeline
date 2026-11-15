@@ -86,11 +86,10 @@ Notes:
 
 ### A7 `bookshelf`
 
-Panels: A7a (plain), A7b (one book missing), A7c (missing and lit)
+Panels: A7a (plain), A7b (books missing)
 
 - [ ] The shelf reads as a bookcase.
 - [ ] The gap is noticed at once and has a question mark.
-- [ ] The rays help rather than clutter.
 
 Verdict: [ ] keep  [ ] fix  [ ] drop
 

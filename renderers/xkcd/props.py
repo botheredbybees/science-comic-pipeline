@@ -1584,44 +1584,96 @@ def camera(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
-BRAIN_REGIONS = {  # lobes of the side-view brain (front at the left), as polygons just inside the outline, in the brain's own 0 to 1 box
-    "frontal": [(0.12, 0.5), (0.12, 0.3), (0.24, 0.15), (0.38, 0.1), (0.4, 0.3), (0.38, 0.5), (0.3, 0.62), (0.22, 0.62)],
-    "parietal": [(0.5, 0.13), (0.7, 0.12), (0.86, 0.25), (0.88, 0.4), (0.66, 0.38), (0.5, 0.3)],
-    "temporal": [(0.24, 0.52), (0.44, 0.46), (0.66, 0.5), (0.8, 0.58), (0.62, 0.63), (0.4, 0.65), (0.26, 0.62)],
-    "occipital": [(0.72, 0.42), (0.9, 0.46), (0.86, 0.6), (0.66, 0.62)],
+BRAIN_REGIONS = {  # lobes of the side-view brain (front at the left), as polygons that share the fissures and the outline, in the brain's own 0 to 1 box
+    "frontal": [(0.08, 0.52), (0.09, 0.38), (0.16, 0.24), (0.28, 0.13), (0.44, 0.07), (0.52, 0.08), (0.5, 0.16), (0.46, 0.26), (0.44, 0.36), (0.42, 0.46),
+                (0.34, 0.54), (0.27, 0.6), (0.16, 0.6), (0.1, 0.58)],
+    "parietal": [(0.52, 0.08), (0.6, 0.07), (0.75, 0.12), (0.78, 0.14), (0.76, 0.24), (0.8, 0.36), (0.66, 0.4), (0.6, 0.44), (0.5, 0.5), (0.42, 0.46),
+                 (0.44, 0.36), (0.46, 0.26), (0.5, 0.16)],
+    "occipital": [(0.78, 0.14), (0.88, 0.22), (0.94, 0.36), (0.94, 0.48), (0.9, 0.57), (0.8, 0.6), (0.78, 0.5), (0.8, 0.36), (0.76, 0.24)],
+    "temporal": [(0.27, 0.6), (0.38, 0.54), (0.5, 0.5), (0.6, 0.44), (0.66, 0.4), (0.8, 0.36), (0.78, 0.5), (0.8, 0.6), (0.7, 0.62), (0.62, 0.7), (0.52, 0.74),
+                 (0.4, 0.72), (0.3, 0.66), (0.24, 0.62)],
 }
+BRAIN_LABELS = {"frontal": (0.27, 0.3), "parietal": (0.63, 0.22), "occipital": (0.87, 0.38), "temporal": (0.5, 0.63)}
+# gyri and sulci as short wavy strokes, a few to each lobe
+BRAIN_FOLDS = (
+    ((0.13, 0.46), (0.19, 0.38), (0.25, 0.43), (0.31, 0.33)), ((0.2, 0.26), (0.27, 0.21), (0.33, 0.27), (0.4, 0.18)), ((0.27, 0.5), (0.33, 0.43), (0.39, 0.48)),
+    ((0.35, 0.34), (0.4, 0.27), (0.43, 0.33)), ((0.14, 0.32), (0.18, 0.26), (0.22, 0.3)),
+    ((0.56, 0.16), (0.62, 0.23), (0.68, 0.16), (0.72, 0.24)), ((0.52, 0.32), (0.6, 0.36), (0.66, 0.29), (0.72, 0.35)), ((0.56, 0.42), (0.62, 0.38), (0.7, 0.42)),
+    ((0.85, 0.24), (0.9, 0.32), (0.86, 0.4)), ((0.86, 0.52), (0.91, 0.46)),
+    ((0.31, 0.62), (0.4, 0.58), (0.48, 0.63)), ((0.46, 0.55), (0.54, 0.59), (0.62, 0.52)), ((0.5, 0.69), (0.58, 0.65), (0.66, 0.69)), ((0.68, 0.56), (0.74, 0.5), (0.77, 0.56)),
+)
+BRAIN_TOP_FOLDS = (  # left hemisphere seen from above (front at the top); the right is the mirror image
+    ((0.18, 0.2), (0.26, 0.15), (0.34, 0.2), (0.42, 0.13)), ((0.12, 0.34), (0.22, 0.28), (0.3, 0.34), (0.4, 0.27)), ((0.1, 0.5), (0.2, 0.44), (0.3, 0.5), (0.42, 0.42)),
+    ((0.12, 0.64), (0.22, 0.58), (0.32, 0.64), (0.42, 0.57)), ((0.16, 0.78), (0.26, 0.72), (0.34, 0.78), (0.42, 0.7)), ((0.24, 0.88), (0.32, 0.84), (0.4, 0.88)),
+)
+
+
+def _top_brain(pen, x, y, w, h, p, fs, lines, fsb):
+    """The brain from above: two hemispheres side by side with the fissure between them and the front at the top. `highlight: left` or `right` shades one
+    hemisphere (drawn as the reader sees the page: the left hemisphere on the left)."""
+    U, sw = _u(x, y, w, h), 2.6
+    n = 28
+    ring = [(0.5 + 0.4 * math.cos(math.tau * k / n) * (1 + 0.1 * math.sin(math.tau * k / n)), 0.5 + 0.46 * math.sin(math.tau * k / n)) for k in range(n)]  # k = 7 is the back, 21 the front
+    o = [pen.stroke([U(*q) for q in ring], sw, closed=True, fill=PAPER)]
+    name = p.get("highlight")
+    if name in ("left", "right"):  # shade one hemisphere: the half of the outline on its side of the midline, with straight edges and no stroke of its own
+        half = [ring[k] for k in range(7, 22)] if name == "left" else [ring[k % n] for k in range(21, 36)]
+        o.append(pen.poly([U(*q) for q in half], 0, fill=MID, color="none"))
+        o.append(pen.stroke([U(*q) for q in ring], sw, closed=True))
+    o.append(pen.stroke([U(0.5, 0.05), U(0.495, 0.3), U(0.505, 0.5), U(0.495, 0.7), U(0.5, 0.95)], 2.6, color=INK))  # the fissure between the hemispheres
+    ink = INK if p.get("highlight") in ("left", "right") else MID
+    for fold in BRAIN_TOP_FOLDS:
+        o.append(pen.stroke([U(*q) for q in fold], 1.6, color=ink))
+        o.append(pen.stroke([U(1 - u, v) for u, v in fold], 1.6, color=ink))
+    if p.get("labels"):
+        for name, u in (("left", 0.27), ("right", 0.73)):
+            o.append(text(x + w * u, y + h * 0.5 - fsb * 0.6, [name], fsb * 1.1, anchor="middle", halo=True))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
 
 
 def brain(pen, x, y, w, h, p, fs):
-    """A brain in side view: a lobed cloud-like outline, folds drawn as curved lines, a cerebellum and a stem. Neuroscience, memory, ageing.
-    `highlight` (frontal, parietal, temporal or occipital) shades that lobe; `tracts: true` draws bundles of fibres between regions
-    (white matter); `signal: true` draws one arrowed route from the back to the front, a signal passing along. The front is at the left."""
-    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.3, p, fs)
+    """A brain in side view with the front at the left: the outline of the cerebrum with a frontal lobe, a temporal lobe hanging below the lateral fissure,
+    parietal and occipital lobes, the central sulcus, folds drawn lobe by lobe, a cerebellum with its fine ridges and the brain stem. For neuroscience, memory,
+    language, ageing. `highlight` (frontal, parietal, temporal or occipital) shades that lobe; `labels: true` names the four lobes; `tracts: true` draws
+    bundles of fibres between regions (white matter); `signal: true` draws one arrowed route from the back to the front, a signal passing along.
+    `view: top` (or `highlight: left` or `right`) draws the brain from above instead, as two hemispheres, for a left against right comparison."""
+    top_view = p.get("view") == "top" or p.get("highlight") in ("left", "right")
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.0 if top_view else 1.3, p, fs)
+    if top_view:
+        return _top_brain(pen, x, y, w, h, p, fs, lines, fsb)
     U, sw = _u(x, y, w, h), 2.6
-    outline = [U(0.1, 0.5), U(0.1, 0.3), U(0.24, 0.12), U(0.46, 0.06), U(0.7, 0.1), U(0.9, 0.24), U(0.94, 0.46), U(0.86, 0.62), U(0.62, 0.66), U(0.4, 0.68), U(0.2, 0.66)]
-    o = [pen.stroke([U(0.6, 0.64), U(0.66, 0.9), U(0.76, 0.96), U(0.8, 0.84), U(0.76, 0.64)], sw * 0.9, fill=SOFT),  # the stem
-         pen.stroke([U(0.42, 0.62), U(0.54, 0.8), U(0.7, 0.82), U(0.74, 0.66)], sw * 0.9, fill=SOFT),  # the cerebellum
-         pen.stroke(outline, sw, closed=True, fill=PAPER)]
+    outline = [U(0.08, 0.52), U(0.09, 0.38), U(0.16, 0.24), U(0.28, 0.13), U(0.44, 0.07), U(0.6, 0.07), U(0.75, 0.12), U(0.88, 0.22), U(0.94, 0.36), U(0.94, 0.48), U(0.9, 0.57),
+               U(0.8, 0.6), U(0.7, 0.62), U(0.62, 0.7), U(0.52, 0.74), U(0.4, 0.72), U(0.3, 0.66), U(0.24, 0.62), U(0.16, 0.6), U(0.1, 0.58)]
+    o = [pen.stroke([U(0.5, 0.68), U(0.54, 0.88), U(0.58, 0.97), U(0.66, 0.96), U(0.66, 0.8), U(0.64, 0.66)], sw * 0.9, fill=SOFT),  # the brain stem
+         pen.stroke([U(0.66, 0.64), U(0.78, 0.62), U(0.9, 0.64), U(0.9, 0.74), U(0.8, 0.82), U(0.68, 0.8), U(0.62, 0.72)], sw * 0.9, closed=True, fill=SOFT)]  # the cerebellum
+    o += [pen.stroke([U(0.65 + 0.012 * k, 0.66 + 0.035 * k), U(0.78, 0.65 + 0.035 * k), U(0.89 - 0.01 * k, 0.67 + 0.035 * k)], 1.1, color=MID) for k in range(4)]  # its ridges
+    o.append(pen.stroke(outline, sw, closed=True, fill=PAPER))
     region = BRAIN_REGIONS.get(p.get("highlight"))
     if region:
         o.append(pen.stroke([U(*q) for q in region], 1.6, closed=True, fill=MID))
-    folds = (((0.22, 0.4), (0.3, 0.26), (0.42, 0.34), (0.5, 0.2)), ((0.3, 0.56), (0.42, 0.46), (0.54, 0.54), (0.66, 0.42)),
-             ((0.56, 0.2), (0.66, 0.32), (0.78, 0.22), (0.84, 0.36)), ((0.7, 0.56), (0.78, 0.46), (0.86, 0.52)))
-    for fold in folds:
-        o.append(pen.stroke([U(*q) for q in fold], 1.6, color=INK if region else MID))
-    if p.get("tracts"):  # three bundles of fibres, each with a dot at both ends: front to back over the top, front to back through the temporal lobe, and across the middle
-        for path in (((0.2, 0.42), (0.32, 0.24), (0.58, 0.2), (0.78, 0.32), (0.82, 0.46)), ((0.26, 0.56), (0.46, 0.5), (0.66, 0.52), (0.8, 0.5)),
-                     ((0.4, 0.2), (0.44, 0.38), (0.5, 0.56))):
+    ink = INK if region else MID
+    for fold in BRAIN_FOLDS:
+        o.append(pen.stroke([U(*q) for q in fold], 1.5, color=ink))
+    o.append(pen.stroke([U(0.27, 0.6), U(0.38, 0.54), U(0.5, 0.5), U(0.6, 0.44), U(0.66, 0.4)], 2.2, color=INK))  # the lateral fissure
+    o.append(pen.stroke([U(0.52, 0.08), U(0.5, 0.16), U(0.46, 0.26), U(0.44, 0.36), U(0.42, 0.46)], 2.2, color=INK))  # the central sulcus
+    if p.get("tracts"):  # three bundles of fibres, each with a dot at both ends: front to back over the top, front to back through the temporal lobe, and the arc round the lateral fissure
+        for path in (((0.16, 0.42), (0.3, 0.26), (0.58, 0.22), (0.78, 0.3), (0.84, 0.46)), ((0.3, 0.62), (0.46, 0.6), (0.64, 0.58), (0.82, 0.54)),
+                     ((0.2, 0.42), (0.34, 0.3), (0.5, 0.32), (0.58, 0.44), (0.5, 0.58))):
             pts = [U(*q) for q in path]
             o.append(pen.stroke(pts, 3.6, color=INK))
             o.append(pen.stroke(pts, 1.4, color=PAPER))
             o += [_dot(*pts[0], 3.4), _dot(*pts[-1], 3.4)]
     if p.get("signal"):  # one route with an arrowhead: a signal passing from the back of the brain to the front
-        route = [U(0.76, 0.48), U(0.62, 0.32), U(0.44, 0.28), U(0.28, 0.38)]
+        route = [U(0.82, 0.46), U(0.66, 0.3), U(0.44, 0.26), U(0.24, 0.38)]
         o.append(pen.stroke(route, 3.0, color=INK))
         ang = math.atan2(route[-1][1] - route[-2][1], route[-1][0] - route[-2][0])
         o += [pen.line((route[-1][0] - 11 * math.cos(ang + s * 0.5), route[-1][1] - 11 * math.sin(ang + s * 0.5)), route[-1], 3.0, amp=0.2) for s in (-1, 1)]
         o.append(_dot(*route[0], 4.0))
+    if p.get("labels"):
+        for name, (u, v) in BRAIN_LABELS.items():
+            o.append(text(x + w * u, y + h * v - fsb * 0.6, [name], fsb * 0.95, anchor="middle", halo=True))
+        o.append(text(x + w * 0.78, y + h * 0.84, ["cerebellum"], fsb * 0.95, anchor="start", halo=True))
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
@@ -1951,7 +2003,7 @@ def staff(pen, x, y, w, h, p, fs):
 
 
 def livingroom(pen, x, y, w, h, p, fs):
-    """A living room as a backdrop: a wall with a window (curtains drawn back, a sill), a floor line with a skirting board and a rug.
+    """A living room as a backdrop: a wall with a window (curtains drawn back, a sill), a floor line with a skirting board.
     `lamp: true` adds a standing lamp. A good place for an armchair, a piano, a guitar or a laptop; a figure stands on the floor line."""
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
     U, sw = _u(x, y, w, h), 2.6
@@ -1966,9 +2018,6 @@ def livingroom(pen, x, y, w, h, p, fs):
     o.append(pen.line(U(wx - 0.05, wy - 0.03), U(wx + ww + 0.05, wy - 0.03), 2.0, amp=0.2))  # the curtain rail
     o.append(pen.rect(*U(0.56, 0.16), w * 0.14, h * 0.26, 2.2, fill=PAPER, over=0.6))  # a small picture on the wall
     o.append(pen.stroke([U(0.575, 0.36), U(0.6, 0.27), U(0.625, 0.33), U(0.65, 0.24), U(0.685, 0.36)], 1.6, color=INK))
-    o.append(pen.stroke([U(0.3, 0.93), U(0.4, 0.915), U(0.7, 0.915), U(0.8, 0.93), U(0.7, 0.975), U(0.4, 0.975)], 1.8, closed=True, fill=SOFT))  # the rug
-    for k in range(3):
-        o.append(pen.line(U(0.42 + 0.1 * k, 0.935), U(0.42 + 0.1 * k, 0.965), 1.0, amp=0.1, color=MID))
     if p.get("lamp"):  # a standing lamp on the right
         o += [pen.line(U(0.88, floor), U(0.88, 0.4), 2.2, amp=0.2), pen.line(U(0.84, floor), U(0.92, floor), 2.2, amp=0.2),
               pen.poly([U(0.83, 0.4), U(0.93, 0.4), U(0.9, 0.24), U(0.86, 0.24)], sw * 0.8, fill=SOFT, jit=0.15)]
@@ -1996,8 +2045,8 @@ def gears(pen, x, y, w, h, p, fs):
     o = [_gear(pen, *c1, r1, n1, 0.0, r1 * 0.62), _gear(pen, *c2, r2, n2, math.pi + math.pi / n2, r2 * 0.62)]
     for (cx, cy), r, item in zip((c1, c2), (r1, r2), (p.get("items") or []) + [{}, {}]):
         if item.get("label"):
-            lab = wrap(item["label"], r * 1.1, fsb)
-            o.append(text(cx, cy - block_h(lab, fsb, 1.05) / 2 - fsb * 0.05, lab, fsb, anchor="middle", lh=1.05))
+            lab = wrap(item["label"], r * 1.25, fsb * 1.25)
+            o.append(text(cx, cy - block_h(lab, fsb * 1.25, 1.05) / 2 - fsb * 0.05, lab, fsb * 1.25, anchor="middle", lh=1.05))
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
@@ -2041,12 +2090,6 @@ def funnel(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
-def _rays(pen, cx, cy, r0, r1, n, w=1.6):
-    """Short strokes radiating from a point, from radius r0 to r1: light, attention."""
-    return [pen.line((cx + r0 * math.cos(math.tau * k / n), cy + r0 * math.sin(math.tau * k / n)),
-                     (cx + r1 * math.cos(math.tau * k / n), cy + r1 * math.sin(math.tau * k / n)), w, amp=0.2) for k in range(n)]
-
-
 def theatre(pen, x, y, w, h, p, fs):
     """A stage seen from the front: curtains drawn back at both sides, a valance across the top and boards at the foot. `spotlight: true` darkens
     the back and lights a cone from a lamp above; `screen: true` hangs a screen at the back (for a projected shadow); `audience: true` puts a row of
@@ -2086,7 +2129,7 @@ def blackbox(pen, x, y, w, h, p, fs):
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
     U, sw = _u(x, y, w, h), 2.6
     o = [pen.rect(*U(0.35, 0.18), w * 0.3, h * 0.64, sw, fill=INK, over=0.4),
-         text(x + w * 0.5, y + h * 0.5 - fs * 1.9, ["?"], fs * 3.2, anchor="middle", fill=PAPER)]
+         text(x + w * 0.5, y + h * 0.5 - fs * 2.75, ["?"], fs * 4.6, anchor="middle", fill=PAPER)]
     o.append(pen.arrow(U(0.03, 0.5), U(0.33, 0.5), 2.4))
     if p.get("dashed"):
         o.append(pen.stroke([U(0.67, 0.5), U(0.97, 0.5)], 2.4, dash="7 6"))
@@ -2154,9 +2197,11 @@ def hospitalroom(pen, x, y, w, h, p, fs):
           pen.poly([U(0.24, 0.5), U(0.56, 0.5), U(0.57, 0.64), U(0.24, 0.64)], sw * 0.8, fill=SOFT, jit=0.2)]  # the blanket
     o += [pen.rect(*U(0.62, 0.6), w * 0.12, h * 0.28, sw, fill=PAPER, over=0.4), pen.line(U(0.62, 0.7), U(0.74, 0.7), 1.6, amp=0.2),  # the bedside table and its drawer
           pen.rect(*U(0.66, 0.54), w * 0.04, h * 0.06, 1.8, fill=SOFT, over=0.2)]  # a cup on it
-    if p.get("drip"):
-        o += [pen.line(U(0.86, 0.26), U(0.86, floor), 2.2, amp=0.2), pen.line(U(0.82, floor), U(0.9, floor), 2.2, amp=0.2),
-              pen.rect(*U(0.83, 0.26), w * 0.06, h * 0.12, 2.0, fill=SOFT, over=0.2), pen.stroke([U(0.86, 0.38), U(0.8, 0.5), U(0.76, 0.56)], 1.4, color=INK)]
+    if p.get("drip"):  # a drip stand: a pole with a hook arm, a bag hanging from the hook, and a tube running over the table to the bed
+        o += [pen.line(U(0.86, 0.16), U(0.86, floor), 2.2, amp=0.2), pen.line(U(0.82, floor), U(0.9, floor), 2.2, amp=0.2),
+              pen.line(U(0.82, 0.16), U(0.9, 0.16), 2.2, amp=0.2), pen.line(U(0.86, 0.16), U(0.86, 0.22), 1.4, amp=0.1),
+              pen.rect(*U(0.83, 0.22), w * 0.06, h * 0.14, 2.0, fill=SOFT, over=0.2),
+              pen.stroke([U(0.86, 0.36), U(0.81, 0.46), U(0.7, 0.49), U(0.6, 0.5), U(0.55, 0.57)], 1.5, color=INK)]
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
@@ -2174,10 +2219,7 @@ def bridge(pen, x, y, w, h, p, fs):
               pen.poly([U(0.54, 0.38), U(0.73, 0.38), U(0.73, 0.44), U(0.56, 0.44)], sw * 0.8, fill=PAPER, jit=0.15)]
         o += [pen.line(U(0.48, 0.5), U(0.47, 0.56), 1.6, amp=0.1), pen.line(U(0.52, 0.52), U(0.53, 0.6), 1.6, amp=0.1)]  # bits falling
     else:
-        o.append(pen.rect(*U(0.27, 0.38), w * 0.46, h * 0.06, sw, fill=PAPER, over=0.3))
-        o.append(pen.stroke([U(0.27, 0.44), U(0.37, 0.6), U(0.5, 0.64), U(0.63, 0.6), U(0.73, 0.44)], 2.2, color=INK))  # the arch under the deck
-        o += [pen.line(U(u, 0.44), U(u, v), 1.4, amp=0.1) for u, v in ((0.4, 0.62), (0.5, 0.64), (0.6, 0.62))]  # hangers down to the arch
-    o += [pen.line(U(0.27, 0.3), U(0.73, 0.3), 1.6, amp=0.2)] + [pen.line(U(u, 0.3), U(u, 0.38), 1.6, amp=0.1) for u in (0.3, 0.4, 0.5, 0.6, 0.7)] if not p.get("broken") else []
+        o.append(pen.rect(*U(0.27, 0.38), w * 0.46, h * 0.06, sw, fill=PAPER, over=0.3))  # a plain deck, joining the two blocks
     for k, u in enumerate((0.135, 0.865)):
         if k < len(items) and items[k].get("label"):
             lab = wrap(items[k]["label"], w * 0.24, fsb)
@@ -2187,14 +2229,13 @@ def bridge(pen, x, y, w, h, p, fs):
 
 
 def eye(pen, x, y, w, h, p, fs):
-    """An eye: lids, iris and pupil with a glint. `lens: true` puts a round lens in front (seeing through, or a tinted view); `thought` (true, or a few words)
-    adds a thought bubble above and to the right: what is seen, or what it makes someone think."""
+    """An eye: lids, iris and pupil with a glint. `lens: true` holds a lens off to the right with two dashed sight lines running through it to the eye (seeing
+    through a lens, or a tinted view); `thought` (true, or a few words) adds a thought bubble above and to the right: what is seen, or what it makes someone think."""
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.5, p, fs)
-    thought = p.get("thought")
-    if thought:  # leave the top right for the bubble: the eye takes the lower left
-        ex, ey, ew, eh = x, y + h * 0.3, w * 0.72, h * 0.7
-    else:
-        ex, ey, ew, eh = x, y, w, h
+    thought, lens = p.get("thought"), p.get("lens")
+    top = h * 0.32 if thought else 0.0
+    ew = w * 0.56 if lens else (w * 0.7 if thought else w)  # the eye keeps to the left when there is a lens or a bubble to make room for
+    ex, ey, eh = x, y + top, h - top
     U, sw = _u(ex, ey, ew, eh), 2.6
     cx, cy = U(0.5, 0.5)
     r = eh * 0.3
@@ -2202,30 +2243,33 @@ def eye(pen, x, y, w, h, p, fs):
     o = [pen.stroke(lid, sw, closed=True, fill=PAPER), pen.ellipse(cx, cy, r, r, 2.2, fill=SOFT), pen.ellipse(cx, cy, r * 0.45, r * 0.45, 2.0, fill=INK),
          f'<circle cx="{cx + r * 0.22:.1f}" cy="{cy - r * 0.22:.1f}" r="{r * 0.14:.1f}" fill="{PAPER}"/>']
     o += [pen.line(U(u, 0.22 - 0.04 * abs(u - 0.5)), U(u + (u - 0.5) * 0.2, 0.08), 1.8, amp=0.1) for u in (0.2, 0.35, 0.5, 0.65, 0.8)]  # lashes
-    if p.get("lens"):
-        lx, ly = U(0.62, 0.55)
-        lr = eh * 0.34
-        o += [pen.ellipse(lx, ly, lr, lr, 3.0, fill="none")] + [pen.line((lx - lr * 0.7 + k * lr * 0.35, ly + lr * 0.55), (lx - lr * 0.1 + k * lr * 0.35, ly - lr * 0.6), 1.2, amp=0.1, color=MID) for k in range(3)]
-        o.append(pen.line((lx + lr * 0.7, ly + lr * 0.7), (lx + lr * 1.25, ly + lr * 1.3), 3.4, amp=0.2))
+    if lens:  # a round lens held away from the eye, with the view running through it
+        lx, ly, lr = x + w * 0.8, ey + eh * 0.5, eh * 0.36
+        for sgn in (-1, 1):
+            o.append(pen.stroke([(cx + r * 1.1, cy + sgn * r * 0.5), (lx - lr * 0.95, ly + sgn * lr * 0.6)], 1.4, color=MID, dash="5 5"))
+        o.append(pen.ellipse(lx, ly, lr, lr, 3.2, fill=SOFT))
+        o += [pen.line((lx - lr * 0.55 + k * lr * 0.4, ly + lr * 0.55), (lx + lr * 0.05 + k * lr * 0.4, ly - lr * 0.6), 1.2, amp=0.1, color=MID) for k in range(3)]
+        o.append(pen.line((lx + lr * 0.7, ly + lr * 0.7), (lx + lr * 1.15, ly + lr * 1.2), 3.6, amp=0.2))
     if thought:
-        bx, by = x + w * 0.8, y + h * 0.15
-        o += [pen.ellipse(x + w * 0.66, y + h * 0.36, w * 0.015, h * 0.025, 1.6, fill=PAPER), pen.ellipse(x + w * 0.71, y + h * 0.29, w * 0.025, h * 0.04, 1.6, fill=PAPER),
-              pen.ellipse(bx, by, w * 0.19, h * 0.15, 2.2, fill=PAPER)]
+        bx, by = x + w * 0.78, y + h * 0.17
+        o += [pen.ellipse(x + w * 0.6, y + h * 0.4, w * 0.015, h * 0.025, 1.6, fill=PAPER), pen.ellipse(x + w * 0.65, y + h * 0.33, w * 0.025, h * 0.04, 1.6, fill=PAPER),
+              pen.ellipse(bx, by, w * 0.22, h * 0.17, 2.2, fill=PAPER)]
         if isinstance(thought, str):
-            lab = wrap(thought, w * 0.34, fsb * 0.85)
-            o.append(text(bx, by - block_h(lab, fsb * 0.85, 1.05) / 2, lab, fsb * 0.85, anchor="middle", lh=1.05))
+            lab = wrap(thought, w * 0.38, fsb * 1.15)
+            o.append(text(bx, by - block_h(lab, fsb * 1.15, 1.05) / 2, lab, fsb * 1.15, anchor="middle", lh=1.05))
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
 
 def bookshelf(pen, x, y, w, h, p, fs):
-    """A bookcase with two shelves of books. `gap: true` leaves one slot empty on the upper shelf, drawn dashed (the book that is not there);
-    `lit: true` adds rays round the gap, as if it is the one to look at."""
+    """A bookcase with two shelves of books. `gap: true` leaves a slot about two books wide empty on the upper shelf, drawn dashed with a question mark
+    (the books that are not there)."""
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.4, p, fs)
     U, sw = _u(x, y, w, h), 2.6
     o = [pen.rect(*U(0.0, 0.02), w, h * 0.96, sw, fill=PAPER, over=0.5), pen.line(U(0.0, 0.5), U(1.0, 0.5), sw, amp=0.3)]
     spec = ((0.05, 0.62), (0.04, 0.78), (0.06, 0.55), (0.05, 0.7), (0.07, 0.64), (0.04, 0.8), (0.06, 0.58), (0.05, 0.72), (0.06, 0.66), (0.04, 0.6), (0.07, 0.75), (0.05, 0.57))
     gap_at = 5
+    gap_w = 0.11  # the empty slot is about two books wide, so the break in the pattern is hard to miss
     for row, base in enumerate((0.5, 0.98)):
         u = 0.05
         for i, (bw, bh) in enumerate(spec):
@@ -2233,10 +2277,9 @@ def bookshelf(pen, x, y, w, h, p, fs):
                 break
             if row == 0 and p.get("gap") and i == gap_at:
                 gx, gy = U(u, base - 0.4)
-                o.append(pen.stroke([(gx, gy), (gx + w * bw, gy), (gx + w * bw, gy + h * 0.4), (gx, gy + h * 0.4)], 1.6, closed=True, color=MID, dash="5 4"))
-                o.append(text(gx + w * bw / 2, gy + h * 0.2 - fsb * 0.55, ["?"], fsb * 1.1, anchor="middle", fill=MID))
-                if p.get("lit"):
-                    o += _rays(pen, gx + w * bw / 2, gy + h * 0.2, h * 0.24, h * 0.33, 8, 1.4)
+                o.append(pen.stroke([(gx, gy), (gx + w * gap_w, gy), (gx + w * gap_w, gy + h * 0.4), (gx, gy + h * 0.4)], 1.6, closed=True, color=MID, dash="5 4"))
+                o.append(text(gx + w * gap_w / 2, gy + h * 0.2 - fsb * 0.65, ["?"], fsb * 1.3, anchor="middle", fill=MID))
+                u += gap_w + 0.012 - bw - 0.012
             else:
                 bx, by = U(u, base - 0.4 * bh / 0.8 - 0.01)
                 o.append(pen.rect(bx, by, w * bw, h * 0.4 * bh / 0.8, 1.8, fill=SOFT if (i + row) % 2 else PAPER, over=0.2))

@@ -15,6 +15,11 @@ Given a DOI, follow the five skills in `skills/`, in order, and finish with a PD
 
 Work in `examples/<slug>/` (or `private/<slug>/` if the licence is not confirmed). Sources go in `sources/<slug>/`.
 
+**Before step 2 and again before step 3, read `private/lore/COMIC-LORE.md` if it exists** (its "How to use" section, Part A: what this project has
+found out, and Part B: McCloud's transitions and the split screen; Parts C to G when a question needs them). It is local only (gitignored, because
+it paraphrases books), so a fresh clone will not have it: carry on without it and do not recreate it. It is advice about shape, and the rules in this
+file win over it: it never licenses a fact, a motive, or a dramatic beat the paper does not give.
+
 ## Two choices to make before step 1
 
 - **One paper or several?** A comic retells one paper (`meta.source`) or what several papers say about one question, a topic comic

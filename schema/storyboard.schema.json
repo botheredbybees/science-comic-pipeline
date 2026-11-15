@@ -558,7 +558,7 @@
         "split_direction": {
           "enum": ["side", "stack", "slope"],
           "default": "side",
-          "description": "How a split screen is cut. side (the default): left and right, a vertical line, for a comparison or two things at once. stack: top and bottom, a horizontal line, for a before above an after (the eye reads downward). slope: two wedges cut by a slanted line, for a contrast with some tension (connected against fragmented); each half's staging is drawn over the whole scene and clipped to its wedge, so keep the first half's figures and props in the left and the second's in the right."
+          "description": "How a split screen is cut. side (the default): left and right, a vertical line, for a comparison or two things at once. stack: top and bottom, a horizontal line, for a before above an after (the eye reads downward). slope: two wedges cut by a slanted line, for a contrast with some tension (connected against fragmented); each half's staging is drawn in the widest rectangle that fits its wedge (so positions are fractions of that rectangle and nothing crosses the line)."
         },
         "split_labels": {
           "type": "array",
@@ -1014,9 +1014,10 @@
               "view": {
                 "enum": [
                   "polar",
-                  "wide"
+                  "wide",
+                  "top"
                 ],
-                "description": "map and currents only: polar (the south polar cap, to 50 degrees S) or wide (to 10 degrees S, with Australia, New Zealand and the other southern lands)."
+                "description": "map and currents only: polar (the south polar cap, to 50 degrees S) or wide (to 10 degrees S, with Australia, New Zealand and the other southern lands). brain only: top draws the brain from above, as two hemispheres."
               },
               "places": {
                 "type": "array",
@@ -1043,7 +1044,8 @@
               },
               "pitches": {"type": "array", "maxItems": 8, "items": {"type": "integer", "minimum": 0, "maximum": 8}, "description": "staff only: the notes, low to high (0 is the bottom line, 1 the space above it, 8 above the top line). Default: a run of four."},
               "meter": {"type": "string", "pattern": "^[0-9]{1,2}/[0-9]{1,2}$", "description": "staff only: the time signature, such as 3/4 (default 4/4)."},
-              "highlight": {"enum": ["frontal", "parietal", "temporal", "occipital"], "description": "brain only: shade that lobe (the front is at the left)."},
+              "highlight": {"enum": ["frontal", "parietal", "temporal", "occipital", "left", "right"], "description": "brain only: shade that lobe of the side view (the front is at the left), or, with left or right, draw the brain from above and shade that hemisphere."},
+              "labels": {"type": "boolean", "description": "brain only: name the lobes (or the two hemispheres in the top view)."},
               "tracts": {"type": "boolean", "description": "brain only: draw bundles of fibres between regions (white matter)."},
               "lamp": {"type": "boolean", "description": "livingroom only: a standing lamp at the right."},
               "frames": {"type": "integer", "minimum": 1, "maximum": 5, "description": "gallery only: how many framed pictures hang on the wall (default 3)."},
@@ -1070,8 +1072,7 @@
               "broken": {"type": "boolean", "description": "bridge only: leave a gap in the deck, for a link that is missing."},
               "lens": {"type": "boolean", "description": "eye only: a round lens in front of the eye."},
               "thought": {"type": ["boolean", "string"], "description": "eye only: a thought bubble above and to the right; a string puts a few words in it."},
-              "gap": {"type": "boolean", "description": "bookshelf only: leave one slot empty (dashed) on the upper shelf."},
-              "lit": {"type": "boolean", "description": "bookshelf only: rays round the empty slot, with gap."},
+              "gap": {"type": "boolean", "description": "bookshelf only: leave a slot about two books wide empty (dashed, with a question mark) on the upper shelf."},
               "laminae": {"type": "boolean", "description": "spinalcord only: dashed layers across one dorsal horn."},
               "hemisection": {"type": "boolean", "description": "spinalcord only: darken the right half, for a cut or damaged side."},
               "condition": {

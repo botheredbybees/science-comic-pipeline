@@ -715,7 +715,7 @@ def test_stage_options_each_draw_something_more_and_a_prop_can_be_empty_blank_or
     assert len(_prop("stage", spotlight=True)) > len(_prop("stage")) and len(_prop("stage", audience=True)) > len(_prop("stage")) and len(_prop("stage", screen=True)) > len(_prop("stage"))
     assert len(_prop("gallery", frames=3, empty=1)) != len(_prop("gallery", frames=3)) and "?" in _prop("gallery", frames=3, empty=1) and "?" not in _prop("gallery", frames=3)
     assert "stroke-dasharray" in _prop("book", blank=True) and "stroke-dasharray" not in _prop("book", title="T") and "?" in _prop("book", blank=True)
-    assert "stroke-dasharray" in _prop("bookshelf", gap=True) and "?" in _prop("bookshelf", gap=True) and "?" not in _prop("bookshelf") and len(_prop("bookshelf", gap=True, lit=True)) > len(_prop("bookshelf", gap=True))
+    assert "stroke-dasharray" in _prop("bookshelf", gap=True) and "?" in _prop("bookshelf", gap=True) and "?" not in _prop("bookshelf")
     assert len(_prop("brain", signal=True)) > len(_prop("brain"))
 
 
@@ -724,7 +724,7 @@ def test_idea_props_take_their_labels_and_options():
     assert "input" in _prop("blackbox", items=two) and "input" not in _prop("blackbox") and "?" in _prop("blackbox")
     assert "stroke-dasharray" in _prop("blackbox", dashed=True) and "stroke-dasharray" not in _prop("blackbox")
     assert "art" in _prop("bridge", items=[{"label": "art"}, {"label": "health"}]) and _prop("bridge", broken=True) != _prop("bridge")
-    assert len(_prop("eye", lens=True)) > len(_prop("eye")) and "what next" in _prop("eye", thought="what next") and "what next" not in _prop("eye", thought=True)
+    assert len(_prop("eye", lens=True)) > len(_prop("eye")) and "stroke-dasharray" in _prop("eye", lens=True) and "what next" in _prop("eye", thought="what next") and "what next" not in _prop("eye", thought=True)
     assert len(_prop("hospitalroom", drip=True)) > len(_prop("hospitalroom"))
     assert len(_prop("spinalcord", laminae=True)) > len(_prop("spinalcord")) and _prop("spinalcord", hemisection=True) != _prop("spinalcord")
 
@@ -784,3 +784,18 @@ def test_an_unknown_split_direction_is_refused_by_the_schema(doc):
     d = copy.deepcopy(doc)
     d["beats"][0]["panels"][0]["staging"] = {"split": [{}, {}], "split_direction": "diagonal"}
     assert validate(d)[0]
+
+
+def test_the_brain_has_a_side_view_with_lobes_labels_and_a_top_view_with_two_hemispheres():
+    side, top = _prop("brain"), _prop("brain", view="top")
+    assert side != top and len(_prop("brain", labels=True)) > len(side) and "temporal" in _prop("brain", labels=True) and "cerebellum" in _prop("brain", labels=True)
+    assert _prop("brain", highlight="left") != _prop("brain", highlight="right") and "left" in _prop("brain", highlight="left", labels=True)
+    assert _prop("brain", highlight="left") != top  # left or right shades a hemisphere of the top view
+
+
+def test_a_slanted_split_draws_each_half_inside_its_own_wedge(doc):
+    # a figure at the middle of each half's rectangle must stay on its own side of the divider
+    st = {"split": [{"characters": [{"id": "x", "x": 0.5}]}, {"characters": [{"id": "y", "x": 0.5}]}], "split_direction": "slope"}
+    cells = R.split_cells(st, 0, 0, 600, 300, 18)
+    (lx, _, lw, _), (rx, _, rw, _) = cells[0]["sub"], cells[1]["sub"]
+    assert lx + lw < rx and lw == rw  # the two rectangles do not overlap and are the same width

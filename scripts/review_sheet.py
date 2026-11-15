@@ -58,8 +58,8 @@ ITEMS = [
          ["The joined bridge reads as a bridge (deck, arch).", "The broken one reads as a missing link, not as two unrelated blocks.", "Labels fit inside the blocks."]),
         ("A6", "eye", [("plain", big("eye")), ("lens", big("eye", lens=True)), ("thought bubble", big("eye", thought="what is that?"))],
          ["The eye reads as an eye (iris, pupil, glint, lashes).", "The lens reads as a lens, with the eye still visible through it.", "The thought bubble text is readable and sits clear of the eye."]),
-        ("A7", "bookshelf", [("plain", big("bookshelf")), ("one book missing", big("bookshelf", gap=True)), ("missing and lit", big("bookshelf", gap=True, lit=True))],
-         ["The shelf reads as a bookcase.", "The gap is noticed at once and has a question mark.", "The rays help rather than clutter."]),
+        ("A7", "bookshelf", [("plain", big("bookshelf")), ("books missing", big("bookshelf", gap=True))],
+         ["The shelf reads as a bookcase.", "The gap is noticed at once and has a question mark."]),
         ("A8", "spinalcord", [("plain", big("spinalcord")), ("laminae", big("spinalcord", laminae=True)), ("hemisection", big("spinalcord", hemisection=True))],
          ["The grey butterfly is recognisable as a cord section.", "The dashed laminae are visible (they were faint in the small gallery).", "The hemisection reads as one damaged side.",
           "It is a schematic: a caption must carry any anatomical claim."]),
@@ -87,19 +87,54 @@ ITEMS = [
     ]),
 ]
 
+# Round 2 (2026-11-16): only what changed after the first review, with checks taken from the notes.
+HALF_A2 = {"characters": [{"id": "extra", "x": 0.5, "y": 0.88, "face": "smile"}]}
+HALF_B2 = {"characters": [{"id": "extra", "x": 0.5, "y": 0.88, "face": "worry"}], "props": [{"kind": "cloud", "x": 0.2, "y": 0.0, "w": 0.6, "h": 0.4, "faded": True}]}
+ROUND2 = [
+    ("Changed after your notes", [
+        ("A2", "blackbox", [("labelled", big("blackbox", items=[{"label": "input"}, {"label": "output"}])), ("dashed output", big("blackbox", dashed=True, items=[{"label": "drama"}, {"label": "?"}]))],
+         ["The question mark is big enough now."]),
+        ("A3", "circle", [("fire, 7 chairs", big("circle", centre="fire", chairs=7)), ("easel, 5 chairs", big("circle", centre="easel", chairs=5)),
+                          ("person, 8 chairs", big("circle", centre="person", chairs=8)), ("a figure standing in the middle", with_chars(big("circle"), fig(0.5, 0.66, 0.42)))],
+         ["No figure sits without a chair under it (the sitting figure is gone; a figure stands in the middle instead).", "The chairs still read as a circle."]),
+        ("A4", "hospitalroom", [("plain", big("hospitalroom")), ("drip and a worried figure", with_chars(big("hospitalroom", drip=True), fig(0.4, 0.9, 0.8, face="worry")))],
+         ["The bag hangs from a hook on the stand, not balanced on top.", "The tube runs from the bag down to the bed, not through the air.", "It reads as a drip without a stretch."]),
+        ("A5", "bridge", [("joined, labelled", big("bridge", items=TWO)), ("broken", big("bridge", broken=True, items=TWO))],
+         ["The joined bridge (a plain deck, no arch or rail) reads as a bridge between the blocks.", "The broken one still reads as a missing link."]),
+        ("A6", "eye", [("plain", big("eye")), ("lens held away", big("eye", lens=True)), ("thought bubble", big("eye", thought="what is that?"))],
+         ["The lens reads as a lens, held away from the eye with the view running through it.", "The thought-bubble text is large enough and fits."]),
+        ("A7", "bookshelf", [("plain", big("bookshelf")), ("books missing", big("bookshelf", gap=True))],
+         ["The wider gap is noticed at once (the rays are gone).", "The break in the row of books triggers the pattern, as you said it would."]),
+        ("A9", "brain: side view", [("plain", big("brain")), ("lobes named", big("brain", labels=True)), ("temporal lobe shaded", big("brain", highlight="temporal", labels=True)),
+                                    ("fibre tracts", big("brain", tracts=True)), ("a signal route", big("brain", signal=True))],
+         ["It reads as a brain at a glance (lobes, the two fissures, folds, cerebellum, stem).", "Each lobe is where an anatomist would expect it.", "The folds give enough detail for the discussions we will illustrate.",
+          "The labels are readable and sit clear of the folds.", "What detail is still missing? Say in the notes."]),
+        ("A9b", "brain: from above", [("two hemispheres", big("brain", view="top")), ("left shaded, named", big("brain", highlight="left", labels=True)), ("right shaded", big("brain", highlight="right"))],
+         ["It reads as a brain from above, with a fissure between two hemispheres.", "Left and right are the right way round for a comparison of the two."]),
+        ("A11", "split screen", [("side", {"split": [HALF_A2, HALF_B2], "split_labels": ["before", "after"], "split_direction": "side"}),
+                                 ("stack", {"split": [HALF_A2, HALF_B2], "split_labels": ["before", "after"], "split_direction": "stack"}),
+                                 ("slope", {"split": [HALF_A2, HALF_B2], "split_labels": ["before", "after"], "split_direction": "slope"})],
+         ["In the slope, the first figure now sits inside its wedge (higher and further left).", "Nothing crosses the divider."]),
+        ("B2", "livingroom", [("plain", big("livingroom")), ("lamp, armchair, figure", with_chars({"props": [{"kind": "livingroom", "x": 0.04, "y": 0.04, "w": 0.92, "h": 0.9, "lamp": True}, {"kind": "armchair", "x": 0.4, "y": 0.4, "w": 0.2, "h": 0.5}]}, fig(0.75, 0.9, 0.7)))],
+         ["The room reads as a room without the rug."]),
+        ("B3", "gears", [("labelled", big("gears", items=[{"label": "speech"}, {"label": "song"}]))], ["The labels are larger and still fit inside the hubs."]),
+    ]),
+]
+ROUNDS = {1: ITEMS, 2: ROUND2}
 
-def variants():
-    for _, items in ITEMS:
-        for iid, asset, vs, checks in items:
+
+def variants(items=None):
+    for _, group in (items or ITEMS):
+        for iid, asset, vs, checks in group:
             for k, (label, st) in enumerate(vs):
                 yield f"{iid}{chr(97 + k)}", asset, label, st
 
 
-def build_doc():
+def build_doc(items=None):
     import asset_gallery as G
     doc = G.build()
     panels = []
-    for n, (pid, asset, label, st) in enumerate(variants(), 1):
+    for n, (pid, asset, label, st) in enumerate(variants(items), 1):
         cap = f"[{pid}] {asset}: {label}"
         panels.append({"id": f"B1.{n}", "weight": "standard", "height": "tall", "frame": "outlined", "scene": cap,
                        "speech": [{"speaker": "narrator", "kind": "caption", "text": cap}], "staging": st})
@@ -108,15 +143,15 @@ def build_doc():
     return doc
 
 
-def form_html():
+def form_html(items=None, rnd=1):
     """The review as one self-contained web form (see review_form.py), with each variant drawn as an inline SVG in a 640 by 420 frame."""
     import render as R
     from review_form import build_html, framed_svg
     cast = {c["id"]: c for c in build_doc()["cast"]}
     groups = []
-    for title, items in ITEMS:
+    for title, group in (items or ITEMS):
         out = []
-        for iid, asset, vs, checks in items:
+        for iid, asset, vs, checks in group:
             vars_ = []
             for k, (label, st) in enumerate(vs):
                 pid = f"{iid}{chr(97 + k)}"
@@ -126,17 +161,19 @@ def form_html():
                 vars_.append({"id": pid, "label": label, "svg": framed_svg(frame + svg, f"{asset}: {label}")})
             out.append({"id": iid, "name": asset, "variants": vars_, "checks": checks})
         groups.append((title, out))
+    if rnd == 2:
+        return build_html("New assets: review, round 2", "These are the assets changed after your first review. Each has the drawing as it is now, what to check against your notes, and a verdict: keep, fix or drop. Press Submit when you are done.", groups, collection="round2")
     return build_html("New assets: review", "Look at each asset, tick what holds, and choose keep, fix or drop. Add a note where something needs changing. Answers save as you go.", groups)
 
 
-def checklist():
+def checklist(items=None):
     out = ["# New assets: review checklist", "",
            "Generated by `scripts/review_sheet.py`; the panel ids (A1b) are the ids in `output/new-assets-review.pdf`. Regenerate both with:", "",
            "```", "python scripts/review_sheet.py --pdf output/new-assets-review.pdf --md docs/new-assets-checklist.md", "```", "",
            "For each asset: look at its panels in the PDF, tick what holds, then choose a verdict. **Keep** means usable as it is, **fix** means usable after the change you note, **drop** means not worth the room.", ""]
-    for title, items in ITEMS:
+    for title, group in (items or ITEMS):
         out += [f"## {title}", ""]
-        for iid, asset, vs, checks in items:
+        for iid, asset, vs, checks in group:
             ids = ", ".join(f"{iid}{chr(97 + k)} ({label})" for k, (label, _) in enumerate(vs))
             out += [f"### {iid} `{asset}`", "", f"Panels: {ids}", ""] + [f"- [ ] {c}" for c in checks]
             out += ["", "Verdict: [ ] keep  [ ] fix  [ ] drop", "", "Notes: ", ""]
@@ -148,19 +185,21 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--pdf", default="output/new-assets-review.pdf")
     ap.add_argument("--md", default="docs/new-assets-checklist.md")
+    ap.add_argument("--round", type=int, default=1, choices=sorted(ROUNDS), help="which round of the review: 1 is the first set of assets, 2 only those changed after it")
     ap.add_argument("--html", help="also write the review as a web form (publish it as an Artifact with the db capability)")
     args = ap.parse_args(argv)
-    doc = build_doc()
+    items = ROUNDS[args.round]
+    doc = build_doc(items)
     Path(args.pdf).parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
         sb = Path(tmp) / "review.yaml"
         sb.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=200))
         export(str(sb), args.pdf)
     Path(args.md).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.md).write_text(checklist())
+    Path(args.md).write_text(checklist(items))
     if args.html:
         Path(args.html).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.html).write_text(form_html())
+        Path(args.html).write_text(form_html(items, args.round))
     print(f"wrote {args.pdf} and {args.md}" + (f" and {args.html}" if args.html else ""))
     return 0
 
