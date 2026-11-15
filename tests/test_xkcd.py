@@ -714,8 +714,8 @@ def test_livingroom_lamp_gears_and_funnel_labels_each_draw_something_more():
 def test_stage_options_each_draw_something_more_and_a_prop_can_be_empty_blank_or_missing():
     assert len(_prop("stage", spotlight=True)) > len(_prop("stage")) and len(_prop("stage", audience=True)) > len(_prop("stage")) and len(_prop("stage", screen=True)) > len(_prop("stage"))
     assert len(_prop("gallery", frames=3, empty=1)) != len(_prop("gallery", frames=3)) and "?" in _prop("gallery", frames=3, empty=1) and "?" not in _prop("gallery", frames=3)
-    assert "stroke-dasharray" in _prop("book", blank=True) and "stroke-dasharray" not in _prop("book", title="T")
-    assert "stroke-dasharray" in _prop("bookshelf", gap=True) and "stroke-dasharray" not in _prop("bookshelf") and len(_prop("bookshelf", gap=True, lit=True)) > len(_prop("bookshelf", gap=True))
+    assert "stroke-dasharray" in _prop("book", blank=True) and "stroke-dasharray" not in _prop("book", title="T") and "?" in _prop("book", blank=True)
+    assert "stroke-dasharray" in _prop("bookshelf", gap=True) and "?" in _prop("bookshelf", gap=True) and "?" not in _prop("bookshelf") and len(_prop("bookshelf", gap=True, lit=True)) > len(_prop("bookshelf", gap=True))
     assert len(_prop("brain", signal=True)) > len(_prop("brain"))
 
 
@@ -755,3 +755,32 @@ def test_the_catalogue_and_the_row_planner_see_props_and_characters_inside_a_spl
     assert [p["kind"] for p in catalogue.walk_props(st)] == ["cloud", "bridge"]
     row = [({"staging": st, "id": "x"}, 12)]
     assert R._row_limits(row, [{"scene_nat": 100, "shrink_ok": 1.0}], 100)["rich"] > R._row_limits([({"staging": {}, "id": "x"}, 12)], [{"scene_nat": 100, "shrink_ok": 1.0}], 100)["rich"]
+
+
+@pytest.mark.parametrize("direction", ["side", "stack", "slope"])
+def test_a_split_can_be_cut_three_ways_and_each_half_still_draws_its_figure_and_label(doc, direction):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    panel = d["beats"][0]["panels"][0]
+    ids = [c["id"] for c in d["cast"]][:2]
+    panel["staging"] = {"split": [{"characters": [{"id": ids[0], "x": 0.25}]}, {"characters": [{"id": ids[1], "x": 0.75}]}], "split_labels": ["first", "second"], "split_direction": direction}
+    panel["speech"] = [{"speaker": ids[1], "kind": "say", "text": "Over here."}]
+    assert validate(d)[0] == []
+    text = "".join(R.render_pages(d)[0])
+    assert "first" in text and "second" in text and "Over here." in text
+    assert ('id="split-' in text) == (direction == "slope")  # only a slanted divider needs clipping
+    heads = R.stage(R.Pen(1), 0, 0, 400, 300, panel["staging"], {c["id"]: c for c in d["cast"]}, 16)[1]
+    assert set(ids) <= set(heads)
+    off = R.staged_offsets(panel["staging"], {c["id"]: c for c in d["cast"]}, 400, 300)
+    assert set(ids) <= set(off)
+    if direction == "stack":
+        assert heads[ids[0]][1] < heads[ids[1]][1]  # the first half is above the second
+    else:
+        assert heads[ids[0]][0] < heads[ids[1]][0]  # the first half is left of the second
+
+
+def test_an_unknown_split_direction_is_refused_by_the_schema(doc):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0]["staging"] = {"split": [{}, {}], "split_direction": "diagonal"}
+    assert validate(d)[0]

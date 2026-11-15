@@ -550,17 +550,22 @@ def stage(pen, x, y, w, h, st, cast, fs):
         heads.setdefault(c["id"], head)
     for p in props[split:] + front:
         draw(p)
-    if st.get("split"):  # two stagings side by side, a line between them, words above each
+    if st.get("split"):  # two stagings, a line between them, words with each
         labels = st.get("split_labels") or []
-        top = fs * 1.3 if any(labels) else 0.0
-        gap = 12.0
-        half = (w - gap) / 2
-        for i, sub in enumerate(st["split"]):
-            sx = x + i * (half + gap)
-            out.append(pen.rect(sx, y + top, half, h - top, 2.4, fill=PAPER, over=1))
+        for i, cell in enumerate(split_cells(st, x, y, w, h, fs)):
+            kind, geom = cell["frame"]
+            if kind == "rect":
+                out.append(pen.rect(*geom, 2.4, fill=PAPER, over=1))
+            else:  # a slanted divider: each half is a wedge, and its staging is clipped to it
+                out.append(pen.poly(geom, 2.4, fill=PAPER, jit=0.6))
             if i < len(labels) and labels[i]:
-                out.append(text(sx + half / 2, y, [labels[i]], fs * 0.9, anchor="middle"))
-            svg, hd = stage(pen, sx + 6, y + top + 6, half - 12, h - top - 12, sub, cast, fs * 0.8)
+                lx, ly, anchor = cell["label"]
+                out.append(text(lx, ly, [labels[i]], fs * 0.9, anchor=anchor))
+            svg, hd = stage(pen, *cell["sub"], st["split"][i], cast, fs * 0.8)
+            if kind == "poly":
+                cid = f"split-{pen.seed}-{int(x)}-{int(y)}-{i}".replace(".", "-")
+                pts = " ".join(f"{px:.1f},{py:.1f}" for px, py in geom)
+                svg = f'<clipPath id="{cid}"><polygon points="{pts}"/></clipPath><g clip-path="url(#{cid})">{svg}</g>'
             out.append(svg)
             for k, v in hd.items():
                 heads.setdefault(k, v)
@@ -589,16 +594,42 @@ def _head_offset(c, cast, w, h):
     return c.get("y", 0.94) * h - rise * s
 
 
+def split_cells(st, x, y, w, h, fs):
+    """Where the two halves of a split screen go, for `split_direction`: `side` (the default: left and right, a vertical divider), `stack` (top and
+    bottom, a horizontal divider) or `slope` (two wedges cut by a slanted divider, each staging drawn over the whole scene and clipped).
+    Returns two dicts: `frame` (`rect` x y w h, or `poly` points), `sub` (the box the half's staging is drawn into) and `label` (x, y, anchor)."""
+    labelled = any(st.get("split_labels") or [])
+    top = fs * 1.3 if labelled else 0.0
+    gap = 12.0
+    mode = st.get("split_direction", "side")
+    if mode == "stack":
+        half = (h - gap - 2 * top) / 2
+        cells = []
+        for i in range(2):
+            cy = y + i * (half + gap + top) + top
+            cells.append({"frame": ("rect", (x, cy, w, half)), "sub": (x + 6, cy + 6, w - 12, half - 12), "label": (x + w / 2, cy - top, "middle")})
+        return cells
+    if mode == "slope":
+        lean = w * 0.12  # the divider runs from the top edge at 0.5 w + lean to the bottom edge at 0.5 w - lean
+        tx, bx = x + w / 2 + lean, x + w / 2 - lean
+        left = [(x, y), (tx - gap / 2, y), (bx - gap / 2, y + h), (x, y + h)]
+        right = [(tx + gap / 2, y), (x + w, y), (x + w, y + h), (bx + gap / 2, y + h)]
+        return [{"frame": ("poly", left), "sub": (x, y, w, h), "label": (x + 8, y + 4, "start")},
+                {"frame": ("poly", right), "sub": (x, y, w, h), "label": (x + w - 8, y + h - fs * 1.3, "end")}]
+    half = (w - gap) / 2
+    return [{"frame": ("rect", (x + i * (half + gap), y + top, half, h - top)), "sub": (x + i * (half + gap) + 6, y + top + 6, half - 12, h - top - 12),
+             "label": (x + i * (half + gap) + half / 2, y, "middle")} for i in range(2)]
+
+
 def staged_offsets(st, cast, w, h):
     """{character id: how far below the top of the scene its head sits} for a staging, including both halves of a split screen."""
     st = st or {}
     out = {c["id"]: _head_offset(c, cast, w, h) for c in st.get("characters", [])}
     if st.get("split"):
-        top = FONT_SIZE * 1.3 if any(st.get("split_labels") or []) else 0.0
-        half = (w - 12) / 2
-        for sub in st["split"]:
-            for k, v in staged_offsets(sub, cast, half - 12, h - top - 12).items():
-                out.setdefault(k, v + top + 6)
+        for cell, sub in zip(split_cells(st, 0, 0, w, h, FONT_SIZE), st["split"]):
+            _, sy, sw, sh = cell["sub"]
+            for k, v in staged_offsets(sub, cast, sw, sh).items():
+                out.setdefault(k, v + sy)
     return out
 
 

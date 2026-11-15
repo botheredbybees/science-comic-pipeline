@@ -1770,6 +1770,7 @@ def book(pen, x, y, w, h, p, fs):
         cx, cy = x + w * 0.52, y + h * 0.4
         o.append(pen.stroke([(cx + w * 0.13 * math.cos(math.tau * k / 10), cy + w * 0.13 * math.sin(math.tau * k / 10)) for k in range(10)], 1.8, closed=True, color=MID, dash="5 4"))
         o.append(pen.stroke([(cx - w * 0.3, y + h * 0.85), (cx - w * 0.22, y + h * 0.6), (cx + w * 0.22, y + h * 0.6), (cx + w * 0.3, y + h * 0.85)], 1.8, color=MID, dash="5 4"))
+        o.append(text(cx, cy - fsb * 0.65, ["?"], fsb * 1.2, anchor="middle", fill=MID))
     elif p.get("title"):
         tl = wrap(p["title"], w * 0.62, fsb)
         o.append(text(x + w * 0.52, y + h * 0.14, tl, fsb, anchor="middle", lh=1.1))
@@ -2233,6 +2234,7 @@ def bookshelf(pen, x, y, w, h, p, fs):
             if row == 0 and p.get("gap") and i == gap_at:
                 gx, gy = U(u, base - 0.4)
                 o.append(pen.stroke([(gx, gy), (gx + w * bw, gy), (gx + w * bw, gy + h * 0.4), (gx, gy + h * 0.4)], 1.6, closed=True, color=MID, dash="5 4"))
+                o.append(text(gx + w * bw / 2, gy + h * 0.2 - fsb * 0.55, ["?"], fsb * 1.1, anchor="middle", fill=MID))
                 if p.get("lit"):
                     o += _rays(pen, gx + w * bw / 2, gy + h * 0.2, h * 0.24, h * 0.33, 8, 1.4)
             else:

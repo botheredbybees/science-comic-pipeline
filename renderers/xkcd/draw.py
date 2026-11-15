@@ -36,6 +36,7 @@ class Pen:
     """Draws wobbly strokes. One Pen per panel, seeded from the panel id."""
 
     def __init__(self, seed):
+        self.seed = seed
         self.r = random.Random(seed)
 
     def n(self, a):

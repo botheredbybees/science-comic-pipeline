@@ -203,11 +203,14 @@ def build():
                    [{"kind": "aquarium", "x": 0.12, "y": 0.1, "w": 0.76, "h": 0.8}]),
         comp_panel(4, "wide", "A close-up: the krill cropped by the panel's edge.",
                    [{"id": "extra", "body": "krill", "x": 0.2, "y": 1.55, "scale": 6.0}])]})
-    beats.append({"id": "B9", "title": "Split screen: two views side by side", "act": "method", "panels": [
-        {"id": "B9.1", "weight": "standard", "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
-         "scene": "A split screen: a still frame beside a blurred one.", "speech": [{"speaker": "narrator", "kind": "caption", "text": "`split`: two stagings side by side, with `split_labels` above them."}],
-         "staging": {"split": [{"characters": [{"id": "extra", "x": 0.5, "face": "smile"}]}, {"characters": [{"id": "extra", "x": 0.5, "face": "worry"}], "props": [{"kind": "cloud", "x": 0.55, "y": 0.0, "w": 0.4, "h": 0.4, "faded": True}]}],
-                     "split_labels": ["before", "after"]}}]})
+    half_a = {"characters": [{"id": "extra", "x": 0.3, "face": "smile"}]}
+    half_b = {"characters": [{"id": "extra", "x": 0.75, "face": "worry"}], "props": [{"kind": "cloud", "x": 0.55, "y": 0.0, "w": 0.4, "h": 0.4, "faded": True}]}
+    beats.append({"id": "B9", "title": "Split screen: two views in one panel", "act": "method", "panels": [
+        {"id": f"B9.{n}", "weight": "standard", "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
+         "scene": f"A split screen, {d}.", "speech": [{"speaker": "narrator", "kind": "caption", "text": f"`split_direction: {d}`: {how}. Words above each half come from `split_labels`."}],
+         "staging": {"split": [half_a, half_b], "split_labels": ["before", "after"], "split_direction": d}}
+        for n, (d, how) in enumerate((("side", "left and right (the default), for a comparison or two things at once"), ("stack", "top and bottom, for a before above an after"),
+                                       ("slope", "two wedges cut by a slanted line, for a contrast with tension; keep each half's figures in its own wedge")), 1)]})
     panels = []
     for n, (title, row) in enumerate(PROPS, 1):
         props = []

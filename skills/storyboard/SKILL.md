@@ -159,6 +159,25 @@ Set `shot` on the staging:
 Aim for about one panel in five, and never two close-ups in a row. A figure's own `scale`, `x` and `y` override the preset. There are no
 close-up hands: drawing hands in the stick style did not work, so show touch or making with the prop, or the figure at mid-distance.
 
+## Split screen
+
+A staging can hold two views in one panel: `split` (two stagings) with `split_labels` (a few words above each) and `split_direction`.
+Use it when the point is the difference or the pairing, not a sequence: a static frame beside a blurred one, a connected team beside a
+fragmented one, two sides of a comparison, two views of one object.
+
+| `split_direction` | Cut | Reads as | Use it for |
+|---|---|---|---|
+| `side` (default) | vertical line | two things at once | a comparison, two groups, two views |
+| `stack` | horizontal line | an order, top then bottom | a before above an after, a cause above its effect |
+| `slope` | slanted line | a contrast with some tension | connected against fragmented; keep each half's figures in its own wedge |
+
+**Which `transition` to give a split panel.** The label says how the panel follows the previous one, so label the whole panel; the
+relation between its two halves goes in the `scene` text. As a working guide (our reasoning, not a quotation from McCloud):
+`subject-to-subject` or `aspect-to-aspect` suit a split best (two subjects, or two looks at one thing, held together);
+`action-to-action` suits a before and after (use `stack`, or `side` read left to right); `scene-to-scene` suits two places at the
+same time ("on the ship / in the lab"); `non-sequitur` does not suit it. Do not use a split where one picture would do, or for
+more than about one panel in ten: it is a device, and a comic of splits has no rhythm.
+
 ## Writing well
 
 - **One idea per panel.** Say it in a caption of about 12 to 35 words, plus at most a line or two of

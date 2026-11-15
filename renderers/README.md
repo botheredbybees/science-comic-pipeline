@@ -101,7 +101,7 @@ Four original faces (`neutral`, `smile`, `worry`, `deadpan`) are drawn exactly a
 enough, that a strip of forehead is left for them. Animals draw only the five original faces, `surprised` among them, with their own eyes and mouths; a newer face on an animal uses the nearest of them (`sad` becomes `worry`, `laugh` becomes
 `smile`), and a diatom draws all of them. `scripts/asset_gallery.py` shows every face.
 
-A staging can also be a **split screen**: `split` is a list of exactly two stagings drawn side by side with a frame round each (left, then right), and `split_labels` prints a few words above them. Each half is a full staging with its own characters, props and `shot`. A speech line can point at a figure in either half. `scripts/asset_gallery.py` shows one.
+A staging can also be a **split screen**: `split` is a list of exactly two stagings (first, then second) with a frame round each, and `split_labels` prints a few words with them. `split_direction` cuts it `side` (the default: left and right), `stack` (top and bottom) or `slope` (two wedges cut by a slanted line; each half is drawn over the whole scene and clipped, so keep its figures in its own wedge). Each half is a full staging with its own characters, props and `shot`. A speech line can point at a figure in either half. `scripts/asset_gallery.py` shows all three.
 
 
 A character's look (hair, hair tone, head size, glasses, coat, body) belongs to the cast member in `head.yaml`; see the appearance
