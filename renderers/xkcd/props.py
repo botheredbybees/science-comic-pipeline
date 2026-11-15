@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff"}
+EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel"}
 
 
 def _dot(x, y, r=5):
@@ -1584,17 +1584,38 @@ def camera(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+BRAIN_REGIONS = {  # lobes of the side-view brain (front at the left), as polygons just inside the outline, in the brain's own 0 to 1 box
+    "frontal": [(0.12, 0.5), (0.12, 0.3), (0.24, 0.15), (0.38, 0.1), (0.4, 0.3), (0.38, 0.5), (0.3, 0.62), (0.22, 0.62)],
+    "parietal": [(0.5, 0.13), (0.7, 0.12), (0.86, 0.25), (0.88, 0.4), (0.66, 0.38), (0.5, 0.3)],
+    "temporal": [(0.24, 0.52), (0.44, 0.46), (0.66, 0.5), (0.8, 0.58), (0.62, 0.63), (0.4, 0.65), (0.26, 0.62)],
+    "occipital": [(0.72, 0.42), (0.9, 0.46), (0.86, 0.6), (0.66, 0.62)],
+}
+
+
 def brain(pen, x, y, w, h, p, fs):
-    """A brain in side view: a lobed cloud-like outline, folds drawn as curved lines, a cerebellum and a stem. Neuroscience, memory, ageing."""
+    """A brain in side view: a lobed cloud-like outline, folds drawn as curved lines, a cerebellum and a stem. Neuroscience, memory, ageing.
+    `highlight` (frontal, parietal, temporal or occipital) shades that lobe; `tracts: true` draws bundles of fibres between regions
+    (white matter). The front is at the left."""
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.3, p, fs)
     U, sw = _u(x, y, w, h), 2.6
     outline = [U(0.1, 0.5), U(0.1, 0.3), U(0.24, 0.12), U(0.46, 0.06), U(0.7, 0.1), U(0.9, 0.24), U(0.94, 0.46), U(0.86, 0.62), U(0.62, 0.66), U(0.4, 0.68), U(0.2, 0.66)]
     o = [pen.stroke([U(0.6, 0.64), U(0.66, 0.9), U(0.76, 0.96), U(0.8, 0.84), U(0.76, 0.64)], sw * 0.9, fill=SOFT),  # the stem
          pen.stroke([U(0.42, 0.62), U(0.54, 0.8), U(0.7, 0.82), U(0.74, 0.66)], sw * 0.9, fill=SOFT),  # the cerebellum
          pen.stroke(outline, sw, closed=True, fill=PAPER)]
-    for fold in (((0.22, 0.4), (0.3, 0.26), (0.42, 0.34), (0.5, 0.2)), ((0.3, 0.56), (0.42, 0.46), (0.54, 0.54), (0.66, 0.42)),
-                 ((0.56, 0.2), (0.66, 0.32), (0.78, 0.22), (0.84, 0.36)), ((0.7, 0.56), (0.78, 0.46), (0.86, 0.52))):
-        o.append(pen.stroke([U(*q) for q in fold], 1.6, color=MID))
+    region = BRAIN_REGIONS.get(p.get("highlight"))
+    if region:
+        o.append(pen.stroke([U(*q) for q in region], 1.6, closed=True, fill=MID))
+    folds = (((0.22, 0.4), (0.3, 0.26), (0.42, 0.34), (0.5, 0.2)), ((0.3, 0.56), (0.42, 0.46), (0.54, 0.54), (0.66, 0.42)),
+             ((0.56, 0.2), (0.66, 0.32), (0.78, 0.22), (0.84, 0.36)), ((0.7, 0.56), (0.78, 0.46), (0.86, 0.52)))
+    for fold in folds:
+        o.append(pen.stroke([U(*q) for q in fold], 1.6, color=INK if region else MID))
+    if p.get("tracts"):  # three bundles of fibres, each with a dot at both ends: front to back over the top, front to back through the temporal lobe, and across the middle
+        for path in (((0.2, 0.42), (0.32, 0.24), (0.58, 0.2), (0.78, 0.32), (0.82, 0.46)), ((0.26, 0.56), (0.46, 0.5), (0.66, 0.52), (0.8, 0.5)),
+                     ((0.4, 0.2), (0.44, 0.38), (0.5, 0.56))):
+            pts = [U(*q) for q in path]
+            o.append(pen.stroke(pts, 3.6, color=INK))
+            o.append(pen.stroke(pts, 1.4, color=PAPER))
+            o += [_dot(*pts[0], 3.4), _dot(*pts[-1], 3.4)]
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
@@ -1913,13 +1934,104 @@ def staff(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+def livingroom(pen, x, y, w, h, p, fs):
+    """A living room as a backdrop: a wall with a window (curtains drawn back, a sill), a floor line with a skirting board and a rug.
+    `lamp: true` adds a standing lamp. A good place for an armchair, a piano, a guitar or a laptop; a figure stands on the floor line."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    floor = 0.88
+    o = [pen.line(U(0.0, floor), U(1.0, floor), sw, amp=0.6), pen.line(U(0.0, 0.8), U(1.0, 0.8), 1.2, amp=0.5, color=MID)]  # the floor and the skirting board
+    wx, wy, ww, wh = 0.12, 0.1, 0.3, 0.46
+    o.append(pen.rect(*U(wx, wy), w * ww, h * wh, sw, fill=PAPER, over=0.8))  # the window
+    o += [pen.line(U(wx + ww / 2, wy), U(wx + ww / 2, wy + wh), 1.6, amp=0.2), pen.line(U(wx, wy + wh / 2), U(wx + ww, wy + wh / 2), 1.6, amp=0.2)]  # the panes
+    o.append(pen.rect(*U(wx - 0.02, wy + wh), w * (ww + 0.04), h * 0.03, 2.0, fill=SOFT, over=0.3))  # the sill
+    for a, b in ((wx - 0.03, wx + 0.04), (wx + ww - 0.04, wx + ww + 0.03)):  # the curtains, drawn back
+        o.append(pen.poly([U(a, wy - 0.03), U(b, wy - 0.03), U(b + 0.01, wy + wh), U(a - 0.01, wy + wh)], sw * 0.7, fill=SOFT, jit=0.2))
+    o.append(pen.line(U(wx - 0.05, wy - 0.03), U(wx + ww + 0.05, wy - 0.03), 2.0, amp=0.2))  # the curtain rail
+    o.append(pen.rect(*U(0.56, 0.16), w * 0.14, h * 0.26, 2.2, fill=PAPER, over=0.6))  # a small picture on the wall
+    o.append(pen.stroke([U(0.575, 0.36), U(0.6, 0.27), U(0.625, 0.33), U(0.65, 0.24), U(0.685, 0.36)], 1.6, color=INK))
+    o.append(pen.stroke([U(0.3, 0.93), U(0.4, 0.915), U(0.7, 0.915), U(0.8, 0.93), U(0.7, 0.975), U(0.4, 0.975)], 1.8, closed=True, fill=SOFT))  # the rug
+    for k in range(3):
+        o.append(pen.line(U(0.42 + 0.1 * k, 0.935), U(0.42 + 0.1 * k, 0.965), 1.0, amp=0.1, color=MID))
+    if p.get("lamp"):  # a standing lamp on the right
+        o += [pen.line(U(0.88, floor), U(0.88, 0.4), 2.2, amp=0.2), pen.line(U(0.84, floor), U(0.92, floor), 2.2, amp=0.2),
+              pen.poly([U(0.83, 0.4), U(0.93, 0.4), U(0.9, 0.24), U(0.86, 0.24)], sw * 0.8, fill=SOFT, jit=0.15)]
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def _gear(pen, cx, cy, ro, n, phase, hub, tooth=0.16):
+    """A gear of outer radius `ro` with `n` square teeth, the first centred on angle `phase`, and a round hub."""
+    rr, step, pts = ro * (1 - tooth), math.tau / n, []
+    for k in range(n):
+        a = phase + k * step
+        for ang, rad in ((a - step * 0.3, rr), (a - step * 0.17, ro), (a + step * 0.17, ro), (a + step * 0.3, rr)):
+            pts.append((cx + rad * math.cos(ang), cy + rad * math.sin(ang)))
+    return pen.poly(pts, 2.4, fill=SOFT, jit=0.2) + pen.ellipse(cx, cy, hub, hub, 2.0, fill=PAPER)
+
+
+def gears(pen, x, y, w, h, p, fs):
+    """Two gears meshing: parts of a system that turn each other. Up to two `items` label the big and the small gear."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
+    r1, r2 = h * 0.46, h * 0.36
+    n1, n2 = 12, 9
+    c1 = (x + r1, y + h * 0.5)
+    c2 = (c1[0] + r1 + r2 - h * 0.07, y + h * 0.5)  # the teeth overlap by about a tooth's height
+    o = [_gear(pen, *c1, r1, n1, 0.0, r1 * 0.62), _gear(pen, *c2, r2, n2, math.pi + math.pi / n2, r2 * 0.62)]
+    for (cx, cy), r, item in zip((c1, c2), (r1, r2), (p.get("items") or []) + [{}, {}]):
+        if item.get("label"):
+            lab = wrap(item["label"], r * 1.1, fsb)
+            o.append(text(cx, cy - block_h(lab, fsb, 1.05) / 2 - fsb * 0.05, lab, fsb, anchor="middle", lh=1.05))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def ear(pen, x, y, w, h, p, fs):
+    """An ear in side view, with three arcs of sound reaching it from the left: hearing, noise, listening."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.2, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    outer = [U(0.56, 0.5), U(0.53, 0.28), U(0.62, 0.1), U(0.8, 0.04), U(0.94, 0.14), U(0.97, 0.38), U(0.9, 0.6), U(0.84, 0.78), U(0.74, 0.94), U(0.62, 0.94), U(0.56, 0.8), U(0.57, 0.64)]
+    o = [pen.stroke(outer, sw, closed=True, fill=SOFT),
+         pen.stroke([U(0.65, 0.47), U(0.67, 0.27), U(0.78, 0.17), U(0.87, 0.27), U(0.84, 0.44), U(0.77, 0.58), U(0.7, 0.62)], 1.8, color=INK)]  # the fold inside
+    cx, cy = U(0.66, 0.54)
+    o.append(pen.ellipse(cx, cy, w * 0.025, h * 0.045, 1.6, fill=INK))  # the opening of the ear canal
+    ox, oy = U(0.6, 0.52)
+    for r in (0.2, 0.34, 0.48):  # sound arriving: arcs centred on the ear, opening to the left
+        pts = [(ox - r * h * math.cos(a), oy + r * h * math.sin(a)) for a in (-0.8, -0.4, 0.0, 0.4, 0.8)]
+        o.append(pen.stroke(pts, 2.2, color=INK))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def funnel(pen, x, y, w, h, p, fs):
+    """A funnel: many things go in at the top and fewer come out of the spout. `items` label the input (first) and the output (second)."""
+    items = p.get("items") or []
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.0, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    u0 = 0.34 if items else 0.5  # the funnel's axis moves left to leave room for the labels
+    bowl = [U(u0 - 0.26, 0.34), U(u0 + 0.26, 0.34), U(u0 + 0.06, 0.66), U(u0 + 0.06, 0.8), U(u0 - 0.06, 0.8), U(u0 - 0.06, 0.66)]
+    o = [pen.poly(bowl, sw, fill=SOFT, jit=0.2), pen.line(U(u0 - 0.26, 0.34), U(u0 + 0.26, 0.34), sw, amp=0.3)]
+    for a, b, r in ((-0.2, 0.06, 0.035), (-0.1, 0.14, 0.03), (0.02, 0.05, 0.04), (0.12, 0.15, 0.03), (0.2, 0.07, 0.035), (-0.04, 0.24, 0.03), (0.08, 0.26, 0.035), (-0.17, 0.25, 0.03)):  # the input: a crowd
+        cx, cy = U(u0 + a, b)
+        o.append(pen.ellipse(cx, cy, w * r * 0.8, h * r * 0.8, 1.8, fill=PAPER))
+    for a, b in ((0.0, 0.9), (0.0, 0.97)):  # the output: one or two
+        cx, cy = U(u0 + a, b)
+        o.append(pen.ellipse(cx, cy, w * 0.03, h * 0.03, 1.8, fill=INK))
+    for k, (v0, v1) in enumerate(((0.06, 0.26), (0.84, 0.98))):
+        if k < len(items) and items[k].get("label"):
+            lab = wrap(items[k]["label"], w * 0.32, fsb)
+            o.append(text(x + w * 0.68, y + h * (v0 + v1) / 2 - block_h(lab, fsb, 1.05) / 2, lab, fsb, lh=1.05))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
 _DRAW = {"stake": stake, "emsled": emsled, "fieldcamp": fieldcamp, "molecule": molecule, "iceberg": iceberg, "mixedlayer": mixedlayer, "seaice": seaice, "iceshelf": iceshelf, "map": map_, "currents": currents, "desk": desk, "phone": phone, "bowl": bowl, "bongo": bongo, "trawl": trawl, "rmt": rmt, "ctd": ctd, "satellite": satellite, "radar": radar, "radarscreen": radarscreen, "icecore": icecore, "massspec": massspec, "helicopter": helicopter, "drone": drone,
          "aquarium": aquarium, "freezer": freezer, "tag": tag, "scatter": scatter, "boxplot": boxplot, "modelgrid": modelgrid,
          "sequence": sequence, "tree": tree, "clusters": clusters, "network": network, "database": database, "filter": filter_rig, "tubes": tubes,
          "sequencer": sequencer, "cpr": cpr, "echosounder": echosounder, "venn": venn, "laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
          "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic, "armchair": armchair, "wheelchair": wheelchair, "piano": piano, "guitar": guitar, "easel": easel, "camera": camera, "brain": brain, "headphones": headphones, "notes": notes,
          "gallery": gallery, "cycle": cycle, "book": book, "headprofile": headprofile, "cloud": cloud, "scales": scales, "door": door, "heart": heart,
-         "trolley": trolley, "van": van, "skyline": skyline, "staff": staff}
+         "trolley": trolley, "van": van, "skyline": skyline, "staff": staff, "livingroom": livingroom, "gears": gears, "ear": ear, "funnel": funnel}
 
 
 def extra_prop(pen, x, y, w, h, p, fs):

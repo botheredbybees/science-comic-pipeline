@@ -395,7 +395,7 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
 SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn",
                    "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
                    "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes",
-                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff"]
+                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -694,3 +694,17 @@ def test_a_staff_draws_one_head_per_pitch_and_a_time_signature():
     assert _prop("staff", pitches=[1, 3]) != five
     assert len(_prop("staff", pitches=[0, 2, 4, 6, 8])) > len(_prop("staff", pitches=[0, 2]))
     assert ">3<" in _prop("staff", meter="3/4") and ">4<" in _prop("staff", meter="3/4") and ">4<" in _prop("staff")
+
+
+def test_brain_highlight_and_tracts_add_to_the_plain_brain_and_each_lobe_differs():
+    base = _prop("brain")
+    assert len(_prop("brain", tracts=True)) > len(base) and len(_prop("brain", highlight="frontal")) > len(base)
+    assert len({_prop("brain", highlight=r) for r in ("frontal", "parietal", "temporal", "occipital")}) == 4
+
+
+def test_livingroom_lamp_gears_and_funnel_labels_each_draw_something_more():
+    assert len(_prop("livingroom", lamp=True)) > len(_prop("livingroom"))
+    two = [{"label": "speech"}, {"label": "song"}]
+    assert "speech" in _prop("gears", items=two) and "speech" not in _prop("gears")
+    assert "song" in _prop("gears", items=two) and "song" not in _prop("gears")
+    assert "kept" in _prop("funnel", items=[{"label": "all"}, {"label": "kept"}]) and "kept" not in _prop("funnel")
