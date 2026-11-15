@@ -46,6 +46,8 @@ The scan cannot see the following, so check them yourself, page by page:
 - Garbled characters (accents, quotes, "mojibake").
 - Faces and poses that imply something the paper does not say (a worried animal).
 
+Optionally, run the strip test (an experiment): `python scripts/strip_test.py examples/<slug>/storyboard.yaml`. It prints the words of every panel with the pictures taken away and flags a panel whose words leave out a number or most of the terms of a claim it cites. A flag is a prompt to look: a short caption may rightly shorten a claim, and a chart may rightly carry a number.
+
 Write each defect down: page, panel, what, and the fix.
 
 ## 3. Fix in the storyboard, not by hand
