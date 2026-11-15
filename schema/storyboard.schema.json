@@ -743,6 +743,7 @@
                   "trolley",
                   "van",
                   "skyline",
+                  "staff",
                   "mosaic",
                   "freezer",
                   "tag",
@@ -1008,6 +1009,8 @@
                   }
                 }
               },
+              "pitches": {"type": "array", "maxItems": 8, "items": {"type": "integer", "minimum": 0, "maximum": 8}, "description": "staff only: the notes, low to high (0 is the bottom line, 1 the space above it, 8 above the top line). Default: a run of four."},
+              "meter": {"type": "string", "pattern": "^[0-9]{1,2}/[0-9]{1,2}$", "description": "staff only: the time signature, such as 3/4 (default 4/4)."},
               "frames": {"type": "integer", "minimum": 1, "maximum": 5, "description": "gallery only: how many framed pictures hang on the wall (default 3)."},
               "bench": {"type": "boolean", "description": "gallery only: put a bench in front of the wall."},
               "ramp": {"type": "boolean", "description": "gallery only: a ramp with a handrail at the right, for access."},

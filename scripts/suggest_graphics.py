@@ -44,7 +44,7 @@ PURPOSE = {
     "microscope": "close examination", "thermometer": "a measured level", "scatter": "a relationship between two measures",
     "boxplot": "a comparison of groups", "map": "where (polar maps only)", "tree": "a family tree or a hierarchy",
     "gallery": "a gallery room or museum wall with framed pictures (options: frames, bench, ramp, easels); a good wide-shot setting",
-    "cycle": "a loop of stages that feed back (give 3 to 6 items)", "book": "a book, guide or toolkit (title; heart)", "headprofile": "a head in profile: memory, ageing, a missing scan (question)",
+    "staff": "a bar of music: five lines, a time signature and notes (pitches, meter); for rhythm, melody or a piece of music", "cycle": "a loop of stages that feed back (give 3 to 6 items)", "book": "a book, guide or toolkit (title; heart)", "headprofile": "a head in profile: memory, ageing, a missing scan (question)",
     "cloud": "a fog, a weight or a fading thought (faded)", "scales": "weighing two things against each other (tilt, items)", "door": "a barrier or an entrance (locked, open)",
     "heart": "care or connection, placed between things", "trolley": "an outreach or tea trolley of objects", "van": "mobile outreach: a van with a pop-up table",
     "skyline": "a town or city setting (markers for places)", "network": "connections between many things", "database": "a collection or a reference library", "molecule": "a chemical",

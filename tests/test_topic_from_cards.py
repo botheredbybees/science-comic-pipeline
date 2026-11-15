@@ -69,3 +69,14 @@ def test_a_ref_prefix_the_model_adds_is_dropped_when_the_card_exists():
     assert not rejected and kept["synthesis"][0]["cites"] == ["kenning:C1"]
     kept, rejected = tc.check({"synthesis": [{"text": "x", "cites": ["ref:nothing:C9"]}]}, idx)
     assert rejected and "does not exist" in rejected[0]["why"]
+
+
+def test_a_year_in_a_papers_own_label_is_not_an_unsupported_number_but_another_year_is():
+    idx = {"roden:C5": {"text": "Children had weekly lessons.", "kind": "method", "source": {"page": 3, "quote": "weekly lessons"}}}
+    labels = {"roden": "Roden 2014"}
+    ok = {"synthesis": [{"text": "Roden 2014 gave weekly lessons.", "cites": ["roden:C5"]}]}
+    bad = {"synthesis": [{"text": "Roden (2013) gave weekly lessons.", "cites": ["roden:C5"]}]}
+    assert not tc.check(ok, idx, labels)[1]
+    kept, rejected = tc.check(bad, idx, labels)
+    assert rejected and "2013" in rejected[0]["why"]
+    assert tc.check(ok, idx)[1]  # with no labels given, the year is still unsupported

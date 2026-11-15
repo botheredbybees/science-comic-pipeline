@@ -84,6 +84,7 @@ PROPS = [
     ("Places: a skyline, and a door in a wall", [("skyline", {"markers": 3}), ("door", {"locked": True}), ("door", {"open": True})]),
     ("Symbols: heart, book, head, cloud and scales", [("heart", {}), ("book", {"title": "Title", "heart": True}), ("headprofile", {"question": True}), ("cloud", {}),
                                                    ("cloud", {"faded": True}), ("scales", {"tilt": "left", "items": [{"label": "a"}, {"label": "b"}]})]),
+    ("Music: a bar of music", [("staff", {}), ("staff", {"meter": "3/4", "pitches": [1, 3, 5]}), ("notes", {}), ("piano", {})]),
     ("A cycle", [("cycle", {"items": [{"label": "plan"}, {"label": "do"}, {"label": "review"}, {"label": "adjust"}]}), ("cycle", {"items": [{"label": "one"}, {"label": "two"}, {"label": "three"}]})]),
     ("Everyday props", [("desk", {}), ("bowl", {}), ("board", {"cards": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}), ("paper", {"label": "paper"}), ("box", {"label": "text box"})]),
     ("More everyday props", [("box", {"label": "box"}), ("teapot", {}), ("cups", {"items": [{"label": "a", "value": 1}, {"label": "b", "value": 2}]}), ("flash", {"label": "flash"})]),

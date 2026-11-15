@@ -395,7 +395,7 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
 SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn",
                    "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
                    "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes",
-                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline"]
+                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -687,3 +687,10 @@ def test_scales_tilt_moves_the_beam_and_a_cycle_draws_an_arrowhead_per_stage():
 def test_a_book_prints_its_title_and_a_skyline_marks_its_places():
     assert "Hello" in _prop("book", title="Hello") and "Hello" not in _prop("book")
     assert _prop("skyline", markers=3).count("<circle") == _prop("skyline").count("<circle") + 3
+
+
+def test_a_staff_draws_one_head_per_pitch_and_a_time_signature():
+    five = _prop("staff", pitches=[0, 2, 4, 6, 8])
+    assert _prop("staff", pitches=[1, 3]) != five
+    assert len(_prop("staff", pitches=[0, 2, 4, 6, 8])) > len(_prop("staff", pitches=[0, 2]))
+    assert ">3<" in _prop("staff", meter="3/4") and ">4<" in _prop("staff", meter="3/4") and ">4<" in _prop("staff")

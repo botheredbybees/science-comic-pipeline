@@ -35,7 +35,11 @@ PROMPT = """Write a synthesis of what these papers say about the topic "{topic}"
 Return JSON: {{"synthesis": [{{"text": "<2 to 4 sentences>", "cites": ["<card id>", "<card id>"]}}], "tensions": [{{"text": "<where two papers differ>", "cites": ["<card id>", "<card id>"]}}],
 "open_questions": [{{"text": "<a question the papers leave open>", "cites": ["<card id>"]}}]}}
 
+Papers (the label to use for each in your text, if you name a paper at all):
+{papers}
+
 Rules:
+- Name a paper only by its label above, exactly as written. Do not add authors, "et al.", or years that are not in the label.
 - Give 4 to 8 synthesis paragraphs. Every item must cite the cards it rests on, by their full id exactly as it is written before each card, with no extra prefix.
 - Say what a paper found as that paper's finding; never credit one paper with another's result. Keep hedges ("suggests", "appeared to").
 - A number may appear only if a cited card states it. Do not rank the studies or call one better.
@@ -66,10 +70,11 @@ def normalise_cite(cite, index):
     return cite[4:] if cite.startswith("ref:") and cite not in index and cite[4:] in index else cite
 
 
-def check(reply, index):
+def check(reply, index, labels=None):
     """Return (kept, rejected): each item of synthesis, tensions and open_questions that passes the rules; a rejection carries its reason."""
     kept = {"synthesis": [], "tensions": [], "open_questions": []}
     rejected = []
+    named = set().union(*(numbers_in(v) for v in (labels or {}).values()))  # a year in a paper's own label is a citation, not a finding
     for section in kept:
         for item in reply.get(section) or []:
             cites = [normalise_cite(c, index) for c in item.get("cites") or []]
@@ -82,7 +87,7 @@ def check(reply, index):
                 why = "it cites a card that does not exist: " + ", ".join(c for c in cites if c not in index)
             else:
                 have = set().union(*(numbers_in(index[c]["text"] + " " + index[c]["source"]["quote"]) for c in cites))
-                missing = sorted(numbers_in(text) - have)
+                missing = sorted(numbers_in(text) - have - named)
                 if missing:
                     why = f"it states a number the cited cards do not contain: {', '.join(missing)}"
                 elif section == "tensions" and len({c.split(":")[0] for c in cites}) < 2:
@@ -146,8 +151,9 @@ def main(argv=None):
         for c in cards:
             index[f"{ref}:{c['id']}"] = c
             lines.append(f"{ref}:{c['id']} [{c['kind']}, p{c['source']['page']}] {c['text']}")
-    reply = parse(chat(PROMPT.format(topic=args.topic, cards="\n".join(lines)), cfg, temperature=0.2, max_tokens=12000, num_ctx=65536))
-    kept, rejected = check(reply, index)
+    papers = "\n".join(f"- {labels.get(r, r)}" for r in refs)
+    reply = parse(chat(PROMPT.format(topic=args.topic, papers=papers, cards="\n".join(lines)), cfg, temperature=0.2, max_tokens=12000, num_ctx=65536))
+    kept, rejected = check(reply, index, labels)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(render(args.topic, kept, rejected, index, labels, refs, cfg["model"]))
     if args.report:

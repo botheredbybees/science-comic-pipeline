@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline"}
+EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff"}
 
 
 def _dot(x, y, r=5):
@@ -1883,13 +1883,43 @@ def skyline(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+def staff(pen, x, y, w, h, p, fs):
+    """A bar of music: five staff lines, a time signature, a few notes on stems and a double barline at the end. `pitches` (0 to 8,
+    low to high: 0 is the bottom line, 1 the space above it, 8 the space above the top line) sets the notes; the default is a rising and
+    falling run of four. `meter` (default "4/4") is the time signature."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 2.2, p, fs)
+    U, sw = _u(x, y, w, h), 2.2
+    pitches = [int(clamp(v, 0, 8)) for v in (p.get("pitches") or [2, 4, 5, 3])][:8] or [2]
+    top, gap = 0.28, 0.11  # the top line and the distance between lines, as fractions of the height
+    o = [pen.line(U(0.0, top + gap * k), U(1.0, top + gap * k), 1.6, amp=0.3) for k in range(5)]
+    o.append(pen.line(U(0.0, top), U(0.0, top + gap * 4), sw, amp=0.1))
+    o += [pen.line(U(0.94, top), U(0.94, top + gap * 4), sw, amp=0.1), pen.line(U(0.985, top), U(0.985, top + gap * 4), sw * 1.8, amp=0.1)]  # the double barline
+    meter = str(p.get("meter", "4/4")).split("/")
+    if len(meter) == 2:
+        o.append(text(x + w * 0.1, y + h * (top - 0.03), [meter[0]], h * 0.3, anchor="middle", weight="bold"))
+        o.append(text(x + w * 0.1, y + h * (top + gap * 2 - 0.03), [meter[1]], h * 0.3, anchor="middle", weight="bold"))
+    n = len(pitches)
+    for i, pt in enumerate(pitches):
+        u = 0.24 + 0.64 * (i + 0.5) / n
+        v = top + gap * 4 - pt * gap / 2
+        cx, cy = U(u, v)
+        rx, ry = w * 0.018, h * 0.058
+        o.append(pen.ellipse(cx, cy, rx, ry, 1.8, fill=INK, jit=0.02))
+        if pt < 4:  # a stem up on the right of low notes, down on the left of high ones
+            o.append(pen.line((cx + rx * 0.95, cy), (cx + rx * 0.95, cy - h * 0.34), 2.0, amp=0.1))
+        else:
+            o.append(pen.line((cx - rx * 0.95, cy), (cx - rx * 0.95, cy + h * 0.34), 2.0, amp=0.1))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
 _DRAW = {"stake": stake, "emsled": emsled, "fieldcamp": fieldcamp, "molecule": molecule, "iceberg": iceberg, "mixedlayer": mixedlayer, "seaice": seaice, "iceshelf": iceshelf, "map": map_, "currents": currents, "desk": desk, "phone": phone, "bowl": bowl, "bongo": bongo, "trawl": trawl, "rmt": rmt, "ctd": ctd, "satellite": satellite, "radar": radar, "radarscreen": radarscreen, "icecore": icecore, "massspec": massspec, "helicopter": helicopter, "drone": drone,
          "aquarium": aquarium, "freezer": freezer, "tag": tag, "scatter": scatter, "boxplot": boxplot, "modelgrid": modelgrid,
          "sequence": sequence, "tree": tree, "clusters": clusters, "network": network, "database": database, "filter": filter_rig, "tubes": tubes,
          "sequencer": sequencer, "cpr": cpr, "echosounder": echosounder, "venn": venn, "laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
          "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic, "armchair": armchair, "wheelchair": wheelchair, "piano": piano, "guitar": guitar, "easel": easel, "camera": camera, "brain": brain, "headphones": headphones, "notes": notes,
          "gallery": gallery, "cycle": cycle, "book": book, "headprofile": headprofile, "cloud": cloud, "scales": scales, "door": door, "heart": heart,
-         "trolley": trolley, "van": van, "skyline": skyline}
+         "trolley": trolley, "van": van, "skyline": skyline, "staff": staff}
 
 
 def extra_prop(pen, x, y, w, h, p, fs):
