@@ -328,7 +328,7 @@ def test_bar_labels_print_the_number_as_written():
 
 def test_every_held_object_draws_in_every_pose():
     pen = R.Pen("held")
-    for held in ("marker", "mug", "clipboard", "teacup", "flask", "magnifier"):
+    for held in ("marker", "mug", "clipboard", "teacup", "flask", "magnifier", "flower", "photo", "book", "paper"):
         for pose in ("stand", "hold", "think", "sip", "point", "shrug", "up"):
             svg, _ = R.figure(pen, 100, 300, 1.0, pose, "neutral", "right", held, {})
             ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{svg}</g>")
@@ -394,7 +394,8 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
 
 SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn",
                    "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
-                   "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes"]
+                   "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes",
+                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -609,3 +610,80 @@ def test_head_scale_enlarges_the_head_and_the_default_is_1_2():
     ET.fromstring(f"<g xmlns='http://www.w3.org/2000/svg'>{big[0]}</g>")
 
 
+
+
+def _stage(st, w=420, h=260):
+    return R.stage(R.Pen(1), 0, 0, w, h, st, {}, 18)
+
+
+def test_no_shot_and_mid_draw_the_same_and_a_figures_own_scale_beats_the_preset():
+    chars = [{"id": "a", "x": 0.4, "y": 0.9, "scale": 1.0, "face": "smile"}]
+    assert _stage({"characters": chars}) == _stage({"shot": "mid", "characters": chars})
+    assert _stage({"characters": chars}) == _stage({"shot": "close", "characters": chars})  # scale, x and y all given: nothing to fill in
+    assert _stage({"characters": chars}) == _stage({"shot": "wide", "ground": False, "characters": chars})
+
+
+def test_a_close_shot_fills_the_panel_with_the_head_and_a_wide_shot_makes_it_small():
+    h = 260
+    _, close = _stage({"shot": "close", "characters": [{"id": "a"}]}, h=h)
+    _, wide = _stage({"shot": "wide", "characters": [{"id": "a"}]}, h=h)
+    _, mid = _stage({"characters": [{"id": "a"}]}, h=h)
+    assert 0 < close["a"][1] < 0.3 * h  # the top of the head is near the top of the scene, and inside it
+    assert 0.35 * h < wide["a"][1] and mid["a"][1] < wide["a"][1]  # a small figure's head is lower than a mid one's
+    assert abs(close["a"][0] - 210) < 1  # centred
+
+
+def test_a_wide_shot_draws_a_ground_line_unless_told_not_to():
+    chars = [{"id": "a"}]
+    with_ground = _stage({"shot": "wide", "characters": chars})[0]
+    without = _stage({"shot": "wide", "ground": False, "characters": chars})[0]
+    assert len(with_ground) > len(without)
+
+
+def test_two_figures_in_a_close_shot_sit_side_by_side():
+    _, heads = _stage({"shot": "close", "characters": [{"id": "a"}, {"id": "b"}]})
+    assert heads["a"][0] < 210 < heads["b"][0]
+
+
+def test_the_schema_accepts_a_shot_and_refuses_one_it_does_not_know(doc):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0].setdefault("staging", {})["shot"] = "close"
+    assert validate(d)[0] == []
+    d["beats"][0]["panels"][0]["staging"]["shot"] = "far"
+    assert validate(d)[0] != []
+
+
+def test_a_close_shot_with_three_figures_is_warned_about(doc):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    d["beats"][0]["panels"][0].setdefault("staging", {}).update({"shot": "close", "characters": [{"id": "extra"}, {"id": "extra"}, {"id": "extra"}]})
+    assert any("close-up shows one or two figures" in w for w in validate(d)[1])
+
+
+def _prop(kind, **kw):
+    import props as P
+    return P.extra_prop(R.Pen(1), 0, 0, 400, 260, {"kind": kind, **kw}, 16)
+
+
+def test_gallery_options_each_add_something_and_frames_changes_the_count():
+    base = _prop("gallery")
+    assert len(_prop("gallery", bench=True)) > len(base) and len(_prop("gallery", ramp=True)) > len(base) and len(_prop("gallery", easels=2)) > len(base)
+    assert len(_prop("gallery", frames=5)) > len(_prop("gallery", frames=1))
+
+
+def test_door_lock_and_open_change_the_drawing_and_a_cloud_fades_to_dashes():
+    assert len(_prop("door", locked=True)) > len(_prop("door")) and _prop("door", open=True) != _prop("door")
+    assert "stroke-dasharray" in _prop("cloud", faded=True) and "stroke-dasharray" not in _prop("cloud")
+
+
+def test_scales_tilt_moves_the_beam_and_a_cycle_draws_an_arrowhead_per_stage():
+    assert _prop("scales", tilt="left") != _prop("scales", tilt="right") != _prop("scales")
+    items = [{"label": "a"}, {"label": "b"}, {"label": "c"}, {"label": "d"}]
+    assert _prop("cycle", items=items).count("<path") >= 4 * 3  # an arc and two head strokes for each stage
+    assert _prop("cycle", items=items[:3]).count("<circle") == 3  # a dot on the ring for each stage
+
+
+def test_a_book_prints_its_title_and_a_skyline_marks_its_places():
+    assert "Hello" in _prop("book", title="Hello") and "Hello" not in _prop("book")
+    assert _prop("skyline", markers=3).count("<circle") == _prop("skyline").count("<circle") + 3

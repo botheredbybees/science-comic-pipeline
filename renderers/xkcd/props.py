@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes"}
+EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline"}
 
 
 def _dot(x, y, r=5):
@@ -1631,11 +1631,265 @@ def notes(pen, x, y, w, h, p, fs):
     return "".join(o)
 
 
+def _heart_pts(cx, cy, r):
+    """Points round a heart centred near (cx, cy), about 2r wide, for a smooth closed stroke."""
+    pts = []
+    for k in range(24):
+        t = math.tau * k / 24
+        pts.append((cx + r * 16 * math.sin(t) ** 3 / 16, cy - r * (13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)) / 16))
+    return pts
+
+
+def heart(pen, x, y, w, h, p, fs):
+    """A plain heart, to put between two things (a person and a painting) or on a cover."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.1, p, fs)
+    cx, cy = x + w / 2, y + h * 0.5
+    o = [pen.stroke(_heart_pts(cx, cy, min(w * 0.46, h * 0.5)), 2.8, closed=True, fill=SOFT)]
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def gallery(pen, x, y, w, h, p, fs):
+    """A gallery room: a wall with framed pictures, a floor line and, if asked, a bench (`bench`), an access ramp at the right (`ramp`)
+    and easels in front (`easels`, 1 to 3). `frames` (1 to 5, default 3) is how many pictures hang on the wall; each shows a different
+    simple mark (a hill, a sun, a wave, a tree) so it reads as a painting. The place for a `shot: wide` opener."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    n = int(clamp(p.get("frames", 3), 1, 5))
+    floor = 0.9
+    o = [pen.line(U(0.0, floor), U(1.0, floor), sw, amp=0.6), pen.line(U(0.0, 0.8), U(1.0, 0.8), 1.2, amp=0.5, color=MID)]  # the floor, and the skirting board
+    fw, fh = clamp(0.8 / n - 0.04, 0.12, 0.22), 0.42
+    marks = ("hills", "sun", "wave", "tree", "hills")
+    for i in range(n):
+        u = 0.1 + (0.8 - fw) * (i / max(n - 1, 1)) if n > 1 else 0.5 - fw / 2
+        v = 0.1 + 0.03 * ((i * 3) % 2)
+        o.append(pen.rect(*U(u, v), w * fw, h * fh, sw * 0.9, fill=PAPER, over=0.8))
+        o.append(pen.rect(*U(u + fw * 0.12, v + fh * 0.14), w * fw * 0.76, h * fh * 0.72, 1.2, fill=SOFT, over=0.3))
+        a, b, wd, ht = u + fw * 0.12, v + fh * 0.14, fw * 0.76, fh * 0.72
+        k = marks[i]
+        if k == "hills":
+            o.append(pen.stroke([U(a, b + ht), U(a + wd * 0.3, b + ht * 0.45), U(a + wd * 0.55, b + ht * 0.8), U(a + wd * 0.78, b + ht * 0.35), U(a + wd, b + ht * 0.85)], 1.8, color=INK))
+        elif k == "sun":
+            o.append(pen.ellipse(*U(a + wd * 0.5, b + ht * 0.42), wd * w * 0.2, wd * w * 0.2, 1.8, fill=PAPER))
+            o.append(pen.line(U(a, b + ht * 0.88), U(a + wd, b + ht * 0.88), 1.6, amp=0.3))
+        elif k == "wave":
+            o += [pen.stroke([U(a, b + ht * (0.4 + 0.22 * r)), U(a + wd * 0.25, b + ht * (0.3 + 0.22 * r)), U(a + wd * 0.5, b + ht * (0.4 + 0.22 * r)),
+                              U(a + wd * 0.75, b + ht * (0.3 + 0.22 * r)), U(a + wd, b + ht * (0.4 + 0.22 * r))], 1.6, color=INK) for r in range(3)]
+        else:
+            o += [pen.line(U(a + wd * 0.5, b + ht * 0.95), U(a + wd * 0.5, b + ht * 0.5), 2.0, amp=0.2), pen.ellipse(*U(a + wd * 0.5, b + ht * 0.36), wd * w * 0.26, ht * h * 0.26, 1.8, fill=PAPER)]
+    if p.get("ramp"):  # a ramp rising to the right, with a handrail
+        o += [pen.poly([U(0.7, floor), U(1.0, floor), U(1.0, 0.8)], sw * 0.8, fill=SOFT, jit=0.2),
+              pen.line(U(0.74, 0.72), U(1.0, 0.62), 1.8, amp=0.2), pen.line(U(0.76, 0.72), U(0.76, 0.88), 1.6, amp=0.1), pen.line(U(0.9, 0.66), U(0.9, 0.82), 1.6, amp=0.1)]
+    if p.get("bench"):  # a bench in front of the wall
+        bx = 0.3 if not p.get("ramp") else 0.2
+        o += [pen.rect(*U(bx, 0.68), w * 0.3, h * 0.05, sw * 0.9, fill=PAPER, over=0.4),
+              pen.line(U(bx + 0.03, 0.73), U(bx + 0.03, floor), sw * 0.9, amp=0.1), pen.line(U(bx + 0.27, 0.73), U(bx + 0.27, floor), sw * 0.9, amp=0.1)]
+    for k in range(int(clamp(p.get("easels", 0), 0, 3))):  # easels with a blank board
+        ex = 0.14 + 0.2 * k
+        o += [pen.line(U(ex, 0.58), U(ex - 0.03, floor), 2.0, amp=0.2), pen.line(U(ex + 0.08, 0.58), U(ex + 0.11, floor), 2.0, amp=0.2),
+              pen.rect(*U(ex - 0.01, 0.5), w * 0.1, h * 0.2, 2.2, fill=PAPER, over=0.5)]
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def cycle(pen, x, y, w, h, p, fs):
+    """A ring of arrows through three to six stages, each a dot on the ring with its label outside it: a feedback loop, a life cycle,
+    a cycle of learning."""
+    items, fsb = p.get("items", [])[:6], max(11.0, fs * 0.93)
+    n = max(len(items), 1)
+    cx, cy = x + w / 2, y + h / 2
+    lw = clamp(w * 0.3, 60, 140)  # the room a label may take beside the ring
+    R = max(min(h / 2 - fsb * 1.6, w / 2 - lw - 6), 26)
+    ang = lambda i: -math.pi / 2 + math.tau * i / n
+    o = []
+    for i in range(n if n > 1 else 0):
+        a0, a1 = ang(i), ang(i + 1)
+        gap = min(0.35, 0.25 * (a1 - a0))
+        pts = [(cx + R * math.cos(a0 + gap + (a1 - a0 - 2 * gap) * t / 8), cy + R * math.sin(a0 + gap + (a1 - a0 - 2 * gap) * t / 8)) for t in range(9)]
+        o.append(pen.stroke(pts, 2.4))
+        tip, prev = pts[-1], pts[-2]
+        d = math.atan2(tip[1] - prev[1], tip[0] - prev[0])
+        o += [pen.line((tip[0] - 10 * math.cos(d + k), tip[1] - 10 * math.sin(d + k)), tip, 2.4, amp=0.2) for k in (-0.5, 0.5)]
+    for i, it in enumerate(items):
+        a = ang(i)
+        px, py = cx + R * math.cos(a), cy + R * math.sin(a)
+        o.append(_dot(px, py, 5.5))
+        lab = wrap(it.get("label", ""), lw, fsb)
+        bh = block_h(lab, fsb, 1.05)
+        c, sn = math.cos(a), math.sin(a)
+        if c > 0.3:
+            o.append(text(px + 12, py - bh / 2, lab, fsb, anchor="start", lh=1.05))
+        elif c < -0.3:
+            o.append(text(px - 12, py - bh / 2, lab, fsb, anchor="end", lh=1.05))
+        else:
+            o.append(text(px, py - 10 - bh if sn < 0 else py + 10, lab, fsb, anchor="middle", lh=1.05))
+    return "".join(o)
+
+
+def book(pen, x, y, w, h, p, fs):
+    """A closed book from the front: a spine band, page edges at the right and foot, a title on the cover (`title`) and, if `heart` is true,
+    a small heart under it."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 0.78, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.rect(*U(0.08, 0.03), w * 0.9, h * 0.93, sw * 0.7, fill=SOFT, over=0.4),  # the page edges, behind
+         pen.rect(*U(0.0, 0.0), w * 0.9, h * 0.93, sw, fill=PAPER, over=0.6),
+         pen.rect(*U(0.0, 0.0), w * 0.12, h * 0.93, sw * 0.8, fill=SOFT, over=0.2)]  # the spine
+    if p.get("title"):
+        tl = wrap(p["title"], w * 0.62, fsb)
+        o.append(text(x + w * 0.52, y + h * 0.14, tl, fsb, anchor="middle", lh=1.1))
+        o.append(pen.line(U(0.22, 0.14 + 0.02 + block_h(tl, fsb, 1.1) / h), U(0.8, 0.14 + 0.02 + block_h(tl, fsb, 1.1) / h), 1.4, amp=0.2, color=MID))
+    if p.get("heart"):
+        o.append(pen.stroke(_heart_pts(x + w * 0.52, y + h * 0.68, min(w, h) * 0.17), 2.2, closed=True, fill=SOFT))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def headprofile(pen, x, y, w, h, p, fs):
+    """A head in profile, facing right, drawn as one wobbly outline: for memory, ageing, what a scan did or did not show. The inside is
+    empty; `question: true` puts a question mark in it."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 0.85, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    pts = [U(0.5, 0.03), U(0.7, 0.07), U(0.82, 0.2), U(0.84, 0.36), U(0.88, 0.45), U(0.97, 0.56), U(0.88, 0.6), U(0.9, 0.66), U(0.85, 0.71), U(0.88, 0.78),
+           U(0.78, 0.84), U(0.68, 0.87), U(0.68, 1.0), U(0.34, 1.0), U(0.36, 0.82), U(0.2, 0.7), U(0.1, 0.5), U(0.14, 0.24), U(0.28, 0.08)]
+    o = [pen.stroke(pts, sw, closed=True, fill=PAPER)]
+    ex, ey = U(0.72, 0.38)
+    o.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="{w * 0.022:.1f}" fill="{INK}"/>')
+    if p.get("question"):
+        o.append(text(*U(0.44, 0.26), ["?"], min(w, h) * 0.5, anchor="middle"))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def cloud(pen, x, y, w, h, p, fs):
+    """A cloud of bumps: a fog, a weight, a thought. `faded: true` draws it dashed and grey, for something fading or half-remembered."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
+    faded = bool(p.get("faded"))
+    cx, cy, rx, ry = x + w / 2, y + h * 0.52, w * 0.4, h * 0.3
+    n = 9
+    pts = [(cx + rx * math.cos(math.tau * k / n + 0.2) + pen.n(1.0), cy + ry * math.sin(math.tau * k / n + 0.2) + pen.n(1.0)) for k in range(n)]
+    d = f"M{pts[0][0]:.1f} {pts[0][1]:.1f}"
+    for a, b in zip(pts, pts[1:] + pts[:1]):
+        r = math.hypot(b[0] - a[0], b[1] - a[1]) * 0.62
+        d += f"A{r:.1f} {r:.1f} 0 0 1 {b[0]:.1f} {b[1]:.1f}"
+    stroke, fill, dash = (MID, "none", ' stroke-dasharray="7 6"') if faded else (INK, SOFT, "")
+    o = [f'<path d="{d}Z" fill="{fill}" stroke="{stroke}" stroke-width="2.6" stroke-linejoin="round"{dash}/>']
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def scales(pen, x, y, w, h, p, fs):
+    """A balance: a stand, a beam and two pans hung by strings. `tilt` is left or right for the heavier pan (the one that drops), or level.
+    Up to two `items` label the pans, left then right."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.15, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    d = {"left": 0.07, "right": -0.07}.get(p.get("tilt", "level"), 0.0)  # positive: the left end drops
+    top = 0.12
+    ly, ry = top + d, top - d
+    o = [pen.line(U(0.5, top), U(0.5, 0.9), sw, amp=0.3), pen.poly([U(0.34, 0.97), U(0.5, 0.88), U(0.66, 0.97)], sw * 0.8, fill=SOFT, jit=0.2),
+         pen.line(U(0.12, ly), U(0.88, ry), sw, amp=0.3)]
+    for u, vv, k in ((0.12, ly, 0), (0.88, ry, 1)):
+        pan = vv + 0.36
+        o += [pen.line(U(u, vv), U(u - 0.1, pan), 1.4, amp=0.1), pen.line(U(u, vv), U(u + 0.1, pan), 1.4, amp=0.1),
+              pen.stroke([U(u - 0.13, pan), U(u - 0.1, pan + 0.05), U(u + 0.1, pan + 0.05), U(u + 0.13, pan)], sw * 0.9, color=INK)]
+        items = p.get("items", [])
+        if k < len(items) and items[k].get("label"):
+            lab = wrap(items[k]["label"], w * 0.3, fsb)
+            o.append(text(x + w * u, y + h * (pan + 0.09), lab, fsb, anchor="middle", lh=1.05))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def _padlock(pen, cx, cy, r):
+    return (pen.stroke([(cx - r * 0.6, cy), (cx - r * 0.6, cy - r * 0.9), (cx, cy - r * 1.5), (cx + r * 0.6, cy - r * 0.9), (cx + r * 0.6, cy)], 2.2)
+            + pen.rect(cx - r * 0.95, cy, r * 1.9, r * 1.4, 2.2, fill=INK, over=0.3))
+
+
+def door(pen, x, y, w, h, p, fs):
+    """A wall with a door in it: a barrier, an entrance. `locked: true` hangs a padlock on it; `open: true` swings it open."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 0.95, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.rect(*U(0.0, 0.04), w, h * 0.86, sw, fill=SOFT, over=0.6)]  # the wall, with a few courses of bricks
+    for v in (0.2, 0.36, 0.52, 0.68, 0.82):
+        o.append(pen.line(U(0.0, v), U(1.0, v), 1.0, amp=0.3, color=MID))
+    o.append(pen.rect(*U(0.32, 0.22), w * 0.36, h * 0.68, sw, fill=PAPER, over=0.5))  # the doorway
+    if p.get("open"):
+        o.append(pen.poly([U(0.32, 0.22), U(0.2, 0.28), U(0.2, 0.86), U(0.32, 0.9)], sw * 0.9, fill=SOFT, jit=0.15))  # the door, swung back
+        o.append(f'<circle cx="{x + w * 0.22:.1f}" cy="{y + h * 0.58:.1f}" r="{w * 0.014:.1f}" fill="{INK}"/>')
+    else:
+        o.append(pen.rect(*U(0.35, 0.25), w * 0.3, h * 0.62, 1.8, fill=SOFT, over=0.3))
+        o.append(f'<circle cx="{x + w * 0.6:.1f}" cy="{y + h * 0.58:.1f}" r="{w * 0.018:.1f}" fill="{INK}"/>')  # the knob
+        if p.get("locked"):
+            o.append(_padlock(pen, x + w * 0.5, y + h * 0.46, w * 0.07))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def trolley(pen, x, y, w, h, p, fs):
+    """A two-shelf trolley with a basket of objects on each shelf, a handle at one end and small wheels: an outreach trolley, a tea trolley."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.1, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    o = [pen.line(U(0.1, 0.9), U(0.1, 0.08), sw, amp=0.3), pen.line(U(0.82, 0.9), U(0.82, 0.08), sw, amp=0.3), pen.line(U(0.82, 0.08), U(0.97, 0.02), sw, amp=0.3),  # uprights and handle
+         pen.line(U(0.06, 0.8), U(0.86, 0.8), sw, amp=0.3), pen.line(U(0.06, 0.45), U(0.86, 0.45), sw, amp=0.3)]  # the shelves
+    for v in (0.8, 0.45):
+        o.append(pen.stroke([U(0.18, v - 0.19), U(0.2, v), U(0.46, v), U(0.48, v - 0.19)], sw * 0.9, closed=True, fill=PAPER))  # a basket
+        o.append(pen.line(U(0.19, v - 0.1), U(0.47, v - 0.1), 1.0, amp=0.2, color=MID))
+        o += [pen.ellipse(*U(0.27, v - 0.22), w * 0.04, w * 0.04, 1.8, fill=SOFT), pen.rect(*U(0.36, v - 0.3), w * 0.05, h * 0.1, 1.8, fill=PAPER, over=0.2)]  # things in it
+        o.append(pen.stroke([U(0.58, v - 0.14), U(0.6, v), U(0.78, v), U(0.8, v - 0.14)], sw * 0.8, closed=True, fill=SOFT))  # a second, smaller basket
+    for u in (0.16, 0.76):
+        o.append(pen.ellipse(*U(u, 0.94), w * 0.045, w * 0.045, sw * 0.9, fill=PAPER))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def van(pen, x, y, w, h, p, fs):
+    """A small service van from the side with a pop-up table beside it and a few objects on the table: mobile outreach."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.8, p, fs)
+    U, sw = _u(x, y, w, h), 2.6
+    body = [U(0.02, 0.84), U(0.02, 0.32), U(0.08, 0.26), U(0.46, 0.26), U(0.56, 0.4), U(0.64, 0.46), U(0.66, 0.84)]
+    o = [pen.line(U(0.0, 0.9), U(1.0, 0.9), sw, amp=0.6),
+         pen.stroke(body, sw, closed=True, fill=PAPER),
+         pen.poly([U(0.5, 0.31), U(0.57, 0.43), U(0.5, 0.43)], 1.8, fill=SOFT, jit=0.1),  # the cab window
+         pen.line(U(0.3, 0.3), U(0.3, 0.82), 1.4, amp=0.1), pen.rect(*U(0.08, 0.34), w * 0.16, h * 0.14, 1.6, fill=SOFT, over=0.2)]  # the sliding door and a side window
+    for u in (0.16, 0.52):
+        o.append(pen.ellipse(*U(u, 0.86), w * 0.05, w * 0.05, sw, fill=PAPER))
+    o += [pen.line(U(0.72, 0.6), U(0.98, 0.6), sw, amp=0.3), pen.line(U(0.74, 0.6), U(0.72, 0.9), sw * 0.8, amp=0.1), pen.line(U(0.96, 0.6), U(0.98, 0.9), sw * 0.8, amp=0.1)]  # the table
+    o += [pen.rect(*U(0.76, 0.5), w * 0.05, h * 0.1, 1.8, fill=SOFT, over=0.2), pen.ellipse(*U(0.86, 0.55), w * 0.025, w * 0.025, 1.8, fill=PAPER), pen.rect(*U(0.9, 0.51), w * 0.05, h * 0.09, 1.8, fill=PAPER, over=0.2)]
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
+def skyline(pen, x, y, w, h, p, fs):
+    """A row of buildings of different heights on a ground line, with a few windows. `markers` (0 to 6) puts that many dots above them,
+    for the towns or places a study covers."""
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 2.2, p, fs)
+    U, sw = _u(x, y, w, h), 2.4
+    heights = (0.45, 0.7, 0.35, 0.85, 0.55, 0.4, 0.65, 0.3)
+    n = len(heights)
+    bw = 0.92 / n
+    o = [pen.line(U(0.0, 0.92), U(1.0, 0.92), sw, amp=0.6)]
+    tops = []
+    for i, ht in enumerate(heights):
+        u = 0.04 + i * bw
+        o.append(pen.rect(*U(u, 0.92 - ht * 0.8), w * bw * 0.92, h * ht * 0.8, sw, fill=PAPER if i % 2 else SOFT, over=0.5))
+        for r in range(int(ht * 5)):
+            o.append(pen.rect(*U(u + bw * 0.25, 0.92 - ht * 0.8 + 0.07 + r * 0.11), w * bw * 0.18, h * 0.05, 1.2, fill=PAPER, over=0.1))
+        tops.append((u + bw * 0.46, 0.92 - ht * 0.8))
+    m = int(clamp(p.get("markers", 0), 0, 6))
+    for k in range(m):
+        tu, tv = tops[int(k * (n - 1) / max(m - 1, 1))] if m > 1 else tops[3]
+        o.append(pen.line(U(tu, tv - 0.02), U(tu, tv - 0.12), 1.6, amp=0.1))
+        o.append(_dot(*U(tu, tv - 0.14), 4.5))
+    _caption(o, x, y, w, h, lines, fsb)
+    return "".join(o)
+
+
 _DRAW = {"stake": stake, "emsled": emsled, "fieldcamp": fieldcamp, "molecule": molecule, "iceberg": iceberg, "mixedlayer": mixedlayer, "seaice": seaice, "iceshelf": iceshelf, "map": map_, "currents": currents, "desk": desk, "phone": phone, "bowl": bowl, "bongo": bongo, "trawl": trawl, "rmt": rmt, "ctd": ctd, "satellite": satellite, "radar": radar, "radarscreen": radarscreen, "icecore": icecore, "massspec": massspec, "helicopter": helicopter, "drone": drone,
          "aquarium": aquarium, "freezer": freezer, "tag": tag, "scatter": scatter, "boxplot": boxplot, "modelgrid": modelgrid,
          "sequence": sequence, "tree": tree, "clusters": clusters, "network": network, "database": database, "filter": filter_rig, "tubes": tubes,
          "sequencer": sequencer, "cpr": cpr, "echosounder": echosounder, "venn": venn, "laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
-         "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic, "armchair": armchair, "wheelchair": wheelchair, "piano": piano, "guitar": guitar, "easel": easel, "camera": camera, "brain": brain, "headphones": headphones, "notes": notes}
+         "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic, "armchair": armchair, "wheelchair": wheelchair, "piano": piano, "guitar": guitar, "easel": easel, "camera": camera, "brain": brain, "headphones": headphones, "notes": notes,
+         "gallery": gallery, "cycle": cycle, "book": book, "headprofile": headprofile, "cloud": cloud, "scales": scales, "door": door, "heart": heart,
+         "trolley": trolley, "van": van, "skyline": skyline}
 
 
 def extra_prop(pen, x, y, w, h, p, fs):

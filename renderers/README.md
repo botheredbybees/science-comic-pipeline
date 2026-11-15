@@ -53,6 +53,21 @@ Props are drawn first and characters over them, so a character can be placed on 
 `desk` is also drawn in front, as before. A panel's `device` (`gloss`, `moment`, `close-up`, `aside` or `reveal`) names the kind
 of frame it is, so a comic's variety can be asked for and counted (`validate_storyboard.py --variety`).
 
+## Shots: how far away the view is
+
+A panel's `staging` takes `shot: mid | close | wide`. Without it (or with `mid`) every figure is drawn exactly as placed, so a comic
+that never sets it renders as before.
+
+| `shot` | What it does | Use it for |
+|---|---|---|
+| `close` | One figure: the head fills about two thirds of the scene's height, centred and low enough to leave room above it for speech, cropped at the neck. Two figures: just under half the height each, side by side. | A reaction, or the payoff. The faces do the work, so pick the expression with care. |
+| `wide` | Small figures (scale 0.45), a little above the foot of the panel, with a ground line under them. `ground: false` leaves the line off when a prop is the ground (sea ice, a floor). | An establishing view where the place matters: the gallery room, the ship, the ice. |
+
+The preset fills in only what the author left out: a figure's own `scale`, `x` or `y` always wins. A close-up shows one or two figures;
+the validator warns about three or more. The validator's variety check (from 20 panels) also asks for some change of distance, about
+one panel in five, and warns if more than two in five are not mid-distance, since a change only lands against a run of mid shots.
+The older `close-up` device (a large `scale` and a `y` beyond 1, for an enlargement of an animal or an apparatus) is unchanged.
+
 ## Character vocabulary
 
 A staged character takes `pose`, `face` and `facing`; the enums are in the schema and repeated here.

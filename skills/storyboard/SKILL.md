@@ -135,7 +135,7 @@ comic with fewer moments is better than one padded with empty frames.
   best-liked device. It rests on the paper's own definition (cite that claim), adds no fact, and keeps the paper's hedge.
 - **`moment`**: the instant itself, close in on the apparatus when it matters: the flash firing, the net closing, the filter
   catching DNA. It carries the caption or line that says what is happening; a picture alone is not a moment. Use the `flash` prop, a big `scale`, a cropped `y`.
-- **`close-up`**: an enlargement, cropped by the panel's edge (`scale` 4 to 8, `y` beyond 1).
+- **`close-up`**: an enlargement, cropped by the panel's edge (`scale` 4 to 8, `y` beyond 1). For a person's face use `shot: close` instead (below).
 - **`aside`**: a dry one-line comment from a character that adds no fact (see `humour-pass`).
 - **`reveal`**: the payoff of a sequence: a `full` panel, silent or one line.
 
@@ -145,6 +145,19 @@ at `scale` 1.2 to 1.6 with its tail cropped at one edge, and a krill at 0.8 to 1
 krill at 2 to 3 with diatoms at about 0.4 reads the other way. These sizes are cartoon sizes (the footer already says so; do not repeat
 it on the panel); if a claim gives the real sizes, draw to them. Characters are drawn over props, so a krill placed inside an `aquarium` swims in it; a prop with
 `front: true` is drawn in front of the characters (the glass of a tank, a desk's edge).
+
+## Distance
+
+Every panel is drawn at mid-distance unless its `staging` says otherwise, and a long comic of nothing but mid shots reads flat.
+Set `shot` on the staging:
+
+- **`shot: wide`** opens a beat where the place matters (the gallery room, the ship, the ice): small figures with a ground line, with
+  the scenery props doing the work. Use `ground: false` when a prop is the ground.
+- **`shot: close`** is for a reaction or the payoff: one figure (or two) with the head filling the panel. The expression is the whole
+  panel, so choose it deliberately (see the faces in `renderers/README.md`), and keep the caption or line short.
+
+Aim for about one panel in five, and never two close-ups in a row. A figure's own `scale`, `x` and `y` override the preset. There are no
+close-up hands: drawing hands in the stick style did not work, so show touch or making with the prop, or the figure at mid-distance.
 
 ## Writing well
 

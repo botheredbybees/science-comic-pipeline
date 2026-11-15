@@ -538,6 +538,20 @@
       "additionalProperties": false,
       "description": "Optional drawing instructions for renderers that draw from structure (positions are fractions of the panel's scene area; x runs left to right, y top to bottom). A renderer that cannot use it falls back to the scene text.",
       "properties": {
+        "shot": {
+          "enum": [
+            "mid",
+            "close",
+            "wide"
+          ],
+          "default": "mid",
+          "description": "How far away the view is. mid (the default) leaves every figure as placed. close: a head-and-shoulders view, the head about two thirds of the scene's height (just under half for two figures), with room above it for speech, cropped at the shoulders; for a reaction or the payoff. wide: small figures a little above the foot of the panel with a ground line, for an establishing view where the place matters. A figure's own scale, x or y overrides the preset."
+        },
+        "ground": {
+          "type": "boolean",
+          "default": true,
+          "description": "wide only: draw the ground line under the figures (set false when a prop already provides the ground, such as sea ice or a floor)."
+        },
         "characters": {
           "type": "array",
           "items": {
@@ -614,7 +628,11 @@
                   "clipboard",
                   "teacup",
                   "flask",
-                  "magnifier"
+                  "magnifier",
+                  "flower",
+                  "photo",
+                  "book",
+                  "paper"
                 ]
               },
               "scale": {
@@ -714,6 +732,17 @@
                   "brain",
                   "headphones",
                   "notes",
+                  "gallery",
+                  "cycle",
+                  "book",
+                  "headprofile",
+                  "cloud",
+                  "scales",
+                  "door",
+                  "heart",
+                  "trolley",
+                  "van",
+                  "skyline",
                   "mosaic",
                   "freezer",
                   "tag",
@@ -979,6 +1008,17 @@
                   }
                 }
               },
+              "frames": {"type": "integer", "minimum": 1, "maximum": 5, "description": "gallery only: how many framed pictures hang on the wall (default 3)."},
+              "bench": {"type": "boolean", "description": "gallery only: put a bench in front of the wall."},
+              "ramp": {"type": "boolean", "description": "gallery only: a ramp with a handrail at the right, for access."},
+              "easels": {"type": "integer", "minimum": 0, "maximum": 3, "description": "gallery only: that many easels with blank boards in front of the wall."},
+              "tilt": {"enum": ["level", "left", "right"], "description": "scales only: which pan is heavier and drops (left or right), or level."},
+              "locked": {"type": "boolean", "description": "door only: hang a padlock on the door."},
+              "open": {"type": "boolean", "description": "door only: swing the door open."},
+              "faded": {"type": "boolean", "description": "cloud only: draw the cloud dashed and grey, for something fading or half-remembered."},
+              "question": {"type": "boolean", "description": "headprofile only: put a question mark inside the head."},
+              "markers": {"type": "integer", "minimum": 0, "maximum": 6, "description": "skyline only: that many dots above the buildings, for the towns or places a study covers."},
+              "heart": {"type": "boolean", "description": "book only: a small heart on the cover."},
               "condition": {
                 "enum": [
                   "pancake",

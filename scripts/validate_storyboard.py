@@ -107,7 +107,7 @@ SCENE_OBJECTS = {"ship": "ship", "bowl": "bowl", "bottle": "bottle", "jar": "jar
                  "aquarium": "aquarium", "freezer": "freezer", "satellite": "satellite", "rosette": "ctd", "bongo": "bongo",
                  "iceberg": "iceberg", "map": "map"}
 # Objects a character holds rather than a prop; the scene may name one only if someone in the staging holds it.
-SCENE_HELD = ("mug", "teacup", "clipboard", "flask", "magnifier")
+SCENE_HELD = ("mug", "teacup", "clipboard", "flask", "magnifier", "flower", "photo")
 
 
 def _prop_kinds(staging):
@@ -219,6 +219,8 @@ def validate(doc):
         staged = {c["id"] for c in p.get("staging", {}).get("characters", [])}
         for c in staged - cast_ids - {"extra"}:
             errors.append(f"{p['id']}: staged character '{c}' is not in the cast")
+        if (p.get("staging") or {}).get("shot") == "close" and len(p["staging"].get("characters", [])) > 2:
+            warnings.append(f"{p['id']}: a close-up shows one or two figures; with {len(p['staging']['characters'])} they overlap, so use `wide` or `mid`")
         if "staging" in p:
             for line in p.get("speech", []):
                 if line.get("kind", "say") != "caption" and line["speaker"] not in staged:
@@ -311,6 +313,13 @@ def variety(doc):
         if not devices.get("gloss"):
             warnings.append("variety: no panel is marked device: gloss; have a character restate a technical term in plain English "
                             "(on a definition claim) at least once")
+        shots = [(p.get("staging") or {}).get("shot", "mid") for p in panels]
+        off = sum(1 for k in shots if k != "mid")
+        if off == 0:
+            warnings.append("variety: every panel is mid-distance; open a beat on a `shot: wide` where the place matters and use a `shot: close` "
+                            "on a reaction or the payoff, about one panel in five")
+        elif off > 0.4 * n:
+            warnings.append(f"variety: {off} of {n} panels are close or wide; the change of distance only lands against mid-distance panels, so keep it to about one in five")
         if n >= 30 and not devices.get("moment"):
             warnings.append("variety: no panel is marked device: moment; show the instant itself at least once (the flash, the net closing)")
     for p in panels:

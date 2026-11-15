@@ -23,7 +23,7 @@ BODIES = [
     [("urchin", 1.0), ("seastar", 1.0), ("seal", 0.78), ("seabird", 0.95), ("moss", 1.0)],
     [("bacterium", 1.2), ("dinoflagellate", 1.0), ("squid", 0.7), ("amphipod", 0.85)],
 ]
-HELD = [("marker", "marker (pen)"), ("mug", "mug"), ("teacup", "teacup"), ("clipboard", "clipboard"), ("flask", "flask"), ("magnifier", "magnifier")]
+HELD = [("marker", "marker (pen)"), ("mug", "mug"), ("teacup", "teacup"), ("clipboard", "clipboard"), ("flask", "flask"), ("magnifier", "magnifier"), ("flower", "flower"), ("photo", "photo"), ("book", "book"), ("paper", "paper")]
 # Cast looks: every hair style, each hair tone, glasses and the lab coat, as cast members with appearance options.
 LOOKS = [
     [("hair_none", "no hair", {"hair": "none"}), ("hair_bob", "bob", {"hair": "bob"}), ("hair_long", "long", {"hair": "long"}),
@@ -79,6 +79,12 @@ PROPS = [
     ("Lab and field", [("aquarium", {}), ("freezer", {}), ("tag", {}), ("drone", {}), ("microscope", {}), ("laptop", {}), ("thermometer", {})]),
     ("Making and the arts", [("clay", {}), ("mosaic", {}), ("easel", {}), ("camera", {}), ("piano", {}), ("guitar", {}), ("headphones", {}), ("notes", {})]),
     ("Care and the body", [("armchair", {}), ("wheelchair", {}), ("brain", {})]),
+    ("Places: a gallery room and an outreach scene", [("gallery", {"frames": 3, "bench": True}), ("gallery", {"frames": 4, "ramp": True}), ("gallery", {"frames": 2, "easels": 2}),
+                                                   ("trolley", {}), ("van", {})]),
+    ("Places: a skyline, and a door in a wall", [("skyline", {"markers": 3}), ("door", {"locked": True}), ("door", {"open": True})]),
+    ("Symbols: heart, book, head, cloud and scales", [("heart", {}), ("book", {"title": "Title", "heart": True}), ("headprofile", {"question": True}), ("cloud", {}),
+                                                   ("cloud", {"faded": True}), ("scales", {"tilt": "left", "items": [{"label": "a"}, {"label": "b"}]})]),
+    ("A cycle", [("cycle", {"items": [{"label": "plan"}, {"label": "do"}, {"label": "review"}, {"label": "adjust"}]}), ("cycle", {"items": [{"label": "one"}, {"label": "two"}, {"label": "three"}]})]),
     ("Everyday props", [("desk", {}), ("bowl", {}), ("board", {"cards": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}), ("paper", {"label": "paper"}), ("box", {"label": "text box"})]),
     ("More everyday props", [("box", {"label": "box"}), ("teapot", {}), ("cups", {"items": [{"label": "a", "value": 1}, {"label": "b", "value": 2}]}), ("flash", {"label": "flash"})]),
     ("Pictures, labels and arrows", [("picture", {"staging": {"props": [{"kind": "bottle", "x": 0.3, "y": 0.1, "w": 0.4, "h": 0.8}]}}), ("label", {"label": "label"}), ("arrow", {"x2": 0.95, "y2": 0.3})]),
@@ -106,7 +112,7 @@ def build():
                            "staging": {"characters": chars, "props": props}})
         beats.append({"id": "B1", "title": "Bodies", "act": "method", "panels": panels})
     hp = []
-    for n, row in enumerate((HELD[:3], HELD[3:]), 1):
+    for n, row in enumerate((HELD[:4], HELD[4:8], HELD[8:]), 1):
         chars, props = [], []
         for i, (name, label) in enumerate(row):
             x = round(0.14 + i * (0.72 / (len(row) - 1)), 3)
@@ -154,6 +160,22 @@ def build():
         sit_panel(2, "At a desk.", [{"id": "extra", "x": 0.4, "pose": "sit", "face": "smile", "scale": 1.12}], [{"kind": "desk", "x": 0.15, "y": 0.4, "w": 0.7, "h": 0.54}]),
         sit_panel(3, "At a piano.", [{"id": "extra", "x": 0.35, "pose": "sit", "face": "smile", "scale": 1.3}], [{"kind": "piano", "x": 0.3, "y": 0.34, "w": 0.6, "h": 0.6}]),
     ]})
+    def shot_panel(n, caption, shot, chars, props=None, **more):
+        st = {"characters": chars, "props": props or []}
+        if shot:
+            st["shot"] = shot
+        st.update(more)
+        return {"id": f"B8.{n}", "weight": "standard", "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
+                "scene": caption, "speech": [{"speaker": "narrator", "kind": "caption", "text": caption}], "staging": st}
+
+    beats.append({"id": "B8", "title": "Shots: how far away the view is", "act": "method", "panels": [
+        shot_panel(1, "Mid (the default): no `shot`, the figure as placed.", None, [{"id": "extra", "x": 0.5, "face": "smile"}]),
+        shot_panel(2, "`shot: close`: the head about two thirds of the panel, cropped at the neck. For a reaction or the payoff.", "close", [{"id": "extra", "face": "surprised"}]),
+        shot_panel(3, "`shot: close` with two figures: half the panel each.", "close", [{"id": "extra", "face": "worry"}, {"id": "extra", "face": "smile", "facing": "left"}]),
+        shot_panel(4, "`shot: wide`: small figures with a ground line. For where it happens.", "wide", [{"id": "extra", "x": 0.35}, {"id": "extra", "x": 0.55, "facing": "left"}],
+                   [{"kind": "easel", "x": 0.68, "y": 0.12, "w": 0.2, "h": 0.62}]),
+        shot_panel(5, "`shot: wide` with `ground: false`, where a prop is the ground.", "wide", [{"id": "extra", "x": 0.5, "y": 0.62}],
+                   [{"kind": "iceberg", "x": 0.05, "y": 0.3, "w": 0.9, "h": 0.6}], ground=False)]})
     def comp_panel(n, weight, caption, chars, props=None):
         return {"id": f"B5.{n}", "weight": weight, "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
                 "scene": caption, "speech": [{"speaker": "narrator", "kind": "caption", "text": caption}],

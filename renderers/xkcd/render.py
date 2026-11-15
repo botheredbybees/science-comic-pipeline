@@ -81,6 +81,30 @@ def _holding(pen, holding, hx, hy, s, w):
                 + pen.rect(hx + 1.5 * s, hy - 19.5 * s, 8 * s, 4 * s, w * 0.7, fill=INK, over=0)
                 + "".join(pen.line((hx - 0 * s, hy - 11 * s + i * 5 * s), (hx + 11 * s, hy - 11 * s + i * 5 * s), w * 0.45, amp=0.15)
                           for i in range(3)))
+    if holding == "flower":  # a flower on a stem held up: six round petals round a centre, and a leaf
+        top = (hx + 3 * s, hy - 17 * s)
+        petals = "".join(pen.ellipse(top[0] + 4.6 * s * math.cos(a), top[1] + 4.6 * s * math.sin(a), 3.1 * s, 3.1 * s, w * 0.5, fill=SOFT, jit=0.04)
+                         for a in (math.tau * k / 6 + 0.3 for k in range(6)))
+        return (pen.line((hx - 0.5 * s, hy + 4 * s), (top[0], top[1] + 5 * s), w * 0.8, amp=0.2) + petals
+                + pen.ellipse(top[0], top[1], 2.9 * s, 2.9 * s, w * 0.5, fill=PAPER, jit=0.04)
+                + pen.stroke([(hx + 1 * s, hy - 4 * s), (hx + 7 * s, hy - 9 * s), (hx + 8 * s, hy - 5 * s), (hx + 2 * s, hy - 3 * s)], w * 0.5, closed=True, fill=SOFT))
+    if holding == "photo":  # a framed photograph held by its edge: a hill and a sun in it
+        x0, y0 = hx - 2 * s, hy - 20 * s
+        return (pen.rect(x0, y0, 17 * s, 22 * s, w * 0.8, fill=PAPER, over=0)
+                + pen.rect(x0 + 2.5 * s, y0 + 2.5 * s, 12 * s, 14 * s, w * 0.4, fill=SOFT, over=0)
+                + pen.stroke([(x0 + 2.5 * s, y0 + 14 * s), (x0 + 7 * s, y0 + 8 * s), (x0 + 10 * s, y0 + 12 * s), (x0 + 14.5 * s, y0 + 7 * s)], w * 0.45, color=MID)
+                + f'<circle cx="{x0 + 11.5 * s:.1f}" cy="{y0 + 5.5 * s:.1f}" r="{1.5 * s:.1f}" fill="{INK}"/>')
+    if holding == "book":  # a closed book held up, its spine on the hand's side, two short lines for a title
+        x0, y0 = hx - 2 * s, hy - 20 * s
+        return (pen.rect(x0, y0, 16 * s, 22 * s, w * 0.8, fill=PAPER, over=0)
+                + pen.rect(x0, y0, 3.2 * s, 22 * s, w * 0.6, fill=SOFT, over=0)
+                + pen.line((x0 + 6 * s, y0 + 6 * s), (x0 + 13 * s, y0 + 6 * s), w * 0.5, amp=0.1)
+                + pen.line((x0 + 6 * s, y0 + 10 * s), (x0 + 11 * s, y0 + 10 * s), w * 0.5, amp=0.1))
+    if holding == "paper":  # a sheet held up with a folded corner and three lines of writing
+        x0, y0 = hx - 2 * s, hy - 20 * s
+        return (pen.poly([(x0, y0), (x0 + 11 * s, y0), (x0 + 16 * s, y0 + 5 * s), (x0 + 16 * s, y0 + 22 * s), (x0, y0 + 22 * s)], w * 0.8, fill=PAPER, jit=0.1)
+                + pen.line((x0 + 11 * s, y0), (x0 + 11 * s, y0 + 5 * s), w * 0.5, amp=0.1) + pen.line((x0 + 11 * s, y0 + 5 * s), (x0 + 16 * s, y0 + 5 * s), w * 0.5, amp=0.1)
+                + "".join(pen.line((x0 + 3 * s, y0 + (9 + 4 * i) * s), (x0 + (13 - i) * s, y0 + (9 + 4 * i) * s), w * 0.4, amp=0.1) for i in range(3)))
     return ""
 
 
@@ -453,6 +477,41 @@ def prop(pen, x, y, w, h, p, cast, fs):
     return "".join(o)
 
 
+def shot_characters(st, cast, w, h, base_s):
+    """Fill in the scale and place of each figure from the staging's `shot`, for whatever the author left out.
+
+    `close` makes the head about two thirds of the scene's height (one figure) or just under half (two), low enough to leave room above it for speech, cropped at the shoulders; `wide` makes the
+    figures small and sets them a little above the foot of the panel with a ground line under them. A figure's own `scale`, `x` or
+    `y` always wins, and no `shot` (or `mid`) leaves every figure exactly as it was."""
+    chars = st.get("characters", [])
+    shot = st.get("shot", "mid")
+    if shot == "mid" or not chars:
+        return chars
+    out, open_slots = [], [c for c in chars if "scale" not in c]
+    for i, c in enumerate(chars):
+        c = dict(c)
+        if shot == "wide":
+            c.setdefault("scale", 0.45)
+            c.setdefault("y", 0.8)
+        else:  # close
+            app = cast.get(c["id"], {}).get("appearance") or {}
+            hs = float(app.get("head_scale", HEAD_SCALE))
+            across = 0.5 if len(chars) == 1 else 0.3 + 0.4 * i / max(len(chars) - 1, 1)
+            c.setdefault("x", round(across, 3))
+            if "scale" not in c:
+                c["scale"] = (0.64 if len(open_slots) == 1 else 0.46) * h / (30 * hs * base_s)
+            if "y" not in c:
+                body = c.get("body") or app.get("body") or "stick"
+                if body == "stick":  # the head's centre sits this many units above the feet (legs, body and the head's radius)
+                    up = (37 if c.get("pose") == "sit" else 48) + 46 + 15 * hs
+                else:  # animals and diatoms: the point figure() returns for the head, at scale 1
+                    _, (_hx, hy) = figure(Pen(0), 0.0, 0.0, 1.0, c.get("pose", "stand"), "neutral", "right", None, {**app, "body": body})
+                    up = -hy
+                c["y"] = (0.64 * h + up * base_s * c["scale"]) / h
+        out.append(c)
+    return out
+
+
 def stage(pen, x, y, w, h, st, cast, fs):
     """Draw a staging block into the box; return (svg, {character id: head position})."""
     props = st.get("props", [])
@@ -476,7 +535,11 @@ def stage(pen, x, y, w, h, st, cast, fs):
     for p in props[:split]:
         draw(p)
     base_s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3)  # wide, short boxes get bigger figures
-    for c in st.get("characters", []):
+    chars = shot_characters(st, cast, w, h, base_s)
+    if st.get("shot") == "wide" and chars and st.get("ground", True):  # a line under the feet, so small figures stand somewhere
+        gy = y + max(c.get("y", 0.94) for c in chars) * h + 3
+        out.append(pen.line((x, gy), (x + w, gy), 2.0, amp=1.0, color=MID))
+    for c in chars:
         app = cast.get(c["id"], {}).get("appearance")
         if c.get("body"):  # a body on the staged character overrides the cast's, so `extra` can be an animal
             app = {**(app or {}), "body": c["body"]}

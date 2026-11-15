@@ -332,7 +332,18 @@ def test_variety_is_satisfied_by_a_varied_comic(doc):
     d["beats"][0]["panels"][3]["claim_ids"] = ["C1"]
     d["beats"][0]["panels"][3]["speech"].append({"speaker": "sam", "text": "In other words, plain English."})
     d["beats"][0]["panels"][7]["device"] = "moment"
+    d["beats"][0]["panels"][0].setdefault("staging", {})["shot"] = "wide"
+    d["beats"][0]["panels"][9].setdefault("staging", {})["shot"] = "close"
     assert variety(d)[1] == []
+
+
+def test_variety_asks_for_some_change_of_distance_but_not_too_much(doc):
+    d = _long_comic(doc, "action-to-action")
+    panels = d["beats"][0]["panels"]
+    assert any("every panel is mid-distance" in w for w in variety(d)[1])
+    for p in panels[: len(panels) // 2]:
+        p.setdefault("staging", {})["shot"] = "close"
+    assert any("close or wide" in w for w in variety(d)[1])
 
 
 def test_a_gloss_must_cite_a_claim_and_have_a_character_line(doc):
