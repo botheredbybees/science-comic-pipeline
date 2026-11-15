@@ -30,7 +30,7 @@ FLAGGED = ("overstated", "different", "unclear")
 OPEN_KINDS = ("future_research", "caveat")
 
 PROMPT = """Write a synthesis of what these papers say about the topic "{topic}", using ONLY the numbered cards below. Each card is
-`<card id> [kind, page] paraphrase`, where the card id looks like `paper:C12`.
+`<card id> [kind, page] paraphrase`, where the card id is a paper id and a card number joined by a colon, such as `{example}`. Copy each id in full from the card line; never shorten it or write "paper" in its place.
 
 Return JSON: {{"synthesis": [{{"text": "<2 to 4 sentences>", "cites": ["<card id>", "<card id>"]}}], "tensions": [{{"text": "<where two papers differ>", "cites": ["<card id>", "<card id>"]}}],
 "open_questions": [{{"text": "<a question the papers leave open>", "cites": ["<card id>"]}}]}}
@@ -152,7 +152,7 @@ def main(argv=None):
             index[f"{ref}:{c['id']}"] = c
             lines.append(f"{ref}:{c['id']} [{c['kind']}, p{c['source']['page']}] {c['text']}")
     papers = "\n".join(f"- {labels.get(r, r)}" for r in refs)
-    reply = parse(chat(PROMPT.format(topic=args.topic, papers=papers, cards="\n".join(lines)), cfg, temperature=0.2, max_tokens=12000, num_ctx=65536))
+    reply = parse(chat(PROMPT.format(topic=args.topic, papers=papers, cards="\n".join(lines), example=next(iter(index))), cfg, temperature=0.2, max_tokens=12000, num_ctx=65536))
     kept, rejected = check(reply, index, labels)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(render(args.topic, kept, rejected, index, labels, refs, cfg["model"]))

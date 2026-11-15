@@ -80,3 +80,8 @@ def test_a_year_in_a_papers_own_label_is_not_an_unsupported_number_but_another_y
     kept, rejected = tc.check(bad, idx, labels)
     assert rejected and "2013" in rejected[0]["why"]
     assert tc.check(ok, idx)[1]  # with no labels given, the year is still unsupported
+
+
+def test_the_prompt_example_is_a_real_card_id_not_a_literal_placeholder():
+    text = tc.PROMPT.format(topic="t", papers="- p", cards="c", example="some-long-paper-id:C7")
+    assert "such as `some-long-paper-id:C7`" in text and "paper:C12" not in text
