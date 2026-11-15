@@ -147,6 +147,12 @@ set -a; source .env; set +a
 .venv/bin/python scripts/cards_to_claims.py --from <slug>=cards/<slug>:all -o examples/<slug>/claims.yaml --show
 ```
 
+Cards can also build a reading wiki, not only comics: `select_key_cards.py` picks a paper's key cards (the model chooses ids and writes no
+text), `cards_to_source_page.py` lays them out as a page where every line carries its page number and its quote, `topic_from_cards.py`
+writes a topic page from several papers with every statement checked against the cards it cites (and any number it states against
+those cards), and `suggest_graphics.py` proposes pictures a comic could draw for each paper, then ranks the assets the renderer lacks.
+The model steps (`select_key_cards`, `topic_from_cards`, `suggest_graphics`) use the same `LLM_*` settings as the card tools.
+
 `extract_cards.py` also takes a **folder** of PDFs and writes one card set for each, skipping any that `intake_check` finds to be
 scanned, a reference list or a fragment. The last step turns cards into the claims ledger the storyboard uses, from one paper or several
 (see [HOWTO, "One paper, or several?"](../HOWTO.md)). The cards are not claims until a person has read each paraphrase against its quote:

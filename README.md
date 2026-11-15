@@ -81,6 +81,8 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 | `scripts/export_pdf.py` | Exports a storyboard as a PDF, one A4 page per comic page (needs Chrome or Chromium) |
 | `scripts/intake_check.py` | Flags a PDF that is scanned, a reference list or a fragment, and gives licence hints (optional, with the card tools) |
 | `scripts/extract_cards.py`, `scripts/verify_cards.py`, `scripts/snap_quotes.py`, `scripts/llm.py` | Optional: draft claims with quotes from a PDF using any model you choose, force every quote onto the real page text, and ask a second model whether each paraphrase is fair. `llm.py` is the one client for Ollama, any OpenAI-compatible server and Anthropic |
+| `scripts/select_key_cards.py`, `scripts/cards_to_source_page.py`, `scripts/topic_from_cards.py` | Optional, for building a wiki or reading list from cards: a model *chooses* the key cards (it writes nothing), a script lays them out as a source page where every line has a page and a quote, and a topic page is written from several papers' cards with every statement checked against the cards it cites |
+| `scripts/suggest_graphics.py` | Optional: suggests graphic elements for each paper from its cards (a chart, a place, an apparatus), each tied to cards and to a renderer element or to a missing one; the rollup ranks which assets to draw next across papers |
 | `scripts/cards_to_claims.py` | Picks cards from one paper or several and writes the claims ledger (renumbered, with `source.ref`) |
 | `scripts/layout.py` | Packs panels into rows, left to right then down: no blanks, at most 3 across, looks ahead |
 | `scripts/preview_storyboard.py` | A readable page: sideways strip, printed rows or vertical stack |
