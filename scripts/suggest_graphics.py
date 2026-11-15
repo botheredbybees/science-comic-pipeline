@@ -39,20 +39,29 @@ PURPOSE = {
     "paper": "a form, a questionnaire or a document", "desk": "an office or a study", "laptop": "analysis done on a computer",
     "armchair": "a care home, a waiting room or a listener", "wheelchair": "mobility and access", "piano": "music making", "guitar": "music making",
     "easel": "painting, or a gallery picture", "picture": "a framed picture containing its own scene", "camera": "photography",
-    "brain": "the brain or memory (highlight: frontal, parietal, temporal or occipital; tracts: fibre bundles)", "headphones": "listening, or noise", "notes": "music or song", "clay": "making with clay",
+    "brain": "the brain or memory (highlight: frontal, parietal, temporal or occipital; tracts: fibre bundles; signal: one arrowed route for a signal passing along)", "headphones": "listening, or noise", "notes": "music or song", "clay": "making with clay",
     "mosaic": "making with tiles or fabric", "teapot": "a shared cup of tea, hospitality", "cups": "levels or quantities in cups",
     "microscope": "close examination", "thermometer": "a measured level", "scatter": "a relationship between two measures",
     "boxplot": "a comparison of groups", "map": "where (polar maps only)", "tree": "a family tree or a hierarchy",
-    "gallery": "a gallery room or museum wall with framed pictures (options: frames, bench, ramp, easels); a good wide-shot setting",
-    "staff": "a bar of music: five lines, a time signature and notes (pitches, meter); for rhythm, melody or a piece of music", "cycle": "a loop of stages that feed back (give 3 to 6 items)", "book": "a book, guide or toolkit (title; heart)", "headprofile": "a head in profile: memory, ageing, a missing scan (question)",
+    "gallery": "a gallery room or museum wall with framed pictures (options: frames, bench, ramp, easels; empty: that many frames left empty, for missing pictures); a good wide-shot setting",
+    "staff": "a bar of music: five lines, a time signature and notes (pitches, meter); for rhythm, melody or a piece of music", "cycle": "a loop of stages that feed back (give 3 to 6 items)", "book": "a book, guide or toolkit (title; heart; blank: no title, a silhouette instead)", "headprofile": "a head in profile: memory, ageing, a missing scan (question)",
     "cloud": "a fog, a weight or a fading thought (faded)", "scales": "weighing two things against each other (tilt, items)", "door": "a barrier or an entrance (locked, open)",
     "heart": "care or connection, placed between things", "trolley": "an outreach or tea trolley of objects", "van": "mobile outreach: a van with a pop-up table",
     "skyline": "a town or city setting (markers for places)", "livingroom": "a home setting: a window, a floor and a rug (lamp); put an armchair, piano or laptop in it",
     "gears": "parts of a system that turn each other (items label the two gears)", "ear": "hearing, or sound reaching a listener",
+    "stage": "a theatre or performance: curtains, a floor, and options spotlight, screen (for a projected shadow) and audience; figures and puppets stand on it",
+    "blackbox": "a mechanism that is not known: something goes in, something comes out, and a question mark between (items: input, output; dashed: the effect is not shown)",
+    "circle": "a group of chairs round a centre: a community or therapy circle (chairs; centre: fire, easel or person)",
+    "hospitalroom": "a hospital or clinical room: a bed, a bedside table and a window (drip); a place for a nurse, a child or a patient",
+    "bridge": "two sides joined, or not: two fields, two groups, access (items label the two sides; broken: a missing link)",
+    "eye": "seeing or observing (lens: seen through a lens; thought: a thought bubble, with a few words if given)",
+    "bookshelf": "a library or a body of evidence as a shelf of books (gap: one book is missing; lit: rays round the gap)",
+    "spinalcord": "a cross-section of the spinal cord (laminae: layers in a dorsal horn; hemisection: one side cut or damaged); only for a paper about the cord",
+    "iceberg": "what is visible against what is hidden: a metaphor for skills above the surface and stable factors below, as well as a real iceberg",
     "funnel": "many things narrowed to a few: screening, selection (items: input, output)", "network": "connections between many things", "database": "a collection or a reference library", "molecule": "a chemical",
 }
 NOT_FOR_THIS = {"cpr", "bongo", "trawl", "rmt", "ctd", "echosounder", "radar", "satellite", "icecore", "helicopter", "drone", "emsled", "stake",
-                "fieldcamp", "iceberg", "iceshelf", "seaice", "mixedlayer", "currents", "ship", "net", "sequencer", "massspec", "filter", "tubes",
+                "fieldcamp", "iceshelf", "seaice", "mixedlayer", "currents", "ship", "net", "sequencer", "massspec", "filter", "tubes",
                 "freezer", "aquarium", "radarscreen", "modelgrid", "clusters", "sequence"}  # polar and marine apparatus; offered only to papers that need them
 
 PROMPT = """You help a cartoonist plan the pictures for a comic about one paper. Below are the paper's claims ("cards"), each with an id.
@@ -68,6 +77,9 @@ charts (bars, pie, stack, scatter, boxplot) need at least two `values` taken fro
 or a picture instead.
 Include at least one picture that NO available kind can draw well: give it kind `new` and name the missing drawing, so we learn what to draw next.
 Prefer variety across the rest: a chart, a place, an object, a process.
+Two things the renderer can do that are not kinds: a character can be a rod puppet or an animal (say so in `shows`), and a scene can be a split screen
+of two views side by side, labelled (say so in `shows`; use it for a before and after, or two conditions). Where the cards are about music or song, a bar of
+music, notes or headphones can come back as a motif across several pictures, but only where a cited card is about music.
 Do not depict an individual person with dementia or any illness as a figure of fun; draw the setting, the activity or the number.
 
 Available kinds:

@@ -550,6 +550,20 @@ def stage(pen, x, y, w, h, st, cast, fs):
         heads.setdefault(c["id"], head)
     for p in props[split:] + front:
         draw(p)
+    if st.get("split"):  # two stagings side by side, a line between them, words above each
+        labels = st.get("split_labels") or []
+        top = fs * 1.3 if any(labels) else 0.0
+        gap = 12.0
+        half = (w - gap) / 2
+        for i, sub in enumerate(st["split"]):
+            sx = x + i * (half + gap)
+            out.append(pen.rect(sx, y + top, half, h - top, 2.4, fill=PAPER, over=1))
+            if i < len(labels) and labels[i]:
+                out.append(text(sx + half / 2, y, [labels[i]], fs * 0.9, anchor="middle"))
+            svg, hd = stage(pen, sx + 6, y + top + 6, half - 12, h - top - 12, sub, cast, fs * 0.8)
+            out.append(svg)
+            for k, v in hd.items():
+                heads.setdefault(k, v)
     return "".join(out), heads
 
 
@@ -571,8 +585,21 @@ def _head_offset(c, cast, w, h):
     s = 0.00476 * h * clamp(1 + 0.18 * (w / h - 2.0), 1.0, 1.3) * c.get("scale", 1)
     rise = {"diatom": 108, "penguin": 102, "whale": 96, "krill": 52, "salp": 66, "copepod": 92, "fish": 62,
             "worm": 42, "jellyfish": 108, "urchin": 62, "seal": 56, "seabird": 88, "moss": 62, "bacterium": 50, "seastar": 48,
-            "dinoflagellate": 100, "squid": 54, "amphipod": 82}.get(body, 128)  # head height above the feet, at s = 1
+            "dinoflagellate": 100, "squid": 54, "amphipod": 82, "puppet": 130}.get(body, 128)  # head height above the feet, at s = 1
     return c.get("y", 0.94) * h - rise * s
+
+
+def staged_offsets(st, cast, w, h):
+    """{character id: how far below the top of the scene its head sits} for a staging, including both halves of a split screen."""
+    st = st or {}
+    out = {c["id"]: _head_offset(c, cast, w, h) for c in st.get("characters", [])}
+    if st.get("split"):
+        top = FONT_SIZE * 1.3 if any(st.get("split_labels") or []) else 0.0
+        half = (w - 12) / 2
+        for sub in st["split"]:
+            for k, v in staged_offsets(sub, cast, half - 12, h - top - 12).items():
+                out.setdefault(k, v + top + 6)
+    return out
 
 
 def plan_panel(panel, w, k=0.55, cast=None):
@@ -580,7 +607,7 @@ def plan_panel(panel, w, k=0.55, cast=None):
     cast = cast or {}
     fs = panel_font(w)
     inner = w - 2 * PAD
-    staged = {c["id"]: c for c in (panel.get("staging") or {}).get("characters", [])}
+    staged = staged_offsets(panel.get("staging"), cast, inner, clamp(k * w, 150, 520 * k))
     captions, talk = [], []
     for s in panel.get("speech", []):
         kind = s.get("kind", "say")
@@ -596,7 +623,7 @@ def plan_panel(panel, w, k=0.55, cast=None):
     far = [(s, li) for s, li in talk if s["speaker"] not in staged]
     # Speech sits just above its speaker's head; the scene only needs extra headroom when the head is too low.
     need = sum(block_h(li, fs) + SPEECH_GAP for _, li in near)
-    free = min((_head_offset(staged[s["speaker"]], cast, inner, scene_nat) for s, _ in near), default=0)
+    free = min((staged[s["speaker"]] for s, _ in near), default=0)
     extra = max(0.0, need - free)
     talk_h = extra + sum(block_h(li, fs) + 22 for _, li in far)
     # Heads sit roughly in proportion to the scene's height, so a shorter scene lowers the room for speech.
@@ -757,6 +784,8 @@ def _row_limits(row, plans, rh):
     hint = "tall" if "tall" in hints else ("short" if all(h == "short" for h in hints) else "standard")
     props = [pr for p, _ in row for pr in (p.get("staging") or {}).get("props", [])]
     chars = [c for p, _ in row for c in (p.get("staging") or {}).get("characters", [])]
+    chars += [c for p, _ in row for sub in (p.get("staging") or {}).get("split", []) for c in sub.get("characters", [])]
+    props += [pr for p, _ in row for sub in (p.get("staging") or {}).get("split", []) for pr in sub.get("props", [])]
     rich = (2.0 * sum(pr["kind"] in CHART_KINDS for pr in props) + 0.7 * len(props) + 0.4 * len(chars)
             + (1.5 if any(p.get("weight") == "full" for p, _ in row) else 0.0)
             + (0.8 if any(p.get("frame", "outlined") == "outlined" for p, _ in row) else 0.0))

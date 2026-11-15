@@ -1,5 +1,5 @@
 """Animal characters for the xkcd renderer: krill, penguin, whale, salp, copepod, fish, worm, jellyfish, urchin, seal, seabird,
-moss, bacterium, seastar, dinoflagellate, squid and amphipod.
+moss, bacterium, seastar, dinoflagellate, squid, amphipod and puppet.
 
 Each function draws one animal facing right with its feet (or tail, or belly) on `base`, and returns
 (svg, (head_x, head_top_y)) like a stick figure does, so speech lines can point at it. Left-facing is
@@ -576,6 +576,34 @@ def amphipod(pen, cx, base, s, pose="stand", face="neutral", facing="right", hol
     return _mirror("".join(o), cx, facing), (cx + 38 * s, base - 82 * s)
 
 
+def puppet(pen, cx, base, s, pose="stand", face="neutral", facing="right", holding=None, app=None):
+    """A rod puppet: a soft grey tube body with a cuff at its foot, two button eyes, a mouth, two round ears, held up on a stick with a small grip.
+    No hand is drawn: the stick runs from the cuff to the ground line, which is how a puppet reads without anyone holding it."""
+    w = clamp(2.3 * s, 1.5, 3.0)
+    top, bot = base - 118 * s, base - 50 * s
+    o = [pen.line((cx, bot), (cx, base - 2 * s), w * 1.3, amp=0.2),
+         pen.rect(cx - 4 * s, base - 16 * s, 8 * s, 16 * s, w * 0.8, fill=SOFT, over=0.2)]  # the stick and its grip
+    body = [(cx - 24 * s, bot), (cx - 27 * s, bot - 30 * s), (cx - 25 * s, top + 22 * s), (cx - 15 * s, top + 4 * s), (cx + 3 * s, top), (cx + 20 * s, top + 7 * s),
+            (cx + 28 * s, top + 24 * s), (cx + 27 * s, bot - 30 * s), (cx + 24 * s, bot), (cx + 10 * s, bot + 3 * s), (cx - 10 * s, bot + 3 * s)]
+    for ex, k in ((cx - 21 * s, -1), (cx + 22 * s, 1)):  # two small round ears, set behind the head's outline
+        o.append(pen.ellipse(ex + k * 4 * s, top + 16 * s, 7 * s, 9 * s, w * 0.8, fill=SOFT))
+    o.append(pen.stroke(body, w, closed=True, fill=SOFT))
+    o.append(pen.poly([(cx - 24 * s, bot - 8 * s), (cx + 24 * s, bot - 8 * s), (cx + 24 * s, bot + 2 * s), (cx - 24 * s, bot + 2 * s)], w * 0.8, fill=MID, jit=0.2))  # the cuff
+    for ex in (cx + 4 * s, cx + 20 * s):  # button eyes, looking right
+        o.append(pen.ellipse(ex, top + 24 * s, 7 * s, 7 * s, w * 0.8, fill=PAPER))
+        o.append(_eye(pen, ex + 2 * s, top + 24 * s, 3.2 * s, face, w))
+    mouth = {"smile": [(cx + 2 * s, top + 42 * s), (cx + 14 * s, top + 54 * s), (cx + 26 * s, top + 42 * s)], "surprised": None}.get(face)
+    if face == "surprised":
+        o.append(pen.ellipse(cx + 14 * s, top + 48 * s, 5 * s, 6 * s, w * 0.8, fill=INK))
+    elif mouth:
+        o.append(pen.stroke(mouth, w * 0.8, closed=True, fill=INK))
+    elif face == "worry":
+        o.append(pen.stroke([(cx + 2 * s, top + 50 * s), (cx + 14 * s, top + 42 * s), (cx + 26 * s, top + 50 * s)], w * 0.8))
+    else:
+        o.append(pen.line((cx + 2 * s, top + 46 * s), (cx + 26 * s, top + 46 * s), w * 0.8, amp=0.1))
+    return _mirror("".join(o), cx, facing), (cx + 4 * s, top - 4 * s)
+
+
 ANIMALS = {"krill": krill, "penguin": penguin, "whale": whale, "salp": salp, "copepod": copepod, "fish": fish,
            "worm": worm, "jellyfish": jellyfish, "urchin": urchin, "seal": seal, "seabird": seabird, "moss": moss,
-           "bacterium": bacterium, "seastar": seastar, "dinoflagellate": dinoflagellate, "squid": squid, "amphipod": amphipod}
+           "bacterium": bacterium, "seastar": seastar, "dinoflagellate": dinoflagellate, "squid": squid, "amphipod": amphipod, "puppet": puppet}

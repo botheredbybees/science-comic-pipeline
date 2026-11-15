@@ -118,8 +118,17 @@ def _prop_kinds(staging):
     return kinds
 
 
+def _characters(staging):
+    """Every staged character, including those in both halves of a split screen."""
+    staging = staging or {}
+    out = list(staging.get("characters", []))
+    for sub in staging.get("split") or []:
+        out += _characters(sub)
+    return out
+
+
 def _held(staging):
-    return {c["holding"] for c in (staging or {}).get("characters", []) if c.get("holding")}
+    return {c["holding"] for c in _characters(staging) if c.get("holding")}
 
 
 FIGURE_ONLY_LIMIT = 0.25  # more than this share of panels with no picture of the subject is a defect
@@ -129,9 +138,9 @@ MIN_PANELS_FOR_SHARE = 8
 def _figure_only(panel, cast_bodies):
     """True if the panel draws nothing but stick figures: no prop and no animal or diatom (or nothing staged at all)."""
     staging = panel.get("staging") or {}
-    if staging.get("props"):
+    if staging.get("props") or any(sub.get("props") for sub in staging.get("split") or []):
         return False
-    for c in staging.get("characters", []):
+    for c in _characters(staging):
         if (c.get("body") or cast_bodies.get(c["id"], "stick")) != "stick":
             return False
     return True
@@ -216,7 +225,7 @@ def validate(doc):
             invented = sorted(set(PLAIN_NUMBER.findall(text)) - allowed)
             if invented:
                 warnings.append(f"{p['id']}: number(s) {', '.join(invented)} appear on the panel but in none of its cited claims")
-        staged = {c["id"] for c in p.get("staging", {}).get("characters", [])}
+        staged = {c["id"] for c in _characters(p.get("staging"))}
         for c in staged - cast_ids - {"extra"}:
             errors.append(f"{p['id']}: staged character '{c}' is not in the cast")
         if (p.get("staging") or {}).get("shot") == "close" and len(p["staging"].get("characters", [])) > 2:

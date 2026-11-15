@@ -369,7 +369,7 @@ def test_steps_labels_wrap_and_bottle_and_jar_keep_their_shape():
         assert tall and wide
 
 
-NEW_BODIES = ["copepod", "fish", "worm", "jellyfish", "urchin", "seal", "seabird", "moss", "bacterium", "seastar", "dinoflagellate", "squid", "amphipod"]
+NEW_BODIES = ["copepod", "fish", "worm", "jellyfish", "urchin", "seal", "seabird", "moss", "bacterium", "seastar", "dinoflagellate", "squid", "amphipod", "puppet"]
 
 
 @pytest.mark.parametrize("body", NEW_BODIES)
@@ -395,7 +395,8 @@ def test_a_staged_extra_can_be_each_new_body(doc, body):
 SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn",
                    "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
                    "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes",
-                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel"]
+                   "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel",
+                   "stage", "blackbox", "circle", "hospitalroom", "bridge", "eye", "bookshelf", "spinalcord"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -708,3 +709,49 @@ def test_livingroom_lamp_gears_and_funnel_labels_each_draw_something_more():
     assert "speech" in _prop("gears", items=two) and "speech" not in _prop("gears")
     assert "song" in _prop("gears", items=two) and "song" not in _prop("gears")
     assert "kept" in _prop("funnel", items=[{"label": "all"}, {"label": "kept"}]) and "kept" not in _prop("funnel")
+
+
+def test_stage_options_each_draw_something_more_and_a_prop_can_be_empty_blank_or_missing():
+    assert len(_prop("stage", spotlight=True)) > len(_prop("stage")) and len(_prop("stage", audience=True)) > len(_prop("stage")) and len(_prop("stage", screen=True)) > len(_prop("stage"))
+    assert len(_prop("gallery", frames=3, empty=1)) != len(_prop("gallery", frames=3)) and "?" in _prop("gallery", frames=3, empty=1) and "?" not in _prop("gallery", frames=3)
+    assert "stroke-dasharray" in _prop("book", blank=True) and "stroke-dasharray" not in _prop("book", title="T")
+    assert "stroke-dasharray" in _prop("bookshelf", gap=True) and "stroke-dasharray" not in _prop("bookshelf") and len(_prop("bookshelf", gap=True, lit=True)) > len(_prop("bookshelf", gap=True))
+    assert len(_prop("brain", signal=True)) > len(_prop("brain"))
+
+
+def test_idea_props_take_their_labels_and_options():
+    two = [{"label": "input"}, {"label": "output"}]
+    assert "input" in _prop("blackbox", items=two) and "input" not in _prop("blackbox") and "?" in _prop("blackbox")
+    assert "stroke-dasharray" in _prop("blackbox", dashed=True) and "stroke-dasharray" not in _prop("blackbox")
+    assert "art" in _prop("bridge", items=[{"label": "art"}, {"label": "health"}]) and _prop("bridge", broken=True) != _prop("bridge")
+    assert len(_prop("eye", lens=True)) > len(_prop("eye")) and "what next" in _prop("eye", thought="what next") and "what next" not in _prop("eye", thought=True)
+    assert len(_prop("hospitalroom", drip=True)) > len(_prop("hospitalroom"))
+    assert len(_prop("spinalcord", laminae=True)) > len(_prop("spinalcord")) and _prop("spinalcord", hemisection=True) != _prop("spinalcord")
+
+
+def test_a_circle_of_chairs_has_one_chair_per_seat_and_its_centre():
+    count = lambda **kw: _prop("circle", **kw).count("<path")  # noqa: E731
+    assert count(chairs=3) < count(chairs=6) < count(chairs=8)
+    assert all(count(chairs=5, centre=c) != count(chairs=5) for c in ("fire", "easel", "person"))
+
+
+def test_a_split_screen_draws_both_halves_and_speech_can_point_at_a_figure_in_either(doc):
+    from validate_storyboard import validate
+    d = copy.deepcopy(doc)
+    panel = d["beats"][0]["panels"][0]
+    ids = [c["id"] for c in d["cast"]][:2]
+    panel["staging"] = {"split": [{"characters": [{"id": ids[0], "x": 0.5, "face": "smile"}]}, {"characters": [{"id": ids[1], "x": 0.5, "face": "worry"}]}], "split_labels": ["before", "after"]}
+    panel["speech"] = [{"speaker": ids[1], "kind": "say", "text": "Then it came apart."}]
+    assert validate(d)[0] == []  # the schema accepts a split, and a speaker staged in a half counts as staged
+    text = "".join(R.render_pages(d)[0])
+    assert "before" in text and "after" in text and "Then it came apart." in text
+    heads = R.stage(R.Pen(1), 0, 0, 400, 300, panel["staging"], {c["id"]: c for c in d["cast"]}, 16)[1]
+    assert ids[0] in heads and ids[1] in heads and heads[ids[0]][0] < heads[ids[1]][0]  # left half first, then right
+
+
+def test_the_catalogue_and_the_row_planner_see_props_and_characters_inside_a_split():
+    import catalogue
+    st = {"split": [{"props": [{"kind": "cloud"}]}, {"props": [{"kind": "bridge"}], "characters": [{"id": "extra", "body": "puppet"}]}]}
+    assert [p["kind"] for p in catalogue.walk_props(st)] == ["cloud", "bridge"]
+    row = [({"staging": st, "id": "x"}, 12)]
+    assert R._row_limits(row, [{"scene_nat": 100, "shrink_ok": 1.0}], 100)["rich"] > R._row_limits([({"staging": {}, "id": "x"}, 12)], [{"scene_nat": 100, "shrink_ok": 1.0}], 100)["rich"]

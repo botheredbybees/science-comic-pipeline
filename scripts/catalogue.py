@@ -89,6 +89,8 @@ def walk_props(staging):
     for pr in (staging or {}).get("props", []):
         yield pr
         yield from walk_props(pr.get("staging"))
+    for sub in (staging or {}).get("split") or []:
+        yield from walk_props(sub)
 
 
 def find_comics(root):
@@ -159,7 +161,7 @@ def load_comic(db, root, loc, folder, rversion, newest_renderer):
         st = p.get("staging") or {}
         for pr in walk_props(st):
             add("prop", pr["kind"])
-        for ch in st.get("characters", []):
+        for ch in st.get("characters", []) + [c for sub in st.get("split") or [] for c in sub.get("characters", [])]:
             add("body", ch.get("body") or cast_bodies.get(ch["id"], "stick"))
             add("holding", ch.get("holding"))
     for (kind, name), n in sorted(use.items()):

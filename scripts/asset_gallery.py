@@ -21,7 +21,7 @@ BODIES = [
     [("stick", 1.0), ("diatom", 1.0), ("krill", 1.4), ("penguin", 1.0), ("whale", 0.42)],
     [("salp", 0.72), ("copepod", 0.95), ("fish", 0.9), ("worm", 0.75), ("jellyfish", 0.9)],
     [("urchin", 1.0), ("seastar", 1.0), ("seal", 0.78), ("seabird", 0.95), ("moss", 1.0)],
-    [("bacterium", 1.2), ("dinoflagellate", 1.0), ("squid", 0.7), ("amphipod", 0.85)],
+    [("bacterium", 1.2), ("dinoflagellate", 1.0), ("squid", 0.7), ("amphipod", 0.85), ("puppet", 0.95)],
 ]
 HELD = [("marker", "marker (pen)"), ("mug", "mug"), ("teacup", "teacup"), ("clipboard", "clipboard"), ("flask", "flask"), ("magnifier", "magnifier"), ("flower", "flower"), ("photo", "photo"), ("book", "book"), ("paper", "paper")]
 # Cast looks: every hair style, each hair tone, glasses and the lab coat, as cast members with appearance options.
@@ -81,6 +81,14 @@ PROPS = [
     ("Care and the body", [("armchair", {}), ("wheelchair", {}), ("brain", {}), ("ear", {})]),
     ("The brain, with a lobe shaded and with fibre tracts", [("brain", {"highlight": "frontal"}), ("brain", {"highlight": "temporal"}), ("brain", {"tracts": True})]),
     ("Places: a living room, and parts that turn and narrow", [("livingroom", {}), ("livingroom", {"lamp": True}), ("gears", {"items": [{"label": "speech"}, {"label": "song"}]}), ("funnel", {"items": [{"label": "all studies"}, {"label": "kept"}]})]),
+    ("Places: a stage, a hospital room and a circle of chairs", [("stage", {}), ("stage", {"spotlight": True, "audience": True}), ("stage", {"screen": True}),
+                                                                 ("hospitalroom", {"drip": True}), ("circle", {"centre": "fire"})]),
+    ("Ideas: a black box, a bridge and an eye", [("blackbox", {"items": [{"label": "input"}, {"label": "output"}]}), ("blackbox", {"dashed": True}),
+                                                   ("bridge", {"items": [{"label": "art"}, {"label": "health"}]}), ("bridge", {"broken": True}),
+                                                   ("eye", {"thought": "what is that?"}), ("eye", {"lens": True})]),
+    ("Missing things: an empty frame, a gap on a shelf, a blank cover", [("gallery", {"frames": 3, "empty": 1}), ("bookshelf", {"gap": True, "lit": True}), ("bookshelf", {}),
+                                                                        ("book", {"blank": True}), ("brain", {"signal": True})]),
+    ("The spinal cord in section", [("spinalcord", {}), ("spinalcord", {"laminae": True}), ("spinalcord", {"hemisection": True})]),
     ("Places: a gallery room and an outreach scene", [("gallery", {"frames": 3, "bench": True}), ("gallery", {"frames": 4, "ramp": True}), ("gallery", {"frames": 2, "easels": 2}),
                                                    ("trolley", {}), ("van", {})]),
     ("Places: a skyline, and a door in a wall", [("skyline", {"markers": 3}), ("door", {"locked": True}), ("door", {"open": True})]),
@@ -195,6 +203,11 @@ def build():
                    [{"kind": "aquarium", "x": 0.12, "y": 0.1, "w": 0.76, "h": 0.8}]),
         comp_panel(4, "wide", "A close-up: the krill cropped by the panel's edge.",
                    [{"id": "extra", "body": "krill", "x": 0.2, "y": 1.55, "scale": 6.0}])]})
+    beats.append({"id": "B9", "title": "Split screen: two views side by side", "act": "method", "panels": [
+        {"id": "B9.1", "weight": "standard", "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
+         "scene": "A split screen: a still frame beside a blurred one.", "speech": [{"speaker": "narrator", "kind": "caption", "text": "`split`: two stagings side by side, with `split_labels` above them."}],
+         "staging": {"split": [{"characters": [{"id": "extra", "x": 0.5, "face": "smile"}]}, {"characters": [{"id": "extra", "x": 0.5, "face": "worry"}], "props": [{"kind": "cloud", "x": 0.55, "y": 0.0, "w": 0.4, "h": 0.4, "faded": True}]}],
+                     "split_labels": ["before", "after"]}}]})
     panels = []
     for n, (title, row) in enumerate(PROPS, 1):
         props = []
