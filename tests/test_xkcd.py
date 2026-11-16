@@ -697,6 +697,11 @@ def test_a_staff_draws_one_head_per_pitch_and_a_time_signature():
     assert ">3<" in _prop("staff", meter="3/4") and ">4<" in _prop("staff", meter="3/4") and ">4<" in _prop("staff")
 
 
+def test_brain_signal_route_pales_the_fissures():
+    mid = "#8a909b"  # the pale grey, MID
+    assert _prop("brain", signal=True).count(mid) > _prop("brain").count(mid)
+
+
 def test_brain_highlight_and_tracts_add_to_the_plain_brain_and_each_lobe_differs():
     base = _prop("brain")
     assert len(_prop("brain", tracts=True)) > len(base) and len(_prop("brain", highlight="frontal")) > len(base)

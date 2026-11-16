@@ -1644,8 +1644,9 @@ def brain(pen, x, y, w, h, p, fs):
     region = BRAIN_REGIONS.get(p.get("highlight"))
     if region:
         o.append(pen.stroke([U(*q) for q in region], 1.6, closed=True, fill=MID))
-    o.append(pen.stroke([U(0.27, 0.6), U(0.38, 0.54), U(0.5, 0.5), U(0.6, 0.44), U(0.66, 0.4)], 2.2, color=INK))  # the lateral fissure
-    o.append(pen.stroke([U(0.52, 0.08), U(0.5, 0.16), U(0.46, 0.26), U(0.44, 0.36), U(0.42, 0.46)], 2.2, color=INK))  # the central sulcus
+    fis, fis_w = (MID, 1.4) if p.get("signal") else (INK, 2.2)  # with a signal route drawn, the fissures go pale so the route is the one dark line inside the brain
+    o.append(pen.stroke([U(0.27, 0.6), U(0.38, 0.54), U(0.5, 0.5), U(0.6, 0.44), U(0.66, 0.4)], fis_w, color=fis))  # the lateral fissure
+    o.append(pen.stroke([U(0.52, 0.08), U(0.5, 0.16), U(0.46, 0.26), U(0.44, 0.36), U(0.42, 0.46)], fis_w, color=fis))  # the central sulcus
     if p.get("tracts"):  # three bundles of fibres, each a dotted line with a ring at both ends, so none can be mistaken for a fissure (which is one solid line)
         for path in (((0.16, 0.42), (0.3, 0.26), (0.58, 0.22), (0.78, 0.3), (0.84, 0.46)), ((0.3, 0.62), (0.46, 0.6), (0.64, 0.58), (0.82, 0.54)),
                      ((0.2, 0.42), (0.34, 0.3), (0.5, 0.32), (0.58, 0.44), (0.5, 0.58))):
