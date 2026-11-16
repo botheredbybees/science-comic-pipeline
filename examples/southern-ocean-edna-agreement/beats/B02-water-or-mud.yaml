@@ -1,0 +1,129 @@
+- id: B2
+  title: "Test one: water or mud?"
+  act: result
+  panels:
+  - id: B2.1
+    weight: wide
+    height: tall
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: "A split screen: a sample of water on the left, a sample of sediment on the right."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's team set out to compare water and sediment as eDNA sources for rapid, practical biodiversity assessment of nearshore benthic environments in the Vestfold Hills, East Antarctica." }
+    claim_ids: [C2]
+    staging:
+      split_direction: side
+      split_labels: ["water", "sediment"]
+      split:
+        - { props: [ { kind: bottle, x: 0.2, y: 0.1, w: 0.6, h: 0.8 } ] }
+        - { props: [ { kind: jar, x: 0.2, y: 0.1, w: 0.6, h: 0.8 } ] }
+  - id: B2.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    device: gloss
+    scene: "Ines points at a strip of DNA letters with one stretch bracketed."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's team targeted metazoan (multicellular) organisms by PCR-amplifying part of the mitochondrial cytochrome c oxidase subunit I (COI) gene." }
+      - { speaker: ines, text: "So they went looking for animal DNA." }
+    claim_ids: [C4]
+    staging:
+      props:
+        - { kind: sequence, x: 0.35, y: 0.35, w: 0.6, h: 0.35, label: "COI" }
+      characters:
+        - { id: ines, x: 0.15, pose: point, face: neutral, facing: right, scale: 0.9 }
+  - id: B2.3
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "Two boxes name the first two yardsticks, and a black box with a question mark stands for the community at the site, with a dashed arrow out."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The yardstick Clarke's team set: a high proportion of metazoan reads (for efficiency) and the greatest species richness, whilst reflecting the community composition present at the site (which is not examined here)." }
+    claim_ids: [C3]
+    staging:
+      props:
+        - { kind: box, x: 0.03, y: 0.08, w: 0.3, h: 0.35, label: "high proportion of metazoan reads" }
+        - { kind: box, x: 0.03, y: 0.52, w: 0.3, h: 0.35, label: "greatest species richness" }
+        - { kind: blackbox, x: 0.4, y: 0.08, w: 0.57, h: 0.8, dashed: true, items: [ { label: "sample type" }, { label: "community at the site" } ] }
+  - id: B2.4
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: "A bar chart shows about the same share for water and for sediment."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In Clarke's study, approximately 40% of reads were assigned to 'Metazoa' for both sediment and water eDNA samples." }
+    claim_ids: [C5]
+    staging:
+      props:
+        - { kind: bars, x: 0.1, y: 0.05, w: 0.8, h: 0.9, title: "Reads assigned to Metazoa (approximately)", unit: "%", max: 100, bars: [ { label: "water", value: 40 }, { label: "sediment", value: 40 } ] }
+  - id: B2.5
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: "A balance with level pans, one labelled water and one labelled sediment (top section)."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In Clarke's study, at sites where both were collected, similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores (paired t-test, P = 0.67)." }
+    claim_ids: [C6]
+    staging:
+      props:
+        - { kind: scales, x: 0.1, y: 0.05, w: 0.8, h: 0.9, tilt: level, items: [ { label: "water" }, { label: "sediment, top section" } ] }
+  - id: B2.6
+    weight: standard
+    frame: outlined
+    transition: aspect-to-aspect
+    word_picture: duo-specific
+    scene: "Two separate groups of dots, one labelled water and one labelled sediment."
+    speech:
+      - { speaker: narrator, kind: caption, text: "But in Clarke's study metazoan communities from water and sediment eDNA samples were significantly different (P < 0.001)." }
+    claim_ids: [C9]
+    staging:
+      props:
+        - { kind: clusters, x: 0.08, y: 0.05, w: 0.84, h: 0.9, items: [ { label: "water" }, { label: "sediment" } ] }
+  - id: B2.7
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "Two overlapping circles: water only, both, and sediment only."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In Clarke's study, almost half of all metazoan species were detected in both sediment and water eDNA samples (47/99, 47.5%). 22 and 30 species were detected exclusively with sediment or water eDNA, respectively." }
+    claim_ids: [C7, C8]
+    staging:
+      props:
+        - { kind: venn, x: 0.1, y: 0.05, w: 0.8, h: 0.9, items: [ { label: "water only: 30" }, { label: "sediment only: 22" } ], label: "both: 47" }
+  - id: B2.8
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: "A pair of replicate bottles beside two boxes: one for three sites, one for the other three."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's replicates varied. For three sites the majority of taxa were detected in both replicates (61–68%, non-rarefied data), but at the other three sites only 27–38% were." }
+    claim_ids: [C10]
+    staging:
+      props:
+        - { kind: bottle, x: 0.02, y: 0.2, w: 0.14, h: 0.55 }
+        - { kind: bottle, x: 0.19, y: 0.2, w: 0.14, h: 0.55 }
+        - { kind: label, x: 0.18, y: 0.88, label: "replicate samples" }
+        - { kind: box, x: 0.42, y: 0.08, w: 0.55, h: 0.38, label: "three sites: 61–68% of taxa in both" }
+        - { kind: box, x: 0.42, y: 0.54, w: 0.55, h: 0.38, label: "other three sites: 27–38%" }
+  - id: B2.9
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A copepod swims beside a jar of sediment."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's team: the sea-ice associated copepod Paralabidocera grandispina/antarctica was relatively more abundant in sediment than in water eDNA, likely reflecting an accumulation of eggs in the sediment." }
+      - { speaker: narrator, kind: caption, text: "This demonstrates that DNA-based detections do not necessarily reflect species active within the sample." }
+    claim_ids: [C11]
+    staging:
+      props:
+        - { kind: jar, x: 0.55, y: 0.1, w: 0.35, h: 0.8, label: "sediment" }
+      characters:
+        - { id: extra, body: copepod, x: 0.25, y: 0.62, scale: 1.1 }

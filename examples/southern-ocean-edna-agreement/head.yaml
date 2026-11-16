@@ -1,0 +1,45 @@
+version: 2
+meta:
+  title: "Does eDNA Agree With Itself? Water or Mud, Two Filters, Ten Labs"
+  audience: "Marine-science students and curious non-specialists who have heard that DNA left in seawater can tell us which animals are there, and who want to know how far that answer can be trusted."
+  left_out:
+    - "The three studies differ in design, size and place, and the comic does not rank them or add their results together. Clarke et al. compared water with sediment at nearshore sites near Davis station. Nester et al. compared two filter set-ups, and eDNA with the continuous plankton recorder, along one open-ocean voyage. Blanco-Bercial et al. compared ten laboratories analysing shared DNA from zooplankton samples."
+    - "Blanco-Bercial et al. is about zooplankton from ten places across the global ocean (the Baltic Sea, the Tasman Sea and others), not only the Southern Ocean, and the comic makes no claim about the Southern Ocean from it. Its samples were not collected by the other two teams and its design is not theirs."
+    - "None of the studies tested whether eDNA matches what is really living at a site: Clarke et al. say this is not examined, and Nester et al. and Blanco-Bercial et al. compare eDNA with eDNA (or with the plankton recorder), not with a complete census. 'Agrees with itself' is the comic's question, not a result any paper reports."
+    - "Laboratory and bioinformatics detail in all three (extraction, PCR cycling, sequencers, read processing, reference databases) and most statistics (PERMANOVA, nMDS, Mantel tests, Hill numbers, Shannon index, F, t and R2 values; a few P values are kept)."
+    - "Everything that only a figure, a supplementary table or the full species lists show: no number was read off a figure. The names of individual species, and Nester et al.'s hull-fouling and biosecurity results, are left out because they are about something other than agreement."
+    - "Terms the papers do not gloss and the comic keeps as written: benthic, metazoan (glossed once as multicellular), Animalia, species richness, taxa, OTU, ocean region and biome, amplification, nMDS clustering."
+    - "Other results that bear on agreement and are not drawn: the Davis sediment core sections, the effect of sequencing depth, Nester et al.'s transect zones, Blanco-Bercial et al.'s diversity indices, the NextSeq platform, and the markers' Mantel correlations."
+  sources:
+    - id: clarke-2021-antarctic-nearshore-edna
+      title: "Environmental DNA metabarcoding for monitoring metazoan biodiversity in Antarctic nearshore ecosystems"
+      authors: ["Laurence J Clarke", "Leonie Suter", "Bruce E Deagle", "Andrea M Polanowski", "Aleks Terauds", "Glenn J Johnstone", "Jonathan S Stark"]
+      year: 2021
+      doi: "10.7717/peerj.12458"
+      url: "https://doi.org/10.7717/peerj.12458"
+      licence: "CC BY 4.0"
+      licence_checked: "Europe PMC full-text XML (PMC8601059): 'This is an open access article distributed under the terms of the Creative Commons Attribution License', read 2026-11-14 and re-read in sources/clarke-2021-antarctic-nearshore-edna/source.json 2026-11-16"
+    - id: nester-2024-southern-ocean-edna-transect
+      title: "Long-distance Southern Ocean environmental DNA (eDNA) transect provides insights into spatial marine biota and invasion pathways for non-native species"
+      authors: ["Georgia M. Nester", "Leonie Suter", "John A. Kitchener", "Michael Bunce", "Andrea M. Polanowski", "Johan Wasserman", "Bruce Deagle"]
+      year: 2024
+      doi: "10.1016/j.scitotenv.2024.175657"
+      url: "https://doi.org/10.1016/j.scitotenv.2024.175657"
+      licence: "CC BY 4.0"
+      licence_checked: "Article text, PDF page 2: 'This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/)'; Crossref and Elsevier metadata, 2026-11-14"
+      page_basis: "PDF page index (the PDF's own page 1 is the first page)"
+    - id: blanco-bercial-2026-mzg-ice-zooplankton
+      title: "MetaZooGene Intercalibration Experiment (MZG-ICE): Metabarcoding Marine Zooplankton Diversity of the Global Ocean"
+      authors: ["Leocadio Blanco-Bercial", "Jennifer M Questel", "Paola G Batta-Lona", "Ruben Escribano", "Tone Falkenhaug", "Junya Hirai", "Jenny A Huggett", "Pedro Martinez Arbizu", "Katja T C A Peijnenburg", "Leonie Suter", "Agata Weydmann-Zwolicka", "Stacey Dubbeldam", "Elza Duijm", "Elizaveta Ershova-Menze", "Carolina E Gonzalez", "Ashrenee Govender", "Johan Groeneveld", "Sahar Khodami", "Anna J MacDonald", "Monika Mioduchowska", "Andrea M Polanowski", "Rocio Rodriguez-Perez", "Todd D O'Brien", "Ann Bucklin"]
+      year: 2026
+      doi: "10.1111/1755-0998.70090"
+      url: "https://doi.org/10.1111/1755-0998.70090"
+      licence: "CC BY 4.0"
+      licence_checked: "Europe PMC full-text XML (PMC12742283): 'This is an open access article under the terms of the ... CC BY 4.0 License', read 2026-11-14 and re-read in sources/blanco-bercial-2026-mzg-ice-zooplankton/source.json 2026-11-16. Year 2026 is from the paper's own reference line (Mol Ecol Resour 26(1): e70090); Europe PMC's record says 2025."
+  spine:
+    and: "DNA left in seawater and sediment is now used to list what lives there, and using it for monitoring will need documented evidence of accuracy, reliability and reproducibility (Blanco-Bercial: C26; Clarke: C1, C2; Nester: C14, C15)."
+    but: "Nobody can take agreement for granted: two earlier studies found less than 10% overlap between sediment and benthic water samples (Clarke: C1), and the three studies here each change one thing and ask whether the answer holds. Water and sediment gave similar numbers of taxa but different communities (Clarke: C6, C9); two filter set-ups shared 51 species yet one gave higher mean richness (Nester: C19, C20); ten laboratories clustered samples by ocean region once contaminated samples were removed, but several samples did not cluster and the species level agreed least (Blanco-Bercial: C33, C34, C35, C37)."
+    therefore: "Where the three papers differ the comic puts them side by side and does not choose (Clarke: C6, C9; Nester: C19, C20). The authors themselves say what is still open: how to know an organism detected with eDNA is really there (Clarke: C12), pairing eDNA with other methods (Clarke: C13; Nester: C24), further testing of filter volumes and pore sizes (Nester: C25), the effect of each protocol step (Blanco-Bercial: C39) and species-level results (Blanco-Bercial: C40)."
+cast:
+  - { id: ines, name: "Ines", role: "A scientist who guides the reader through the three studies (the comic's invention, not a person in any paper)", look: "Stick figure with shoulder-length hair, glasses and a lab coat", appearance: { hair: shoulder, glasses: true, coat: true } }
+  - { id: otto, name: "Otto", role: "A sceptic who asks the awkward question (the comic's invention, not a person in any paper)", look: "Stick figure in a flat cap", appearance: { hair: flatcap } }

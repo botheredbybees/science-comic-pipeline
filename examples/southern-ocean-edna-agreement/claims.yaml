@@ -1,0 +1,376 @@
+claims:
+- id: C1
+  text: Two recent studies found less than 10% overlap between molecular Operational Taxonomic Units (OTUs) from sediment and benthic water samples.
+  kind: background
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Introduction, paragraph 5
+    page: 7
+    quote: two recent studies found less than 10% overlap between molecular Operational Taxonomic Units (OTUs) from sediment and benthic water samples
+  status: verified
+- id: C2
+  text: The aim of this study was to compare water and sediment as eDNA sources for rapid, practical biodiversity assessment for nearshore benthic environments in the Vestfold Hills, East Antarctica.
+  kind: background
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Introduction, paragraph 6
+    page: 8
+    quote: The aim of this study was to compare water and sediment as eDNA sources for rapid, practical biodiversity assessment for nearshore benthic environments to further inform knowledge of these environments in the Vestfold Hills, East Antarctica
+  status: verified
+- id: C3
+  text: The most suitable sample type for DNA-based biodiversity assessment would yield a high proportion of metazoan reads (for efficiency) and the greatest species richness, whilst reflecting the community composition present at the site (which is not
+    examined here).
+  kind: background
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Introduction, paragraph 6
+    page: 8
+    quote: The most suitable sample type for DNA-based biodiversity assessment would yield a high proportion of metazoan reads (for efficiency) and the greatest species richness, whilst reflecting the community composition present at the site (which is
+      not examined here)
+  status: verified
+  note: 'Important scope limit: whether either sample type reflects the real community at a site was not examined.'
+- id: C4
+  text: The authors targeted metazoan (multicellular) organisms by PCR-amplifying part of the mitochondrial cytochrome c oxidase subunit I (COI) gene.
+  kind: method
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Materials & Methods, DNA extraction, PCR-amplification and high-throughput sequencing, paragraph 2
+    page: 13
+    quote: We targeted metazoan (multicellular) organisms by PCR-amplifying part of the mitochondrial cytochrome c oxidase subunit I (COI) gene
+  status: verified
+  note: Gives the paper's own gloss of metazoan.
+- id: C5
+  text: Approximately 40% of reads were assigned to 'Metazoa' for both sediment and water eDNA samples.
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Metazoan reads, paragraph 1
+    page: 22
+    quote: Approximately 40% of reads were assigned to ‘Metazoa’ for both sediment and water eDNA samples
+  status: verified
+- id: C6
+  text: Similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores at sites where both were collected (paired t-test, P = 0.67).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Species richness, paragraph 1
+    page: 24
+    quote: Similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores at sites where both were collected (paired t-test, t = 0.45, d.f. = 7, P = 0.67
+  status: verified
+- id: C7
+  text: Almost half of all metazoan species were detected in both sediment and water eDNA samples (47/99, 47.5%).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: Almost half of all metazoan species were detected in both sediment and water eDNA samples (47/99, 47.5%
+  status: verified
+- id: C8
+  text: 22 and 30 species were detected exclusively with sediment or water eDNA, respectively.
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: 22 and 30 species were detected exclusively with sediment or water eDNA, respectively
+  status: verified
+- id: C9
+  text: Metazoan communities from water and sediment eDNA samples were significantly different (P < 0.001).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: Metazoan communities from water and sediment eDNA samples were significantly different (F1,64 = 9.59, R2 = 0.130, P < 0.001
+  status: verified
+- id: C10
+  text: For three sites, the majority of metazoan taxa were detected in both replicates (61–68% based on the non-rarefied data), but only 27–38% of metazoans were detected in both replicates at the other three sites.
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 1
+    page: 26
+    quote: For three sites, the majority of metazoan taxa were detected in both replicates (61–68% based on the non-rarefied data), but only 27–38% of metazoans were detected in both replicates at the other three sites
+  status: verified
+- id: C11
+  text: The higher relative abundance of the sea-ice associated copepod Paralabidocera grandispina/antarctica in sediment compared to water eDNA is likely to reflect accumulation of eggs in the sediment, demonstrating that DNA-based detections do not necessarily
+    reflect species active within the sample.
+  kind: interpretation
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: the higher relative abundance of the sea-ice associated copepod Paralabidocera grandispina/antarctica in sediment compared to water eDNA is likely to reflect accumulation of eggs in the sediment (), demonstrating that DNA-based detections do
+      not necessarily reflect species active within the sample
+  status: verified
+- id: C12
+  text: 'Non-invasive, ''capture-free'' approaches like eDNA also raise the question: how do we know an organism detected with eDNA is really there?'
+  kind: caveat
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: 'Non-invasive, “capture-free” approaches like eDNA also raise the question: how do we know an organism detected with eDNA is really there?'
+  status: verified
+- id: C13
+  text: An understanding of the spatial distribution of eDNA in Antarctic benthic ecosystems, from a few metres to several kilometres, should be paired with careful cataloguing of the actual biodiversity present using other methods.
+  kind: interpretation
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: An understanding of the spatial distribution of eDNA in Antarctic benthic ecosystems, from a few metres to several kilometres, should be paired with careful cataloguing of the actual biodiversity present using other methods
+  status: verified
+- id: C14
+  text: eDNA metabarcoding describes biodiversity patterns through the amplification of trace amounts of DNA naturally shed into the environment by organisms.
+  kind: background
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 1. Introduction, PDF page 3 (the paper's own definition)
+    page: 3
+    quote: eDNA metabarcoding describes biodiversity patterns through the amplification of trace amounts of DNA naturally shed into the environment by organisms
+  status: verified
+  note: Definition claim.
+- id: C15
+  text: The continuous plankton recorder (CPR) is a device towed behind a ship at approximately 10 m depth, collecting plankton samples onto a continuously winding silk.
+  kind: background
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 1. Introduction, PDF page 3 (the paper's own description of the CPR)
+    page: 3
+    quote: The CPR is a device towed behind a ship at approximately 10 m depth, collecting plankton samples onto a continuously winding silk
+  status: verified
+  note: Definition claim. The paper names the CPR 'continuous plankton recorder (CPR)' on the same page, in the sentence before.
+- id: C16
+  text: Using ship-based surveys, the authors conducted one of the longest eDNA transects to date, spanning over 3000 nautical miles from Hobart, Tasmania (Australia) to Davis Station in East Antarctica.
+  kind: method
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 1. Introduction, PDF page 3
+    page: 3
+    quote: we conducted one of the longest eDNA transects to date, spanning over 3000 nautical miles from Hobart, Tasmania (Australia) to Davis Station in East Antarctica
+  status: verified
+- id: C17
+  text: 'Two combinations of water volume and filter pore sizes were tested at each sampling location: 12 l with 20 μm, and 2 l with 0.45 μm, herein referred to as LargeVF and SmallVF respectively.'
+  kind: method
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 2.1 eDNA sampling, PDF page 4
+    page: 4
+    quote: 'Two combinations of water volume and filter pore sizes were tested at each sampling location: 12 l with 20 μm, and 2 l with 0.45 μm, herein referred to as “LargeVF” and “SmallVF” respectively'
+  status: verified
+- id: C18
+  text: Over the whole survey just 11.37 % of reads within the SmallVF samples were assigned to Animalia taxa, compared to 85.66 % of reads within the LargeVF samples.
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 6
+    page: 6
+    quote: over the whole survey just 11.37 % of reads within the SmallVF samples were assigned to Animalia taxa, compared to 85.66 % of reads within the LargeVF samples
+  status: verified
+- id: C19
+  text: Mean species richness was significantly higher in the LargeVF samples (10.03 ± 0.44) compared to SmallVF samples (8.4 ± 0.44; t = 4.825, df = 64, p < 0.001) across the entire transect.
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 7
+    page: 7
+    quote: mean species richness (q = 0) was significantly higher in the LargeVF samples (10.03 ± 0.44) compared to SmallVF samples (8.4 ± 0.44; t = 4.825, df = 64, p < 0.001) across the entire transect
+  status: verified
+  note: The paper gives q = 0 as species richness (2.6.1, PDF page 6).
+- id: C20
+  text: The overlap of detected species was large, with 51 species detected with both sampling methods. However, LargeVF detected 14 additional species, primarily arthropod (8 species) and chordate species (4 species).
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 7
+    page: 7
+    quote: The overlap of detected species was large, with 51 species detected with both sampling methods. However, LargeVF detected 14 additional species (Fig. 2b), primarily arthropod (8 species) and chordate species (4 species; Fig. 2c)
+  status: verified
+- id: C21
+  text: Merged eDNA samples detected more species (37) than CPR (18), with only 12 species shared between the methodologies.
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.2.2 Diversity comparison, PDF page 7
+    page: 7
+    quote: Merged eDNA samples detected more species (37) than CPR (18), with only 12 species shared between the methodologies
+  status: verified
+- id: C22
+  text: We recognise the difference between our pore sizes is large, and the use of different volumes introduces bias.
+  kind: caveat
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.1 Optimising open ocean eDNA sampling, PDF page 11
+    page: 11
+    quote: We recognise the difference between our pore sizes is large, and the use of different volumes introduces bias
+  status: verified
+- id: C23
+  text: As the study was conducted in the open ocean with relatively low numbers of Animalia taxa, these findings may not apply to coastal environments with greater diversity and richness of Animalia species.
+  kind: caveat
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.1 Optimising open ocean eDNA sampling, PDF page 9
+    page: 9
+    quote: As our study was conducted in the open ocean with relatively low numbers of Animalia taxa (Suter et al., 2021), these findings may not apply to coastal environments with greater diversity and richness of Animalia species
+  status: verified
+- id: C24
+  text: The authors advocate for the integration of an eDNA survey to be conducted in parallel with CPR surveys, with the intensity of sampling ultimately depending on the question being addressed.
+  kind: interpretation
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.3 Morphological CPR comparison, PDF page 11
+    page: 11
+    quote: We advocate for the integration of an eDNA survey to be conducted in parallel with CPR surveys, with the intensity of sampling with these methods ultimately depending on the question being addressed
+  status: verified
+- id: C25
+  text: The authors recommend further testing of large volumes (12 l or greater) across commonly used larger pore sizes (1.2 μm, 5 μm, 10 μm, and 20 μm) to allow further optimization of eDNA sampling for these environments.
+  kind: interpretation
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.1 Optimising open ocean eDNA sampling, PDF page 11
+    page: 11
+    quote: recommend further testing of large volumes (12 l or greater) across commonly used larger pore sizes (1.2 μm, 5 μm, 10 μm, and 20 μm) would allow further optimization of eDNA sampling for these environments
+  status: verified
+- id: C26
+  text: The use of DNA metabarcoding as a foundation for management and conservation decision-making throughout the global ocean will require documented evidence of accuracy, reliability and reproducibility of data and results.
+  kind: background
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Introduction, paragraph 2
+    page: 4
+    quote: The use of DNA metabarcoding as a foundation for management and conservation decision‐making throughout the global ocean will require documented evidence of accuracy, reliability and reproducibility of data and results
+  status: verified
+- id: C27
+  text: The MetaZooGene Intercalibration Experiment (MZG-ICE) was designed to analyse and evaluate the patterns of variation of multi-gene metabarcoding data produced by 10 participating research laboratories, starting with shared aliquots of DNA extracted
+    from zooplankton samples collected by each group in different ocean regions.
+  kind: method
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Introduction, paragraph 6
+    page: 8
+    quote: The MetaZooGene Intercalibration Experiment (MZG‐ICE) was designed to analyse and evaluate the patterns of variation of multi‐gene metabarcoding data produced by 10 participating research laboratories, starting with shared aliquots of DNA extracted
+      from zooplankton samples collected by each group in different ocean regions.
+  status: verified
+  note: MZG-ICE = MetaZooGene Intercalibration Experiment (defined in the same sentence).
+- id: C28
+  text: Gene regions for DNA metabarcoding were selected to allow analysis of zooplankton diversity at differing levels of taxonomic resolution and detection, including V1-V2, V4, and V9 regions of nuclear 18S rRNA and mitochondrial cytochrome oxidase
+    I (COI).
+  kind: method
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Material and Methods, PCR Amplification, Library Preparation, and DNA Sequencing, paragraph 1
+    page: 14
+    quote: Gene regions for DNA metabarcoding were selected to allow analysis of zooplankton diversity at differing levels of taxonomic resolution and detection, including V1‐V2, V4, and V9 regions of nuclear 18S rRNA and mitochondrial cytochrome oxidase
+      I (COI)
+  status: verified
+  note: The paper's own gloss of why these gene regions.
+- id: C29
+  text: Metabarcoding analysis was carried out for 10 samples for all four gene regions by each MZG-ICE group following their own standard protocols and procedures for the many steps in the DNA metabarcoding analytical pipeline.
+  kind: method
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Material and Methods, PCR Amplification, Library Preparation, and DNA Sequencing, paragraph 1
+    page: 14
+    quote: Metabarcoding analysis was carried out for 10 samples for all four gene regions by each MZG‐ICE group following their own standard protocols and procedures for the many steps in the DNA metabarcoding analytical pipeline
+  status: verified
+- id: C30
+  text: 'In terms of amplification success, V4 was the marker with the lowest performance: 69 of 100 samples remained after removal of contamination.'
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 3
+    page: 34
+    quote: 'In terms of amplification success, V4 was the marker with the lowest performance: 69 of 100 samples remained after removal of contamination.'
+  status: verified
+- id: C31
+  text: COI performed slightly better (72 samples), although poor results using standard protocols at some laboratories required use of alternative protocols.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 3
+    page: 34
+    quote: COI performed slightly better (72 samples), although poor results using standard protocols at some laboratories required use of alternative protocols
+  status: verified
+- id: C32
+  text: Success rates for both V1-V2 and V9 amplification were much higher (88 samples for each marker).
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 3
+    page: 34
+    quote: Success rates for both V1‐V2 and V9 amplification were much higher (88 samples for each marker).
+  status: verified
+- id: C33
+  text: Based on nMDS graphical analyses, samples from most MZG-ICE groups clustered by ocean region and biome.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 4
+    page: 35
+    quote: samples from most MZG‐ICE groups clustered by ocean region and biome
+  status: verified
+- id: C34
+  text: However, several samples for each gene marker did not cluster with samples from the same collection location.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 4
+    page: 35
+    quote: However, several samples for each gene marker did not cluster with samples from the same collection location.
+  status: verified
+- id: C35
+  text: Results for all 10 MZG-ICE research groups clustered in nMDS plots by sampling location and ocean region after removal of samples identified as contaminated based on taxonomic composition.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Evaluation of Variation in Results From MZG‐ICE Groups, paragraph 3
+    page: 57
+    quote: Results for all 10 MZG‐ICE research groups clustered in nMDS plots by sampling location and ocean region after removal of samples identified as contaminated based on taxonomic composition
+  status: verified
+- id: C36
+  text: The V9 and V4 regions of 18S rRNA showed highest consistency in multivariate statistical analyses of biodiversity among MZG-ICE groups, with higher variability for V1-V2 and COI.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Evaluation of Variation in Results From MZG‐ICE Groups, paragraph 2
+    page: 56
+    quote: The V9 and V4 regions of 18S rRNA showed highest consistency in multivariate statistical analyses of biodiversity among MZG‐ICE groups, with higher variability for V1‐V2 and COI
+  status: verified
+- id: C37
+  text: Plots of COI sequence abundances for selected zooplankton taxa showed decreasing similarity among MZG-ICE groups for different taxonomic levels, from orders to genera to species.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 11
+    page: 49
+    quote: Plots of COI sequence abundances for selected zooplankton taxa showed decreasing similarity among MZG‐ICE groups for different taxonomic levels, from orders to genera to species
+  status: verified
+- id: C38
+  text: MZG-ICE provided evidence of the reliability and reproducibility of DNA metabarcoding results from diverse research groups for zooplankton samples collected in different ocean regions and biomes.
+  kind: interpretation
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Conclusions, paragraph 1
+    page: 70
+    quote: MZG‐ICE provided evidence of the reliability and reproducibility of DNA metabarcoding results from diverse research groups for zooplankton samples collected in different ocean regions and biomes.
+  status: verified
+- id: C39
+  text: The variable protocol chains, with numerous differences between MZG-ICE laboratories, prevented definitive conclusions about the impacts of each and every protocol step.
+  kind: caveat
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Design and Goals of MZG‐ICE, paragraph 1
+    page: 51
+    quote: The variable protocol chains, with numerous differences between MZG‐ICE laboratories, prevented definitive conclusions about the impacts of each and every protocol step
+  status: verified
+- id: C40
+  text: Detection and identification of zooplankton species were not examined in detail based on MZG-ICE data.
+  kind: caveat
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Design and Goals of MZG‐ICE, paragraph 4
+    page: 54
+    quote: Detection and identification of zooplankton species were not examined in detail based on MZG‐ICE data.
+  status: verified

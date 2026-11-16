@@ -1,0 +1,21 @@
+- id: B5
+  title: "Two answers, side by side"
+  act: discussion
+  panels:
+  - id: B5.1
+    weight: full
+    height: tall
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: "A split screen cut on a slant: on the left a level balance, water against sediment; on the right a tilted balance, LargeVF against SmallVF."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's team: water and sediment gave similar numbers of taxa (P = 0.67), but significantly different communities (P < 0.001)." }
+      - { speaker: narrator, kind: caption, text: "Nester's team: mean species richness was significantly higher with LargeVF than SmallVF (p < 0.001), and 51 species were detected with both." }
+    claim_ids: [C6, C9, C19, C20]
+    staging:
+      split_direction: slope
+      split_labels: ["Clarke: water, sediment", "Nester: two filters"]
+      split:
+        - { props: [ { kind: scales, x: 0.08, y: 0.1, w: 0.84, h: 0.8, tilt: level, items: [ { label: "water" }, { label: "sediment" } ] } ] }
+        - { props: [ { kind: scales, x: 0.08, y: 0.1, w: 0.84, h: 0.8, tilt: left, items: [ { label: "LargeVF" }, { label: "SmallVF" } ] } ] }

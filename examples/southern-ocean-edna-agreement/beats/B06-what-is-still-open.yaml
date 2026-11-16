@@ -1,0 +1,62 @@
+- id: B6
+  title: "What the authors say is still open"
+  act: discussion
+  panels:
+  - id: B6.1
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: "Ines, close up, with a puzzled face."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's team ask: how do we know an organism detected with eDNA is really there?" }
+    claim_ids: [C12]
+    staging:
+      shot: close
+      characters:
+        - { id: ines, x: 0.5, pose: think, face: puzzled, facing: right }
+  - id: B6.2
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "A bridge between a block labelled eDNA and a block labelled other methods."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Clarke's team: an understanding of eDNA's spatial distribution in Antarctic benthic ecosystems should be paired with careful cataloguing of the actual biodiversity present, using other methods." }
+      - { speaker: narrator, kind: caption, text: "Nester's team advocate an eDNA survey run in parallel with CPR surveys, the intensity of sampling depending on the question being addressed." }
+    claim_ids: [C13, C24]
+    staging:
+      props:
+        - { kind: bridge, x: 0.08, y: 0.08, w: 0.84, h: 0.84, items: [ { label: "eDNA" }, { label: "other methods, such as the CPR" } ] }
+  - id: B6.3
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    scene: "Four bottles in a row, labelled with four filter pore sizes."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Nester's team recommend further testing of large volumes (12 l or greater) across commonly used larger pore sizes (1.2 μm, 5 μm, 10 μm, and 20 μm) to allow further optimization of eDNA sampling." }
+    claim_ids: [C25]
+    staging:
+      props:
+        - { kind: bottle, x: 0.04, y: 0.05, w: 0.2, h: 0.7 }
+        - { kind: label, x: 0.14, y: 0.85, label: "1.2 μm" }
+        - { kind: bottle, x: 0.28, y: 0.05, w: 0.2, h: 0.7 }
+        - { kind: label, x: 0.38, y: 0.85, label: "5 μm" }
+        - { kind: bottle, x: 0.52, y: 0.05, w: 0.2, h: 0.7 }
+        - { kind: label, x: 0.62, y: 0.85, label: "10 μm" }
+        - { kind: bottle, x: 0.76, y: 0.05, w: 0.2, h: 0.7 }
+        - { kind: label, x: 0.86, y: 0.85, label: "20 μm" }
+  - id: B6.4
+    weight: full
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: parallel
+    device: reveal
+    scene: "A board with three cards: orders, genera, and species, the last one covered."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Blanco-Bercial's team add that detection and identification of zooplankton species were not examined in detail with the MZG-ICE data." }
+    claim_ids: [C40]
+    staging:
+      props:
+        - { kind: board, x: 0.15, y: 0.15, w: 0.7, h: 0.45, title: "taxonomic levels", cards: [ { label: "orders" }, { label: "genera" }, { label: "species", covered: true } ] }

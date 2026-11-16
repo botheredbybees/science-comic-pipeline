@@ -1,0 +1,113 @@
+- id: B3
+  title: "Test two: one voyage, two filters, one plankton recorder"
+  act: result
+  panels:
+  - id: B3.1
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: picture-specific
+    scene: "A ship, with an arrow from the label Hobart to the label Davis Station."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Nester's team conducted one of the longest eDNA transects to date, spanning over 3000 nautical miles from Hobart, Tasmania (Australia) to Davis Station in East Antarctica." }
+    claim_ids: [C16]
+    staging:
+      props:
+        - { kind: ship, x: 0.34, y: 0.1, w: 0.3, h: 0.45 }
+        - { kind: label, x: 0.1, y: 0.7, label: "Hobart" }
+        - { kind: label, x: 0.9, y: 0.7, label: "Davis Station" }
+        - { kind: arrow, x: 0.2, y: 0.76, x2: 0.78, y2: 0.76 }
+  - id: B3.2
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: "A split screen: a filter set-up labelled LargeVF on the left, a filter set-up labelled SmallVF on the right."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Nester's team tested two combinations of water volume and filter pore size at each sampling location: 12 l with 20 μm (LargeVF), and 2 l with 0.45 μm (SmallVF)." }
+    claim_ids: [C17]
+    staging:
+      split_direction: side
+      split_labels: ["LargeVF", "SmallVF"]
+      split:
+        - { props: [ { kind: filter, x: 0.05, y: 0.1, w: 0.9, h: 0.8, label: "12 l, 20 μm" } ] }
+        - { props: [ { kind: filter, x: 0.05, y: 0.1, w: 0.9, h: 0.8, label: "2 l, 0.45 μm" } ] }
+  - id: B3.3
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: "A bar chart of the share of reads assigned to Animalia taxa, SmallVF against LargeVF, and Ines beside it."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Over Nester's whole survey, just 11.37% of reads within the SmallVF samples were assigned to Animalia taxa, compared to 85.66% of reads within the LargeVF samples." }
+      - { speaker: ines, text: "Very different shares." }
+    claim_ids: [C18]
+    staging:
+      props:
+        - { kind: bars, x: 0.5, y: 0.05, w: 0.48, h: 0.9, title: "Reads assigned to Animalia taxa", unit: "%", max: 100, show_max: false, bars: [ { label: "SmallVF", value: 11.37 }, { label: "LargeVF", value: 85.66 } ] }
+      characters:
+        - { id: ines, x: 0.12, pose: point, face: puzzled, facing: right, scale: 0.85 }
+  - id: B3.4
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "A stacked column: a block for the species found with both methods and a smaller block for the extra species of LargeVF."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In Nester's survey the overlap of detected species was large: 51 species were detected with both sampling methods. However, LargeVF detected 14 additional species, primarily arthropod (8 species) and chordate species (4 species)." }
+    claim_ids: [C20]
+    staging:
+      props:
+        - { kind: stack, x: 0.1, y: 0.05, w: 0.8, h: 0.9, title: "species detected", items: [ { label: "with both methods", value: 51 }, { label: "extra with LargeVF", value: 14 } ] }
+  - id: B3.5
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: "A bar chart of mean species richness, LargeVF against SmallVF."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In Nester's survey mean species richness was significantly higher in the LargeVF samples (10.03 ± 0.44) than in SmallVF samples (8.4 ± 0.44; p < 0.001) across the entire transect." }
+    claim_ids: [C19]
+    staging:
+      props:
+        - { kind: bars, x: 0.1, y: 0.05, w: 0.8, h: 0.9, title: "Mean species richness", show_max: false, bars: [ { label: "LargeVF", value: 10.03 }, { label: "SmallVF", value: 8.4 } ] }
+  - id: B3.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: picture-specific
+    device: moment
+    scene: "A continuous plankton recorder fills the panel."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Nester's team describe the continuous plankton recorder (CPR): it is towed behind a ship at approximately 10 m depth, collecting plankton samples onto a continuously winding silk." }
+    claim_ids: [C15]
+    staging:
+      props:
+        - { kind: cpr, x: 0.05, y: 0.05, w: 0.9, h: 0.9, label: "continuous plankton recorder" }
+  - id: B3.7
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "Two overlapping circles: eDNA and CPR, with the shared species in the overlap."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Merged eDNA samples detected more species (37) than the CPR (18), with only 12 species shared between the methodologies, Nester's team report." }
+    claim_ids: [C21]
+    staging:
+      props:
+        - { kind: venn, x: 0.1, y: 0.05, w: 0.8, h: 0.9, items: [ { label: "eDNA: 37" }, { label: "CPR: 18" } ], label: "shared: 12" }
+  - id: B3.8
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    scene: "A box labelled this study: open ocean, an arrow, and a box saying it may not apply to coastal environments."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Nester's team recognise that the difference between their pore sizes is large, and that the use of different volumes introduces bias." }
+      - { speaker: narrator, kind: caption, text: "Nester's study was in the open ocean, with relatively low numbers of Animalia taxa, so the findings may not apply to coastal environments with greater diversity and richness of Animalia species." }
+    claim_ids: [C22, C23]
+    staging:
+      props:
+        - { kind: box, x: 0.04, y: 0.2, w: 0.36, h: 0.5, label: "this study: open ocean" }
+        - { kind: arrow, x: 0.43, y: 0.45, x2: 0.56, y2: 0.45 }
+        - { kind: box, x: 0.6, y: 0.2, w: 0.36, h: 0.5, label: "may not apply to coastal environments" }

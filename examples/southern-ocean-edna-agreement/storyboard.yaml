@@ -1,0 +1,1733 @@
+version: 2
+meta:
+  title: Does eDNA Agree With Itself? Water or Mud, Two Filters, Ten Labs
+  audience: Marine-science students and curious non-specialists who have heard that DNA left in seawater can tell us which animals are there, and who want to know how far that answer can be trusted.
+  left_out:
+  - The three studies differ in design, size and place, and the comic does not rank them or add their results together. Clarke et al. compared water with sediment at nearshore sites near Davis station.
+    Nester et al. compared two filter set-ups, and eDNA with the continuous plankton recorder, along one open-ocean voyage. Blanco-Bercial et al. compared ten laboratories analysing shared DNA from zooplankton
+    samples.
+  - Blanco-Bercial et al. is about zooplankton from ten places across the global ocean (the Baltic Sea, the Tasman Sea and others), not only the Southern Ocean, and the comic makes no claim about the Southern
+    Ocean from it. Its samples were not collected by the other two teams and its design is not theirs.
+  - 'None of the studies tested whether eDNA matches what is really living at a site: Clarke et al. say this is not examined, and Nester et al. and Blanco-Bercial et al. compare eDNA with eDNA (or with
+    the plankton recorder), not with a complete census. ''Agrees with itself'' is the comic''s question, not a result any paper reports.'
+  - Laboratory and bioinformatics detail in all three (extraction, PCR cycling, sequencers, read processing, reference databases) and most statistics (PERMANOVA, nMDS, Mantel tests, Hill numbers, Shannon
+    index, F, t and R2 values; a few P values are kept).
+  - 'Everything that only a figure, a supplementary table or the full species lists show: no number was read off a figure. The names of individual species, and Nester et al.''s hull-fouling and biosecurity
+    results, are left out because they are about something other than agreement.'
+  - 'Terms the papers do not gloss and the comic keeps as written: benthic, metazoan (glossed once as multicellular), Animalia, species richness, taxa, OTU, ocean region and biome, amplification, nMDS clustering.'
+  - 'Other results that bear on agreement and are not drawn: the Davis sediment core sections, the effect of sequencing depth, Nester et al.''s transect zones, Blanco-Bercial et al.''s diversity indices,
+    the NextSeq platform, and the markers'' Mantel correlations.'
+  sources:
+  - id: clarke-2021-antarctic-nearshore-edna
+    title: Environmental DNA metabarcoding for monitoring metazoan biodiversity in Antarctic nearshore ecosystems
+    authors:
+    - Laurence J Clarke
+    - Leonie Suter
+    - Bruce E Deagle
+    - Andrea M Polanowski
+    - Aleks Terauds
+    - Glenn J Johnstone
+    - Jonathan S Stark
+    year: 2021
+    doi: 10.7717/peerj.12458
+    url: https://doi.org/10.7717/peerj.12458
+    licence: CC BY 4.0
+    licence_checked: 'Europe PMC full-text XML (PMC8601059): ''This is an open access article distributed under the terms of the Creative Commons Attribution License'', read 2026-11-14 and re-read in sources/clarke-2021-antarctic-nearshore-edna/source.json
+      2026-11-16'
+  - id: nester-2024-southern-ocean-edna-transect
+    title: Long-distance Southern Ocean environmental DNA (eDNA) transect provides insights into spatial marine biota and invasion pathways for non-native species
+    authors:
+    - Georgia M. Nester
+    - Leonie Suter
+    - John A. Kitchener
+    - Michael Bunce
+    - Andrea M. Polanowski
+    - Johan Wasserman
+    - Bruce Deagle
+    year: 2024
+    doi: 10.1016/j.scitotenv.2024.175657
+    url: https://doi.org/10.1016/j.scitotenv.2024.175657
+    licence: CC BY 4.0
+    licence_checked: 'Article text, PDF page 2: ''This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/)''; Crossref and Elsevier metadata, 2026-11-14'
+    page_basis: PDF page index (the PDF's own page 1 is the first page)
+  - id: blanco-bercial-2026-mzg-ice-zooplankton
+    title: 'MetaZooGene Intercalibration Experiment (MZG-ICE): Metabarcoding Marine Zooplankton Diversity of the Global Ocean'
+    authors:
+    - Leocadio Blanco-Bercial
+    - Jennifer M Questel
+    - Paola G Batta-Lona
+    - Ruben Escribano
+    - Tone Falkenhaug
+    - Junya Hirai
+    - Jenny A Huggett
+    - Pedro Martinez Arbizu
+    - Katja T C A Peijnenburg
+    - Leonie Suter
+    - Agata Weydmann-Zwolicka
+    - Stacey Dubbeldam
+    - Elza Duijm
+    - Elizaveta Ershova-Menze
+    - Carolina E Gonzalez
+    - Ashrenee Govender
+    - Johan Groeneveld
+    - Sahar Khodami
+    - Anna J MacDonald
+    - Monika Mioduchowska
+    - Andrea M Polanowski
+    - Rocio Rodriguez-Perez
+    - Todd D O'Brien
+    - Ann Bucklin
+    year: 2026
+    doi: 10.1111/1755-0998.70090
+    url: https://doi.org/10.1111/1755-0998.70090
+    licence: CC BY 4.0
+    licence_checked: 'Europe PMC full-text XML (PMC12742283): ''This is an open access article under the terms of the ... CC BY 4.0 License'', read 2026-11-14 and re-read in sources/blanco-bercial-2026-mzg-ice-zooplankton/source.json
+      2026-11-16. Year 2026 is from the paper''s own reference line (Mol Ecol Resour 26(1): e70090); Europe PMC''s record says 2025.'
+  spine:
+    and: 'DNA left in seawater and sediment is now used to list what lives there, and using it for monitoring will need documented evidence of accuracy, reliability and reproducibility (Blanco-Bercial:
+      C26; Clarke: C1, C2; Nester: C14, C15).'
+    but: 'Nobody can take agreement for granted: two earlier studies found less than 10% overlap between sediment and benthic water samples (Clarke: C1), and the three studies here each change one thing
+      and ask whether the answer holds. Water and sediment gave similar numbers of taxa but different communities (Clarke: C6, C9); two filter set-ups shared 51 species yet one gave higher mean richness
+      (Nester: C19, C20); ten laboratories clustered samples by ocean region once contaminated samples were removed, but several samples did not cluster and the species level agreed least (Blanco-Bercial:
+      C33, C34, C35, C37).'
+    therefore: 'Where the three papers differ the comic puts them side by side and does not choose (Clarke: C6, C9; Nester: C19, C20). The authors themselves say what is still open: how to know an organism
+      detected with eDNA is really there (Clarke: C12), pairing eDNA with other methods (Clarke: C13; Nester: C24), further testing of filter volumes and pore sizes (Nester: C25), the effect of each protocol
+      step (Blanco-Bercial: C39) and species-level results (Blanco-Bercial: C40).'
+cast:
+- id: ines
+  name: Ines
+  role: A scientist who guides the reader through the three studies (the comic's invention, not a person in any paper)
+  look: Stick figure with shoulder-length hair, glasses and a lab coat
+  appearance:
+    hair: shoulder
+    glasses: true
+    coat: true
+- id: otto
+  name: Otto
+  role: A sceptic who asks the awkward question (the comic's invention, not a person in any paper)
+  look: Stick figure in a flat cap
+  appearance:
+    hair: flatcap
+claims:
+- id: C1
+  text: Two recent studies found less than 10% overlap between molecular Operational Taxonomic Units (OTUs) from sediment and benthic water samples.
+  kind: background
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Introduction, paragraph 5
+    page: 7
+    quote: two recent studies found less than 10% overlap between molecular Operational Taxonomic Units (OTUs) from sediment and benthic water samples
+  status: verified
+- id: C2
+  text: The aim of this study was to compare water and sediment as eDNA sources for rapid, practical biodiversity assessment for nearshore benthic environments in the Vestfold Hills, East Antarctica.
+  kind: background
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Introduction, paragraph 6
+    page: 8
+    quote: The aim of this study was to compare water and sediment as eDNA sources for rapid, practical biodiversity assessment for nearshore benthic environments to further inform knowledge of these environments
+      in the Vestfold Hills, East Antarctica
+  status: verified
+- id: C3
+  text: The most suitable sample type for DNA-based biodiversity assessment would yield a high proportion of metazoan reads (for efficiency) and the greatest species richness, whilst reflecting the community
+    composition present at the site (which is not examined here).
+  kind: background
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Introduction, paragraph 6
+    page: 8
+    quote: The most suitable sample type for DNA-based biodiversity assessment would yield a high proportion of metazoan reads (for efficiency) and the greatest species richness, whilst reflecting the community
+      composition present at the site (which is not examined here)
+  status: verified
+  note: 'Important scope limit: whether either sample type reflects the real community at a site was not examined.'
+- id: C4
+  text: The authors targeted metazoan (multicellular) organisms by PCR-amplifying part of the mitochondrial cytochrome c oxidase subunit I (COI) gene.
+  kind: method
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Materials & Methods, DNA extraction, PCR-amplification and high-throughput sequencing, paragraph 2
+    page: 13
+    quote: We targeted metazoan (multicellular) organisms by PCR-amplifying part of the mitochondrial cytochrome c oxidase subunit I (COI) gene
+  status: verified
+  note: Gives the paper's own gloss of metazoan.
+- id: C5
+  text: Approximately 40% of reads were assigned to 'Metazoa' for both sediment and water eDNA samples.
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Metazoan reads, paragraph 1
+    page: 22
+    quote: Approximately 40% of reads were assigned to ‘Metazoa’ for both sediment and water eDNA samples
+  status: verified
+- id: C6
+  text: Similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores at sites where both were collected (paired t-test, P = 0.67).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Species richness, paragraph 1
+    page: 24
+    quote: Similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores at sites where both were collected (paired t-test, t = 0.45, d.f. = 7, P = 0.67
+  status: verified
+- id: C7
+  text: Almost half of all metazoan species were detected in both sediment and water eDNA samples (47/99, 47.5%).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: Almost half of all metazoan species were detected in both sediment and water eDNA samples (47/99, 47.5%
+  status: verified
+- id: C8
+  text: 22 and 30 species were detected exclusively with sediment or water eDNA, respectively.
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: 22 and 30 species were detected exclusively with sediment or water eDNA, respectively
+  status: verified
+- id: C9
+  text: Metazoan communities from water and sediment eDNA samples were significantly different (P < 0.001).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: Metazoan communities from water and sediment eDNA samples were significantly different (F1,64 = 9.59, R2 = 0.130, P < 0.001
+  status: verified
+- id: C10
+  text: For three sites, the majority of metazoan taxa were detected in both replicates (61–68% based on the non-rarefied data), but only 27–38% of metazoans were detected in both replicates at the other
+    three sites.
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 1
+    page: 26
+    quote: For three sites, the majority of metazoan taxa were detected in both replicates (61–68% based on the non-rarefied data), but only 27–38% of metazoans were detected in both replicates at the other
+      three sites
+  status: verified
+- id: C11
+  text: The higher relative abundance of the sea-ice associated copepod Paralabidocera grandispina/antarctica in sediment compared to water eDNA is likely to reflect accumulation of eggs in the sediment,
+    demonstrating that DNA-based detections do not necessarily reflect species active within the sample.
+  kind: interpretation
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: the higher relative abundance of the sea-ice associated copepod Paralabidocera grandispina/antarctica in sediment compared to water eDNA is likely to reflect accumulation of eggs in the sediment
+      (), demonstrating that DNA-based detections do not necessarily reflect species active within the sample
+  status: verified
+- id: C12
+  text: 'Non-invasive, ''capture-free'' approaches like eDNA also raise the question: how do we know an organism detected with eDNA is really there?'
+  kind: caveat
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: 'Non-invasive, “capture-free” approaches like eDNA also raise the question: how do we know an organism detected with eDNA is really there?'
+  status: verified
+- id: C13
+  text: An understanding of the spatial distribution of eDNA in Antarctic benthic ecosystems, from a few metres to several kilometres, should be paired with careful cataloguing of the actual biodiversity
+    present using other methods.
+  kind: interpretation
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: An understanding of the spatial distribution of eDNA in Antarctic benthic ecosystems, from a few metres to several kilometres, should be paired with careful cataloguing of the actual biodiversity
+      present using other methods
+  status: verified
+- id: C14
+  text: eDNA metabarcoding describes biodiversity patterns through the amplification of trace amounts of DNA naturally shed into the environment by organisms.
+  kind: background
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 1. Introduction, PDF page 3 (the paper's own definition)
+    page: 3
+    quote: eDNA metabarcoding describes biodiversity patterns through the amplification of trace amounts of DNA naturally shed into the environment by organisms
+  status: verified
+  note: Definition claim.
+- id: C15
+  text: The continuous plankton recorder (CPR) is a device towed behind a ship at approximately 10 m depth, collecting plankton samples onto a continuously winding silk.
+  kind: background
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 1. Introduction, PDF page 3 (the paper's own description of the CPR)
+    page: 3
+    quote: The CPR is a device towed behind a ship at approximately 10 m depth, collecting plankton samples onto a continuously winding silk
+  status: verified
+  note: Definition claim. The paper names the CPR 'continuous plankton recorder (CPR)' on the same page, in the sentence before.
+- id: C16
+  text: Using ship-based surveys, the authors conducted one of the longest eDNA transects to date, spanning over 3000 nautical miles from Hobart, Tasmania (Australia) to Davis Station in East Antarctica.
+  kind: method
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 1. Introduction, PDF page 3
+    page: 3
+    quote: we conducted one of the longest eDNA transects to date, spanning over 3000 nautical miles from Hobart, Tasmania (Australia) to Davis Station in East Antarctica
+  status: verified
+- id: C17
+  text: 'Two combinations of water volume and filter pore sizes were tested at each sampling location: 12 l with 20 μm, and 2 l with 0.45 μm, herein referred to as LargeVF and SmallVF respectively.'
+  kind: method
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 2.1 eDNA sampling, PDF page 4
+    page: 4
+    quote: 'Two combinations of water volume and filter pore sizes were tested at each sampling location: 12 l with 20 μm, and 2 l with 0.45 μm, herein referred to as “LargeVF” and “SmallVF” respectively'
+  status: verified
+- id: C18
+  text: Over the whole survey just 11.37 % of reads within the SmallVF samples were assigned to Animalia taxa, compared to 85.66 % of reads within the LargeVF samples.
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 6
+    page: 6
+    quote: over the whole survey just 11.37 % of reads within the SmallVF samples were assigned to Animalia taxa, compared to 85.66 % of reads within the LargeVF samples
+  status: verified
+- id: C19
+  text: Mean species richness was significantly higher in the LargeVF samples (10.03 ± 0.44) compared to SmallVF samples (8.4 ± 0.44; t = 4.825, df = 64, p < 0.001) across the entire transect.
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 7
+    page: 7
+    quote: mean species richness (q = 0) was significantly higher in the LargeVF samples (10.03 ± 0.44) compared to SmallVF samples (8.4 ± 0.44; t = 4.825, df = 64, p < 0.001) across the entire transect
+  status: verified
+  note: The paper gives q = 0 as species richness (2.6.1, PDF page 6).
+- id: C20
+  text: The overlap of detected species was large, with 51 species detected with both sampling methods. However, LargeVF detected 14 additional species, primarily arthropod (8 species) and chordate species
+    (4 species).
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 7
+    page: 7
+    quote: The overlap of detected species was large, with 51 species detected with both sampling methods. However, LargeVF detected 14 additional species (Fig. 2b), primarily arthropod (8 species) and
+      chordate species (4 species; Fig. 2c)
+  status: verified
+- id: C21
+  text: Merged eDNA samples detected more species (37) than CPR (18), with only 12 species shared between the methodologies.
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.2.2 Diversity comparison, PDF page 7
+    page: 7
+    quote: Merged eDNA samples detected more species (37) than CPR (18), with only 12 species shared between the methodologies
+  status: verified
+- id: C22
+  text: We recognise the difference between our pore sizes is large, and the use of different volumes introduces bias.
+  kind: caveat
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.1 Optimising open ocean eDNA sampling, PDF page 11
+    page: 11
+    quote: We recognise the difference between our pore sizes is large, and the use of different volumes introduces bias
+  status: verified
+- id: C23
+  text: As the study was conducted in the open ocean with relatively low numbers of Animalia taxa, these findings may not apply to coastal environments with greater diversity and richness of Animalia species.
+  kind: caveat
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.1 Optimising open ocean eDNA sampling, PDF page 9
+    page: 9
+    quote: As our study was conducted in the open ocean with relatively low numbers of Animalia taxa (Suter et al., 2021), these findings may not apply to coastal environments with greater diversity and
+      richness of Animalia species
+  status: verified
+- id: C24
+  text: The authors advocate for the integration of an eDNA survey to be conducted in parallel with CPR surveys, with the intensity of sampling ultimately depending on the question being addressed.
+  kind: interpretation
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.3 Morphological CPR comparison, PDF page 11
+    page: 11
+    quote: We advocate for the integration of an eDNA survey to be conducted in parallel with CPR surveys, with the intensity of sampling with these methods ultimately depending on the question being addressed
+  status: verified
+- id: C25
+  text: The authors recommend further testing of large volumes (12 l or greater) across commonly used larger pore sizes (1.2 μm, 5 μm, 10 μm, and 20 μm) to allow further optimization of eDNA sampling for
+    these environments.
+  kind: interpretation
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 4.1 Optimising open ocean eDNA sampling, PDF page 11
+    page: 11
+    quote: recommend further testing of large volumes (12 l or greater) across commonly used larger pore sizes (1.2 μm, 5 μm, 10 μm, and 20 μm) would allow further optimization of eDNA sampling for these
+      environments
+  status: verified
+- id: C26
+  text: The use of DNA metabarcoding as a foundation for management and conservation decision-making throughout the global ocean will require documented evidence of accuracy, reliability and reproducibility
+    of data and results.
+  kind: background
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Introduction, paragraph 2
+    page: 4
+    quote: The use of DNA metabarcoding as a foundation for management and conservation decision‐making throughout the global ocean will require documented evidence of accuracy, reliability and reproducibility
+      of data and results
+  status: verified
+- id: C27
+  text: The MetaZooGene Intercalibration Experiment (MZG-ICE) was designed to analyse and evaluate the patterns of variation of multi-gene metabarcoding data produced by 10 participating research laboratories,
+    starting with shared aliquots of DNA extracted from zooplankton samples collected by each group in different ocean regions.
+  kind: method
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Introduction, paragraph 6
+    page: 8
+    quote: The MetaZooGene Intercalibration Experiment (MZG‐ICE) was designed to analyse and evaluate the patterns of variation of multi‐gene metabarcoding data produced by 10 participating research laboratories,
+      starting with shared aliquots of DNA extracted from zooplankton samples collected by each group in different ocean regions.
+  status: verified
+  note: MZG-ICE = MetaZooGene Intercalibration Experiment (defined in the same sentence).
+- id: C28
+  text: Gene regions for DNA metabarcoding were selected to allow analysis of zooplankton diversity at differing levels of taxonomic resolution and detection, including V1-V2, V4, and V9 regions of nuclear
+    18S rRNA and mitochondrial cytochrome oxidase I (COI).
+  kind: method
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Material and Methods, PCR Amplification, Library Preparation, and DNA Sequencing, paragraph 1
+    page: 14
+    quote: Gene regions for DNA metabarcoding were selected to allow analysis of zooplankton diversity at differing levels of taxonomic resolution and detection, including V1‐V2, V4, and V9 regions of nuclear
+      18S rRNA and mitochondrial cytochrome oxidase I (COI)
+  status: verified
+  note: The paper's own gloss of why these gene regions.
+- id: C29
+  text: Metabarcoding analysis was carried out for 10 samples for all four gene regions by each MZG-ICE group following their own standard protocols and procedures for the many steps in the DNA metabarcoding
+    analytical pipeline.
+  kind: method
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Material and Methods, PCR Amplification, Library Preparation, and DNA Sequencing, paragraph 1
+    page: 14
+    quote: Metabarcoding analysis was carried out for 10 samples for all four gene regions by each MZG‐ICE group following their own standard protocols and procedures for the many steps in the DNA metabarcoding
+      analytical pipeline
+  status: verified
+- id: C30
+  text: 'In terms of amplification success, V4 was the marker with the lowest performance: 69 of 100 samples remained after removal of contamination.'
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 3
+    page: 34
+    quote: 'In terms of amplification success, V4 was the marker with the lowest performance: 69 of 100 samples remained after removal of contamination.'
+  status: verified
+- id: C31
+  text: COI performed slightly better (72 samples), although poor results using standard protocols at some laboratories required use of alternative protocols.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 3
+    page: 34
+    quote: COI performed slightly better (72 samples), although poor results using standard protocols at some laboratories required use of alternative protocols
+  status: verified
+- id: C32
+  text: Success rates for both V1-V2 and V9 amplification were much higher (88 samples for each marker).
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 3
+    page: 34
+    quote: Success rates for both V1‐V2 and V9 amplification were much higher (88 samples for each marker).
+  status: verified
+- id: C33
+  text: Based on nMDS graphical analyses, samples from most MZG-ICE groups clustered by ocean region and biome.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 4
+    page: 35
+    quote: samples from most MZG‐ICE groups clustered by ocean region and biome
+  status: verified
+- id: C34
+  text: However, several samples for each gene marker did not cluster with samples from the same collection location.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 4
+    page: 35
+    quote: However, several samples for each gene marker did not cluster with samples from the same collection location.
+  status: verified
+- id: C35
+  text: Results for all 10 MZG-ICE research groups clustered in nMDS plots by sampling location and ocean region after removal of samples identified as contaminated based on taxonomic composition.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Evaluation of Variation in Results From MZG‐ICE Groups, paragraph 3
+    page: 57
+    quote: Results for all 10 MZG‐ICE research groups clustered in nMDS plots by sampling location and ocean region after removal of samples identified as contaminated based on taxonomic composition
+  status: verified
+- id: C36
+  text: The V9 and V4 regions of 18S rRNA showed highest consistency in multivariate statistical analyses of biodiversity among MZG-ICE groups, with higher variability for V1-V2 and COI.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Evaluation of Variation in Results From MZG‐ICE Groups, paragraph 2
+    page: 56
+    quote: The V9 and V4 regions of 18S rRNA showed highest consistency in multivariate statistical analyses of biodiversity among MZG‐ICE groups, with higher variability for V1‐V2 and COI
+  status: verified
+- id: C37
+  text: Plots of COI sequence abundances for selected zooplankton taxa showed decreasing similarity among MZG-ICE groups for different taxonomic levels, from orders to genera to species.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 11
+    page: 49
+    quote: Plots of COI sequence abundances for selected zooplankton taxa showed decreasing similarity among MZG‐ICE groups for different taxonomic levels, from orders to genera to species
+  status: verified
+- id: C38
+  text: MZG-ICE provided evidence of the reliability and reproducibility of DNA metabarcoding results from diverse research groups for zooplankton samples collected in different ocean regions and biomes.
+  kind: interpretation
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Conclusions, paragraph 1
+    page: 70
+    quote: MZG‐ICE provided evidence of the reliability and reproducibility of DNA metabarcoding results from diverse research groups for zooplankton samples collected in different ocean regions and biomes.
+  status: verified
+- id: C39
+  text: The variable protocol chains, with numerous differences between MZG-ICE laboratories, prevented definitive conclusions about the impacts of each and every protocol step.
+  kind: caveat
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Design and Goals of MZG‐ICE, paragraph 1
+    page: 51
+    quote: The variable protocol chains, with numerous differences between MZG‐ICE laboratories, prevented definitive conclusions about the impacts of each and every protocol step
+  status: verified
+- id: C40
+  text: Detection and identification of zooplankton species were not examined in detail based on MZG-ICE data.
+  kind: caveat
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Discussion, Design and Goals of MZG‐ICE, paragraph 4
+    page: 54
+    quote: Detection and identification of zooplankton species were not examined in detail based on MZG‐ICE data.
+  status: verified
+beats:
+- id: B1
+  title: How far can an eDNA answer be trusted?
+  act: problem
+  panels:
+  - id: B1.1
+    weight: wide
+    frame: borderless
+    height: tall
+    word_picture: additive
+    scene: Ines stands on the sea shore beside a ship.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Blanco-Bercial and colleagues write that using DNA metabarcoding as a foundation for management and conservation decisions throughout the global ocean will require documented evidence of accuracy,
+        reliability and reproducibility.
+    claim_ids:
+    - C26
+    staging:
+      shot: wide
+      props:
+      - kind: ship
+        x: 0.5
+        y: 0.12
+        w: 0.42
+        h: 0.5
+      characters:
+      - id: ines
+        x: 0.18
+        pose: point
+        face: smile
+        facing: right
+  - id: B1.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    device: gloss
+    scene: Ines points at a bottle of seawater, beside a strip of DNA letters.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Nester''s team define it: eDNA metabarcoding describes biodiversity patterns through the amplification of trace amounts of DNA naturally shed into the environment by organisms.'
+    - speaker: ines
+      text: So living things leave DNA behind, and we read it.
+    claim_ids:
+    - C14
+    staging:
+      props:
+      - kind: bottle
+        x: 0.06
+        y: 0.3
+        w: 0.2
+        h: 0.6
+        label: seawater
+      - kind: sequence
+        x: 0.4
+        y: 0.5
+        w: 0.55
+        h: 0.3
+      characters:
+      - id: ines
+        x: 0.3
+        pose: point
+        face: smile
+        facing: left
+        scale: 0.8
+  - id: B1.3
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: Otto raises one eyebrow, beside two overlapping circles labelled water and sediment.
+    speech:
+    - speaker: otto
+      text: Fine. But do water and mud give the same list?
+    - speaker: narrator
+      kind: caption
+      text: Clarke's team note that two recent studies found less than 10% overlap between molecular Operational Taxonomic Units (OTUs) from sediment and benthic water samples.
+    claim_ids:
+    - C1
+    staging:
+      props:
+      - kind: venn
+        x: 0.3
+        y: 0.1
+        w: 0.68
+        h: 0.7
+        items:
+        - label: water
+        - label: sediment
+        label: less than 10%
+      characters:
+      - id: otto
+        x: 0.1
+        pose: stand
+        face: sceptical
+        facing: right
+        scale: 0.9
+  - id: B1.4
+    weight: full
+    frame: borderless
+    transition: subject-to-subject
+    word_picture: picture-specific
+    scene: Three boxes in a row name the three studies and what each one changed.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Three studies, three tests: change one thing, then ask whether the answer holds.'
+    claim_ids:
+    - C2
+    - C17
+    - C27
+    staging:
+      props:
+      - kind: box
+        x: 0.03
+        y: 0.1
+        w: 0.29
+        h: 0.5
+        label: 'Clarke et al.: water or sediment?'
+      - kind: box
+        x: 0.355
+        y: 0.1
+        w: 0.29
+        h: 0.5
+        label: 'Nester et al.: two filter set-ups'
+      - kind: box
+        x: 0.68
+        y: 0.1
+        w: 0.29
+        h: 0.5
+        label: 'Blanco-Bercial et al.: 10 laboratories'
+- id: B2
+  title: 'Test one: water or mud?'
+  act: result
+  panels:
+  - id: B2.1
+    weight: wide
+    height: tall
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: 'A split screen: a sample of water on the left, a sample of sediment on the right.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Clarke's team set out to compare water and sediment as eDNA sources for rapid, practical biodiversity assessment of nearshore benthic environments in the Vestfold Hills, East Antarctica.
+    claim_ids:
+    - C2
+    staging:
+      split_direction: side
+      split_labels:
+      - water
+      - sediment
+      split:
+      - props:
+        - kind: bottle
+          x: 0.2
+          y: 0.1
+          w: 0.6
+          h: 0.8
+      - props:
+        - kind: jar
+          x: 0.2
+          y: 0.1
+          w: 0.6
+          h: 0.8
+  - id: B2.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    device: gloss
+    scene: Ines points at a strip of DNA letters with one stretch bracketed.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Clarke's team targeted metazoan (multicellular) organisms by PCR-amplifying part of the mitochondrial cytochrome c oxidase subunit I (COI) gene.
+    - speaker: ines
+      text: So they went looking for animal DNA.
+    claim_ids:
+    - C4
+    staging:
+      props:
+      - kind: sequence
+        x: 0.35
+        y: 0.35
+        w: 0.6
+        h: 0.35
+        label: COI
+      characters:
+      - id: ines
+        x: 0.15
+        pose: point
+        face: neutral
+        facing: right
+        scale: 0.9
+  - id: B2.3
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: Two boxes name the first two yardsticks, and a black box with a question mark stands for the community at the site, with a dashed arrow out.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'The yardstick Clarke''s team set: a high proportion of metazoan reads (for efficiency) and the greatest species richness, whilst reflecting the community composition present at the site (which
+        is not examined here).'
+    claim_ids:
+    - C3
+    staging:
+      props:
+      - kind: box
+        x: 0.03
+        y: 0.08
+        w: 0.3
+        h: 0.35
+        label: high proportion of metazoan reads
+      - kind: box
+        x: 0.03
+        y: 0.52
+        w: 0.3
+        h: 0.35
+        label: greatest species richness
+      - kind: blackbox
+        x: 0.4
+        y: 0.08
+        w: 0.57
+        h: 0.8
+        dashed: true
+        items:
+        - label: sample type
+        - label: community at the site
+  - id: B2.4
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: A bar chart shows about the same share for water and for sediment.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In Clarke's study, approximately 40% of reads were assigned to 'Metazoa' for both sediment and water eDNA samples.
+    claim_ids:
+    - C5
+    staging:
+      props:
+      - kind: bars
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        title: Reads assigned to Metazoa (approximately)
+        unit: '%'
+        max: 100
+        bars:
+        - label: water
+          value: 40
+        - label: sediment
+          value: 40
+  - id: B2.5
+    weight: standard
+    frame: borderless
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: A balance with level pans, one labelled water and one labelled sediment (top section).
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In Clarke's study, at sites where both were collected, similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores (paired t-test, P = 0.67).
+    claim_ids:
+    - C6
+    staging:
+      props:
+      - kind: scales
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        tilt: level
+        items:
+        - label: water
+        - label: sediment, top section
+  - id: B2.6
+    weight: standard
+    frame: outlined
+    transition: aspect-to-aspect
+    word_picture: duo-specific
+    scene: Two separate groups of dots, one labelled water and one labelled sediment.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: But in Clarke's study metazoan communities from water and sediment eDNA samples were significantly different (P < 0.001).
+    claim_ids:
+    - C9
+    staging:
+      props:
+      - kind: clusters
+        x: 0.08
+        y: 0.05
+        w: 0.84
+        h: 0.9
+        items:
+        - label: water
+        - label: sediment
+  - id: B2.7
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'Two overlapping circles: water only, both, and sediment only.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In Clarke's study, almost half of all metazoan species were detected in both sediment and water eDNA samples (47/99, 47.5%). 22 and 30 species were detected exclusively with sediment or water
+        eDNA, respectively.
+    claim_ids:
+    - C7
+    - C8
+    staging:
+      props:
+      - kind: venn
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        items:
+        - label: 'water only: 30'
+        - label: 'sediment only: 22'
+        label: 'both: 47'
+  - id: B2.8
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: 'A pair of replicate bottles beside two boxes: one for three sites, one for the other three.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Clarke's replicates varied. For three sites the majority of taxa were detected in both replicates (61–68%, non-rarefied data), but at the other three sites only 27–38% were.
+    claim_ids:
+    - C10
+    staging:
+      props:
+      - kind: bottle
+        x: 0.02
+        y: 0.2
+        w: 0.14
+        h: 0.55
+      - kind: bottle
+        x: 0.19
+        y: 0.2
+        w: 0.14
+        h: 0.55
+      - kind: label
+        x: 0.18
+        y: 0.88
+        label: replicate samples
+      - kind: box
+        x: 0.42
+        y: 0.08
+        w: 0.55
+        h: 0.38
+        label: 'three sites: 61–68% of taxa in both'
+      - kind: box
+        x: 0.42
+        y: 0.54
+        w: 0.55
+        h: 0.38
+        label: 'other three sites: 27–38%'
+  - id: B2.9
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: A copepod swims beside a jar of sediment.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Clarke''s team: the sea-ice associated copepod Paralabidocera grandispina/antarctica was relatively more abundant in sediment than in water eDNA, likely reflecting an accumulation of eggs in
+        the sediment.'
+    - speaker: narrator
+      kind: caption
+      text: This demonstrates that DNA-based detections do not necessarily reflect species active within the sample.
+    claim_ids:
+    - C11
+    staging:
+      props:
+      - kind: jar
+        x: 0.55
+        y: 0.1
+        w: 0.35
+        h: 0.8
+        label: sediment
+      characters:
+      - id: extra
+        body: copepod
+        x: 0.25
+        y: 0.62
+        scale: 1.1
+- id: B3
+  title: 'Test two: one voyage, two filters, one plankton recorder'
+  act: result
+  panels:
+  - id: B3.1
+    weight: wide
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: picture-specific
+    scene: A ship, with an arrow from the label Hobart to the label Davis Station.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Nester's team conducted one of the longest eDNA transects to date, spanning over 3000 nautical miles from Hobart, Tasmania (Australia) to Davis Station in East Antarctica.
+    claim_ids:
+    - C16
+    staging:
+      props:
+      - kind: ship
+        x: 0.34
+        y: 0.1
+        w: 0.3
+        h: 0.45
+      - kind: label
+        x: 0.1
+        y: 0.7
+        label: Hobart
+      - kind: label
+        x: 0.9
+        y: 0.7
+        label: Davis Station
+      - kind: arrow
+        x: 0.2
+        y: 0.76
+        x2: 0.78
+        y2: 0.76
+  - id: B3.2
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: 'A split screen: a filter set-up labelled LargeVF on the left, a filter set-up labelled SmallVF on the right.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Nester''s team tested two combinations of water volume and filter pore size at each sampling location: 12 l with 20 μm (LargeVF), and 2 l with 0.45 μm (SmallVF).'
+    claim_ids:
+    - C17
+    staging:
+      split_direction: side
+      split_labels:
+      - LargeVF
+      - SmallVF
+      split:
+      - props:
+        - kind: filter
+          x: 0.05
+          y: 0.1
+          w: 0.9
+          h: 0.8
+          label: 12 l, 20 μm
+      - props:
+        - kind: filter
+          x: 0.05
+          y: 0.1
+          w: 0.9
+          h: 0.8
+          label: 2 l, 0.45 μm
+  - id: B3.3
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: A bar chart of the share of reads assigned to Animalia taxa, SmallVF against LargeVF, and Ines beside it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Over Nester's whole survey, just 11.37% of reads within the SmallVF samples were assigned to Animalia taxa, compared to 85.66% of reads within the LargeVF samples.
+    - speaker: ines
+      text: Very different shares.
+    claim_ids:
+    - C18
+    staging:
+      props:
+      - kind: bars
+        x: 0.5
+        y: 0.05
+        w: 0.48
+        h: 0.9
+        title: Reads assigned to Animalia taxa
+        unit: '%'
+        max: 100
+        show_max: false
+        bars:
+        - label: SmallVF
+          value: 11.37
+        - label: LargeVF
+          value: 85.66
+      characters:
+      - id: ines
+        x: 0.12
+        pose: point
+        face: puzzled
+        facing: right
+        scale: 0.85
+  - id: B3.4
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'A stacked column: a block for the species found with both methods and a smaller block for the extra species of LargeVF.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'In Nester''s survey the overlap of detected species was large: 51 species were detected with both sampling methods. However, LargeVF detected 14 additional species, primarily arthropod (8 species)
+        and chordate species (4 species).'
+    claim_ids:
+    - C20
+    staging:
+      props:
+      - kind: stack
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        title: species detected
+        items:
+        - label: with both methods
+          value: 51
+        - label: extra with LargeVF
+          value: 14
+  - id: B3.5
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: duo-specific
+    scene: A bar chart of mean species richness, LargeVF against SmallVF.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In Nester's survey mean species richness was significantly higher in the LargeVF samples (10.03 ± 0.44) than in SmallVF samples (8.4 ± 0.44; p < 0.001) across the entire transect.
+    claim_ids:
+    - C19
+    staging:
+      props:
+      - kind: bars
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        title: Mean species richness
+        show_max: false
+        bars:
+        - label: LargeVF
+          value: 10.03
+        - label: SmallVF
+          value: 8.4
+  - id: B3.6
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: picture-specific
+    device: moment
+    scene: A continuous plankton recorder fills the panel.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Nester''s team describe the continuous plankton recorder (CPR): it is towed behind a ship at approximately 10 m depth, collecting plankton samples onto a continuously winding silk.'
+    claim_ids:
+    - C15
+    staging:
+      props:
+      - kind: cpr
+        x: 0.05
+        y: 0.05
+        w: 0.9
+        h: 0.9
+        label: continuous plankton recorder
+  - id: B3.7
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'Two overlapping circles: eDNA and CPR, with the shared species in the overlap.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Merged eDNA samples detected more species (37) than the CPR (18), with only 12 species shared between the methodologies, Nester's team report.
+    claim_ids:
+    - C21
+    staging:
+      props:
+      - kind: venn
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        items:
+        - label: 'eDNA: 37'
+        - label: 'CPR: 18'
+        label: 'shared: 12'
+  - id: B3.8
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    scene: 'A box labelled this study: open ocean, an arrow, and a box saying it may not apply to coastal environments.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Nester's team recognise that the difference between their pore sizes is large, and that the use of different volumes introduces bias.
+    - speaker: narrator
+      kind: caption
+      text: Nester's study was in the open ocean, with relatively low numbers of Animalia taxa, so the findings may not apply to coastal environments with greater diversity and richness of Animalia species.
+    claim_ids:
+    - C22
+    - C23
+    staging:
+      props:
+      - kind: box
+        x: 0.04
+        y: 0.2
+        w: 0.36
+        h: 0.5
+        label: 'this study: open ocean'
+      - kind: arrow
+        x: 0.43
+        y: 0.45
+        x2: 0.56
+        y2: 0.45
+      - kind: box
+        x: 0.6
+        y: 0.2
+        w: 0.36
+        h: 0.5
+        label: may not apply to coastal environments
+- id: B4
+  title: 'Test three: same DNA, ten laboratories, four gene regions'
+  act: result
+  panels:
+  - id: B4.1
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: A rack of sample tubes with ten small figures standing in a row.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In Blanco-Bercial's MetaZooGene Intercalibration Experiment (MZG-ICE), 10 research laboratories started from shared aliquots of DNA extracted from zooplankton samples collected by each group
+        in different ocean regions.
+    claim_ids:
+    - C27
+    staging:
+      props:
+      - kind: tubes
+        x: 0.3
+        y: 0.05
+        w: 0.4
+        h: 0.5
+        label: shared DNA aliquots
+      characters:
+      - id: extra
+        x: 0.07
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.17
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.27
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.37
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.47
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.57
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.67
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.77
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.87
+        y: 0.92
+        scale: 0.4
+      - id: extra
+        x: 0.97
+        y: 0.92
+        scale: 0.4
+  - id: B4.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: Otto holds a mug beside a sequencer and a rack of tubes.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In MZG-ICE each group analysed 10 samples for all four gene regions, following their own standard protocols and procedures for the many steps in the DNA metabarcoding pipeline.
+    - speaker: otto
+      text: I like my own protocol.
+    claim_ids:
+    - C29
+    humour:
+      note: Otto, the comic's own sceptic, is fond of his protocol. The caption is the paper's wording; the joke is Otto's line. 1 yes; 2 yes, the comic's voice; 3 yes, a fictional character; 4 yes; 5 yes.
+        Left false for a human.
+      keeps_claims_intact: false
+    staging:
+      props:
+      - kind: sequencer
+        x: 0.4
+        y: 0.25
+        w: 0.28
+        h: 0.5
+        label: sequencer
+      - kind: tubes
+        x: 0.72
+        y: 0.3
+        w: 0.25
+        h: 0.45
+      characters:
+      - id: otto
+        x: 0.14
+        pose: sip
+        face: smug
+        facing: right
+        holding: mug
+        scale: 0.9
+  - id: B4.3
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'Four boxes name the four gene regions: V1-V2, V4, V9 and COI.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Blanco-Bercial''s team selected gene regions to allow analysis of zooplankton diversity at differing levels of taxonomic resolution and detection: V1-V2, V4 and V9 of nuclear 18S rRNA, and
+        mitochondrial cytochrome oxidase I (COI).'
+    claim_ids:
+    - C28
+    staging:
+      props:
+      - kind: box
+        x: 0.03
+        y: 0.15
+        w: 0.21
+        h: 0.6
+        label: V1-V2 (18S rRNA)
+      - kind: box
+        x: 0.27
+        y: 0.15
+        w: 0.21
+        h: 0.6
+        label: V4 (18S rRNA)
+      - kind: box
+        x: 0.51
+        y: 0.15
+        w: 0.21
+        h: 0.6
+        label: V9 (18S rRNA)
+      - kind: box
+        x: 0.75
+        y: 0.15
+        w: 0.21
+        h: 0.6
+        label: COI (mitochondrial)
+  - id: B4.4
+    weight: full
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: A bar chart of the samples remaining for each of the four gene regions.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'In MZG-ICE, in terms of amplification success, V4 was the marker with the lowest performance: 69 of 100 samples remained after removal of contamination.'
+    - speaker: narrator
+      kind: caption
+      text: COI performed slightly better (72 samples), although poor results using standard protocols at some laboratories required use of alternative protocols. Success rates for V1-V2 and V9 were much
+        higher (88 samples for each marker).
+    claim_ids:
+    - C30
+    - C31
+    - C32
+    staging:
+      props:
+      - kind: bars
+        x: 0.15
+        y: 0.05
+        w: 0.7
+        h: 0.9
+        title: Samples remaining, of 100
+        max: 100
+        bars:
+        - label: V4
+          value: 69
+        - label: COI
+          value: 72
+        - label: V1-V2
+          value: 88
+        - label: V9
+          value: 88
+  - id: B4.5
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: Groups of dots on two axes, drawn as tight clusters.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Based on nMDS graphical analyses, samples from most MZG-ICE groups clustered by ocean region and biome.
+    claim_ids:
+    - C33
+    staging:
+      props:
+      - kind: clusters
+        x: 0.08
+        y: 0.05
+        w: 0.84
+        h: 0.9
+        label: nMDS
+  - id: B4.6
+    weight: small
+    frame: outlined
+    transition: moment-to-moment
+    word_picture: parallel
+    scene: Ines, close up, with a puzzled face.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: However, several samples for each gene marker did not cluster with samples from the same collection location.
+    - speaker: ines
+      text: Most. Not all.
+    claim_ids:
+    - C34
+    staging:
+      shot: close
+      characters:
+      - id: ines
+        x: 0.5
+        pose: stand
+        face: puzzled
+        facing: right
+  - id: B4.7
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'Three boxes joined by arrows: samples, contaminated samples removed, then clusters by location.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Results for all 10 MZG-ICE groups clustered in nMDS plots by sampling location and ocean region after removal of samples identified as contaminated based on taxonomic composition.
+    claim_ids:
+    - C35
+    staging:
+      props:
+      - kind: flow
+        x: 0.03
+        y: 0.15
+        w: 0.94
+        h: 0.6
+        items:
+        - label: samples
+        - label: samples identified as contaminated removed
+        - label: all 10 groups cluster by location
+  - id: B4.8
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    scene: 'Two pairs of boxes: V9 and V4 under highest consistency, V1-V2 and COI under higher variability.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: The V9 and V4 regions of 18S rRNA showed highest consistency in multivariate statistical analyses of biodiversity among the groups, with higher variability for V1-V2 and COI.
+    claim_ids:
+    - C36
+    staging:
+      props:
+      - kind: label
+        x: 0.25
+        y: 0.1
+        label: highest consistency
+      - kind: box
+        x: 0.03
+        y: 0.3
+        w: 0.21
+        h: 0.5
+        label: V9
+      - kind: box
+        x: 0.27
+        y: 0.3
+        w: 0.21
+        h: 0.5
+        label: V4
+      - kind: label
+        x: 0.75
+        y: 0.1
+        label: higher variability
+      - kind: box
+        x: 0.52
+        y: 0.3
+        w: 0.21
+        h: 0.5
+        label: V1-V2
+      - kind: box
+        x: 0.76
+        y: 0.3
+        w: 0.21
+        h: 0.5
+        label: COI
+  - id: B4.9
+    weight: wide
+    frame: borderless
+    transition: subject-to-subject
+    word_picture: parallel
+    device: aside
+    scene: A line with three marks, orders, genera and species, and Ines beside it.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Plots of COI sequence abundances for selected zooplankton taxa showed decreasing similarity among the groups for different taxonomic levels, from orders to genera to species.
+    - speaker: ines
+      text: The closer you look, the less they agree.
+    claim_ids:
+    - C37
+    humour:
+      note: Ines restates the claim as a dry aside (the closer the taxonomic level, the less the groups agreed). It adds no fact, but 'closer you look' is the comic's own summing-up of the caption's finding,
+        so it is left false for a human. 1 yes; 2 yes, the comic's voice; 3 yes, the narrator's own confidence; 4 yes; 5 to be judged.
+      keeps_claims_intact: false
+    staging:
+      props:
+      - kind: axis
+        x: 0.32
+        y: 0.45
+        w: 0.65
+        h: 0.45
+        title: decreasing similarity
+        items:
+        - label: orders
+          at: 0.08
+        - label: genera
+          at: 0.5
+        - label: species
+          at: 0.92
+      characters:
+      - id: ines
+        x: 0.1
+        pose: shrug
+        face: deadpan
+        facing: right
+        scale: 0.85
+  - id: B4.10
+    weight: full
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: duo-specific
+    device: reveal
+    scene: Ten small figures stand in a row.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Blanco-Bercial's team conclude that MZG-ICE provided evidence of the reliability and reproducibility of DNA metabarcoding results from diverse research groups for zooplankton samples collected
+        in different ocean regions and biomes.
+    claim_ids:
+    - C38
+    staging:
+      characters:
+      - id: extra
+        x: 0.07
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.17
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.27
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.37
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.47
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.57
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.67
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.77
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.87
+        y: 0.85
+        scale: 0.55
+        face: neutral
+      - id: extra
+        x: 0.97
+        y: 0.85
+        scale: 0.55
+        face: neutral
+  - id: B4.11
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'A black box with a question mark: each laboratory''s own protocol goes in, and the impact of each step comes out as a dashed arrow.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: But the variable protocol chains, with numerous differences between the laboratories, prevented definitive conclusions about the impacts of each and every protocol step.
+    claim_ids:
+    - C39
+    staging:
+      props:
+      - kind: blackbox
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        dashed: true
+        items:
+        - label: protocol steps
+        - label: impact of each step
+- id: B5
+  title: Two answers, side by side
+  act: discussion
+  panels:
+  - id: B5.1
+    weight: full
+    height: tall
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: 'A split screen cut on a slant: on the left a level balance, water against sediment; on the right a tilted balance, LargeVF against SmallVF.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Clarke''s team: water and sediment gave similar numbers of taxa (P = 0.67), but significantly different communities (P < 0.001).'
+    - speaker: narrator
+      kind: caption
+      text: 'Nester''s team: mean species richness was significantly higher with LargeVF than SmallVF (p < 0.001), and 51 species were detected with both.'
+    claim_ids:
+    - C6
+    - C9
+    - C19
+    - C20
+    staging:
+      split_direction: slope
+      split_labels:
+      - 'Clarke: water, sediment'
+      - 'Nester: two filters'
+      split:
+      - props:
+        - kind: scales
+          x: 0.08
+          y: 0.1
+          w: 0.84
+          h: 0.8
+          tilt: level
+          items:
+          - label: water
+          - label: sediment
+      - props:
+        - kind: scales
+          x: 0.08
+          y: 0.1
+          w: 0.84
+          h: 0.8
+          tilt: left
+          items:
+          - label: LargeVF
+          - label: SmallVF
+- id: B6
+  title: What the authors say is still open
+  act: discussion
+  panels:
+  - id: B6.1
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: Ines, close up, with a puzzled face.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Clarke''s team ask: how do we know an organism detected with eDNA is really there?'
+    claim_ids:
+    - C12
+    staging:
+      shot: close
+      characters:
+      - id: ines
+        x: 0.5
+        pose: think
+        face: puzzled
+        facing: right
+  - id: B6.2
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: A bridge between a block labelled eDNA and a block labelled other methods.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Clarke''s team: an understanding of eDNA''s spatial distribution in Antarctic benthic ecosystems should be paired with careful cataloguing of the actual biodiversity present, using other methods.'
+    - speaker: narrator
+      kind: caption
+      text: Nester's team advocate an eDNA survey run in parallel with CPR surveys, the intensity of sampling depending on the question being addressed.
+    claim_ids:
+    - C13
+    - C24
+    staging:
+      props:
+      - kind: bridge
+        x: 0.08
+        y: 0.08
+        w: 0.84
+        h: 0.84
+        items:
+        - label: eDNA
+        - label: other methods, such as the CPR
+  - id: B6.3
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    scene: Four bottles in a row, labelled with four filter pore sizes.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Nester's team recommend further testing of large volumes (12 l or greater) across commonly used larger pore sizes (1.2 μm, 5 μm, 10 μm, and 20 μm) to allow further optimization of eDNA sampling.
+    claim_ids:
+    - C25
+    staging:
+      props:
+      - kind: bottle
+        x: 0.04
+        y: 0.05
+        w: 0.2
+        h: 0.7
+      - kind: label
+        x: 0.14
+        y: 0.85
+        label: 1.2 μm
+      - kind: bottle
+        x: 0.28
+        y: 0.05
+        w: 0.2
+        h: 0.7
+      - kind: label
+        x: 0.38
+        y: 0.85
+        label: 5 μm
+      - kind: bottle
+        x: 0.52
+        y: 0.05
+        w: 0.2
+        h: 0.7
+      - kind: label
+        x: 0.62
+        y: 0.85
+        label: 10 μm
+      - kind: bottle
+        x: 0.76
+        y: 0.05
+        w: 0.2
+        h: 0.7
+      - kind: label
+        x: 0.86
+        y: 0.85
+        label: 20 μm
+  - id: B6.4
+    weight: full
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: parallel
+    device: reveal
+    scene: 'A board with three cards: orders, genera, and species, the last one covered.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Blanco-Bercial's team add that detection and identification of zooplankton species were not examined in detail with the MZG-ICE data.
+    claim_ids:
+    - C40
+    staging:
+      props:
+      - kind: board
+        x: 0.15
+        y: 0.15
+        w: 0.7
+        h: 0.45
+        title: taxonomic levels
+        cards:
+        - label: orders
+        - label: genera
+        - label: species
+          covered: true

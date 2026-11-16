@@ -1,0 +1,182 @@
+- id: B4
+  title: "Test three: same DNA, ten laboratories, four gene regions"
+  act: result
+  panels:
+  - id: B4.1
+    weight: wide
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: "A rack of sample tubes with ten small figures standing in a row."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In Blanco-Bercial's MetaZooGene Intercalibration Experiment (MZG-ICE), 10 research laboratories started from shared aliquots of DNA extracted from zooplankton samples collected by each group in different ocean regions." }
+    claim_ids: [C27]
+    staging:
+      props:
+        - { kind: tubes, x: 0.3, y: 0.05, w: 0.4, h: 0.5, label: "shared DNA aliquots" }
+      characters:
+        - { id: extra, x: 0.07, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.17, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.27, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.37, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.47, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.57, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.67, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.77, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.87, y: 0.92, scale: 0.4 }
+        - { id: extra, x: 0.97, y: 0.92, scale: 0.4 }
+  - id: B4.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: "Otto holds a mug beside a sequencer and a rack of tubes."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In MZG-ICE each group analysed 10 samples for all four gene regions, following their own standard protocols and procedures for the many steps in the DNA metabarcoding pipeline." }
+      - { speaker: otto, text: "I like my own protocol." }
+    claim_ids: [C29]
+    humour:
+      note: "Otto, the comic's own sceptic, is fond of his protocol. The caption is the paper's wording; the joke is Otto's line. 1 yes; 2 yes, the comic's voice; 3 yes, a fictional character; 4 yes; 5 yes. Left false for a human."
+      keeps_claims_intact: false
+    staging:
+      props:
+        - { kind: sequencer, x: 0.4, y: 0.25, w: 0.28, h: 0.5, label: "sequencer" }
+        - { kind: tubes, x: 0.72, y: 0.3, w: 0.25, h: 0.45 }
+      characters:
+        - { id: otto, x: 0.14, pose: sip, face: smug, facing: right, holding: mug, scale: 0.9 }
+  - id: B4.3
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "Four boxes name the four gene regions: V1-V2, V4, V9 and COI."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Blanco-Bercial's team selected gene regions to allow analysis of zooplankton diversity at differing levels of taxonomic resolution and detection: V1-V2, V4 and V9 of nuclear 18S rRNA, and mitochondrial cytochrome oxidase I (COI)." }
+    claim_ids: [C28]
+    staging:
+      props:
+        - { kind: box, x: 0.03, y: 0.15, w: 0.21, h: 0.6, label: "V1-V2 (18S rRNA)" }
+        - { kind: box, x: 0.27, y: 0.15, w: 0.21, h: 0.6, label: "V4 (18S rRNA)" }
+        - { kind: box, x: 0.51, y: 0.15, w: 0.21, h: 0.6, label: "V9 (18S rRNA)" }
+        - { kind: box, x: 0.75, y: 0.15, w: 0.21, h: 0.6, label: "COI (mitochondrial)" }
+  - id: B4.4
+    weight: full
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "A bar chart of the samples remaining for each of the four gene regions."
+    speech:
+      - { speaker: narrator, kind: caption, text: "In MZG-ICE, in terms of amplification success, V4 was the marker with the lowest performance: 69 of 100 samples remained after removal of contamination." }
+      - { speaker: narrator, kind: caption, text: "COI performed slightly better (72 samples), although poor results using standard protocols at some laboratories required use of alternative protocols. Success rates for V1-V2 and V9 were much higher (88 samples for each marker)." }
+    claim_ids: [C30, C31, C32]
+    staging:
+      props:
+        - { kind: bars, x: 0.15, y: 0.05, w: 0.7, h: 0.9, title: "Samples remaining, of 100", max: 100, bars: [ { label: "V4", value: 69 }, { label: "COI", value: 72 }, { label: "V1-V2", value: 88 }, { label: "V9", value: 88 } ] }
+  - id: B4.5
+    weight: standard
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: "Groups of dots on two axes, drawn as tight clusters."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Based on nMDS graphical analyses, samples from most MZG-ICE groups clustered by ocean region and biome." }
+    claim_ids: [C33]
+    staging:
+      props:
+        - { kind: clusters, x: 0.08, y: 0.05, w: 0.84, h: 0.9, label: "nMDS" }
+  - id: B4.6
+    weight: small
+    frame: outlined
+    transition: moment-to-moment
+    word_picture: parallel
+    scene: "Ines, close up, with a puzzled face."
+    speech:
+      - { speaker: narrator, kind: caption, text: "However, several samples for each gene marker did not cluster with samples from the same collection location." }
+      - { speaker: ines, text: "Most. Not all." }
+    claim_ids: [C34]
+    staging:
+      shot: close
+      characters:
+        - { id: ines, x: 0.5, pose: stand, face: puzzled, facing: right }
+  - id: B4.7
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "Three boxes joined by arrows: samples, contaminated samples removed, then clusters by location."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Results for all 10 MZG-ICE groups clustered in nMDS plots by sampling location and ocean region after removal of samples identified as contaminated based on taxonomic composition." }
+    claim_ids: [C35]
+    staging:
+      props:
+        - { kind: flow, x: 0.03, y: 0.15, w: 0.94, h: 0.6, items: [ { label: "samples" }, { label: "samples identified as contaminated removed" }, { label: "all 10 groups cluster by location" } ] }
+  - id: B4.8
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    scene: "Two pairs of boxes: V9 and V4 under highest consistency, V1-V2 and COI under higher variability."
+    speech:
+      - { speaker: narrator, kind: caption, text: "The V9 and V4 regions of 18S rRNA showed highest consistency in multivariate statistical analyses of biodiversity among the groups, with higher variability for V1-V2 and COI." }
+    claim_ids: [C36]
+    staging:
+      props:
+        - { kind: label, x: 0.25, y: 0.1, label: "highest consistency" }
+        - { kind: box, x: 0.03, y: 0.3, w: 0.21, h: 0.5, label: "V9" }
+        - { kind: box, x: 0.27, y: 0.3, w: 0.21, h: 0.5, label: "V4" }
+        - { kind: label, x: 0.75, y: 0.1, label: "higher variability" }
+        - { kind: box, x: 0.52, y: 0.3, w: 0.21, h: 0.5, label: "V1-V2" }
+        - { kind: box, x: 0.76, y: 0.3, w: 0.21, h: 0.5, label: "COI" }
+  - id: B4.9
+    weight: wide
+    frame: borderless
+    transition: subject-to-subject
+    word_picture: parallel
+    device: aside
+    scene: "A line with three marks, orders, genera and species, and Ines beside it."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Plots of COI sequence abundances for selected zooplankton taxa showed decreasing similarity among the groups for different taxonomic levels, from orders to genera to species." }
+      - { speaker: ines, text: "The closer you look, the less they agree." }
+    claim_ids: [C37]
+    humour:
+      note: "Ines restates the claim as a dry aside (the closer the taxonomic level, the less the groups agreed). It adds no fact, but 'closer you look' is the comic's own summing-up of the caption's finding, so it is left false for a human. 1 yes; 2 yes, the comic's voice; 3 yes, the narrator's own confidence; 4 yes; 5 to be judged."
+      keeps_claims_intact: false
+    staging:
+      props:
+        - { kind: axis, x: 0.32, y: 0.45, w: 0.65, h: 0.45, title: "decreasing similarity", items: [ { label: "orders", at: 0.08 }, { label: "genera", at: 0.5 }, { label: "species", at: 0.92 } ] }
+      characters:
+        - { id: ines, x: 0.1, pose: shrug, face: deadpan, facing: right, scale: 0.85 }
+  - id: B4.10
+    weight: full
+    frame: borderless
+    transition: scene-to-scene
+    word_picture: duo-specific
+    device: reveal
+    scene: "Ten small figures stand in a row."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Blanco-Bercial's team conclude that MZG-ICE provided evidence of the reliability and reproducibility of DNA metabarcoding results from diverse research groups for zooplankton samples collected in different ocean regions and biomes." }
+    claim_ids: [C38]
+    staging:
+      characters:
+        - { id: extra, x: 0.07, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.17, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.27, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.37, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.47, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.57, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.67, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.77, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.87, y: 0.85, scale: 0.55, face: neutral }
+        - { id: extra, x: 0.97, y: 0.85, scale: 0.55, face: neutral }
+  - id: B4.11
+    weight: wide
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: "A black box with a question mark: each laboratory's own protocol goes in, and the impact of each step comes out as a dashed arrow."
+    speech:
+      - { speaker: narrator, kind: caption, text: "But the variable protocol chains, with numerous differences between the laboratories, prevented definitive conclusions about the impacts of each and every protocol step." }
+    claim_ids: [C39]
+    staging:
+      props:
+        - { kind: blackbox, x: 0.1, y: 0.05, w: 0.8, h: 0.9, dashed: true, items: [ { label: "protocol steps" }, { label: "impact of each step" } ] }

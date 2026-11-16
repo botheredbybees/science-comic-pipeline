@@ -1,0 +1,65 @@
+- id: B1
+  title: "How far can an eDNA answer be trusted?"
+  act: problem
+  panels:
+  - id: B1.1
+    weight: wide
+    frame: borderless
+    height: tall
+    word_picture: additive
+    scene: "Ines stands on the sea shore beside a ship."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Blanco-Bercial and colleagues write that using DNA metabarcoding as a foundation for management and conservation decisions throughout the global ocean will require documented evidence of accuracy, reliability and reproducibility." }
+    claim_ids: [C26]
+    staging:
+      shot: wide
+      props:
+        - { kind: ship, x: 0.5, y: 0.12, w: 0.42, h: 0.5 }
+      characters:
+        - { id: ines, x: 0.18, pose: point, face: smile, facing: right }
+  - id: B1.2
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: additive
+    device: gloss
+    scene: "Ines points at a bottle of seawater, beside a strip of DNA letters."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Nester's team define it: eDNA metabarcoding describes biodiversity patterns through the amplification of trace amounts of DNA naturally shed into the environment by organisms." }
+      - { speaker: ines, text: "So living things leave DNA behind, and we read it." }
+    claim_ids: [C14]
+    staging:
+      props:
+        - { kind: bottle, x: 0.06, y: 0.3, w: 0.2, h: 0.6, label: "seawater" }
+        - { kind: sequence, x: 0.4, y: 0.5, w: 0.55, h: 0.3 }
+      characters:
+        - { id: ines, x: 0.3, pose: point, face: smile, facing: left, scale: 0.8 }
+  - id: B1.3
+    weight: standard
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: parallel
+    scene: "Otto raises one eyebrow, beside two overlapping circles labelled water and sediment."
+    speech:
+      - { speaker: otto, text: "Fine. But do water and mud give the same list?" }
+      - { speaker: narrator, kind: caption, text: "Clarke's team note that two recent studies found less than 10% overlap between molecular Operational Taxonomic Units (OTUs) from sediment and benthic water samples." }
+    claim_ids: [C1]
+    staging:
+      props:
+        - { kind: venn, x: 0.3, y: 0.1, w: 0.68, h: 0.7, items: [ { label: "water" }, { label: "sediment" } ], label: "less than 10%" }
+      characters:
+        - { id: otto, x: 0.1, pose: stand, face: sceptical, facing: right, scale: 0.9 }
+  - id: B1.4
+    weight: full
+    frame: borderless
+    transition: subject-to-subject
+    word_picture: picture-specific
+    scene: "Three boxes in a row name the three studies and what each one changed."
+    speech:
+      - { speaker: narrator, kind: caption, text: "Three studies, three tests: change one thing, then ask whether the answer holds." }
+    claim_ids: [C2, C17, C27]
+    staging:
+      props:
+        - { kind: box, x: 0.03, y: 0.1, w: 0.29, h: 0.5, label: "Clarke et al.: water or sediment?" }
+        - { kind: box, x: 0.355, y: 0.1, w: 0.29, h: 0.5, label: "Nester et al.: two filter set-ups" }
+        - { kind: box, x: 0.68, y: 0.1, w: 0.29, h: 0.5, label: "Blanco-Bercial et al.: 10 laboratories" }
