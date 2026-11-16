@@ -80,7 +80,7 @@
 ## Where the comic added its own wording
 
 - **B1.4** (the overview of the three tests), **B5.1**'s side-by-side framing, Ines's lines ("So living things leave DNA behind, and we read it.", "So they went looking for animal DNA.", "Very different shares.", "Most. Not all."), Otto's question in B1.3 and the box labels are the comic's voice. None adds a number.
-- **Two jokes, awaiting a human** (`keeps_claims_intact: false`): B4.2 (Otto: "I like my own protocol.") and B4.9 (Ines: "The closer you look, the less they agree.").
+- **One joke, awaiting a human** (`keeps_claims_intact: false`): the three-frame strip B4.2 (Ines: "Ten labs, ten protocols." Otto: "Ten protocols? Ridiculous. We need one that covers everybody." Ines, over a board of the ten and Otto's: "That's eleven."), after the shape of xkcd 927. The other joke, B4.9 (Ines: "The closer you look, the less they agree."), was approved by the reviewer.
 - **Ines and Otto** are invented. The cast `role` says so. Copepod in B2.9 and the people in B4.1/B4.10 are cartoon stand-ins.
 
 ## Checks run

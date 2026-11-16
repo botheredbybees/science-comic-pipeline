@@ -1202,44 +1202,83 @@ beats:
         y: 0.92
         scale: 0.4
   - id: B4.2
-    weight: standard
+    weight: wide
     frame: outlined
     transition: subject-to-subject
-    word_picture: parallel
-    scene: Otto holds a mug beside a sequencer and a rack of tubes.
+    word_picture: interdependent
+    scene: A strip of three frames. Ines beside a sequencer; Otto, marker raised, wants one protocol for everybody; soon, a board lists the ten protocols and Otto's.
     speech:
     - speaker: narrator
       kind: caption
       text: In MZG-ICE each group analysed 10 samples for all four gene regions, following their own standard protocols and procedures for the many steps in the DNA metabarcoding pipeline.
+    - speaker: ines
+      cell: 1
+      text: Ten labs, ten protocols.
     - speaker: otto
-      text: I like my own protocol.
+      cell: 2
+      text: Ten protocols? Ridiculous. We need one that covers everybody.
+    - speaker: ines
+      cell: 3
+      text: That's eleven.
     claim_ids:
     - C29
     humour:
-      note: Otto, the comic's own sceptic, is fond of his protocol. The caption is the paper's wording; the joke is Otto's line. 1 yes; 2 yes, the comic's voice; 3 yes, a fictional character; 4 yes; 5 yes.
-        Left false for a human.
+      note: 'One gag over the three frames of the strip, in the shape of xkcd 927 (a pile of standards, a call for one to replace them, then one more standard): the paper''s ten laboratory protocols, Otto''s
+        call for a single protocol, and Otto''s own becoming the eleventh. Otto is the comic''s own sceptic, a fictional character, and the butt is Otto and his plan; the paper''s authors propose nothing
+        of the kind and the joke says so nowhere. The caption keeps the paper''s wording and Ines''s first line only restates it. The count (ten plus one) is the comic''s own arithmetic. 1 yes (ten comes
+        from the claim, eleven is the joke''s sum); 2 yes, the comic''s voice; 3 yes, a fictional character; 4 yes; 5 to be judged; 6 yes, Ines says ten protocols in the first frame. Left false for a human.'
       keeps_claims_intact: false
     staging:
-      props:
-      - kind: sequencer
-        x: 0.4
-        y: 0.25
-        w: 0.28
-        h: 0.5
-        label: sequencer
-      - kind: tubes
-        x: 0.72
-        y: 0.3
-        w: 0.25
-        h: 0.45
-      characters:
-      - id: otto
-        x: 0.14
-        pose: sip
-        face: smug
-        facing: right
-        holding: mug
-        scale: 0.9
+      split_labels:
+      - ''
+      - ''
+      - soon
+      split:
+      - props:
+        - kind: sequencer
+          x: 0.04
+          y: 0.3
+          w: 0.48
+          h: 0.45
+          label: sequencer
+        characters:
+        - id: ines
+          x: 0.8
+          pose: stand
+          face: neutral
+          facing: left
+          scale: 0.9
+      - characters:
+        - id: otto
+          x: 0.5
+          pose: up
+          face: determined
+          facing: right
+          holding: marker
+          scale: 1.0
+      - props:
+        - kind: board
+          x: 0.05
+          y: 0.02
+          w: 0.9
+          h: 0.22
+          title: the protocols
+          cards:
+          - label: the ten
+          - label: Otto's
+        characters:
+        - id: otto
+          x: 0.3
+          pose: stand
+          face: smug
+          facing: right
+          scale: 0.6
+        - id: ines
+          x: 0.78
+          pose: stand
+          face: deadpan
+          facing: left
+          scale: 0.6
   - id: B4.3
     weight: wide
     frame: outlined
@@ -1444,7 +1483,7 @@ beats:
     humour:
       note: Ines restates the claim as a dry aside (the closer the taxonomic level, the less the groups agreed). It adds no fact, but 'closer you look' is the comic's own summing-up of the caption's finding,
         so it is left false for a human. 1 yes; 2 yes, the comic's voice; 3 yes, the narrator's own confidence; 4 yes; 5 to be judged.
-      keeps_claims_intact: false
+      keeps_claims_intact: true
     staging:
       props:
       - kind: axis

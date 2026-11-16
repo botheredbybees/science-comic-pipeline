@@ -32,4 +32,4 @@
 
 - B1.4 ("Three studies, three tests: change one thing, then ask whether the answer holds.") is the comic's framing. "Agrees with itself" is the comic's question, not a result any paper reports.
 - B5.1 puts Clarke's and Nester's findings side by side: they are different comparisons (water against sediment; two filter set-ups), so the comic does not call them a contradiction.
-- Ines's lines are restatements; Otto's lines are questions or jokes. The two jokes (B4.2, B4.9) are flagged `keeps_claims_intact: false` for a human.
+- Ines's lines are restatements; Otto's lines are questions or jokes. The two jokes (B4.2, a three-frame strip, and B4.9) were flagged `keeps_claims_intact: false` for a human; B4.9 is approved, B4.2 is waiting.
