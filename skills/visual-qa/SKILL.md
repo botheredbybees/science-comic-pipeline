@@ -30,7 +30,7 @@ Export the PDF first (step 4) and view each page at readable size: it is drawn i
 `pdftoppm -r 70 -png examples/<slug>/<slug>.pdf output/<slug>/q`. Compare the PDF with the sheet once: the layout must match.
 The scan cannot see the following, so check them yourself, page by page:
 
-- Text running over a drawing, a speech line that crosses a figure, or a line that points at the wrong speaker.
+- Text running over a drawing, a speech line that crosses a figure (the renderer now keeps speech off props, but not off other characters), or a line that points at the wrong speaker.
 - A figure cut off at a panel edge, or tiny in a wide, short panel.
 - Charts: every bar and point labelled; no label cut short; axes and units readable; nothing drawn that
   is not in a claim.

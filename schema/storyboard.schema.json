@@ -435,6 +435,12 @@
                         "type": "string",
                         "minLength": 1
                       },
+                      "cell": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 4,
+                        "description": "Which frame of a split screen the speaker is in, counting from 1 at the left, for when the same character is in several frames. Without it the line points at the speaker's first appearance."
+                      },
                       "kind": {
                         "enum": [
                           "say",
@@ -551,9 +557,9 @@
         "split": {
           "type": "array",
           "minItems": 2,
-          "maxItems": 2,
+          "maxItems": 4,
           "items": {"$ref": "#/$defs/staging"},
-          "description": "A split screen: two stagings drawn side by side in this scene, left then right, with a line between them (each is a full staging with its own characters, props and shot). This staging's own characters and props are drawn first, behind both halves, so leave them out unless the two halves share a backdrop."
+          "description": "A split screen: two stagings drawn side by side in this scene, left then right, with a line between them (each is a full staging with its own characters, props and shot). This staging's own characters and props are drawn first, behind both halves, so leave them out unless the two halves share a backdrop. Three or four stagings make a strip (a gag told in frames, as xkcd 927 does): only with split_direction side; three need panel weight wide or full, and share a row only with a small panel; four need weight full. When the same character is in several frames, a speech line's cell says which one is speaking."
         },
         "split_direction": {
           "enum": ["side", "stack", "slope"],
@@ -562,9 +568,9 @@
         },
         "split_labels": {
           "type": "array",
-          "maxItems": 2,
+          "maxItems": 4,
           "items": {"type": "string"},
-          "description": "Words printed above the two halves of a split screen, left then right."
+          "description": "Words printed above the halves (or frames of a strip) of a split screen, left then right."
         },
         "ground": {
           "type": "boolean",

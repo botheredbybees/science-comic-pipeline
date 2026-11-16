@@ -102,3 +102,36 @@ def test_the_repeat_penalty_never_breaks_the_basic_rules():
     rows = pack_rows(ps, prev=(6, 6))
     assert [p["id"] for r in rows for p, _ in r] == [p["id"] for p in ps]
     assert all(sum(u for _, u in r) == ROW_UNITS and len(r) <= 3 and all(u >= 4 for _, u in r) for r in rows)
+
+
+def strip(n, weight="wide", pid="B1.1"):
+    return {"id": pid, "weight": weight, "staging": {"split": [{} for _ in range(n)]}}
+
+
+def test_a_three_cell_strip_is_at_least_wide_even_if_its_weight_is_smaller():
+    from layout import floor
+    assert floor(strip(3, "small")) == 8 and units(strip(3, "small")) == 8 and units(strip(3, "full")) == 12
+    assert floor(strip(2)) == 0 and floor({"id": "B1.1"}) == 0
+
+
+def test_a_three_cell_strip_shares_a_row_only_with_a_narrow_frame():
+    ps = [strip(3), {"id": "B1.2", "weight": "small"}]
+    assert shape(pack_rows(ps)) == [[("B1.1", 8), ("B1.2", 4)]]
+    ps = [{"id": "B1.0", "weight": "small"}, strip(3)]
+    assert shape(pack_rows(ps)) == [[("B1.0", 4), ("B1.1", 8)]]
+    for neighbour in ("standard", "wide"):  # anything wider than a third does not sit beside a strip: the strip goes alone
+        rows = pack_rows([strip(3), {"id": "B1.2", "weight": neighbour}])
+        assert shape(rows)[0] == [("B1.1", 12)] and len(rows) == 2
+
+
+def test_a_three_cell_strip_never_gets_less_than_two_thirds_of_a_row():
+    ps = [{"id": f"B1.{i}", "weight": "small"} for i in range(5)] + [strip(3, pid="B1.9")] + [{"id": f"B1.{i}", "weight": "standard"} for i in range(10, 14)]
+    for row in pack_rows(ps):
+        for p, u in row:
+            if p["id"] == "B1.9":
+                assert u >= 8 and len(row) <= 2
+
+
+def test_a_four_cell_strip_takes_a_whole_row():
+    rows = pack_rows([{"id": "B1.0", "weight": "small"}, strip(4, "wide"), {"id": "B1.2", "weight": "small"}])
+    assert shape(rows)[1] == [("B1.1", 12)]

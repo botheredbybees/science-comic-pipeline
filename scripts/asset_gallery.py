@@ -212,6 +212,11 @@ def build():
          "staging": {"split": [half_a, half_b], "split_labels": ["before", "after"], "split_direction": d}}
         for n, (d, how) in enumerate((("side", "left and right (the default), for a comparison or two things at once"), ("stack", "top and bottom, for a before above an after"),
                                        ("slope", "two wedges cut by a slanted line, for a contrast with tension; keep each half's figures in its own wedge")), 1)]})
+    third = lambda face, x: {"characters": [{"id": "extra", "x": x, "face": face}]}
+    beats[-1]["panels"].append(
+        {"id": "B9.4", "weight": "wide", "height": "tall", "frame": "outlined", "transition": "scene-to-scene",
+         "scene": "A strip of three frames.", "speech": [{"speaker": "narrator", "kind": "caption", "text": "A strip: three frames in one panel (`split` with three stagings), the caption once above them."}],
+         "staging": {"split": [third("neutral", 0.5), third("worry", 0.5), third("smile", 0.5)], "split_labels": ["", "then", "soon"]}})
     panels = []
     for n, (title, row) in enumerate(PROPS, 1):
         props = []

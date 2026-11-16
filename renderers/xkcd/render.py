@@ -11,6 +11,7 @@ Nothing here is copied from xkcd; only the ideas about style are borrowed.
     python renderers/xkcd/render.py examples/akam-2026-cartooning/storyboard.yaml -o output/xkcd
 """
 import argparse
+import json
 import math
 import re
 import sys
@@ -570,6 +571,7 @@ def stage(pen, x, y, w, h, st, cast, fs):
                 svg = f'<clipPath id="{cid}"><polygon points="{pts}"/></clipPath><g clip-path="url(#{cid})">{svg}</g>'
             out.append(svg)
             for k, v in hd.items():
+                heads[f"{k}@{i + 1}"] = v  # a speech line's `cell` picks this frame's figure when the same character is in several
                 heads.setdefault(k, v)
     return "".join(out), heads
 
@@ -619,9 +621,10 @@ def split_cells(st, x, y, w, h, fs):
         inner = w / 2 - lean - gap / 2  # the widest rectangle that fits each wedge: figures placed in it cannot cross the divider
         return [{"frame": ("poly", left), "sub": (x, y, inner, h), "label": (x + 8, y + 4, "start")},
                 {"frame": ("poly", right), "sub": (x + w - inner, y, inner, h), "label": (x + w - 8, y + h - fs * 1.3, "end")}]
-    half = (w - gap) / 2
+    n = max(2, len(st.get("split") or []))  # a strip: three or four frames side by side
+    half = (w - gap * (n - 1)) / n
     return [{"frame": ("rect", (x + i * (half + gap), y + top, half, h - top)), "sub": (x + i * (half + gap) + 6, y + top + 6, half - 12, h - top - 12),
-             "label": (x + i * (half + gap) + half / 2, y, "middle")} for i in range(2)]
+             "label": (x + i * (half + gap) + half / 2, y, "middle")} for i in range(n)]
 
 
 def staged_offsets(st, cast, w, h):
@@ -629,11 +632,27 @@ def staged_offsets(st, cast, w, h):
     st = st or {}
     out = {c["id"]: _head_offset(c, cast, w, h) for c in st.get("characters", [])}
     if st.get("split"):
-        for cell, sub in zip(split_cells(st, 0, 0, w, h, FONT_SIZE), st["split"]):
+        for n, (cell, sub) in enumerate(zip(split_cells(st, 0, 0, w, h, FONT_SIZE), st["split"]), 1):
             _, sy, sw, sh = cell["sub"]
             for k, v in staged_offsets(sub, cast, sw, sh).items():
+                if "@" not in k:
+                    out[f"{k}@{n}"] = v + sy  # `id@n`: that frame's figure, for a speech line's `cell`
                 out.setdefault(k, v + sy)
     return out
+
+
+def speaker_key(s):
+    """What a speech line looks up in the heads and offsets: the speaker's id, or `id@cell` when the line names a frame."""
+    return f'{s["speaker"]}@{s["cell"]}' if s.get("cell") else s["speaker"]
+
+
+def cell_box(staging, cell, x, y, w, h, fs):
+    """(left, right) of a numbered frame of a split screen, or None when the staging has no such frame."""
+    cells = split_cells(staging, x, y, w, h, fs) if (staging or {}).get("split") else []
+    if not cell or cell > len(cells) or cells[cell - 1]["frame"][0] != "rect":
+        return None
+    fx, _, fw, _ = cells[cell - 1]["frame"][1]
+    return fx, fx + fw
 
 
 def plan_panel(panel, w, k=0.55, cast=None):
@@ -651,13 +670,21 @@ def plan_panel(panel, w, k=0.55, cast=None):
             shown = s["text"] if "staging" in panel else f'{s["speaker"].replace("_", " ").title()}: {s["text"]}'
             if kind == "think":
                 shown = f"\u201c{shown}\u201d"
-            talk.append((s, wrap(shown, min(inner * 0.6, 260), fs)))
+            room = min(inner * 0.6, 260)
+            frame = cell_box(panel.get("staging"), s.get("cell"), 0, 0, inner, clamp(k * w, 150, 520 * k), fs)
+            if frame:  # a line in one frame of a strip stays inside that frame
+                room = min(room, frame[1] - frame[0] - 16)
+            talk.append((s, wrap(shown, room, fs)))
     scene_nat = clamp(k * w, 150, 520 * k)
-    near = [(s, li) for s, li in talk if s["speaker"] in staged]
-    far = [(s, li) for s, li in talk if s["speaker"] not in staged]
+    near = [(s, li) for s, li in talk if speaker_key(s) in staged]
+    far = [(s, li) for s, li in talk if speaker_key(s) not in staged]
     # Speech sits just above its speaker's head; the scene only needs extra headroom when the head is too low.
-    need = sum(block_h(li, fs) + SPEECH_GAP for _, li in near)
-    free = min((staged[s["speaker"]] for s, _ in near), default=0)
+    # Lines in different frames of a strip sit side by side, so only the lines of one frame (or all of them, with no frames) stack.
+    stacks = {}
+    for s, li in near:
+        stacks[s.get("cell")] = stacks.get(s.get("cell"), 0) + block_h(li, fs) + SPEECH_GAP
+    need = max(stacks.values(), default=0)
+    free = min((staged[speaker_key(s)] for s, _ in near), default=0)
     extra = max(0.0, need - free)
     talk_h = extra + sum(block_h(li, fs) + 22 for _, li in far)
     # Heads sit roughly in proportion to the scene's height, so a shorter scene lowers the room for speech.
@@ -665,6 +692,130 @@ def plan_panel(panel, w, k=0.55, cast=None):
     cap_h = sum(block_h(c, fs) + 16 for c in captions) + (6 if captions else 0)
     return {"fs": fs, "captions": captions, "talk": talk, "cap_h": cap_h, "talk_h": talk_h,
             "scene_nat": scene_nat, "nat_h": PAD + cap_h + talk_h + scene_nat + PAD, "shrink_ok": shrink_ok}
+
+
+BACKDROP = {"desk", "seaice", "iceshelf", "mixedlayer", "skyline", "livingroom", "stage"}  # props a figure stands in front of: speech may cross them
+
+
+_INK = {}
+
+
+def ink_box(svg):
+    """The box (x0, y0, x1, y1) that the drawing in an SVG fragment covers, from its paths, circles, ellipses, rectangles and text; None if it draws nothing.
+    A prop's declared box is only where it is placed: many props draw well inside it, and speech may use the empty part."""
+    xs, ys = [], []
+    for d in re.findall(r'<path d="([^"]+)"', svg):
+        n = [float(v) for v in re.findall(r"-?\d+\.?\d*", d)]
+        xs += n[0::2]
+        ys += n[1::2]
+    for cx, cy, rx, ry in re.findall(r'<(?:circle|ellipse) cx="([-\d.]+)" cy="([-\d.]+)" r[x]?="([-\d.]+)"(?: ry="([-\d.]+)")?', svg):
+        ry = ry or rx
+        xs += [float(cx) - float(rx), float(cx) + float(rx)]
+        ys += [float(cy) - float(ry), float(cy) + float(ry)]
+    for x, y, fs, anchor, body in re.findall(r'<text x="([-\d.]+)" y="([-\d.]+)" font-size="([\d.]+)" text-anchor="(\w+)"[^>]*>(.*?)</text>', svg):
+        rows = re.findall(r">([^<]*)</tspan>", body)
+        wd = max((len(r) for r in rows), default=0) * float(fs) * CHAR_W
+        x = float(x)
+        x0 = x - wd / 2 if anchor == "middle" else (x - wd if anchor == "end" else x)
+        xs += [x0, x0 + wd]
+        ys += [float(y), float(y) + len(rows) * float(fs) * 1.2]
+    return (min(xs), min(ys), max(xs), max(ys)) if xs and ys else None
+
+
+def speech_obstacles(st, x, y, w, h, fs):
+    """Boxes (x0, y0, x1, y1), in the staging box's own coordinates, of what the props in it draw: where a speech line must not go.
+
+    Backdrops (a desk, sea ice, a skyline) are left out, and so are the characters: speech is placed above its own speaker's head and two speakers
+    are stacked apart from each other already. Both halves of a split screen are searched."""
+    out = []
+    for p in (st or {}).get("props", []):
+        k = p["kind"]
+        if k in BACKDROP:
+            continue
+        px, py = x + p.get("x", 0) * w, y + p.get("y", 0) * h
+        if k == "arrow":
+            qx, qy = x + p.get("x2", 0) * w, y + p.get("y2", 0) * h
+            out.append((min(px, qx) - 4, min(py, qy) - 4, max(px, qx) + 4, max(py, qy) + 4))
+            continue
+        pw, ph = p.get("w", 0.3) * w, p.get("h", 0.3) * h
+        if k == "label":
+            size = {"small": 0.8, "large": 1.3}.get(p.get("size"), 1.0)
+            tw = len(p.get("label", "")) * fs * size * CHAR_W
+            out.append((px - tw / 2, py - fs * size * 0.5, px + tw / 2, py + fs * size * 0.7))
+            continue
+        box = (px, py, px + pw, py + ph)
+        if k in EXTRA or k == "bars":  # these draw inside their box: measure what they draw
+            key = (json.dumps(p, sort_keys=True, default=str), round(px, 1), round(py, 1), round(pw, 1), round(ph, 1), round(fs, 1))
+            if key not in _INK:
+                svg = _bars(Pen(0), px, py, pw, ph, p, fs) if k == "bars" else extra_prop(Pen(0), px, py, pw, ph, p, fs)
+                _INK[key] = ink_box(svg) or box
+            box = _INK[key]
+        elif k not in ("board", "paper", "picture"):  # a box grows to hold its words
+            box = (px, py, px + pw, py + max(ph, block_h(wrap(p.get("label", ""), pw - 10, fs), fs) + 12))
+        out.append(box)
+    if (st or {}).get("split"):
+        for cell, sub in zip(split_cells(st, x, y, w, h, fs), st["split"]):
+            out += speech_obstacles(sub, *cell["sub"], fs * 0.8)
+    return out
+
+
+MIN_SPEECH_W = 110  # the narrowest gap a speech line is wrapped into: about a dozen characters
+
+
+def clear_of_props(lines, head_x, bottom, obstacles, left, right, fs):
+    """Move a speech block off the props it would touch. Returns (lines, centre x).
+
+    The free run of space beside the speaker, between the nearest prop on each side and the panel's edges, is found at the block's height.
+    If the block fits in it, it is slid into it; if not, it is wrapped again to the width of the gap, which makes it taller, so the gap is found
+    again at the new height. A speaker standing in front of a prop, or a gap too narrow to read in, leaves the block as it was."""
+    margin = 8
+    text_ = " ".join(lines)
+    start = lines
+    for _ in range(4):
+        tw = max(len(li) for li in lines) * fs * CHAR_W
+        top = bottom - block_h(lines, fs)
+        lo, hi = left, right
+        for x0, y0, x1, y1 in obstacles:
+            if y1 <= top - 2 or y0 >= bottom + 2:
+                continue  # not at this height
+            if x0 <= head_x <= x1:
+                return start, clamp(head_x, left + tw / 2, right - tw / 2)  # the speaker stands in front of it
+            if x1 < head_x:
+                lo = max(lo, x1 + margin)
+            else:
+                hi = min(hi, x0 - margin)
+        if hi - lo >= tw:
+            return lines, clamp(head_x, lo + tw / 2, hi - tw / 2)
+        if hi - lo < MIN_SPEECH_W:
+            break
+        lines = wrap(text_, hi - lo, fs)
+    tw = max(len(li) for li in start) * fs * CHAR_W
+    return start, clamp(head_x, left + tw / 2, right - tw / 2)
+
+
+def speech_layout(talk, heads, staging, scene_y, scene_h, w, fs):
+    """Where each speech block goes: above its speaker's head, off the props beside it, and stacked clear of any block it would touch.
+    One dict per block: speech, lines, head (None if the speaker is not on stage), cx, top, bottom, tw."""
+    obstacles = speech_obstacles(staging, PAD, scene_y, w - 2 * PAD, scene_h, fs) if staging else []
+    placed, out = [], []
+    for s, lines in talk:
+        head = heads.get(speaker_key(s))
+        if not head:
+            out.append({"speech": s, "lines": lines, "head": None, "cx": w / 2, "top": 0.0, "bottom": 0.0, "tw": 0.0})
+            continue
+        bottom = head[1] - SPEECH_GAP
+        left, right = cell_box(staging, s.get("cell"), PAD, scene_y, w - 2 * PAD, scene_h, fs) or (PAD, w - PAD)  # a line in a strip stays in its frame
+        lines, cx = clear_of_props(lines, head[0], bottom, obstacles, left, right, fs)
+        bh = block_h(lines, fs)
+        tw = max(len(li) for li in lines) * fs * CHAR_W
+        top = bottom - bh
+        for x0, x1, y0, y1 in placed:  # two speakers close together: stack rather than overlap
+            if cx - tw / 2 < x1 and cx + tw / 2 > x0 and top < y1 and bottom > y0:
+                top = y0 - 6 - bh
+                bottom = top + bh
+        placed.append((cx - tw / 2, cx + tw / 2, top, bottom))
+        out.append({"speech": s, "lines": lines, "head": head, "cx": cx, "top": top, "bottom": bottom, "tw": tw})
+    return out
 
 
 def draw_panel(panel, plan, w, h, cast):
@@ -687,7 +838,8 @@ def draw_panel(panel, plan, w, h, cast):
         # would put its speech line over the captions. Measure the real heads with a throwaway pen and push the scene down until clear.
         for _ in range(4):
             _, probe = stage(Pen(pid), PAD, scene_y, w - 2 * PAD, scene_h, panel["staging"], cast, fs)
-            lack = max((talk_top - (probe[s["speaker"]][1] - SPEECH_GAP - block_h(li, fs)) for s, li in plan["talk"] if s["speaker"] in probe), default=0)
+            blocks = speech_layout(plan["talk"], probe, panel["staging"], scene_y, scene_h, w, fs)
+            lack = max((talk_top - b["top"] for b in blocks), default=0)
             if lack <= 0.5 or scene_h - lack < 60:
                 break
             scene_y += lack
@@ -699,27 +851,18 @@ def draw_panel(panel, plan, w, h, cast):
     else:
         lines = wrap(panel["scene"], w - 2 * PAD - 12, fs * 0.9)
         o.append(text(w / 2, scene_y + scene_h / 2 - block_h(lines, fs * 0.9) / 2, lines, fs * 0.9, anchor="middle", fill=MID))
-    placed, ty = [], talk_top
-    for s, lines in plan["talk"]:
-        bh = block_h(lines, fs)
-        tw = max(len(li) for li in lines) * fs * CHAR_W
-        head = heads.get(s["speaker"])
+    ty = talk_top
+    blocks = speech_layout(plan["talk"], heads, panel.get("staging"), scene_y, scene_h, w, fs)
+    for b in blocks:
+        s, lines, head = b["speech"], b["lines"], b["head"]
         if not head:  # nobody to point at: stack the text at the top of the scene
             o.append(text(w / 2, ty, lines, fs, anchor="middle"))
-            ty += bh + 22
+            ty += block_h(lines, fs) + 22
             continue
-        cx = clamp(head[0], PAD + tw / 2, w - PAD - tw / 2)
-        bottom = head[1] - SPEECH_GAP
-        top = bottom - bh
-        for x0, x1, y0, y1 in placed:  # two speakers close together: stack rather than overlap
-            if cx - tw / 2 < x1 and cx + tw / 2 > x0 and top < y1 and bottom > y0:
-                top = y0 - 6 - bh
-                bottom = top + bh
-        placed.append((cx - tw / 2, cx + tw / 2, top, bottom))
-        o.append(text(cx, top, lines, fs, anchor="middle", halo=True))
+        o.append(text(b["cx"], b["top"], lines, fs, anchor="middle", halo=True))
         dash = "3 5" if s.get("kind") == "think" else None
-        start = clamp(head[0], cx - tw / 2 + 8, cx + tw / 2 - 8)  # the point of the text's lower edge nearest the speaker
-        o.append(pen.line((start, bottom + 3), (head[0], head[1] - 8), 2.0, dash=dash))
+        start = clamp(head[0], b["cx"] - b["tw"] / 2 + 8, b["cx"] + b["tw"] / 2 - 8)  # the point of the text's lower edge nearest the speaker
+        o.append(pen.line((start, b["bottom"] + 3), (head[0], head[1] - 8), 2.0, dash=dash))
     cid = "clip-" + pid.replace(".", "-")
     alt = esc(panel["scene"])
     alt_attr = escape(str(panel["scene"]), quote=True)

@@ -494,3 +494,52 @@ def test_split_labels_count_as_words_so_a_split_is_not_a_filler(doc):
     p["claim_ids"] = []
     _, warnings = validate(doc)
     assert not any(p["id"] in w and "says nothing" in w for w in warnings)
+
+
+def _strip(doc, n=3, weight="wide", direction=None, cell=None, in_cells=("sam", "sam", "dr_okoye")):
+    p = doc["beats"][0]["panels"][0]
+    p["weight"] = weight
+    cells = [{"characters": [{"id": in_cells[i % len(in_cells)], "x": 0.5}]} for i in range(n)]
+    p["staging"] = {"split": cells, "split_labels": ["", "then", "later", "after"][:n]}
+    if direction:
+        p["staging"]["split_direction"] = direction
+    p["speech"] = [{"speaker": "sam", "text": "Hmm.", **({"cell": cell} if cell else {})}]
+    return p
+
+
+def test_a_three_cell_strip_on_a_wide_panel_is_fine(doc):
+    _strip(doc, 3, "wide", cell=2)
+    errors, _ = validate(doc)
+    assert errors == []
+
+
+def test_a_strip_needs_the_width_to_be_readable(doc):
+    _strip(doc, 3, "standard", cell=1)
+    assert any("needs weight wide or full" in e for e in validate(doc)[0])
+    _strip(doc, 4, "wide", cell=1)
+    assert any("needs weight full" in e for e in validate(doc)[0])
+    _strip(doc, 4, "full", cell=1)
+    assert validate(doc)[0] == []
+
+
+def test_a_strip_can_only_be_cut_side_by_side(doc):
+    _strip(doc, 3, "full", direction="stack", cell=1)
+    assert any("split_direction side" in e for e in validate(doc)[0])
+
+
+def test_a_speech_cell_must_be_a_frame_that_has_the_speaker(doc):
+    _strip(doc, 3, "wide", cell=3)  # sam is in frames 1 and 2; frame 3 has dr_okoye
+    assert any("is not staged in frame 3" in e for e in validate(doc)[0])
+    _strip(doc, 3, "wide", cell=4)
+    assert any("`cell` 4" in e and "only 3" in e for e in validate(doc)[0])
+    p = doc["beats"][0]["panels"][0]
+    p["staging"] = {"props": [{"kind": "bottle", "label": "water"}]}
+    p["speech"] = [{"speaker": "sam", "text": "Hmm.", "cell": 1}]
+    assert any("`cell` is only for a split screen" in e for e in validate(doc)[0])
+
+
+def test_a_speaker_in_several_frames_with_no_cell_is_a_warning(doc):
+    _strip(doc, 3, "wide")
+    assert any("sam is in frames 1, 2" in w for w in validate(doc)[1])
+    _strip(doc, 3, "wide", cell=2)
+    assert not any("is in frames" in w for w in validate(doc)[1])

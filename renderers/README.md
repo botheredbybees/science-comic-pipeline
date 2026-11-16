@@ -6,6 +6,7 @@ A renderer turns a validated `storyboard.yaml` into pages. One exists so far.
 
 - Reads the storyboard only. It never opens the source paper.
 - Draws each panel's `scene`, `speech`, `frame` and `staging`. It adds no facts.
+- Places each speech line above its speaker's head, then moves it off any prop it would cross: it slides to the free side of the prop, or is wrapped narrower to fit the gap (a narrower line is taller, so the scene gets a little shorter). A speaker standing in front of a prop, a gap under about a dozen characters wide, and backdrops (`desk`, `seaice`, `iceshelf`, `mixedlayer`, `skyline`, `livingroom`, `stage`) leave the line where it was. Props are measured by what they draw, not by the box you gave them. Characters other than the speaker are not checked.
 - Lays panels out with `scripts/layout.py` (rows of at most three, no blanks, widths from `weight`).
 - Keeps text as real text (SVG `<text>`), so it can be checked and edited.
 - Gives every panel an accessible description (its scene text).
@@ -101,7 +102,7 @@ Four original faces (`neutral`, `smile`, `worry`, `deadpan`) are drawn exactly a
 enough, that a strip of forehead is left for them. Animals draw only the five original faces, `surprised` among them, with their own eyes and mouths; a newer face on an animal uses the nearest of them (`sad` becomes `worry`, `laugh` becomes
 `smile`), and a diatom draws all of them. `scripts/asset_gallery.py` shows every face.
 
-A staging can also be a **split screen**: `split` is a list of exactly two stagings (first, then second) with a frame round each, and `split_labels` prints a few words with them. `split_direction` cuts it `side` (the default: left and right), `stack` (top and bottom) or `slope` (two wedges cut by a slanted line; each half is drawn in the widest rectangle that fits its wedge, so nothing crosses the line). Each half is a full staging with its own characters, props and `shot`. A speech line can point at a figure in either half. `scripts/asset_gallery.py` shows all three.
+A staging can also be a **split screen**: `split` is a list of exactly two stagings (first, then second) with a frame round each, and `split_labels` prints a few words with them. `split_direction` cuts it `side` (the default: left and right), `stack` (top and bottom) or `slope` (two wedges cut by a slanted line; each half is drawn in the widest rectangle that fits its wedge, so nothing crosses the line). Each half is a full staging with its own characters, props and `shot`. A speech line can point at a figure in either half. **A strip**: `split` may hold three or four stagings with `split_direction: side` (three need a `wide` or `full` panel and share a row only with a `small` one; four need `full`), and a speech line takes `cell` (1 at the left) to say which frame's figure speaks when the same character is in several; the line is wrapped and kept inside its frame, and the panel's caption stays once above the strip. `scripts/asset_gallery.py` shows all three.
 
 
 A character's look (hair, hair tone, head size, glasses, coat, body) belongs to the cast member in `head.yaml`; see the appearance

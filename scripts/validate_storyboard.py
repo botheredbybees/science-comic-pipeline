@@ -155,6 +155,48 @@ def _figure_only(panel, cast_bodies):
     return True
 
 
+def _frames_of(staging, who):
+    """The 1-based numbers of the frames of a split screen that stage `who`."""
+    return [i for i, sub in enumerate((staging or {}).get("split") or [], 1) if any(c["id"] == who for c in _characters(sub))]
+
+
+def _strip_errors(p):
+    """A strip (a split screen of three or four frames) is cut side by side, needs a wide enough panel, and a speech line's `cell` must name a frame that has its speaker."""
+    out, st = [], p.get("staging") or {}
+    n = len(st.get("split") or [])
+    if n > 2:
+        if st.get("split_direction", "side") != "side":
+            out.append(f"{p['id']}: a split of {n} frames (a strip) must be split_direction side")
+        need = ("wide", "full") if n == 3 else ("full",)
+        if p.get("weight", "standard") not in need:
+            out.append(f"{p['id']}: a strip of {n} frames needs weight {' or '.join(need)}, not {p.get('weight', 'standard')}; three frames need at least a wide panel and four need a full one")
+    for line in p.get("speech", []):
+        cell = line.get("cell")
+        if not cell:
+            continue
+        if line.get("kind", "say") == "caption":
+            out.append(f"{p['id']}: a caption has no `cell`; it sits above the whole panel")
+        elif not n:
+            out.append(f"{p['id']}: `cell` is only for a split screen, and this panel has none")
+        elif cell > n:
+            out.append(f"{p['id']}: speech `cell` {cell} but the split has only {n} frames")
+        elif cell not in _frames_of(st, line["speaker"]):
+            out.append(f"{p['id']}: {line['speaker']} is not staged in frame {cell}, so a line in `cell` {cell} has no figure to point at")
+    return out
+
+
+def _strip_warnings(p):
+    """A speaker who is in several frames and speaks with no `cell` is drawn speaking from the first of them."""
+    st, out = p.get("staging") or {}, []
+    if len(st.get("split") or []) > 1:
+        for line in p.get("speech", []):
+            if line.get("kind", "say") != "caption" and not line.get("cell"):
+                frames = _frames_of(st, line["speaker"])
+                if len(frames) > 1:
+                    out.append(f"{p['id']}: {line['speaker']} is in frames {', '.join(map(str, frames))} but the line has no `cell`, so it comes from frame {frames[0]}")
+    return out
+
+
 def validate(doc):
     """Return (errors, warnings) for a parsed storyboard."""
     errors, warnings = [], []
@@ -243,6 +285,8 @@ def validate(doc):
             for line in p.get("speech", []):
                 if line.get("kind", "say") != "caption" and line["speaker"] not in staged:
                     warnings.append(f"{p['id']}: {line['speaker']} speaks but is not in the staging, so no speech line can point at them")
+        errors += _strip_errors(p)
+        warnings += _strip_warnings(p)
         if "humour" in p and not p["humour"].get("keeps_claims_intact"):
             warnings.append(f"{p['id']}: joke on a panel that cites {', '.join(cited) if cited else 'no claim'}; "
                             "a reviewer must confirm it keeps the claims intact")

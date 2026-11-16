@@ -178,6 +178,15 @@ relation between its two halves goes in the `scene` text. As a working guide (ou
 same time ("on the ship / in the lab"); `non-sequitur` does not suit it. Do not use a split where one picture would do, or for
 more than about one panel in ten: it is a device, and a comic of splits has no rhythm.
 
+**A strip: a gag told in three or four frames.** Some punchlines need setting up (the situation, a character's plan, the twist, as in xkcd
+927). Put the whole gag in **one panel**: `split` with three or four stagings, `split_direction: side`, `split_labels` for words like "soon"
+over a frame, and the paper's caption once above the strip, as a header. A strip is one panel, so it has one id, one set of claims
+and one `humour` block (with the note saying the gag runs across the frames). Width rules, enforced by `validate_storyboard.py` and the
+layout: three frames need `weight: wide` or `full` and share a row only with one `small` panel; four frames need `weight: full`.
+Where the same character is in more than one frame, give each of their speech lines a `cell` (1 at the left) so the line comes from
+the right figure. Keep a strip to the same camera, the same figures and the same ground in every frame, and change one thing a frame.
+Put the setup in the frames (speech, picture or labels), not in the caption: most readers skip captions.
+
 ## Writing well
 
 - **One idea per panel.** Say it in a caption of about 12 to 35 words, plus at most a line or two of

@@ -845,3 +845,115 @@ def test_bridge_block_labels_fit_inside_their_blocks_even_in_a_short_box():
         for fs, tspans in re.findall(r'<text[^>]*font-size="([\d.]+)"[^>]*>(.*?)</text>', svg):
             for t in re.findall(r">([^<]+)</tspan>", tspans):
                 assert len(t) * float(fs) * R.CHAR_W <= block_w, (label, t, fs)
+
+
+# ---------------------------------------------------------------- speech and the props beside it
+def _gus_panel(line, props, gus_x=0.9):
+    cast = {"gus": {"id": "gus", "name": "Gus", "appearance": {}}}
+    st = {"props": props, "characters": [{"id": "gus", "x": gus_x, "pose": "stand", "face": "puzzled", "facing": "left", "scale": 0.8}]}
+    panel = {"id": "T2", "scene": "Gus asks.", "speech": [{"speaker": "narrator", "kind": "caption", "text": "A caption above the scene."},
+                                                         {"speaker": "gus", "text": line}], "staging": st}
+    plan = R.plan_panel(panel, 640, 0.55, cast)
+    return panel, plan, R.draw_panel(panel, plan, 640, plan["nat_h"], cast), cast
+
+
+_REPRO_PROPS = [{"kind": "box", "x": 0.1, "y": 0.1, "w": 0.22, "h": 0.6, "label": "Up: always possible"},
+                {"kind": "arrow", "x": 0.37, "y": 0.1, "x2": 0.37, "y2": 0.85},
+                {"kind": "box", "x": 0.42, "y": 0.1, "w": 0.22, "h": 0.6, "label": "Down: cannot be reversed"}]
+
+
+def _speech_box(svg, first_word):
+    """The box the speech text covers, from the <text> element that holds first_word."""
+    el = next(m for m in re.findall(r"<text .*?</text>", svg) if first_word in m)
+    return R.ink_box(el)
+
+
+def _crosses(a, b):
+    return a[0] < b[2] and a[2] > b[0] and a[1] < b[3] and a[3] > b[1]
+
+
+def test_a_speech_line_is_kept_off_the_props_beside_its_speaker():
+    line = "Can't we just redo the processing from the raw data?"
+    panel, plan, svg, cast = _gus_panel(line, _REPRO_PROPS)
+    inner = 640 - 28
+    box_right = 14 + 0.64 * inner  # the right-hand box's edge
+    lines = plan["talk"][0][1]
+    tw = max(len(li) for li in lines) * plan["fs"] * R.CHAR_W
+    assert 640 - 14 - tw - 0 < box_right  # as first wrapped, the line cannot stand clear of that box (the fault: speech drawn over a neighbouring prop)
+    box = _speech_box(svg, "Can")
+    assert box[0] >= box_right, (box, box_right)
+    assert box[2] <= 640 - 14 + 1
+
+
+def test_a_speaker_standing_in_front_of_a_prop_keeps_the_speech_where_it_was():
+    lines = ["Seconds to hours.", "Be specific."]
+    front = [(100.0, 0.0, 300.0, 400.0)]  # the speaker's head (x 200) is inside this prop's width
+    assert R.clear_of_props(lines, 200.0, 150.0, front, 14, 626, 18)[0] == lines
+
+
+def test_a_gap_too_narrow_to_read_in_leaves_the_speech_alone():
+    lines = ["Seconds to hours.", "Be specific."]
+    wall = [(14.0, 0.0, 560.0, 400.0)]  # leaves 60 px between the prop and the panel's edge
+    assert R.clear_of_props(lines, 590.0, 150.0, wall, 14, 626, 18)[0] == lines
+
+
+def test_a_block_that_fits_beside_a_prop_is_slid_not_re_wrapped():
+    lines = ["Seconds to hours.", "Be specific."]
+    obs = [(100.0, 0.0, 250.0, 400.0)]
+    out, cx = R.clear_of_props(lines, 262.0, 150.0, obs, 14, 626, 18)  # head just right of the prop's edge, its line wider than the room beside it
+    assert out == lines and cx - max(len(li) for li in lines) * 18 * R.CHAR_W / 2 >= 250
+
+
+def test_backdrops_are_not_obstacles_and_a_prop_is_measured_by_what_it_draws():
+    assert R.speech_obstacles({"props": [{"kind": "desk", "x": 0, "y": 0.8, "w": 1.0, "h": 0.2}]}, 0, 0, 600, 300, 18) == []
+    flow = {"kind": "flow", "x": 0.3, "y": 0.05, "w": 0.65, "h": 0.9, "items": [{"label": "a"}, {"label": "b"}]}
+    (x0, y0, x1, y1), = R.speech_obstacles({"props": [flow]}, 0, 0, 600, 300, 18)
+    assert y1 - y0 < 0.9 * 300  # a flow draws its boxes inside the box it was given, so the obstacle is smaller than that
+
+
+# ---------------------------------------------------------------- strips: a split screen of three or four cells
+def _strip_panel(n, lines, w=700):
+    cast = {"otto": {"id": "otto", "name": "Otto", "appearance": {}}, "ines": {"id": "ines", "name": "Ines", "appearance": {}}}
+    cells = [{"characters": [{"id": "otto", "x": 0.5, "pose": "stand", "face": "smug", "facing": "right"}]} for _ in range(n)]
+    cells[0]["characters"].append({"id": "ines", "x": 0.15, "pose": "stand", "face": "neutral", "facing": "right"})
+    panel = {"id": "T3", "scene": "A strip.", "speech": lines, "staging": {"split": cells, "split_labels": ["", "then", "later", "after"][:n]}}
+    plan = R.plan_panel(panel, w, 0.55, cast)
+    return panel, plan, R.draw_panel(panel, plan, w, plan["nat_h"], cast)
+
+
+def test_a_split_can_have_three_or_four_cells_side_by_side():
+    for n in (3, 4):
+        cells = R.split_cells({"split": [{}] * n, "split_labels": ["a"] * n}, 14, 0, 672, 300, 18)
+        assert len(cells) == n
+        boxes = [c["frame"][1] for c in cells]
+        assert len({round(b[2], 3) for b in boxes}) == 1  # equal widths
+        assert all(a[0] + a[2] < b[0] for a, b in zip(boxes, boxes[1:]))  # in order, with a gap
+        assert boxes[0][0] == 14 and abs(boxes[-1][0] + boxes[-1][2] - (14 + 672)) < 1e-6  # filling the box
+    two = R.split_cells({"split": [{}, {}]}, 14, 0, 672, 300, 18)
+    assert [c["frame"][1] for c in two] == [(14.0, 0.0, 330.0, 300.0), (356.0, 0.0, 330.0, 300.0)]  # two cells are cut exactly as before
+
+
+def test_a_speech_line_with_a_cell_comes_from_that_frames_figure_even_when_the_same_character_is_in_several():
+    for cell in (1, 2, 3):
+        panel, plan, svg = _strip_panel(3, [{"speaker": "otto", "cell": cell, "text": "Ridiculous."}])
+        frame = R.split_cells(panel["staging"], 14, 0, 672, 300, 18)[cell - 1]["frame"][1]
+        box = _speech_box(svg, "Ridiculous")
+        assert frame[0] <= box[0] and box[2] <= frame[0] + frame[2], (cell, box, frame)
+    panel, plan, svg = _strip_panel(3, [{"speaker": "otto", "text": "Ridiculous."}])  # no cell: the first frame, as before
+    assert _speech_box(svg, "Ridiculous")[2] < 14 + 672 / 3 + 12
+
+
+def test_a_speech_line_in_a_strip_is_wrapped_to_fit_inside_its_frame():
+    long = "Ten protocols? Ridiculous. We need one that covers everybody, every time, in every lab."
+    for n in (3, 4):
+        panel, plan, svg = _strip_panel(n, [{"speaker": "otto", "cell": n, "text": long}])
+        frame = R.split_cells(panel["staging"], 14, 0, 672, 300, 18)[n - 1]["frame"][1]
+        box = _speech_box(svg, "Ten")
+        assert frame[0] <= box[0] and box[2] <= frame[0] + frame[2], (n, box, frame)
+
+
+def test_each_head_in_a_strip_is_recorded_under_its_frame_as_well_as_under_its_name():
+    st = {"split": [{"characters": [{"id": "otto", "x": 0.5}]}, {"characters": [{"id": "otto", "x": 0.5}]}, {"characters": [{"id": "ines", "x": 0.5}]}]}
+    _, heads = R.stage(R.Pen("t"), 14, 0, 672, 300, st, {}, 18)
+    assert {"otto", "ines", "otto@1", "otto@2", "ines@3"} <= set(heads)
+    assert heads["otto"] == heads["otto@1"] and heads["otto@2"][0] > heads["otto@1"][0]

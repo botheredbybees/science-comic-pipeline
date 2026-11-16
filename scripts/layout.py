@@ -8,7 +8,8 @@ typesetter breaks paragraphs into lines. Panels keep their order.
 Limits, both adjustable:
   max_per_row  panels in one row (3 reads comfortably on A4 portrait; 4 suits a wider page)
   min_units    narrowest allowed panel (4 of 12 is a third of the row)
-A 'full' panel always has a row to itself. A row that repeats the widths of the row before it is penalised,
+A 'full' panel always has a row to itself. A strip (a split screen of three or four cells side by side) has a floor: three cells
+need at least a wide frame and share a row only with one narrow frame, four cells need the whole row. A row that repeats the widths of the row before it is penalised,
 so a page reads as a varied layout and not a grid.
 """
 from functools import lru_cache
@@ -17,9 +18,20 @@ ROW_UNITS = 12
 PREFERRED = {"small": 4, "standard": 6, "wide": 8, "full": 12}  # a third, a half, two thirds, all
 
 
+def cells(panel):
+    """How many frames a split screen has (0 for a panel that is not one)."""
+    return len(((panel.get("staging") or {}).get("split")) or [])
+
+
+def floor(panel):
+    """The narrowest width, in twelfths of a row, a panel may be given: a strip of three cells needs two thirds, of four cells the whole row."""
+    n = cells(panel)
+    return ROW_UNITS if n >= 4 else 8 if n == 3 else 0
+
+
 def units(panel):
-    """The panel's preferred width in twelfths of a row."""
-    return PREFERRED[panel.get("weight", "standard")]
+    """The panel's preferred width in twelfths of a row (a strip is never preferred narrower than its floor)."""
+    return max(PREFERRED[panel.get("weight", "standard")], floor(panel))
 
 
 @lru_cache(maxsize=None)
@@ -33,9 +45,17 @@ def _compositions(total, parts, min_units):
     return out
 
 
-def _row_options(prefs, row_units, min_units):
+def _row_options(prefs, row_units, min_units, floors=None):
     """Every allowed way to give these panels widths, as (deviation cost, widths)."""
     if len(prefs) > 1 and row_units in prefs:  # a full-width panel stays alone
+        return []
+    if floors and any(floors):  # a strip: three cells alone or beside one narrow frame; four cells alone
+        if len(prefs) == 1:
+            return [((row_units - prefs[0]) ** 2, (row_units,))]
+        wide = [i for i, f in enumerate(floors) if f]
+        if len(prefs) == 2 and len(wide) == 1 and floors[wide[0]] <= 8 and prefs[1 - wide[0]] == 4 and row_units == ROW_UNITS:
+            widths = tuple(8 if i == wide[0] else 4 for i in range(2))
+            return [(sum((w - p) ** 2 for w, p in zip(widths, prefs)), widths)]
         return []
     return [(sum((w - p) ** 2 for w, p in zip(widths, prefs)), widths)
             for widths in _compositions(row_units, len(prefs), min_units)]
@@ -62,12 +82,13 @@ def pack_rows(panels, max_per_row=3, row_units=ROW_UNITS, min_units=4, prev=None
     row is nudged away from repeating its neighbour's widths."""
     n = len(panels)
     prefs = [min(units(p), row_units) for p in panels]
+    floors = [floor(p) for p in panels]
     # best[i][last_widths] = (cost, [(panel_count, widths), ...]) for the first i panels
     best = [dict() for _ in range(n + 1)]
     best[0][prev] = (0, [])
     for i in range(1, n + 1):
         for k in range(1, min(max_per_row, i) + 1):
-            options = _row_options(tuple(prefs[i - k:i]), row_units, min_units)
+            options = _row_options(tuple(prefs[i - k:i]), row_units, min_units, tuple(floors[i - k:i]))
             for last, (base, hist) in best[i - k].items():
                 for cost, widths in options:
                     total = base + cost + _repeat_cost(last, widths)
