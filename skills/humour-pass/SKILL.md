@@ -46,8 +46,13 @@ technical term in plain English, see the `device: gloss` frame in `storyboard`) 
 adds no fact). A gloss is often funnier than a gag because it is also useful. Give them room before reaching for a joke.
 
 **Approving.** The jokes you leave waiting are for a person to read: `python scripts/jokes.py list` shows each with the line that
-carries it, `show <comic> <panel>` gives the scene, caption, claims and the five questions, and `review` steps through them
+carries it, `show <comic> <panel>` gives the scene, caption, claims and the six questions, and `review` steps through them
 (approve, cut, skip). Approving changes one flag; you never edit YAML by hand.
+
+**Give it room to set up.** A punchline often needs three frames, as in xkcd 927: the situation, a character's reaction or plan, then the
+twist (a time jump, a changed number, a label). Put the joke's frames in a row, with `humour` on the last one and a note saying the
+gag runs from frame to frame; the review page shows the whole strip with the captions covered. A one-frame joke is fine when the
+picture itself is the setup.
 
 ## 3. Attach and flag each one
 
@@ -63,7 +68,7 @@ the flag: a joke you are unsure about keeps it, and waits for a human.
 ## 4. Check each joke before setting `keeps_claims_intact: true`
 
 Answer in writing (in the note) for each, briefly: a note such as "1 yes; 2 yes, the comic's voice;
-3 yes, an organism; 4 yes; 5 yes" is enough, with a sentence only where an answer is not a plain no:
+3 yes, an organism; 4 yes; 5 yes; 6 yes" is enough, with a sentence only where an answer is not a plain no:
 
 Each is phrased so that **yes is the safe answer**; one "no" means rewrite or cut:
 
@@ -74,6 +79,10 @@ Each is phrased so that **yes is the safe answer**; one "no" means rewrite or cu
    participants or any group of people?
 4. Does it leave every caveat and limitation at full strength?
 5. Would it still read as honest to the authors?
+6. Does it still land with the captions covered? Most readers look at the pictures and the speech first and skip the grey
+   caption blocks, so the setup has to be in the speech or the picture, not only in a caption. Cover every caption and read just the
+   frames: if the punchline needs something the caption said, move that into a character's line (a restatement of the claim is
+   fine) or add a frame.
 
 Leave `keeps_claims_intact` false, and the humour block in place, when you are not sure. A person decides;
 you propose.
@@ -85,5 +94,5 @@ you consider safe, and which you want a human to look at first. Re-run
 `validate_storyboard.py --strict`: it should show no errors and exactly one warning for each joke you left
 `false`, and so **exit 1 is the right end state** while a joke awaits a human. Any other warning is a defect.
 
-**Done when:** each joke has passed the five questions (`keeps_claims_intact: true`), or is left `false` and on
+**Done when:** each joke has passed the six questions (`keeps_claims_intact: true`), or is left `false` and on
 the list for the reviewer, or has been removed.

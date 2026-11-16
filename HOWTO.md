@@ -202,6 +202,20 @@ Jokes the agent proposes wait for a person. Read, reword and approve them with `
 .venv/bin/python scripts/jokes.py review                # step through them (below)
 ```
 
+Or review them on a web page, together with the claims and the panels as drawn (`scripts/review_comic.py`). Build the page, publish it as an Artifact
+with the `db` capability (or open the file in a browser: the answers then stay in that browser), and judge each item by clicking; each answer saves as you
+go. **Save and next** on each card moves to the next item you have not judged, and **Submit review** shows a confirmation and then the whole comic as it
+stands. Each joke and panel also has a collapsed **Change the words, scene, characters, props or actions** block: retype, remove or add a spoken line or caption, pick a new action, face, facing or held
+object for a character, a new kind or label for a prop (or remove it), add one prop or character, or retype the scene. `apply` writes those into the
+panel's beat file (a line that is not a one-line `{ ... }` mapping goes on the worklist) and rebuilds; added props and characters land at a default spot, so
+look at the redrawn panel. Then have Claude read the answers back and apply them:
+
+```
+.venv/bin/python scripts/review_comic.py build nester --pages-root sources -o output/review.html            # unverified claims + waiting jokes
+.venv/bin/python scripts/review_comic.py build nester --pages-root sources --claims cited --panels -o output/review.html   # also every cited claim and every panel
+.venv/bin/python scripts/review_comic.py apply nester <folder of answers> [--dry-run]    # Fair -> verified, Approve -> released; the rest is printed as a worklist
+```
+
 In `review`, **Enter accepts** (the default). `e` rewords a line and shows the joke again, so you can edit and then accept;
 `r` rejects: it deletes the joke's line (Enter picks the last character line; type numbers to choose others), or type `keep` to keep
 the lines and drop only the joke flag; `s` skips; `q` quits. A comic is found by a unique part of its name. Every change rewrites

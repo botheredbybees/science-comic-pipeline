@@ -17,9 +17,9 @@ comic's `beats/*.yaml` (or `storyboard.yaml` when there are no beat files) and t
 the file is reformatted. `edit` also changes only the one line's text where it can; text with a colon, a quote or a `#` in it, and `cut`,
 rewrite the file with PyYAML, so that file may be re-flowed.
 
-What to judge (the five questions of skills/humour-pass): is every number, unit and hedge exactly as in the claim; is it plainly
+What to judge (the six questions of skills/humour-pass): is every number, unit and hedge exactly as in the claim; is it plainly
 the comic's own voice; is the butt an organism, an instrument or the comic itself and not the authors or any people; does it leave
-every caveat at full strength; would it read as honest to the authors.
+every caveat at full strength; would it read as honest to the authors; does it still land with the captions covered.
 """
 import argparse
 import re
@@ -34,7 +34,7 @@ from catalogue import find_comics  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 QUESTIONS = ("1 numbers, units, hedges as in the claim   2 plainly the comic's voice   3 the butt is not the authors or people\n"
-             "4 every caveat stays at full strength   5 honest to the authors")
+             "4 every caveat stays at full strength   5 honest to the authors   6 lands with the captions covered")
 
 
 def comics(root):
