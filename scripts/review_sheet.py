@@ -52,8 +52,6 @@ ITEMS = [
         ("A3", "circle", [("fire, 7 chairs", big("circle", centre="fire", chairs=7)), ("easel, 5 chairs", big("circle", centre="easel", chairs=5)),
                           ("person, 8 chairs", big("circle", centre="person", chairs=8)), ("no centre", with_chars(big("circle"), fig(0.5, 0.62, 0.45, pose="sit")))],
          ["The chairs read as chairs.", "The far chairs sit behind the near ones.", "Each centre is recognisable.", "A figure can sit or stand in the middle without clashing."]),
-        ("A4", "hospitalroom", [("plain", big("hospitalroom")), ("drip and a worried figure", with_chars(big("hospitalroom", drip=True), fig(0.4, 0.9, 0.8, face="worry")))],
-         ["The bed reads as a hospital bed, the table as a bedside table.", "The drip stand reads as a drip.", "A standing figure is a sensible size next to the bed."]),
         ("A5", "bridge", [("joined, labelled", big("bridge", items=TWO)), ("broken", big("bridge", broken=True, items=TWO))],
          ["The joined bridge reads as a bridge (deck, arch).", "The broken one reads as a missing link, not as two unrelated blocks.", "Labels fit inside the blocks."]),
         ("A6", "eye", [("plain", big("eye")), ("lens", big("eye", lens=True)), ("thought bubble", big("eye", thought="what is that?"))],
@@ -97,8 +95,6 @@ ROUND2 = [
         ("A3", "circle", [("fire, 7 chairs", big("circle", centre="fire", chairs=7)), ("easel, 5 chairs", big("circle", centre="easel", chairs=5)),
                           ("person, 8 chairs", big("circle", centre="person", chairs=8)), ("a figure standing in the middle", with_chars(big("circle"), fig(0.5, 0.66, 0.42)))],
          ["No figure sits without a chair under it (the sitting figure is gone; a figure stands in the middle instead).", "The chairs still read as a circle."]),
-        ("A4", "hospitalroom", [("plain", big("hospitalroom")), ("drip and a worried figure", with_chars(big("hospitalroom", drip=True), fig(0.4, 0.9, 0.8, face="worry")))],
-         ["The bag hangs from a hook on the stand, not balanced on top.", "The tube runs from the bag down to the bed, not through the air.", "It reads as a drip without a stretch."]),
         ("A5", "bridge", [("joined, labelled", big("bridge", items=TWO)), ("broken", big("bridge", broken=True, items=TWO))],
          ["The joined bridge (a plain deck, no arch or rail) reads as a bridge between the blocks.", "The broken one still reads as a missing link."]),
         ("A6", "eye", [("plain", big("eye")), ("lens held away", big("eye", lens=True)), ("thought bubble", big("eye", thought="what is that?"))],
@@ -120,7 +116,20 @@ ROUND2 = [
         ("B3", "gears", [("labelled", big("gears", items=[{"label": "speech"}, {"label": "song"}]))], ["The labels are larger and still fit inside the hubs."]),
     ]),
 ]
-ROUNDS = {1: ITEMS, 2: ROUND2}
+# Round 3 (2026-11-16): the three assets that were marked fix in round 2, and the one marked keep with a note.
+ROUND3 = [
+    ("Changed after round 2", [
+        ("A2", "blackbox", [("labelled", big("blackbox", items=[{"label": "input"}, {"label": "output"}])), ("dashed output", big("blackbox", dashed=True, items=[{"label": "drama"}, {"label": "?"}]))],
+         ["The question mark now fills most of the box and reads across a page."]),
+        ("A7", "bookshelf", [("plain", big("bookshelf")), ("books missing", big("bookshelf", gap=True))],
+         ["The question mark in the gap is large enough to read at once."]),
+        ("A9", "brain: side view", [("plain", big("brain")), ("lobes named", big("brain", labels=True)), ("temporal lobe shaded", big("brain", highlight="temporal", labels=True)),
+                                    ("fibre tracts", big("brain", tracts=True)), ("a signal route", big("brain", signal=True))],
+         ["The fold squiggles are gone: the only solid lines are the outline, the lateral fissure, the central sulcus and the cerebellum.", "The fibre tracts are dotted with a ring at each end, so they cannot be mistaken for a fissure.",
+          "It still reads as a brain at a glance, and the lobe labels are clear.", "What would you add or change? Say in the notes."]),
+    ]),
+]
+ROUNDS = {1: ITEMS, 2: ROUND2, 3: ROUND3}
 
 
 def variants(items=None):
@@ -161,6 +170,8 @@ def form_html(items=None, rnd=1):
                 vars_.append({"id": pid, "label": label, "svg": framed_svg(frame + svg, f"{asset}: {label}")})
             out.append({"id": iid, "name": asset, "variants": vars_, "checks": checks})
         groups.append((title, out))
+    if rnd == 3:
+        return build_html("New assets: review, round 3", "Three assets changed after round 2: the blackbox and bookshelf question marks, and the side-view brain without its fold squiggles. Choose keep, fix or drop for each, then press Submit.", groups, collection="round3")
     if rnd == 2:
         return build_html("New assets: review, round 2", "These are the assets changed after your first review. Each has the drawing as it is now, what to check against your notes, and a verdict: keep, fix or drop. Press Submit when you are done.", groups, collection="round2")
     return build_html("New assets: review", "Look at each asset, tick what holds, and choose keep, fix or drop. Add a note where something needs changing. Answers save as you go.", groups)
@@ -185,7 +196,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--pdf", default="output/new-assets-review.pdf")
     ap.add_argument("--md", default="docs/new-assets-checklist.md")
-    ap.add_argument("--round", type=int, default=1, choices=sorted(ROUNDS), help="which round of the review: 1 is the first set of assets, 2 only those changed after it")
+    ap.add_argument("--round", type=int, default=1, choices=sorted(ROUNDS), help="which round of the review: 1 is the first set of assets, 2 and 3 only those changed after the round before")
     ap.add_argument("--html", help="also write the review as a web form (publish it as an Artifact with the db capability)")
     args = ap.parse_args(argv)
     items = ROUNDS[args.round]

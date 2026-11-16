@@ -167,7 +167,6 @@ stays `25.0`).
 | `stage` | a theatre stage seen from the front: curtains, a valance and boards; `spotlight` (a cone of light on a dark back), `screen` (a screen at the back), `audience` (a row of heads in front); figures and puppets stand on the boards |
 | `blackbox` | a black box with a question mark, an arrow in and an arrow out; `items` label the input and output; `dashed` draws the output dashed (an effect not shown) |
 | `circle` | chairs round a centre, seen from above and in front; `chairs` (3 to 8), `centre`: `fire`, `easel` or `person` |
-| `hospitalroom` | a bed, a bedside table, a window and a floor line; `drip` adds a drip stand; a sibling of `livingroom` |
 | `bridge` | a bridge between two blocks; `items` label the blocks; `broken` leaves a gap in the deck |
 | `eye` | an eye; `lens` puts a lens in front, `thought` a thought bubble (a string puts words in it) |
 | `bookshelf` | two shelves of books; `gap` leaves a slot about two books wide empty (dashed, with a question mark) |

@@ -52,7 +52,6 @@ PURPOSE = {
     "stage": "a theatre or performance: curtains, a floor, and options spotlight, screen (for a projected shadow) and audience; figures and puppets stand on it",
     "blackbox": "a mechanism that is not known: something goes in, something comes out, and a question mark between (items: input, output; dashed: the effect is not shown)",
     "circle": "a group of chairs round a centre: a community or therapy circle (chairs; centre: fire, easel or person)",
-    "hospitalroom": "a hospital or clinical room: a bed, a bedside table and a window (drip); a place for a nurse, a child or a patient",
     "bridge": "two sides joined, or not: two fields, two groups, access (items label the two sides; broken: a missing link)",
     "eye": "seeing or observing (lens: seen through a lens; thought: a thought bubble, with a few words if given)",
     "bookshelf": "a library or a body of evidence as a shelf of books (gap: books are missing)",

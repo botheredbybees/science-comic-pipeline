@@ -8,7 +8,7 @@ import math
 
 from draw import CHAR_W, INK, MID, PAPER, SOFT, block_h, clamp, text, wrap
 
-EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel", "stage", "blackbox", "circle", "hospitalroom", "bridge", "eye", "bookshelf", "spinalcord"}
+EXTRA = {"stake", "emsled", "fieldcamp", "molecule", "iceberg", "mixedlayer", "seaice", "iceshelf", "map", "currents", "desk", "phone", "bowl", "bongo", "trawl", "rmt", "ctd", "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "sequence", "tree", "clusters", "network", "database", "filter", "tubes", "sequencer", "cpr", "echosounder", "venn", "axis", "plot", "pie", "flow", "steps", "stack", "ship", "bottle", "jar", "flash", "cups", "laptop", "microscope", "teapot", "net", "thermometer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes", "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel", "stage", "blackbox", "circle", "bridge", "eye", "bookshelf", "spinalcord"}
 
 
 def _dot(x, y, r=5):
@@ -1594,14 +1594,6 @@ BRAIN_REGIONS = {  # lobes of the side-view brain (front at the left), as polygo
                  (0.4, 0.72), (0.3, 0.66), (0.24, 0.62)],
 }
 BRAIN_LABELS = {"frontal": (0.27, 0.3), "parietal": (0.63, 0.22), "occipital": (0.87, 0.38), "temporal": (0.5, 0.63)}
-# gyri and sulci as short wavy strokes, a few to each lobe
-BRAIN_FOLDS = (
-    ((0.13, 0.46), (0.19, 0.38), (0.25, 0.43), (0.31, 0.33)), ((0.2, 0.26), (0.27, 0.21), (0.33, 0.27), (0.4, 0.18)), ((0.27, 0.5), (0.33, 0.43), (0.39, 0.48)),
-    ((0.35, 0.34), (0.4, 0.27), (0.43, 0.33)), ((0.14, 0.32), (0.18, 0.26), (0.22, 0.3)),
-    ((0.56, 0.16), (0.62, 0.23), (0.68, 0.16), (0.72, 0.24)), ((0.52, 0.32), (0.6, 0.36), (0.66, 0.29), (0.72, 0.35)), ((0.56, 0.42), (0.62, 0.38), (0.7, 0.42)),
-    ((0.85, 0.24), (0.9, 0.32), (0.86, 0.4)), ((0.86, 0.52), (0.91, 0.46)),
-    ((0.31, 0.62), (0.4, 0.58), (0.48, 0.63)), ((0.46, 0.55), (0.54, 0.59), (0.62, 0.52)), ((0.5, 0.69), (0.58, 0.65), (0.66, 0.69)), ((0.68, 0.56), (0.74, 0.5), (0.77, 0.56)),
-)
 BRAIN_TOP_FOLDS = (  # left hemisphere seen from above (front at the top); the right is the mirror image
     ((0.18, 0.2), (0.26, 0.15), (0.34, 0.2), (0.42, 0.13)), ((0.12, 0.34), (0.22, 0.28), (0.3, 0.34), (0.4, 0.27)), ((0.1, 0.5), (0.2, 0.44), (0.3, 0.5), (0.42, 0.42)),
     ((0.12, 0.64), (0.22, 0.58), (0.32, 0.64), (0.42, 0.57)), ((0.16, 0.78), (0.26, 0.72), (0.34, 0.78), (0.42, 0.7)), ((0.24, 0.88), (0.32, 0.84), (0.4, 0.88)),
@@ -1634,7 +1626,7 @@ def _top_brain(pen, x, y, w, h, p, fs, lines, fsb):
 
 def brain(pen, x, y, w, h, p, fs):
     """A brain in side view with the front at the left: the outline of the cerebrum with a frontal lobe, a temporal lobe hanging below the lateral fissure,
-    parietal and occipital lobes, the central sulcus, folds drawn lobe by lobe, a cerebellum with its fine ridges and the brain stem. For neuroscience, memory,
+    parietal and occipital lobes, the central sulcus, a cerebellum with its fine ridges and the brain stem. For neuroscience, memory,
     language, ageing. `highlight` (frontal, parietal, temporal or occipital) shades that lobe; `labels: true` names the four lobes; `tracts: true` draws
     bundles of fibres between regions (white matter); `signal: true` draws one arrowed route from the back to the front, a signal passing along.
     `view: top` (or `highlight: left` or `right`) draws the brain from above instead, as two hemispheres, for a left against right comparison."""
@@ -1652,18 +1644,17 @@ def brain(pen, x, y, w, h, p, fs):
     region = BRAIN_REGIONS.get(p.get("highlight"))
     if region:
         o.append(pen.stroke([U(*q) for q in region], 1.6, closed=True, fill=MID))
-    ink = INK if region else MID
-    for fold in BRAIN_FOLDS:
-        o.append(pen.stroke([U(*q) for q in fold], 1.5, color=ink))
     o.append(pen.stroke([U(0.27, 0.6), U(0.38, 0.54), U(0.5, 0.5), U(0.6, 0.44), U(0.66, 0.4)], 2.2, color=INK))  # the lateral fissure
     o.append(pen.stroke([U(0.52, 0.08), U(0.5, 0.16), U(0.46, 0.26), U(0.44, 0.36), U(0.42, 0.46)], 2.2, color=INK))  # the central sulcus
-    if p.get("tracts"):  # three bundles of fibres, each with a dot at both ends: front to back over the top, front to back through the temporal lobe, and the arc round the lateral fissure
+    if p.get("tracts"):  # three bundles of fibres, each a dotted line with a ring at both ends, so none can be mistaken for a fissure (which is one solid line)
         for path in (((0.16, 0.42), (0.3, 0.26), (0.58, 0.22), (0.78, 0.3), (0.84, 0.46)), ((0.3, 0.62), (0.46, 0.6), (0.64, 0.58), (0.82, 0.54)),
                      ((0.2, 0.42), (0.34, 0.3), (0.5, 0.32), (0.58, 0.44), (0.5, 0.58))):
             pts = [U(*q) for q in path]
-            o.append(pen.stroke(pts, 3.6, color=INK))
-            o.append(pen.stroke(pts, 1.4, color=PAPER))
-            o += [_dot(*pts[0], 3.4), _dot(*pts[-1], 3.4)]
+            for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                n = max(1, int(math.hypot(bx - ax, by - ay) / 9))
+                o += [_dot(ax + (bx - ax) * k / n, ay + (by - ay) * k / n, 2.3) for k in range(n)]
+            for ex, ey in (pts[0], pts[-1]):
+                o.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5" fill="{PAPER}" stroke="{INK}" stroke-width="2.2"/>')
     if p.get("signal"):  # one route with an arrowhead: a signal passing from the back of the brain to the front
         route = [U(0.82, 0.46), U(0.66, 0.3), U(0.44, 0.26), U(0.24, 0.38)]
         o.append(pen.stroke(route, 3.0, color=INK))
@@ -2128,8 +2119,9 @@ def blackbox(pen, x, y, w, h, p, fs):
     items = p.get("items") or []
     x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
     U, sw = _u(x, y, w, h), 2.6
+    qs = min(h * 0.62, w * 0.42)  # the question mark fills most of the box
     o = [pen.rect(*U(0.35, 0.18), w * 0.3, h * 0.64, sw, fill=INK, over=0.4),
-         text(x + w * 0.5, y + h * 0.5 - fs * 2.75, ["?"], fs * 4.6, anchor="middle", fill=PAPER)]
+         text(x + w * 0.5, y + h * 0.5 - qs * 0.6, ["?"], qs, anchor="middle", fill=PAPER)]
     o.append(pen.arrow(U(0.03, 0.5), U(0.33, 0.5), 2.4))
     if p.get("dashed"):
         o.append(pen.stroke([U(0.67, 0.5), U(0.97, 0.5)], 2.4, dash="7 6"))
@@ -2177,31 +2169,6 @@ def circle(pen, x, y, w, h, p, fs):
               pen.line((cx - s * 0.3, cy - s * 0.45), (cx + s * 0.3, cy - s * 0.45), 2.2, amp=0.2)]
     for px, py in spots[n // 2:]:
         o.append(_chair(pen, px, py, s))
-    _caption(o, x, y, w, h, lines, fsb)
-    return "".join(o)
-
-
-def hospitalroom(pen, x, y, w, h, p, fs):
-    """A hospital room as a backdrop: a bed (headboard, pillow, blanket), a bedside table with a cup, a window and a floor line.
-    `drip: true` adds a drip stand with a bag. A figure stands on the floor line; a sibling of `livingroom`."""
-    x, y, w, h, lines, fsb = _under(x, y, w, h, 1.6, p, fs)
-    U, sw = _u(x, y, w, h), 2.6
-    floor = 0.88
-    o = [pen.line(U(0.0, floor), U(1.0, floor), sw, amp=0.6), pen.line(U(0.0, 0.8), U(1.0, 0.8), 1.2, amp=0.5, color=MID)]
-    o.append(pen.rect(*U(0.7, 0.08), w * 0.22, h * 0.34, sw, fill=PAPER, over=0.6))  # the window
-    o += [pen.line(U(0.81, 0.08), U(0.81, 0.42), 1.6, amp=0.2), pen.line(U(0.7, 0.25), U(0.92, 0.25), 1.6, amp=0.2)]
-    o += [pen.line(U(0.06, 0.56), U(0.06, floor), sw, amp=0.2), pen.line(U(0.56, 0.62), U(0.56, floor), sw, amp=0.2),  # the bed: legs
-          pen.rect(*U(0.04, 0.36), w * 0.035, h * 0.28, sw, fill=SOFT, over=0.3),  # headboard
-          pen.rect(*U(0.06, 0.56), w * 0.5, h * 0.07, sw, fill=PAPER, over=0.5),  # the mattress
-          pen.ellipse(*U(0.15, 0.52), w * 0.07, h * 0.045, 2.0, fill=PAPER),  # the pillow
-          pen.poly([U(0.24, 0.5), U(0.56, 0.5), U(0.57, 0.64), U(0.24, 0.64)], sw * 0.8, fill=SOFT, jit=0.2)]  # the blanket
-    o += [pen.rect(*U(0.62, 0.6), w * 0.12, h * 0.28, sw, fill=PAPER, over=0.4), pen.line(U(0.62, 0.7), U(0.74, 0.7), 1.6, amp=0.2),  # the bedside table and its drawer
-          pen.rect(*U(0.66, 0.54), w * 0.04, h * 0.06, 1.8, fill=SOFT, over=0.2)]  # a cup on it
-    if p.get("drip"):  # a drip stand: a pole with a hook arm, a bag hanging from the hook, and a tube running over the table to the bed
-        o += [pen.line(U(0.86, 0.16), U(0.86, floor), 2.2, amp=0.2), pen.line(U(0.82, floor), U(0.9, floor), 2.2, amp=0.2),
-              pen.line(U(0.82, 0.16), U(0.9, 0.16), 2.2, amp=0.2), pen.line(U(0.86, 0.16), U(0.86, 0.22), 1.4, amp=0.1),
-              pen.rect(*U(0.83, 0.22), w * 0.06, h * 0.14, 2.0, fill=SOFT, over=0.2),
-              pen.stroke([U(0.86, 0.36), U(0.81, 0.46), U(0.7, 0.49), U(0.6, 0.5), U(0.55, 0.57)], 1.5, color=INK)]
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 
@@ -2278,7 +2245,8 @@ def bookshelf(pen, x, y, w, h, p, fs):
             if row == 0 and p.get("gap") and i == gap_at:
                 gx, gy = U(u, base - 0.4)
                 o.append(pen.stroke([(gx, gy), (gx + w * gap_w, gy), (gx + w * gap_w, gy + h * 0.4), (gx, gy + h * 0.4)], 1.6, closed=True, color=MID, dash="5 4"))
-                o.append(text(gx + w * gap_w / 2, gy + h * 0.2 - fsb * 0.65, ["?"], fsb * 1.3, anchor="middle", fill=MID))
+                qs = min(h * 0.3, w * 0.17)  # large enough to read from across a page
+                o.append(text(gx + w * gap_w / 2, gy + h * 0.2 - qs * 0.6, ["?"], qs, anchor="middle", fill=MID))
                 u += gap_w + 0.012 - bw - 0.012
             else:
                 bx, by = U(u, base - 0.4 * bh / 0.8 - 0.01)
@@ -2320,7 +2288,7 @@ _DRAW = {"stake": stake, "emsled": emsled, "fieldcamp": fieldcamp, "molecule": m
          "sequencer": sequencer, "cpr": cpr, "echosounder": echosounder, "venn": venn, "laptop": laptop, "microscope": microscope, "teapot": teapot, "net": net, "thermometer": thermometer, "axis": axis, "plot": plot, "pie": pie, "flow": flow, "steps": steps, "stack": stack, "ship": ship,
          "bottle": bottle, "jar": jar, "flash": flash, "cups": cups, "clay": clay, "mosaic": mosaic, "armchair": armchair, "wheelchair": wheelchair, "piano": piano, "guitar": guitar, "easel": easel, "camera": camera, "brain": brain, "headphones": headphones, "notes": notes,
          "gallery": gallery, "cycle": cycle, "book": book, "headprofile": headprofile, "cloud": cloud, "scales": scales, "door": door, "heart": heart,
-         "trolley": trolley, "van": van, "skyline": skyline, "staff": staff, "livingroom": livingroom, "gears": gears, "ear": ear, "funnel": funnel, "stage": theatre, "blackbox": blackbox, "circle": circle, "hospitalroom": hospitalroom, "bridge": bridge, "eye": eye, "bookshelf": bookshelf, "spinalcord": spinalcord}
+         "trolley": trolley, "van": van, "skyline": skyline, "staff": staff, "livingroom": livingroom, "gears": gears, "ear": ear, "funnel": funnel, "stage": theatre, "blackbox": blackbox, "circle": circle, "bridge": bridge, "eye": eye, "bookshelf": bookshelf, "spinalcord": spinalcord}
 
 
 def extra_prop(pen, x, y, w, h, p, fs):

@@ -396,7 +396,7 @@ SCHEMATIC_PROPS = ["sequence", "tree", "clusters", "network", "database", "filte
                    "satellite", "radar", "radarscreen", "icecore", "massspec", "helicopter", "drone", "aquarium", "freezer", "tag", "scatter", "boxplot", "modelgrid", "ship", "ctd", "bongo", "trawl", "rmt", "net",
                    "stake", "emsled", "fieldcamp", "molecule", "map", "currents", "iceberg", "iceshelf", "seaice", "mixedlayer", "clay", "mosaic", "armchair", "wheelchair", "piano", "guitar", "easel", "camera", "brain", "headphones", "notes",
                    "gallery", "cycle", "book", "headprofile", "cloud", "scales", "door", "heart", "trolley", "van", "skyline", "staff", "livingroom", "gears", "ear", "funnel",
-                   "stage", "blackbox", "circle", "hospitalroom", "bridge", "eye", "bookshelf", "spinalcord"]
+                   "stage", "blackbox", "circle", "bridge", "eye", "bookshelf", "spinalcord"]
 
 
 @pytest.mark.parametrize("kind", SCHEMATIC_PROPS)
@@ -725,7 +725,6 @@ def test_idea_props_take_their_labels_and_options():
     assert "stroke-dasharray" in _prop("blackbox", dashed=True) and "stroke-dasharray" not in _prop("blackbox")
     assert "art" in _prop("bridge", items=[{"label": "art"}, {"label": "health"}]) and _prop("bridge", broken=True) != _prop("bridge")
     assert len(_prop("eye", lens=True)) > len(_prop("eye")) and "stroke-dasharray" in _prop("eye", lens=True) and "what next" in _prop("eye", thought="what next") and "what next" not in _prop("eye", thought=True)
-    assert len(_prop("hospitalroom", drip=True)) > len(_prop("hospitalroom"))
     assert len(_prop("spinalcord", laminae=True)) > len(_prop("spinalcord")) and _prop("spinalcord", hemisection=True) != _prop("spinalcord")
 
 

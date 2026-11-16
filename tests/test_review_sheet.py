@@ -23,4 +23,4 @@ def test_every_asset_kind_in_the_sheet_is_one_the_schema_accepts_and_the_documen
 
 def test_every_new_prop_of_the_last_two_sessions_is_on_the_sheet():
     kinds = {p["kind"] for _, _, _, st in RS.variants() for p in st.get("props", [])}
-    assert {"stage", "blackbox", "circle", "hospitalroom", "bridge", "eye", "bookshelf", "spinalcord", "staff", "livingroom", "gears", "ear", "funnel", "brain"} <= kinds
+    assert {"stage", "blackbox", "circle", "bridge", "eye", "bookshelf", "spinalcord", "staff", "livingroom", "gears", "ear", "funnel", "brain"} <= kinds
