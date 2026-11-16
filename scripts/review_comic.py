@@ -123,7 +123,8 @@ def panel_picture(panel_svgs, pid):
     if not got:
         return []
     svg, w, h = got
-    return [{"id": pid, "label": "as drawn", "svg": F.framed_svg(svg, f"Panel {pid}", int(w) + 4, int(h) + 4)}]
+    # drawn about a third larger than on the page, so a panel can be read: a full-width panel gets the whole card, a narrow one stays narrow
+    return [{"id": pid, "label": "as drawn", "svg": F.framed_svg(svg, f"Panel {pid}", int(w) + 4, int(h) + 4), "maxw": int(w * 1.35)}]
 
 
 def words_html(panel):
@@ -221,7 +222,9 @@ def build(folder, name, pages_by_source, which="unverified", with_panels=False, 
         bare = copy.deepcopy(doc)
         for b in bare["beats"]:
             for p in b["panels"]:
-                p["speech"] = [x for x in p.get("speech", []) if x.get("kind") != "caption"]
+                for x in p.get("speech", []):  # cover each caption with blocks of the same shape, so the panel keeps its size and line breaks
+                    if x.get("kind") == "caption":
+                        x["text"] = re.sub(r"\S", "#", x["text"])
         covered, _ = render_panels(bare)
         for b in doc["beats"]:
             ids = [p["id"] for p in b["panels"]]

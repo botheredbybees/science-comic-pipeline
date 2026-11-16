@@ -38,6 +38,12 @@ def _sel(field, label, values, current="", blank=None):
             f'{_opts(values, current, blank)}</select></label>')
 
 
+def caption_bar(e):
+    """A button under the picture for each caption of the panel, which opens the change block at that caption's box."""
+    btns = "".join(f'<button type="button" class="linkbtn" data-goto-line="{i}">Edit caption</button>' for i, ln in enumerate(e.get("lines", [])) if ln["who"] == "Caption")
+    return f'<div class="capbar">{btns}</div>' if btns else ""
+
+
 def edit_html(e):
     """The optional 'change the picture' block: scene text, each character's action, face, facing and what they hold, each prop, and one added prop or character."""
     v = e["vocab"]
@@ -69,13 +75,13 @@ def edit_html(e):
 
 def item_html(it):
     labels = it.get("labels") or {}
-    figs = "".join(f'<figure><div class="plate">{v["svg"]}</div><figcaption><b>{H.escape(v["id"])}</b> {H.escape(v["label"])}</figcaption></figure>' for v in it["variants"])
+    figs = "".join(f'<figure><div class="plate"{(" style=\"max-width:%dpx\"" % v["maxw"]) if v.get("maxw") else ""}>{v["svg"]}</div><figcaption><b>{H.escape(v["id"])}</b> {H.escape(v["label"])}</figcaption></figure>' for v in it["variants"])
     checks = "".join(f'<li><label><input type="checkbox" data-k="{i}"> <span>{H.escape(c)}</span></label></li>' for i, c in enumerate(it["checks"]))
     return (f'<article class="card" id="item-{H.escape(it["id"])}" data-id="{H.escape(it["id"])}">'
             f'<header><h3><span class="tag">{H.escape(it["id"])}</span> {H.escape(it["name"])}</h3>'
             f'<div class="verdict" role="radiogroup" aria-label="Verdict for {H.escape(it["name"])}">'
             + "".join(f'<label class="v-{v}"><input type="radio" name="v-{H.escape(it["id"])}" value="{v}"><span>{H.escape(labels.get(v, v.title()))}</span></label>' for v in ("keep", "fix", "drop"))
-            + f'</div></header>{it.get("info_html", "")}' + (f'<div class="figs">{figs}</div>' if figs else "") + (edit_html(it["edit"]) if it.get("edit") else "") +
+            + f'</div></header>{it.get("info_html", "")}' + (f'<div class="figs" style="--minw:{max([v.get("maxw", 330) for v in it["variants"]] or [330])}px">{figs}</div>' if figs else "") + (caption_bar(it["edit"]) if it.get("edit") else "") + (edit_html(it["edit"]) if it.get("edit") else "") +
             f'<div class="body"><div><h4>Look for</h4><ul class="checks">{checks}</ul></div>'
             f'<div><h4>Notes</h4><textarea class="notes" rows="4" placeholder="What to change, or what you noticed" aria-label="Notes for {H.escape(it["name"])}"></textarea>'
             f'<div class="nextrow"><button class="next" type="button">Save and next</button><span class="saved" aria-live="polite"></span></div></div></div></article>')
@@ -129,7 +135,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .verdict .v-keep input:checked+span{background:var(--keep-bg);color:var(--keep)}
 .verdict .v-fix input:checked+span{background:var(--fix-bg);color:var(--fix)}
 .verdict .v-drop input:checked+span{background:var(--drop-bg);color:var(--drop)}
-.figs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:12px}
+.figs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--minw,330px)),1fr));gap:12px}
 figure{margin:0;min-width:0}.plate{background:var(--plate);border:1px solid var(--line);border-radius:8px;padding:4px}
 .fig{display:block;width:100%;height:auto}
 figcaption{font-size:.8rem;color:var(--mute);margin-top:4px}figcaption b{color:var(--fg)}
@@ -152,6 +158,8 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 .next:hover,.next:focus-visible{background:var(--accent);color:var(--bg)}
 .thanks{background:var(--keep-bg);border:2px solid var(--keep);border-radius:12px;padding:16px 20px;margin:12px 0 16px;scroll-margin-top:70px}
 .thanks h2{margin:0 0 4px;color:var(--keep)}
+.thanks.warn{background:var(--drop-bg);border-color:var(--drop)}
+.thanks.warn h2{color:var(--drop)}
 .thanks p{margin:4px 0}
 .thanks .mute{color:var(--mute);font-size:.85rem}
 .edit{margin:10px 0 4px;border:1px dashed var(--line);border-radius:10px;padding:8px 12px}
@@ -169,6 +177,10 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 .comic .pages{display:grid;gap:18px;justify-items:center}
 .comic figure{margin:0;width:100%;max-width:760px}
 .comic svg{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:6px;background:#fff}
+.capbar{display:flex;gap:8px;margin:6px 0}
+.capbar:empty{display:none}
+.linkbtn{font:inherit;font-size:.85rem;font-weight:600;padding:3px 12px;border-radius:999px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.linkbtn:hover,.linkbtn:focus-visible{background:var(--accent);color:var(--bg)}
 .card.flash{outline:2px solid var(--accent);outline-offset:2px}
 .card.done{border-left:4px solid var(--accent)}
 .general{margin-top:28px}
@@ -180,7 +192,7 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 <main>
 <h1>%%TITLE%%</h1>
 <p class="intro">%%INTRO%%</p>
-<section id="thanks" class="thanks hide" role="status" tabindex="-1"><h2>Review submitted</h2><p id="thanks-sum"></p><p class="mute">Claude can now read your answers. You can keep editing and submit again.</p><button class="next" id="thanks-back" type="button">Back to the review</button></section>
+<section id="thanks" class="thanks hide" role="status" tabindex="-1"><h2 id="thanks-h">Review submitted</h2><p id="thanks-sum"></p><p class="mute" id="thanks-more">Claude can now read your answers. You can keep editing and submit again.</p><button class="next" id="thanks-back" type="button">Back to the review</button></section>
 %%AFTER%%
 <div class="bar" role="region" aria-label="Progress">
   <div class="prog"><span><b id="done">0</b> of %%N%% judged</span> &middot; <span id="tally"></span><div class="meter" aria-hidden="true"><i class="k"></i><i class="f"></i><i class="d"></i></div></div>
@@ -253,6 +265,9 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
   IDS.forEach(function(id){var c=card(id);c.addEventListener("change",function(){changed(id)});c.querySelector("textarea.notes").addEventListener("input",function(){changed(id)});
     c.querySelectorAll(".edit textarea,.edit input[type=text]").forEach(function(x){x.addEventListener("input",function(){changed(id)})})});
   function go(el){el.scrollIntoView({behavior:"smooth",block:"start"})}
+  document.querySelectorAll("[data-goto-line]").forEach(function(b){b.addEventListener("click",function(){
+    var d=b.closest(".card").querySelector(".edit"),t=d&&d.querySelector('[data-line="'+b.dataset.gotoLine+'"] textarea');if(!t)return;
+    d.open=true;t.scrollIntoView({behavior:"smooth",block:"center"});t.focus()})});
   function nextFrom(id){var i=IDS.indexOf(id),order=IDS.slice(i+1).concat(IDS.slice(0,i));
     function open(x){return !card(x).classList.contains("hide")}
     for(var j=0;j<order.length;j++){if(open(order[j])&&!(state[order[j]]||{}).verdict)return order[j]}
@@ -287,18 +302,28 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
   var armed=false,armTimer=null;
   function setBtn(t){document.querySelectorAll(".submit").forEach(function(b){b.textContent=t})}
   function setNote(t){document.getElementById("submit-note").textContent=t}
+  function notice(ok,head,msg,more){var t=document.getElementById("thanks");t.classList.toggle("warn",!ok);
+    document.getElementById("thanks-h").textContent=head;document.getElementById("thanks-sum").textContent=msg;
+    document.getElementById("thanks-more").textContent=ok?more:"";t.classList.remove("hide");
+    var cm=document.getElementById("comic");if(cm)cm.classList.toggle("hide",!ok);go(t);t.focus({preventScroll:true})}
   function submitReview(){
     var k=0,f=0,d=0;IDS.forEach(function(id){var v=(state[id]||{}).verdict;if(v==="keep")k++;else if(v==="fix")f++;else if(v==="drop")d++});
     var un=IDS.length-k-f-d;
-    if(un>0&&!armed){armed=true;setBtn(un+" not judged. Submit anyway?");clearTimeout(armTimer);armTimer=setTimeout(function(){armed=false;setBtn("Submit review")},5000);return}
+    if(un>0&&!armed){armed=true;setBtn(un+" not judged. Submit anyway?");clearTimeout(armTimer);armTimer=setTimeout(function(){armed=false;setBtn("Submit review");setNote("")},8000);
+      var first=IDS.filter(function(x){return !(state[x]||{}).verdict})[0],c=card(first);
+      if(cur!=="all"){cur="all";document.querySelectorAll(".filters button").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.f==="all")});filter()}
+      go(c);c.classList.add("flash");setTimeout(function(){c.classList.remove("flash")},1500);
+      setNote(un+" not judged: here is the first. Judge it, or press Submit again within a few seconds to submit anyway.");return}
     armed=false;clearTimeout(armTimer);
     IDS.forEach(function(id){if(pending[id])flush(id)});
     var body={at:new Date().toISOString(),keep:k,fix:f,drop:d,unjudged:un};
     var when=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),sum=k+" "+W[0]+", "+f+" "+W[1]+", "+d+" "+W[2]+", "+un+" not judged";
-    if(!db){setNote("Not submitted: answers are only in this browser, so Claude cannot see them.");return}
+    if(!db){setNote("Not submitted: answers are only in this browser, so Claude cannot see them.");
+      notice(false,"Not submitted","This copy of the page cannot send your answers anywhere, so Claude cannot see them. They are kept in this browser only. Open the page from its claude.ai link and submit there.");return}
     setNote("Submitting...");
     db.doc("%%COLL%%/_submitted").set(body).then(function(){setNote("Submitted at "+when+" ("+sum+"). You can still change answers and submit again.");setBtn("Submit again");
-      var t=document.getElementById("thanks");document.getElementById("thanks-sum").textContent="Submitted at "+when+": "+sum+".";t.classList.remove("hide");var cm=document.getElementById("comic");if(cm)cm.classList.remove("hide");go(t);t.focus({preventScroll:true})},function(e){setNote("Not submitted: "+((e&&e.message)||"error"))})}
+      notice(true,"Review submitted","Submitted at "+when+": "+sum+".","Claude can now read your answers. You can keep editing and submit again.")},
+      function(e){var m=(e&&e.message)||"error";setNote("Not submitted: "+m);notice(false,"Not submitted","The answers could not be saved ("+m+"). Nothing has been lost: they are kept in this browser. Try Submit again.")})}
   document.querySelectorAll(".submit").forEach(function(b){b.addEventListener("click",submitReview)});
   document.getElementById("thanks-back").addEventListener("click",function(){document.getElementById("thanks").classList.add("hide");var cm=document.getElementById("comic");if(cm)cm.classList.add("hide");var n=IDS.filter(function(x){return !(state[x]||{}).verdict})[0];go(n?card(n):document.querySelector("main"))});
   connect();
