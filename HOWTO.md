@@ -88,7 +88,7 @@ Most comics here retell **one paper**: what was done, what was found, what it le
 | Choose it when | you want one study's story | you want the state of a question: where studies agree, differ or leave gaps |
 | `head.yaml` | `meta.source` (one record) | `meta.sources` (a list, each with an `id`) and no `meta.source` |
 | Each claim | no `source.ref` (the validator errors if one is present) | `source.ref` is its paper's `id` |
-| Pages for the quote check | `--pages-dir sources/<slug>/pages` | `sources/<id>/pages` per paper, and `--pages-root sources` |
+| Pages for the quote check | `--pages-dir sources/<slug>/pages` | `sources/<id>/pages` per paper, and `--pages-root sources` (works on a bare `claims.yaml` too: the papers are the `source.ref` of its claims) |
 | Licence | the paper's | the **least open** of the papers: one paper that is not open access makes the whole comic private (`meta.private: true`) |
 | Footer of the PDF | one citation | one line per paper, with its licence |
 | The spine (And / But / Therefore) | the paper's own | one question across the papers |

@@ -465,3 +465,32 @@ def test_scene_word_that_is_a_staged_label_is_not_a_missing_prop(doc):
     assert not any("mentions a database" in w for w in validate(doc)[1])
     panel["staging"] = {"props": [{"kind": "flow", "items": [{"label": "sequence it"}]}]}
     assert any("mentions a database" in w for w in validate(doc)[1])
+
+
+def _split_panel(doc):
+    p = doc["beats"][0]["panels"][0]
+    p["staging"] = {"split": [{"props": [{"kind": "bottle", "label": "water"}]}, {"props": [{"kind": "jar", "label": "mud"}]}], "split_labels": ["water", "mud"]}
+    return p
+
+
+def test_scene_naming_props_staged_in_split_halves_does_not_warn(doc):
+    p = _split_panel(doc)
+    p["scene"] = "A bottle of water on the left and a jar of mud on the right."
+    _, warnings = validate(doc)
+    assert not any("the scene (the alt text) mentions" in w and p["id"] in w for w in warnings)
+
+
+def test_scene_naming_a_prop_missing_from_every_split_half_still_warns(doc):
+    p = _split_panel(doc)
+    p["scene"] = "A bottle on the left and a desk on the right."
+    _, warnings = validate(doc)
+    assert any("mentions a desk" in w for w in warnings)
+    assert not any("mentions a bottle" in w and p["id"] in w for w in warnings)
+
+
+def test_split_labels_count_as_words_so_a_split_is_not_a_filler(doc):
+    p = _split_panel(doc)
+    p["speech"] = []
+    p["claim_ids"] = []
+    _, warnings = validate(doc)
+    assert not any(p["id"] in w and "says nothing" in w for w in warnings)

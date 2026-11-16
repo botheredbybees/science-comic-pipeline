@@ -74,10 +74,19 @@ def _real_words(panel):
     return [t for t in texts if re.search(r"[A-Za-z]", t)]
 
 
+def _all_props(staging):
+    """Every prop of a staging block, including those in both halves of a split screen and inside a prop's own staging."""
+    staging = staging or {}
+    out = list(staging.get("props", []))
+    for sub in staging.get("split") or []:
+        out += _all_props(sub)
+    return out
+
+
 def _staging_texts(staging):
-    """Every string and number a renderer would draw as text from a staging block."""
-    out = []
-    for prop in (staging or {}).get("props", []):
+    """Every string and number a renderer would draw as text from a staging block (split halves and their labels included)."""
+    out = [s for s in (staging or {}).get("split_labels") or [] if s]
+    for prop in _all_props(staging):
         for key in ("label", "title", "unit", "x_label", "y_label"):
             if key in prop:
                 out.append(str(prop[key]))
@@ -112,7 +121,7 @@ SCENE_HELD = ("mug", "teacup", "clipboard", "flask", "magnifier", "flower", "pho
 
 def _prop_kinds(staging):
     kinds = set()
-    for prop in (staging or {}).get("props", []):
+    for prop in _all_props(staging):
         kinds.add(prop["kind"])
         kinds |= _prop_kinds(prop.get("staging"))
     return kinds
@@ -244,7 +253,7 @@ def validate(doc):
         if not _real_words(p) and "humour" not in p:  # a silent beat that is a joke is the one wordless panel a person approves
             warnings.append(f"{p['id']}: the panel has no caption, speech or label of its own; a panel that says nothing is a filler, "
                             "so give it a line the claims support or cut it (a deliberate silent joke carries a `humour` note instead)")
-        for prop in (p.get("staging") or {}).get("props", []):
+        for prop in _all_props(p.get("staging")):
             if prop.get("kind") == "net" and re.search(r"\bCPR\b|plankton recorder", prop.get("label", ""), re.I):
                 warnings.append(f"{p['id']}: a plankton net is labelled '{prop['label']}'; a continuous plankton recorder is not a net, use the `cpr` prop")
         drawn = _prop_kinds(p.get("staging"))
@@ -258,7 +267,7 @@ def validate(doc):
         for word in SCENE_HELD:
             if re.search(rf"\b{word}s?\b(?!\s+(?:water|work))", scene, re.I) and word not in held and word not in drawn:
                 warnings.append(f"{p['id']}: the scene (the alt text) mentions a {word} but nobody in the staging holds one")
-        for prop in (p.get("staging") or {}).get("props", []):
+        for prop in _all_props(p.get("staging")):
             if prop["kind"] == "board":
                 cards = prop.get("cards", [])
                 longest = max((len(c["label"]) for c in cards), default=0)

@@ -145,3 +145,27 @@ def test_a_topic_comic_checks_each_claim_against_its_own_source():
     assert not any(e.startswith("C1") for e in errors)  # right paper
     assert any(e.startswith("C2") and "not found on page 1" in e for e in errors)  # a quote from paper a cannot be credited to paper b
     assert any(e.startswith("C3") and "no source text" in e for e in errors)
+
+
+def test_pages_root_works_on_a_bare_claims_file_without_meta(tmp_path, capsys):
+    """A topic comic's claims.yaml has no meta: the papers are the refs its claims cite (this used to die with KeyError: 'meta')."""
+    import yaml
+    for ref, text in (("a", "Alpha result is 12 percent."), ("b", "Beta result differs.")):
+        (tmp_path / "sources" / ref / "pages").mkdir(parents=True)
+        (tmp_path / "sources" / ref / "pages" / "p001.txt").write_text(text)
+    c1 = claim("C1", "Alpha is 12 percent.", "Alpha result is 12 percent", 1)
+    c1["source"]["ref"] = "a"
+    c2 = claim("C2", "Beta differs.", "Beta result differs", 1)
+    c2["source"]["ref"] = "b"
+    f = tmp_path / "claims.yaml"
+    f.write_text(yaml.safe_dump({"claims": [c1, c2]}))
+    assert main([str(f), "--pages-root", str(tmp_path / "sources")]) == 0
+    assert "2 claim(s) checked: 0 error(s)" in capsys.readouterr().out
+
+
+def test_pages_root_with_nothing_to_go_on_says_so_instead_of_a_traceback(tmp_path, capsys):
+    import yaml
+    f = tmp_path / "claims.yaml"
+    f.write_text(yaml.safe_dump({"claims": [claim("C1", "x", "y", 1)]}))
+    assert main([str(f), "--pages-root", str(tmp_path)]) == 2
+    assert "needs meta.sources" in capsys.readouterr().out

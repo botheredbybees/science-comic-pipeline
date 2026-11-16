@@ -803,3 +803,10 @@ def test_a_slanted_split_draws_each_half_inside_its_own_wedge(doc):
     cells = R.split_cells(st, 0, 0, 600, 300, 18)
     (lx, _, lw, _), (rx, _, rw, _) = cells[0]["sub"], cells[1]["sub"]
     assert lx + lw < rx and lw == rw  # the two rectangles do not overlap and are the same width
+
+
+def test_bars_do_not_print_the_tallest_value_twice_when_max_is_not_set():
+    bars = [{"label": "a", "value": 10.03}, {"label": "b", "value": 8.4}]
+    assert R._bars(R.Pen("n"), 0, 0, 400, 300, {"bars": bars}, 16).count(">10.03<") == 1
+    # a `max` the author set is a scale the reader needs, so its tick stays even when a bar reaches it
+    assert R._bars(R.Pen("n"), 0, 0, 400, 300, {"max": 10.03, "bars": bars}, 16).count(">10.03<") == 2

@@ -173,7 +173,14 @@ def main(argv=None):
     args = ap.parse_args(argv)
     doc = yaml.safe_load(Path(args.storyboard).read_text())
     if args.pages_root:
-        ids = [s["id"] for s in doc["meta"].get("sources", [])]
+        sources = (doc.get("meta") or {}).get("sources")
+        if not sources:  # a bare claims.yaml has no meta: the papers are the refs its claims cite
+            refs = sorted({c["source"]["ref"] for c in doc.get("claims", []) if (c.get("source") or {}).get("ref")})
+            if not refs:
+                print("ERROR   --pages-root needs meta.sources in the file or a source.ref on every claim; neither was found")
+                return 2
+            doc.setdefault("meta", {})["sources"] = sources = [{"id": r} for r in refs]
+        ids = [s["id"] for s in sources]
         root = Path(args.pages_root)
         pages = {i: load_pages(root / i / "pages") for i in ids if (root / i / "pages").is_dir()}
         locs = {i: load_locators(root / i / "pages") for i in pages}

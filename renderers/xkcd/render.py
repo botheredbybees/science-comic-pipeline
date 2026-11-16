@@ -388,7 +388,9 @@ def _bars(pen, x, y, w, h, spec, fs):
     show = spec.get("show_values", True)
     fsb = max(11.0, fs * 0.85)
     ticks = [f"{_num(hi)}{pct}"] + ([f"{_num(lo)}{pct}"] if lo < 0 else [])
-    tick_w = max(len(t) for t in ticks) * fsb * CHAR_W + 8 if show and spec.get("show_max", True) else 0
+    # with no `max` set the top of the scale is the tallest bar, whose own value label already says the number: do not print it twice
+    echo = "max" not in spec and lo >= 0 and hi in vals
+    tick_w = max(len(t) for t in ticks) * fsb * CHAR_W + 8 if show and spec.get("show_max", True) and not echo else 0
     ax = x + max(14, tick_w)
     slot = (x + w - ax - 4) / n
     labs = [wrap(b.get("label", ""), slot - 4, fsb) for b in bars]
