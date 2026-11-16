@@ -1259,9 +1259,9 @@ beats:
       - props:
         - kind: board
           x: 0.05
-          y: 0.02
+          y: 0.0
           w: 0.9
-          h: 0.22
+          h: 0.18
           title: the protocols
           cards:
           - label: the ten
@@ -1272,13 +1272,13 @@ beats:
           pose: stand
           face: smug
           facing: right
-          scale: 0.6
+          scale: 0.55
         - id: ines
           x: 0.78
           pose: stand
           face: deadpan
           facing: left
-          scale: 0.6
+          scale: 0.55
   - id: B4.3
     weight: wide
     frame: outlined
