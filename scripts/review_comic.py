@@ -17,7 +17,7 @@ panels use) or `all`. Pages for the page text come from `--pages-dir` (one sourc
 
 Every joke and panel also has a collapsed "Change the words, scene, characters, props or actions" block (each spoken line, to retype, remove or add; the scene text; each character's action, face,
 facing and what they hold; each prop's kind and label, or remove it; one prop and one character to add). After Submit the page shows the
-whole comic as it stands. `--no-comic` leaves it out.
+whole comic as it stands, with retyped words already in it (the page re-wraps captions, speech and labels in every copy of the panel; figures, props and scenes need `apply`). Every other word a picture draws (frame labels of a strip, titles, cards, prop labels) has a box too. `--no-comic` leaves the comic out.
 
 `apply` reads the answers (a JSON file: item id to {verdict, notes, checks}; the list of documents the ArtifactData tool returns; or the folder it writes with `out_dir`) and does
 only what is unambiguous: a claim marked Fair becomes `status: verified` in its ledger, and a joke marked Approve gets `keeps_claims_intact:
@@ -149,7 +149,8 @@ def edit_for(panel, doc):
     chars = [{"name": names.get(c["id"], c["id"].title()), **{k: c.get(k, "") for k in ("pose", "face", "facing", "holding")}} for c in st.get("characters", [])]
     props = [{"kind": p["kind"], "label": p.get("label", "")} for p in st.get("props", [])]
     lines = [{"who": "Caption" if s.get("kind") == "caption" else names.get(s["speaker"], s["speaker"].title()), "text": s["text"]} for s in panel.get("speech", [])]
-    return {"scene": panel.get("scene", ""), "lines": lines, "characters": chars, "props": props, "cast": [{"id": c["id"]} for c in doc["cast"]], "vocab": vocab()}
+    texts = [{"path": "/".join(map(str, path)), "what": what, "text": text} for path, text, what in staging_texts(st)]
+    return {"scene": panel.get("scene", ""), "lines": lines, "texts": texts, "characters": chars, "props": props, "cast": [{"id": c["id"]} for c in doc["cast"]], "vocab": vocab()}
 
 
 def joke_item(j, panel_svgs, edit=None):
@@ -160,14 +161,14 @@ def joke_item(j, panel_svgs, edit=None):
     note = j["humour"].get("note", "")
     info = f'<div class="info">{lines}{caps}<p class="meta">The note: {H.escape(note)}</p>{claims}</div>'
     return {"id": item_id("joke", j["panel"]), "name": f'{j["panel"]}: {j["beat"]}', "variants": panel_picture(panel_svgs, j["panel"]),
-            "checks": JOKE_CHECKS, "info_html": info, "labels": {"keep": "Approve", "fix": "Reword", "drop": "Cut"}, "edit": edit}
+            "checks": JOKE_CHECKS, "info_html": info, "labels": {"keep": "Approve", "fix": "Reword", "drop": "Cut"}, "edit": edit, "panel": j["panel"]}
 
 
 def panel_item(beat, p, claims, panel_svgs, edit=None):
     cl = "".join(f'<p class="meta"><b>{c}</b> {H.escape((claims.get(c) or {}).get("text", ""))}</p>' for c in p.get("claim_ids", []))
     info = f'<div class="info">{words_html(p)}{cl}</div>'
     return {"id": item_id("panel", p["id"]), "name": f'{p["id"]}: {beat.get("title", beat["id"])}', "variants": panel_picture(panel_svgs, p["id"]),
-            "checks": PANEL_CHECKS, "info_html": info, "labels": {"keep": "OK", "fix": "Fix", "drop": "Redo"}, "edit": edit}
+            "checks": PANEL_CHECKS, "info_html": info, "labels": {"keep": "OK", "fix": "Fix", "drop": "Redo"}, "edit": edit, "panel": p["id"]}
 
 
 def render_panels(doc):
@@ -263,20 +264,139 @@ def set_claim_status(folder, cid, status):
     return None
 
 
+_BARE = re.compile(r"[A-Za-z][A-Za-z0-9_.\-]*")
+_RESERVED = ("true", "false", "null", "yes", "no", "on", "off")
+
+
+def flowval(v):
+    """One value as YAML flow text, in the style of the beat files: bare words stay bare, other text is double-quoted."""
+    if isinstance(v, bool):
+        return "true" if v else "false"
+    if v is None:
+        return "null"
+    if isinstance(v, (int, float)):
+        return repr(v)
+    if isinstance(v, str):
+        return v if _BARE.fullmatch(v) and v.lower() not in _RESERVED else json.dumps(v, ensure_ascii=False)
+    if isinstance(v, list):
+        return "[ " + ", ".join(flowval(x) for x in v) + " ]" if v else "[]"
+    return "{ " + ", ".join(f"{k}: {flowval(x)}" for k, x in v.items()) + " }" if v else "{}"
+
+
 def flow(d):
     """One mapping as a single-line YAML flow mapping, in the style of the beat files: `{ id: otto, x: 0.14, pose: sip }`."""
-    parts = []
+    return flowval(d)
+
+
+def emit_block(d, ind):
+    """A staging (or one frame of a split) as block YAML lines at `ind` spaces, as the beat files are written: scalars and short lists on one
+    line, props and characters as one-line mappings, the frames of a split as block mappings."""
+    pad, out = " " * ind, []
     for k, v in d.items():
-        if isinstance(v, bool):
-            s = "true" if v else "false"
-        elif isinstance(v, (int, float)):
-            s = repr(v)
-        elif isinstance(v, str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_.\-]*", v) and v.lower() not in ("true", "false", "null", "yes", "no", "on", "off"):
-            s = v
+        if isinstance(v, list) and v and all(isinstance(x, dict) for x in v):
+            out.append(f"{pad}{k}:")
+            for x in v:
+                if any(key in x for key in ("props", "characters", "split")):  # a frame of a split
+                    sub = emit_block(x, ind + 4)
+                    out.append(f"{pad}  - {sub[0].lstrip()}")
+                    out += sub[1:]
+                else:
+                    out.append(f"{pad}  - {flowval(x)}")
         else:
-            s = json.dumps(v, ensure_ascii=False)
-        parts.append(f"{k}: {s}")
-    return "{ " + ", ".join(parts) + " }"
+            out.append(f"{pad}{k}: {flowval(v)}")
+    return out
+
+
+TEXT_KEYS = ("label", "title", "unit", "x_label", "y_label", "caption")
+
+
+def _texts_in(node, path, what, out):
+    """Every drawn word under a prop: its label, title, unit, axis labels and captions, and those of its cards, items, notes and bars."""
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if isinstance(v, str) and k in TEXT_KEYS:
+                out.append((path + (k,), v, f"{what} {k.replace('_', ' ')}"))
+            elif isinstance(v, (list, dict)) and k != "staging":
+                _texts_in(v, path + (k,), f"{what} {k.rstrip('s')}" if isinstance(v, list) else what, out)
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            _texts_in(v, path + (i,), f"{what} {i + 1}", out)
+
+
+def staging_texts(st, prefix="", base=(), skip_top_labels=True):
+    """[(path, text, what)] for every word a staging draws beyond its characters' speech: the label of each frame of a split, and the texts of
+    its props (and of the frames' props). A top-level prop's `label` is left out when `skip_top_labels`, since the props row has its own box."""
+    out = []
+    n = len(st.get("split") or [])
+    labels = st.get("split_labels") or []
+    for i in range(n):
+        out.append((base + ("split_labels", i), labels[i] if i < len(labels) else "", f"{prefix}Frame {i + 1} label"))
+    for j, p in enumerate(st.get("props", [])):
+        got = []
+        _texts_in(p, base + ("props", j), f"{prefix}{p['kind']}", got)
+        out += [g for g in got if not (skip_top_labels and not base and g[0][-1] == "label" and len(g[0]) == 3)]
+    for i, sub in enumerate(st.get("split") or []):
+        out += staging_texts(sub, f"Frame {i + 1}: ", base + ("split", i), skip_top_labels=False)
+    return out
+
+
+def set_path(root, path, value):
+    """Set root[path...] = value; a split_labels list shorter than the path is padded with empty labels."""
+    for key in path[:-1]:
+        root = root.setdefault(key, []) if key == "split_labels" and isinstance(root, dict) else root[key]
+    last = path[-1]
+    if isinstance(root, list):
+        while len(root) <= last:
+            root.append("")
+    root[last] = value
+
+
+def staging_span(lines, i, j):
+    """(line of `staging:`, first line after it) within the panel's lines i..j, or None when it has no staging."""
+    for k in range(i, j):
+        m = re.match(r"^(\s*)staging:\s*$", lines[k])
+        if m:
+            ind, e = len(m.group(1)), k + 1
+            while e < j and not (lines[e].strip() and len(lines[e]) - len(lines[e].lstrip()) <= ind):
+                e += 1
+            return k, e
+    return None
+
+
+def apply_texts(folder, pid, texts, dry_run=False):
+    """Change words in a panel's staging (a frame label, a prop's title, a board card...) by path, and write the staging back in the beat files' style.
+    Returns (done, todo, changed)."""
+    found = panel_lines(folder, pid)
+    if not found:
+        return [], [f"panel {pid}: word changes asked for but the panel was not found in the beat files: {json.dumps(texts, ensure_ascii=False)}"], False
+    f, lines, i, j = found
+    span = staging_span(lines, i, j)
+    panel = next((p for beat in yaml.safe_load(f.read_text()) for p in beat["panels"] if p["id"] == pid), {})
+    st = panel.get("staging")
+    if not span or not st:
+        return [], [f"panel {pid}: word changes asked for but it has no staging: {json.dumps(texts, ensure_ascii=False)}"], False
+    done, todo = [], []
+    for path_s, new in texts.items():
+        path = tuple(int(x) if x.isdigit() else x for x in path_s.split("/"))
+        try:
+            old = st
+            for key in path:
+                old = old[key]
+        except (KeyError, IndexError, TypeError):
+            old = ""
+        try:
+            set_path(st, path, new)
+        except (KeyError, IndexError, TypeError):
+            todo.append(f"panel {pid}: change {path_s} to \"{new}\" (its place was not found)")
+            continue
+        done.append(f"{path_s}: \"{old}\" -> \"{new}\"")
+    if done and not dry_run:
+        k, e = span
+        ind = len(re.match(r"^(\s*)", lines[k]).group(1)) + 2
+        lines[k + 1:e] = [ln + "\n" for ln in emit_block(st, ind)]
+        f.write_text("".join(lines))
+    said = "would: " if dry_run else ""
+    return [f"panel {pid}: {said}{d}" for d in done], todo, bool(done) and not dry_run
 
 
 def panel_lines(folder, pid):
@@ -436,6 +556,11 @@ def apply(folder, answers, dry_run=False):
         if a.get("edit") and kind in ("joke", "panel"):
             pid = panels.get(rest)
             by_id = {p["id"]: p for b in doc["beats"] for p in b["panels"]}
+            if pid and a["edit"].get("texts"):  # words first: it rewrites only the staging, and every index the other edits use stays put
+                d0, t0, c0 = apply_texts(folder, pid, a["edit"]["texts"], dry_run)
+                out["done"] += d0
+                out["todo"] += t0
+                changed = changed or c0
             d, t, c = apply_edit(folder, by_id.get(pid, {}), pid, a["edit"], dry_run) if pid else ([], [f"{kind} {rest}: picture changes asked for but the panel was not found: {json.dumps(a['edit'])}"], False)
             out["done"] += d
             out["todo"] += t

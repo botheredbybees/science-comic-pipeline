@@ -208,7 +208,7 @@ go. **Save and next** on each card moves to the next item you have not judged, a
 stands. Each joke and panel also has a collapsed **Change the words, scene, characters, props or actions** block: retype, remove or add a spoken line or caption, pick a new action, face, facing or held
 object for a character, a new kind or label for a prop (or remove it), add one prop or character, or retype the scene. `apply` writes those into the
 panel's beat file (a line that is not a one-line `{ ... }` mapping goes on the worklist) and rebuilds; added props and characters land at a default spot, so
-look at the redrawn panel. Then have Claude read the answers back and apply them:
+look at the redrawn panel. Every other word the picture draws (the label of each frame of a strip, a board's title and cards, a prop's label, axis labels) has its own box under **Words in the picture**. Retyped words show at once in the card's picture and in the full comic below the confirmation (re-wrapped to the width the renderer used); changes to figures, props and scenes show once `apply` has redrawn the panel. Then have Claude read the answers back and apply them:
 
 ```
 .venv/bin/python scripts/review_comic.py build nester --pages-root sources -o output/review.html            # unverified claims + waiting jokes

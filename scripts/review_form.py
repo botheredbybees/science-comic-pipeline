@@ -56,6 +56,10 @@ def edit_html(e):
     if "lines" in e:
         rows.append('<div class="erow line" data-addline>' + _sel("speaker", "Add a line", [c["id"] for c in e["cast"]] + ["caption"], "", "(none)")
                     + '<textarea data-e="text" rows="2" placeholder="What it says" aria-label="Words for the added line"></textarea></div>')
+    if e.get("texts"):
+        rows.append('<p class="meta tx-head">Words in the picture (frame labels, titles, cards...)</p>')
+    for t in e.get("texts", []):
+        rows.append(f'<label class="erow tx">{H.escape(t["what"])} <input type="text" data-path="{H.escape(t["path"], quote=True)}" data-orig="{H.escape(t["text"], quote=True)}" value="{H.escape(t["text"], quote=True)}"></label>')
     for i, c in enumerate(e["characters"]):
         rows.append(f'<div class="erow" data-char="{i}"><b>{H.escape(c["name"])}</b>'
                     + _sel("pose", "Action", v["poses"], c.get("pose", ""), "(none)") + _sel("face", "Face", v["faces"], c.get("face", ""), "(none)")
@@ -75,9 +79,10 @@ def edit_html(e):
 
 def item_html(it):
     labels = it.get("labels") or {}
+    panel_attr = f' data-panel="{H.escape(it["panel"], quote=True)}"' if it.get("panel") else ""  # which comic panel the picture on this card is, for the live preview
     figs = "".join(f'<figure><div class="plate"{(" style=\"max-width:%dpx\"" % v["maxw"]) if v.get("maxw") else ""}>{v["svg"]}</div><figcaption><b>{H.escape(v["id"])}</b> {H.escape(v["label"])}</figcaption></figure>' for v in it["variants"])
     checks = "".join(f'<li><label><input type="checkbox" data-k="{i}"> <span>{H.escape(c)}</span></label></li>' for i, c in enumerate(it["checks"]))
-    return (f'<article class="card" id="item-{H.escape(it["id"])}" data-id="{H.escape(it["id"])}">'
+    return (f'<article class="card" id="item-{H.escape(it["id"])}" data-id="{H.escape(it["id"])}"{panel_attr}>'
             f'<header><h3><span class="tag">{H.escape(it["id"])}</span> {H.escape(it["name"])}</h3>'
             f'<div class="verdict" role="radiogroup" aria-label="Verdict for {H.escape(it["name"])}">'
             + "".join(f'<label class="v-{v}"><input type="radio" name="v-{H.escape(it["id"])}" value="{v}"><span>{H.escape(labels.get(v, v.title()))}</span></label>' for v in ("keep", "fix", "drop"))
@@ -182,6 +187,9 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 .capbar:empty{display:none}
 .linkbtn{font:inherit;font-size:.85rem;font-weight:600;padding:3px 12px;border-radius:999px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
 .linkbtn:hover,.linkbtn:focus-visible{background:var(--accent);color:var(--bg)}
+.erow.tx{display:grid;grid-template-columns:minmax(8em,14em) 1fr;gap:6px 12px;align-items:center}
+.erow.tx input{width:100%}
+.tx-head{margin:12px 0 0}
 .card.flash{outline:2px solid var(--accent);outline-offset:2px}
 .card.done{border-left:4px solid var(--accent)}
 .general{margin-top:28px}
@@ -210,11 +218,46 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
   var IDS=%%IDS%%, LS="%%STORE%%", W=%%TALLY%%, state={}, db=null, timers={}, busy={}, dirty={}, pending={}, lastWritten={};
   function card(id){return document.getElementById("item-"+id)}
   function hasKeys(o){return !!o&&Object.keys(o).length>0}
+  /* Live preview: retyped words are put into every copy of the panel on the page (the card's picture and the full comic), wrapped to the width
+     the renderer used (data-wrap). Changes to figures, props and scenes cannot be drawn here; they show once Claude applies the review. */
+  var SVGNS="http://www.w3.org/2000/svg",QL="\u201c",QR="\u201d";
+  function norm(s){return String(s).replace(/\s+/g," ").trim()}
+  function wrapJS(txt,ww,fs){var per=Math.max(4,Math.floor(ww/(fs*0.46))),lines=[],cur="";
+    norm(txt).split(" ").filter(Boolean).forEach(function(w){if(cur&&cur.length+1+w.length>per){lines.push(cur);cur=w}else{cur=(cur+" "+w).trim()}});
+    if(cur)lines.push(cur);return lines}
+  function textEls(panel){var out=[];document.querySelectorAll('[id="panel-'+panel+'"] text').forEach(function(t){
+    if(t.__key==null){var sp=t.querySelectorAll("tspan");t.__key=norm(sp.length?[].map.call(sp,function(x){return x.textContent}).join(" "):t.textContent)}out.push(t)});return out}
+  function halos(t){var out=[],n=t.previousElementSibling;while(n&&n.tagName==="rect"&&n.getAttribute("rx")==="3"){out.unshift(n);n=n.previousElementSibling}return out}
+  function boxOf(t){var n=t.previousElementSibling;return n&&n.tagName==="rect"&&n.getAttribute("fill")==="#eceef2"?n:null}
+  function remember(t){if(!t.__orig){var b=boxOf(t);t.__orig={html:t.innerHTML,halos:halos(t).map(function(r){return r.outerHTML}),box:b,boxH:b?b.getAttribute("height"):null}}return t.__orig}
+  function dropHalos(t){halos(t).forEach(function(r){r.remove()})}
+  function showEl(t,on){t.style.display=on?"":"none";var b=boxOf(t);if(b)b.style.display=on?"":"none";halos(t).forEach(function(r){r.style.display=on?"":"none"})}
+  function setLines(t,lines){var o=remember(t),fs=parseFloat(t.getAttribute("font-size")),anchor=t.getAttribute("text-anchor")||"start",
+      first=t.querySelector("tspan"),x=parseFloat(first?first.getAttribute("x"):t.getAttribute("x")),y=parseFloat(t.getAttribute("y"));
+    dropHalos(t);
+    if(!lines){t.innerHTML=o.html;o.halos.forEach(function(h){t.insertAdjacentHTML("beforebegin",h)});if(o.box)o.box.setAttribute("height",o.boxH);return}
+    t.textContent="";lines.forEach(function(ln,i){var sp=document.createElementNS(SVGNS,"tspan");sp.setAttribute("x",x);sp.setAttribute("dy",(i?fs*1.2:fs).toFixed(1));sp.textContent=ln;t.appendChild(sp)});
+    if(o.halos.length){lines.forEach(function(ln,i){var wd=ln.length*fs*0.46+6,x0=anchor==="middle"?x-wd/2:(anchor==="end"?x-wd:x-3),r=document.createElementNS(SVGNS,"rect");
+      r.setAttribute("x",x0.toFixed(1));r.setAttribute("y",(y+i*fs*1.2+fs*0.12).toFixed(1));r.setAttribute("width",wd.toFixed(1));r.setAttribute("height",fs.toFixed(1));r.setAttribute("rx","3");
+      r.setAttribute("fill",(o.halos[0].match(/fill="([^"]+)"/)||[])[1]||"#fff");r.setAttribute("stroke","none");t.parentNode.insertBefore(r,t)})}
+    if(o.box)o.box.setAttribute("height",(lines.length*fs*1.2+16).toFixed(1))}
+  function previewWord(panel,orig,now,removed){var key=norm(orig),quoted=QL+key+QR;
+    textEls(panel).forEach(function(t){var q=t.__key===quoted;if(t.__key!==key&&!q)return;
+      remember(t);if(removed){showEl(t,false);return}showEl(t,true);
+      if(now===orig){setLines(t,null);return}
+      var fs=parseFloat(t.getAttribute("font-size")),ww=parseFloat(t.getAttribute("data-wrap")),txt=q?QL+now+QR:now;
+      setLines(t,ww?wrapJS(txt,ww,fs):[norm(txt)])})}
+  function preview(id){var c=card(id),panel=c.dataset.panel,d=c.querySelector(".edit");if(!panel||!d)return;
+    d.querySelectorAll("[data-line]").forEach(function(r){var t=r.querySelector("[data-e=text]");previewWord(panel,t.dataset.orig,t.value,r.querySelector("[data-e=remove]").checked)});
+    d.querySelectorAll("[data-path]").forEach(function(x){if(x.dataset.orig!=="")previewWord(panel,x.dataset.orig,x.value,false)})}
+  function pendingPictures(){var n=0;IDS.forEach(function(id){var e=(state[id]||{}).edit||{};
+    if(e.scene!=null||hasKeys(e.chars)||hasKeys(e.props)||e.add_props||e.add_chars||e.add_lines)n++});return n}
   function readEdit(c){var e={},d=c.querySelector(".edit");if(!d)return e;
     var s=d.querySelector("[data-e=scene]");if(s&&s.value!==s.dataset.orig)e.scene=s.value;
     d.querySelectorAll("[data-line]").forEach(function(r){var o={},t=r.querySelector("[data-e=text]"),rm=r.querySelector("[data-e=remove]");
       if(t.value!==t.dataset.orig)o.text=t.value;if(rm.checked)o.remove=true;
       if(hasKeys(o)){(e.lines=e.lines||{})[r.dataset.line]=o}});
+    d.querySelectorAll("[data-path]").forEach(function(x){if(x.value!==x.dataset.orig){(e.texts=e.texts||{})[x.dataset.path]=x.value}});
     var al=d.querySelector("[data-addline]");if(al){var sp=al.querySelector("[data-e=speaker]").value,tx=al.querySelector("[data-e=text]").value;if(sp&&tx.trim())e.add_lines=[{speaker:sp,text:tx}]}
     d.querySelectorAll("[data-char]").forEach(function(r){var o={};r.querySelectorAll("select").forEach(function(x){if(x.value!==x.dataset.orig)o[x.dataset.e]=x.value});
       if(hasKeys(o)){(e.chars=e.chars||{})[r.dataset.char]=o}});
@@ -228,6 +271,7 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
     var s=d.querySelector("[data-e=scene]");if(s&&document.activeElement!==s)s.value=e.scene!=null?e.scene:s.dataset.orig;
     d.querySelectorAll("[data-line]").forEach(function(r){var o=(e.lines||{})[r.dataset.line]||{},t=r.querySelector("[data-e=text]");
       if(t!==document.activeElement)t.value=o.text!=null?o.text:t.dataset.orig;r.querySelector("[data-e=remove]").checked=!!o.remove});
+    d.querySelectorAll("[data-path]").forEach(function(x){if(x!==document.activeElement)x.value=(e.texts&&e.texts[x.dataset.path]!=null)?e.texts[x.dataset.path]:x.dataset.orig});
     var al=d.querySelector("[data-addline]");if(al){var l0=(e.add_lines||[])[0]||{};al.querySelector("[data-e=speaker]").value=l0.speaker||"";if(al.querySelector("[data-e=text]")!==document.activeElement)al.querySelector("[data-e=text]").value=l0.text||""}
     d.querySelectorAll("[data-char]").forEach(function(r){var o=(e.chars||{})[r.dataset.char]||{};r.querySelectorAll("select").forEach(function(x){x.value=o[x.dataset.e]!=null?o[x.dataset.e]:x.dataset.orig})});
     d.querySelectorAll("[data-prop]").forEach(function(r){var o=(e.props||{})[r.dataset.prop]||{};r.querySelectorAll("[data-e]").forEach(function(x){var k=x.dataset.e;
@@ -242,7 +286,7 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
     c.querySelectorAll(".checks input").forEach(function(b){b.checked=!!(o.checks&&o.checks[b.dataset.k])});
     c.querySelectorAll(".verdict input").forEach(function(r){r.checked=(r.value===o.verdict)});
     var t=c.querySelector("textarea.notes");if(document.activeElement!==t)t.value=o.notes||"";
-    paintEdit(c,o.edit);
+    paintEdit(c,o.edit);preview(id);
     c.classList.toggle("done",!!o.verdict)}
   function tally(){var k=0,f=0,d=0;IDS.forEach(function(id){var v=(state[id]||{}).verdict;if(v==="keep")k++;else if(v==="fix")f++;else if(v==="drop")d++});
     var n=IDS.length;document.getElementById("done").textContent=k+f+d;
@@ -262,7 +306,7 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
     var body=id==="general"?{notes:document.getElementById("general").value,updated:new Date().toISOString()}:Object.assign({},state[id],{item:id,updated:new Date().toISOString()});
     lastWritten[id]=body.updated;say(id,"Saving...");
     db.doc("%%COLL%%/"+id).set(body).then(function(){say(id,"Saved")},function(e){say(id,"Not saved: "+((e&&e.message)||"error"))}).then(function(){busy[id]=false;if(dirty[id]){dirty[id]=false;flush(id)}})}
-  function changed(id){pending[id]=true;state[id]=read(id);card(id).classList.toggle("done",!!state[id].verdict);card(id).classList.toggle("edited",hasKeys(state[id].edit));tally();stash();save(id)}
+  function changed(id){pending[id]=true;state[id]=read(id);card(id).classList.toggle("done",!!state[id].verdict);card(id).classList.toggle("edited",hasKeys(state[id].edit));preview(id);tally();stash();save(id)}
   IDS.forEach(function(id){var c=card(id);c.addEventListener("change",function(){changed(id)});c.querySelector("textarea.notes").addEventListener("input",function(){changed(id)});
     c.querySelectorAll(".edit textarea,.edit input[type=text]").forEach(function(x){x.addEventListener("input",function(){changed(id)})})});
   function go(el){el.scrollIntoView({behavior:"smooth",block:"start"})}
@@ -323,7 +367,8 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
       notice(false,"Not submitted","This copy of the page cannot send your answers anywhere, so Claude cannot see them. They are kept in this browser only. Open the page from its claude.ai link and submit there.");return}
     setNote("Submitting...");
     db.doc("%%COLL%%/_submitted").set(body).then(function(){setNote("Submitted at "+when+" ("+sum+"). You can still change answers and submit again.");setBtn("Submit again");
-      notice(true,"Review submitted","Submitted at "+when+": "+sum+".","Claude can now read your answers. You can keep editing and submit again.")},
+      var np=pendingPictures();
+      notice(true,"Review submitted","Submitted at "+when+": "+sum+".","Claude can now read your answers. "+(np?"Retyped words already show in the comic below; changes to figures, props and scenes ("+np+" panel"+(np>1?"s":"")+") appear once Claude applies the review. ":"Retyped words already show in the comic below. ")+"You can keep editing and submit again.")},
       function(e){var m=(e&&e.message)||"error";setNote("Not submitted: "+m);notice(false,"Not submitted","The answers could not be saved ("+m+"). Nothing has been lost: they are kept in this browser. Try Submit again.")})}
   document.querySelectorAll(".submit").forEach(function(b){b.addEventListener("click",submitReview)});
   document.getElementById("thanks-back").addEventListener("click",function(){document.getElementById("thanks").classList.add("hide");var cm=document.getElementById("comic");if(cm)cm.classList.add("hide");var n=IDS.filter(function(x){return !(state[x]||{}).verdict})[0];go(n?card(n):document.querySelector("main"))});

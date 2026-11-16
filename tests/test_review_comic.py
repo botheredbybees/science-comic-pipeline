@@ -177,3 +177,61 @@ def test_the_picture_comes_before_the_extracted_fact_on_each_card(comic):
     item = html[html.index('id="item-joke-B4_2"'):]
     item = item[:item.index("</article>")]
     assert item.index('class="figs"') < item.index('class="info"') < item.index('class="edit"')
+
+
+def _all_example_panels():
+    for beats in sorted((ROOT / "examples").glob("*/beats/*.yaml")):
+        for beat in yaml.safe_load(beats.read_text()):
+            for p in beat["panels"]:
+                if p.get("staging"):
+                    yield beats, p
+
+
+def test_a_staging_written_back_by_the_emitter_reads_as_the_same_staging():
+    n = 0
+    for beats, p in _all_example_panels():
+        back = yaml.safe_load("\n".join(["staging:"] + RC.emit_block(p["staging"], 2)))["staging"]
+        assert back == p["staging"], (beats.name, p["id"])
+        n += 1
+    assert n > 30
+
+
+def test_every_drawn_word_of_a_staging_can_be_listed_with_where_it_is(comic):
+    doc = yaml.safe_load((comic / "storyboard.yaml").read_text())
+    panel = next(p for b in doc["beats"] for p in b["panels"] if p["id"] == "B4.2")
+    byp = {"/".join(map(str, path)): (text, what) for path, text, what in RC.staging_texts(panel["staging"])}
+    assert byp["split_labels/2"] == ("soon", "Frame 3 label") and byp["split_labels/0"] == ("", "Frame 1 label")
+    assert byp["split/2/props/0/title"][0] == "the protocols" and byp["split/2/props/0/cards/1/label"][0] == "Otto's"
+    assert byp["split/0/props/0/label"][0] == "sequencer"
+
+
+def test_changed_words_are_written_into_the_strip_and_nothing_else_moves(comic):
+    path = next(f for f in (comic / "beats").glob("*.yaml") if "id: B4.2" in f.read_text())
+    before = yaml.safe_load(path.read_text())
+    res = RC.apply(comic, {"panel-B4_2": {"edit": {"texts": {"split_labels/2": "some time later", "split/2/props/0/cards/1/label": "Otto's own"}}}})
+    assert not res["todo"] and len(res["done"]) == 2
+    after = yaml.safe_load(path.read_text())
+    pb = next(p for b in before for p in b["panels"] if p["id"] == "B4.2")["staging"]
+    pa = next(p for b in after for p in b["panels"] if p["id"] == "B4.2")["staging"]
+    assert pa["split_labels"] == ["", "", "some time later"] and pa["split"][2]["props"][0]["cards"][1]["label"] == "Otto's own"
+    pb["split_labels"][2] = "some time later"
+    pb["split"][2]["props"][0]["cards"][1]["label"] = "Otto's own"
+    assert pa == pb  # only those two words differ
+    others = [(b["id"], p["id"]) for b in after for p in b["panels"]]
+    assert others == [(b["id"], p["id"]) for b in before for p in b["panels"]]
+    built = yaml.safe_load((comic / "storyboard.yaml").read_text())
+    assert next(p for b in built["beats"] for p in b["panels"] if p["id"] == "B4.2")["staging"]["split_labels"][2] == "some time later"
+
+
+def test_a_frame_label_can_be_added_where_there_was_none(comic):
+    RC.apply(comic, {"panel-B4_2": {"edit": {"texts": {"split_labels/0": "first"}}}})
+    path = next(f for f in (comic / "beats").glob("*.yaml") if "id: B4.2" in f.read_text())
+    p = next(p for b in yaml.safe_load(path.read_text()) for p in b["panels"] if p["id"] == "B4.2")
+    assert p["staging"]["split_labels"][0] == "first"
+
+
+def test_words_and_structure_can_be_changed_in_one_submission(comic):
+    res = RC.apply(comic, {"panel-B1_2": {"edit": {"texts": {"props/1/title": "the code"}, "props": {"0": {"remove": True}}, "chars": {"0": {"pose": "up"}}}}})
+    p = beat_panel(comic, "B1.2")
+    assert [x["kind"] for x in p["staging"]["props"]] == ["sequence"] and p["staging"]["props"][0]["title"] == "the code"
+    assert p["staging"]["characters"][0]["pose"] == "up" and not res["todo"]
