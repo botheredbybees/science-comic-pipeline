@@ -103,9 +103,10 @@ def wrap(text, width, fs):
     return lines + ([cur] if cur else [])
 
 
-def text(x, y, lines, fs, anchor="start", fill=INK, lh=1.2, weight="normal", halo=False):
+def text(x, y, lines, fs, anchor="start", fill=INK, lh=1.2, weight="normal", halo=False, wrap_w=None):
     """SVG text with one tspan per line; y is the top of the block. `halo` puts a white patch behind each line, so a
-    line that crosses a drawing stays readable (a stroked copy of the text would put every word in the PDF twice)."""
+    line that crosses a drawing stays readable (a stroked copy of the text would put every word in the PDF twice). `wrap_w` is the width the
+    lines were wrapped to; it is written on the element (`data-wrap`) so a page that lets a reader retype the words can wrap them the same way."""
     if not lines:
         return ""
     spans = "".join(f'<tspan x="{x:.1f}" dy="{(fs if i == 0 else fs * lh):.1f}">{esc(t)}</tspan>' for i, t in enumerate(lines))
@@ -115,8 +116,9 @@ def text(x, y, lines, fs, anchor="start", fill=INK, lh=1.2, weight="normal", hal
             wd = len(t) * fs * CHAR_W + 6
             x0 = x - wd / 2 if anchor == "middle" else (x - wd if anchor == "end" else x - 3)
             patches += f'<rect x="{x0:.1f}" y="{y + i * fs * lh + fs * 0.12:.1f}" width="{wd:.1f}" height="{fs * 1.0:.1f}" rx="3" fill="{PAPER}" stroke="none"/>'
+    wrap = f' data-wrap="{wrap_w:.0f}"' if wrap_w else ""
     return (f'{patches}<text x="{x:.1f}" y="{y:.1f}" font-size="{fs:.1f}" text-anchor="{anchor}" fill="{fill}" '
-            f'font-weight="{weight}">{spans}</text>')
+            f'font-weight="{weight}"{wrap}>{spans}</text>')
 
 
 def block_h(lines, fs, lh=1.2):

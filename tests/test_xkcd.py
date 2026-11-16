@@ -813,6 +813,7 @@ def test_bars_do_not_print_the_tallest_value_twice_when_max_is_not_set():
 
 
 def _speech_clears_caption(staging, w=200):
+    """(top of the speech line, bottom of it, top of the caption under the picture) for a panel with a caption and a speaker."""
     cast = {"gus": {"id": "gus", "name": "Gus", "appearance": {}}}
     cap = ("The authors do not recommend a particular approach or instrument type: each has strengths and caveats, to be weighed against "
            "project-specific research objectives and operational constraints.")
@@ -821,20 +822,29 @@ def _speech_clears_caption(staging, w=200):
     plan = R.plan_panel(panel, w, 0.55, cast)
     svg = R.draw_panel(panel, plan, w, plan["nat_h"], cast)
     rect = re.search(r'<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="([\d.]+)" fill="#eceef2"/>', svg)
-    cap_bottom = float(rect.group(1)) + float(rect.group(2))
-    ys = [float(y) for y in re.findall(r'<text x="[\d.]+" y="([\d.]+)"', svg)]
-    speech_top = min(y for y in ys if y > float(rect.group(1)) + 20)  # the first text block below the caption's own lines
-    return speech_top, cap_bottom
+    box = _speech_box(svg, "So")
+    return box[1], box[3], float(rect.group(1))
 
 
-def test_a_speech_line_never_starts_inside_the_caption_above_it():
+def test_a_speech_line_stays_inside_the_panel_and_clear_of_the_caption_under_the_picture():
     for shot in (None, "close"):
         staging = {"props": [{"kind": "box", "x": 0.02, "y": 0.1, "w": 0.3, "h": 0.5, "label": "objectives"}],
                    "characters": [{"id": "gus", "x": 0.88, "pose": "stand", "face": "sceptical", "facing": "left"}]}
         if shot:
             staging["shot"] = shot
-        top, cap_bottom = _speech_clears_caption(staging)
-        assert top >= cap_bottom, (shot, top, cap_bottom)
+        top, bottom, cap_top = _speech_clears_caption(staging)
+        assert top >= 0 and bottom <= cap_top, (shot, top, bottom, cap_top)
+
+
+def test_the_caption_sits_below_the_picture_not_above_it():
+    cast = {"gus": {"id": "gus", "name": "Gus", "appearance": {}}}
+    panel = {"id": "T4", "scene": "Gus.", "speech": [{"speaker": "narrator", "kind": "caption", "text": "The paper's words."}],
+             "staging": {"props": [{"kind": "box", "x": 0.2, "y": 0.1, "w": 0.5, "h": 0.5, "label": "picture"}]}}
+    plan = R.plan_panel(panel, 300, 0.55, cast)
+    svg = R.draw_panel(panel, plan, 300, plan["nat_h"], cast)
+    cap_y = float(re.search(r'<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="[\d.]+" fill="#eceef2"/>', svg).group(1))
+    pic_y = float(re.search(r'<text x="[\d.]+" y="([\d.]+)"[^>]*>(?:(?!</text>).)*picture', svg, re.S).group(1))
+    assert cap_y > pic_y
 
 
 def test_bridge_block_labels_fit_inside_their_blocks_even_in_a_short_box():

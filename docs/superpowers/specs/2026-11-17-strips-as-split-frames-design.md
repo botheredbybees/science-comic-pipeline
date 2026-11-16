@@ -16,7 +16,7 @@ A joke often needs three frames to set up (xkcd 927: the situation, a character'
 The split frame already does most of this: one panel, a `split` of stagings drawn side by side with a frame round each, `split_labels`
 above them, `split_direction` (side, stack, slope), speech that can point at a figure in any half. A strip is a split with more than two cells.
 Because it is **one panel**, the layout, the ids, the claims and the humour note all stay as they are, and the panel's caption stays once,
-above the strip, like 927's header.
+under the strip (captions sit under the picture in every panel, so a reader who likes the cartoon goes on to the fact).
 
 ## Changes
 
@@ -48,7 +48,7 @@ the speech-placement fix) and require zero differences. Tests: a three-cell side
 ## Then the eDNA comic
 
 Undo the renumbering (B4.3 to B4.13 return to their old numbers), and write the joke as one `B4.2` of `weight: full` with a three-cell
-`side` split: the paper's caption above; frame 1 Ines "Ten labs, ten protocols." with the sequencer and tubes; frame 2 Otto "Ten protocols?
+`side` split: the paper's caption under the strip; frame 1 Ines "Ten labs, ten protocols." with the sequencer and tubes; frame 2 Otto "Ten protocols?
 Ridiculous. We need one that covers everybody."; frame 3, labelled "soon", the board of "the ten" and "Otto's" and Ines "That's eleven."
 The `humour` block stays on B4.2 with the six questions answered.
 

@@ -180,7 +180,7 @@ more than about one panel in ten: it is a device, and a comic of splits has no r
 
 **A strip: a gag told in three or four frames.** Some punchlines need setting up (the situation, a character's plan, the twist, as in xkcd
 927). Put the whole gag in **one panel**: `split` with three or four stagings, `split_direction: side`, `split_labels` for words like "soon"
-over a frame, and the paper's caption once above the strip, as a header. A strip is one panel, so it has one id, one set of claims
+over a frame, and the paper's caption once under the strip. A strip is one panel, so it has one id, one set of claims
 and one `humour` block (with the note saying the gag runs across the frames). Width rules, enforced by `validate_storyboard.py` and the
 layout: three frames need `weight: wide` or `full` and share a row only with one `small` panel; four frames need `weight: full`.
 Where the same character is in more than one frame, give each of their speech lines a `cell` (1 at the left) so the line comes from

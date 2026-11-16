@@ -655,6 +655,15 @@ def cell_box(staging, cell, x, y, w, h, fs):
     return fx, fx + fw
 
 
+def speech_room(panel, s, inner, fs):
+    """The width a speech line is first wrapped to: most of the panel, or the frame of a strip it is in."""
+    room = min(inner * 0.6, 260)
+    frame = cell_box(panel.get("staging"), s.get("cell"), 0, 0, inner, 300, fs)
+    if frame:  # a line in one frame of a strip stays inside that frame
+        room = min(room, frame[1] - frame[0] - 16)
+    return room
+
+
 def plan_panel(panel, w, k=0.55, cast=None):
     """Work out the text blocks and the natural height of a panel of width w."""
     cast = cast or {}
@@ -670,11 +679,7 @@ def plan_panel(panel, w, k=0.55, cast=None):
             shown = s["text"] if "staging" in panel else f'{s["speaker"].replace("_", " ").title()}: {s["text"]}'
             if kind == "think":
                 shown = f"\u201c{shown}\u201d"
-            room = min(inner * 0.6, 260)
-            frame = cell_box(panel.get("staging"), s.get("cell"), 0, 0, inner, clamp(k * w, 150, 520 * k), fs)
-            if frame:  # a line in one frame of a strip stays inside that frame
-                room = min(room, frame[1] - frame[0] - 16)
-            talk.append((s, wrap(shown, room, fs)))
+            talk.append((s, wrap(shown, speech_room(panel, s, inner, fs), fs)))
     scene_nat = clamp(k * w, 150, 520 * k)
     near = [(s, li) for s, li in talk if speaker_key(s) in staged]
     far = [(s, li) for s, li in talk if speaker_key(s) not in staged]
@@ -689,7 +694,7 @@ def plan_panel(panel, w, k=0.55, cast=None):
     talk_h = extra + sum(block_h(li, fs) + 22 for _, li in far)
     # Heads sit roughly in proportion to the scene's height, so a shorter scene lowers the room for speech.
     shrink_ok = float("inf") if not near else (0.0 if extra > 0 else 2.0 * (free - need))
-    cap_h = sum(block_h(c, fs) + 16 for c in captions) + (6 if captions else 0)
+    cap_h = sum(block_h(c, fs) + 16 + 6 for c in captions)  # the captions sit under the picture, each with a 6 px gap above it
     return {"fs": fs, "captions": captions, "talk": talk, "cap_h": cap_h, "talk_h": talk_h,
             "scene_nat": scene_nat, "nat_h": PAD + cap_h + talk_h + scene_nat + PAD, "shrink_ok": shrink_ok}
 
@@ -825,17 +830,11 @@ def draw_panel(panel, plan, w, h, cast):
     o = []
     if panel.get("frame", "outlined") == "outlined":
         o.append(pen.rect(0, 0, w, h, 2.8))
-    y = PAD
-    for lines in plan["captions"]:
-        bh = block_h(lines, fs) + 16
-        o.append(f'<rect x="{PAD}" y="{y:.1f}" width="{w - 2 * PAD:.1f}" height="{bh:.1f}" fill="{SOFT}"/>')
-        o.append(text(PAD + 8, y + 7, lines, fs))
-        y += bh + 6
-    talk_top = y
+    talk_top = PAD  # the picture comes first and the paper's words below it: a reader who likes the cartoon goes on to read the fact
     scene_y = talk_top + plan["talk_h"]
     if "staging" in panel and plan["talk"]:
         # The room for speech is estimated before the scene is drawn; the drawn head can sit higher (a close shot, a short panel), which
-        # would put its speech line over the captions. Measure the real heads with a throwaway pen and push the scene down until clear.
+        # would put its speech line above the panel. Measure the real heads with a throwaway pen and push the scene down until clear.
         for _ in range(4):
             _, probe = stage(Pen(pid), PAD, scene_y, w - 2 * PAD, scene_h, panel["staging"], cast, fs)
             blocks = speech_layout(plan["talk"], probe, panel["staging"], scene_y, scene_h, w, fs)
@@ -844,6 +843,12 @@ def draw_panel(panel, plan, w, h, cast):
                 break
             scene_y += lack
             scene_h -= lack
+    y = scene_y + scene_h + 6
+    for lines in plan["captions"]:  # under the picture
+        bh = block_h(lines, fs) + 16
+        o.append(f'<rect x="{PAD}" y="{y:.1f}" width="{w - 2 * PAD:.1f}" height="{bh:.1f}" fill="{SOFT}"/>')
+        o.append(text(PAD + 8, y + 7, lines, fs, wrap_w=w - 2 * PAD - 16))
+        y += bh + 6
     heads = {}
     if "staging" in panel:
         svg, heads = stage(pen, PAD, scene_y, w - 2 * PAD, scene_h, panel["staging"], cast, fs)
@@ -859,7 +864,7 @@ def draw_panel(panel, plan, w, h, cast):
             o.append(text(w / 2, ty, lines, fs, anchor="middle"))
             ty += block_h(lines, fs) + 22
             continue
-        o.append(text(b["cx"], b["top"], lines, fs, anchor="middle", halo=True))
+        o.append(text(b["cx"], b["top"], lines, fs, anchor="middle", halo=True, wrap_w=speech_room(panel, s, w - 2 * PAD, fs)))
         dash = "3 5" if s.get("kind") == "think" else None
         start = clamp(head[0], b["cx"] - b["tw"] / 2 + 8, b["cx"] + b["tw"] / 2 - 8)  # the point of the text's lower edge nearest the speaker
         o.append(pen.line((start, b["bottom"] + 3), (head[0], head[1] - 8), 2.0, dash=dash))
