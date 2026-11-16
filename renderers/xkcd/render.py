@@ -682,6 +682,16 @@ def draw_panel(panel, plan, w, h, cast):
         y += bh + 6
     talk_top = y
     scene_y = talk_top + plan["talk_h"]
+    if "staging" in panel and plan["talk"]:
+        # The room for speech is estimated before the scene is drawn; the drawn head can sit higher (a close shot, a short panel), which
+        # would put its speech line over the captions. Measure the real heads with a throwaway pen and push the scene down until clear.
+        for _ in range(4):
+            _, probe = stage(Pen(pid), PAD, scene_y, w - 2 * PAD, scene_h, panel["staging"], cast, fs)
+            lack = max((talk_top - (probe[s["speaker"]][1] - SPEECH_GAP - block_h(li, fs)) for s, li in plan["talk"] if s["speaker"] in probe), default=0)
+            if lack <= 0.5 or scene_h - lack < 60:
+                break
+            scene_y += lack
+            scene_h -= lack
     heads = {}
     if "staging" in panel:
         svg, heads = stage(pen, PAD, scene_y, w - 2 * PAD, scene_h, panel["staging"], cast, fs)

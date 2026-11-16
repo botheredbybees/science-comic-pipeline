@@ -2178,7 +2178,7 @@ def bridge(pen, x, y, w, h, p, fs):
     """A bridge across a gap between two blocks: two sides joined, or not. `items` label the two blocks (left, right); `broken: true` leaves a gap
     in the deck, for a link that is missing."""
     items = p.get("items") or []
-    x, y, w, h, lines, fsb = _under(x, y, w, h, 2.0, p, fs)
+    x, y, w, h, lines, fsb = _under(x, y, w, h, 2.8, p, fs)  # wider than it is tall, so a wide box is used and the blocks have room for a label
     U, sw = _u(x, y, w, h), 2.6
     o = [pen.rect(*U(0.0, 0.38), w * 0.27, h * 0.58, sw, fill=SOFT, over=0.5), pen.rect(*U(0.73, 0.38), w * 0.27, h * 0.58, sw, fill=SOFT, over=0.5)]
     o += [pen.stroke([U(0.29 + 0.04 * k, 0.93), U(0.31 + 0.04 * k, 0.9), U(0.33 + 0.04 * k, 0.93)], 1.2, color=MID) for k in range(0, 10, 2)]  # water in the gap
@@ -2190,8 +2190,13 @@ def bridge(pen, x, y, w, h, p, fs):
         o.append(pen.rect(*U(0.27, 0.38), w * 0.46, h * 0.06, sw, fill=PAPER, over=0.3))  # a plain deck, joining the two blocks
     for k, u in enumerate((0.135, 0.865)):
         if k < len(items) and items[k].get("label"):
-            lab = wrap(items[k]["label"], w * 0.24, fsb)
-            o.append(text(x + w * u, y + h * 0.67 - block_h(lab, fsb, 1.05) / 2, lab, fsb, anchor="middle", lh=1.05))
+            fl = fsb
+            lab = wrap(items[k]["label"], w * 0.24, fl)
+            longest = max(len(t) for t in lab)
+            if longest * fl * CHAR_W > w * 0.24:  # one long word: shrink the type to the block rather than spill over its edge
+                fl = max(9.0, w * 0.24 / (longest * CHAR_W))
+                lab = wrap(items[k]["label"], w * 0.24, fl)
+            o.append(text(x + w * u, y + h * 0.67 - block_h(lab, fl, 1.05) / 2, lab, fl, anchor="middle", lh=1.05))
     _caption(o, x, y, w, h, lines, fsb)
     return "".join(o)
 

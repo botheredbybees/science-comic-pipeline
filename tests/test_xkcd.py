@@ -810,3 +810,38 @@ def test_bars_do_not_print_the_tallest_value_twice_when_max_is_not_set():
     assert R._bars(R.Pen("n"), 0, 0, 400, 300, {"bars": bars}, 16).count(">10.03<") == 1
     # a `max` the author set is a scale the reader needs, so its tick stays even when a bar reaches it
     assert R._bars(R.Pen("n"), 0, 0, 400, 300, {"max": 10.03, "bars": bars}, 16).count(">10.03<") == 2
+
+
+def _speech_clears_caption(staging, w=200):
+    cast = {"gus": {"id": "gus", "name": "Gus", "appearance": {}}}
+    cap = ("The authors do not recommend a particular approach or instrument type: each has strengths and caveats, to be weighed against "
+           "project-specific research objectives and operational constraints.")
+    panel = {"id": "T1", "scene": "Gus asks which is best.", "speech": [{"speaker": "narrator", "kind": "caption", "text": cap},
+                                                                         {"speaker": "gus", "text": "So which one is best?"}], "staging": staging}
+    plan = R.plan_panel(panel, w, 0.55, cast)
+    svg = R.draw_panel(panel, plan, w, plan["nat_h"], cast)
+    rect = re.search(r'<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="([\d.]+)" fill="#eceef2"/>', svg)
+    cap_bottom = float(rect.group(1)) + float(rect.group(2))
+    ys = [float(y) for y in re.findall(r'<text x="[\d.]+" y="([\d.]+)"', svg)]
+    speech_top = min(y for y in ys if y > float(rect.group(1)) + 20)  # the first text block below the caption's own lines
+    return speech_top, cap_bottom
+
+
+def test_a_speech_line_never_starts_inside_the_caption_above_it():
+    for shot in (None, "close"):
+        staging = {"props": [{"kind": "box", "x": 0.02, "y": 0.1, "w": 0.3, "h": 0.5, "label": "objectives"}],
+                   "characters": [{"id": "gus", "x": 0.88, "pose": "stand", "face": "sceptical", "facing": "left"}]}
+        if shot:
+            staging["shot"] = shot
+        top, cap_bottom = _speech_clears_caption(staging)
+        assert top >= cap_bottom, (shot, top, cap_bottom)
+
+
+def test_bridge_block_labels_fit_inside_their_blocks_even_in_a_short_box():
+    import props as P
+    for label in ("instrument A", "another lab's method", "A"):
+        svg = P.extra_prop(R.Pen(1), 0, 0, 400, 90, {"kind": "bridge", "items": [{"label": label}, {"label": label}]}, 16)
+        block_w = 90 * 2.8 * 0.27  # a short box: the bridge is 2.8 times as wide as the box is high, and a block is 27% of that
+        for fs, tspans in re.findall(r'<text[^>]*font-size="([\d.]+)"[^>]*>(.*?)</text>', svg):
+            for t in re.findall(r">([^<]+)</tspan>", tspans):
+                assert len(t) * float(fs) * R.CHAR_W <= block_w, (label, t, fs)
