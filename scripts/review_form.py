@@ -81,7 +81,8 @@ def item_html(it):
             f'<header><h3><span class="tag">{H.escape(it["id"])}</span> {H.escape(it["name"])}</h3>'
             f'<div class="verdict" role="radiogroup" aria-label="Verdict for {H.escape(it["name"])}">'
             + "".join(f'<label class="v-{v}"><input type="radio" name="v-{H.escape(it["id"])}" value="{v}"><span>{H.escape(labels.get(v, v.title()))}</span></label>' for v in ("keep", "fix", "drop"))
-            + f'</div></header>{it.get("info_html", "")}' + (f'<div class="figs" style="--minw:{max([v.get("maxw", 330) for v in it["variants"]] or [330])}px">{figs}</div>' if figs else "") + (caption_bar(it["edit"]) if it.get("edit") else "") + (edit_html(it["edit"]) if it.get("edit") else "") +
+            + '</div></header>' + (f'<div class="figs" style="--minw:{max([v.get("maxw", 330) for v in it["variants"]] or [330])}px">{figs}</div>' if figs else "")  # the picture first: a reader who likes it goes on to the fact
+            + (caption_bar(it["edit"]) if it.get("edit") else "") + it.get("info_html", "") + (edit_html(it["edit"]) if it.get("edit") else "") +
             f'<div class="body"><div><h4>Look for</h4><ul class="checks">{checks}</ul></div>'
             f'<div><h4>Notes</h4><textarea class="notes" rows="4" placeholder="What to change, or what you noticed" aria-label="Notes for {H.escape(it["name"])}"></textarea>'
             f'<div class="nextrow"><button class="next" type="button">Save and next</button><span class="saved" aria-live="polite"></span></div></div></div></article>')

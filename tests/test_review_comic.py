@@ -156,14 +156,12 @@ def test_changing_a_caption_asks_for_the_claim_check_to_be_rerun(comic):
     assert any("caption was changed" in t for t in res["todo"])
 
 
-def test_a_joke_item_shows_its_panel_with_the_captions_covered_and_has_six_checks(comic):
+def test_a_joke_item_shows_its_panel_once_and_has_six_checks(comic):
     html = RC.build(comic, "southern-ocean-edna-agreement", {}, "unverified")
     item = html[html.index('id="item-joke-B4_2"'):]
     item = item[:item.index("</article>")]
-    assert item.count("captions covered, as most readers see it") == 1  # the strip is one panel, so just itself
-    assert item.count('data-k="') == 6 and "still lands with the captions covered" in item
-    covered = [f for f in re.findall(r"<figure>.*?</figure>", item, flags=re.S) if "captions covered" in f]
-    assert len(covered) == 1 and "In MZG-ICE" not in covered[0] and "####" in covered[0]  # the caption is covered by blocks, not removed
+    assert item.count("<figure>") == 1 and "captions covered" not in item  # one picture, not a second copy without the caption
+    assert item.count('data-k="') == 6 and "skips the caption" in item
 
 
 def test_each_caption_has_an_edit_caption_button_that_names_its_line(comic):
@@ -172,3 +170,10 @@ def test_each_caption_has_an_edit_caption_button_that_names_its_line(comic):
     item = item[:item.index("</article>")]
     assert item.count('data-goto-line="0"') == 1 and "Edit caption" in item  # the caption is line 0 of B4.2's speech
     assert 'data-line="0"' in item and "<b>Caption</b>" in item
+
+
+def test_the_picture_comes_before_the_extracted_fact_on_each_card(comic):
+    html = RC.build(comic, "southern-ocean-edna-agreement", {}, "unverified")
+    item = html[html.index('id="item-joke-B4_2"'):]
+    item = item[:item.index("</article>")]
+    assert item.index('class="figs"') < item.index('class="info"') < item.index('class="edit"')

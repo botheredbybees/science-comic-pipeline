@@ -51,7 +51,7 @@ carries it, `show <comic> <panel>` gives the scene, caption, claims and the six 
 
 **Give it room to set up.** A punchline often needs three frames, as in xkcd 927: the situation, a character's reaction or plan, then the
 twist (a time jump, a changed number, a label). Put the joke's frames in a row, with `humour` on the last one and a note saying the
-gag runs from frame to frame; the review page shows the whole strip with the captions covered. A one-frame joke is fine when the
+gag runs from frame to frame. A one-frame joke is fine when the
 picture itself is the setup.
 
 ## 3. Attach and flag each one

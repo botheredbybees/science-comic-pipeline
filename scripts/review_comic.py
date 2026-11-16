@@ -9,7 +9,7 @@
 document per item in the collection `review`) or open it in a browser, where the answers stay in that browser. Three kinds of item:
 
   * a **claim**: the claim, its quote and the page text around the quote (the quote marked), with three things to check; Fair / Reword / Drop;
-  * a **joke**: the panel drawn, the lines that carry the joke, its note, and the six questions of skills/humour-pass (the last: it still lands with the captions covered, which it shows); Approve / Reword / Cut;
+  * a **joke**: the panel drawn, the lines that carry the joke, its note, and the six questions of skills/humour-pass (the last: it still lands if the reader skips the caption); Approve / Reword / Cut;
   * a **panel** (with `--panels`): the panel drawn, with its words and claims; OK / Fix / Redo.
 
 `--claims` picks which claims are listed: `unverified` (the default: every ledger claim that is not `verified`), `cited` (the claims the
@@ -25,7 +25,6 @@ true`; picture changes are written into the panel's beat file (a line that is no
 Claude to act on, because it needs a rewrite. A verdict given with some of its checks unticked is applied but reported.
 """
 import argparse
-import copy
 import glob
 import json
 import re
@@ -52,7 +51,7 @@ JOKE_CHECKS = ["Every number, unit and hedge is exactly as in the claim",
                "The butt is an organism, an instrument or the comic itself: not the authors or any people",
                "Every caveat keeps its full strength",
                "It would read as honest to the authors",
-               "It still lands with the captions covered (see the covered frames above)"]
+               "It still lands if the reader skips the caption (judge it from the picture and the speech)"]
 PANEL_CHECKS = ["Nothing overlaps, touches or is cut off",
                 "Each speech line comes from the figure it points at",
                 "The picture shows what the caption says, and no more",
@@ -153,18 +152,14 @@ def edit_for(panel, doc):
     return {"scene": panel.get("scene", ""), "lines": lines, "characters": chars, "props": props, "cast": [{"id": c["id"]} for c in doc["cast"]], "vocab": vocab()}
 
 
-def joke_item(j, panel_svgs, edit=None, covered=None, strip=()):
+def joke_item(j, panel_svgs, edit=None):
     lines = "".join(f'<p class="joke-lines">{n}. <b>{H.escape(l["speaker"].title())}:</b> {H.escape(l["text"])}</p>'
                     for n, l in enumerate(j["lines"], 1) if l.get("kind", "say") != "caption")
     caps = "".join(f'<p class="meta">Caption: {H.escape(l["text"])}</p>' for l in j["lines"] if l.get("kind") == "caption")
     claims = "".join(f'<p class="meta"><b>{c["id"]}</b> {H.escape(c["text"])}</p>' for c in j["claims"])
     note = j["humour"].get("note", "")
     info = f'<div class="info">{lines}{caps}<p class="meta">The note: {H.escape(note)}</p>{claims}</div>'
-    seen = panel_picture(panel_svgs, j["panel"])
-    for pid in strip:
-        for v in panel_picture(covered or {}, pid):
-            seen.append({**v, "label": "captions covered, as most readers see it"})
-    return {"id": item_id("joke", j["panel"]), "name": f'{j["panel"]}: {j["beat"]}', "variants": seen,
+    return {"id": item_id("joke", j["panel"]), "name": f'{j["panel"]}: {j["beat"]}', "variants": panel_picture(panel_svgs, j["panel"]),
             "checks": JOKE_CHECKS, "info_html": info, "labels": {"keep": "Approve", "fix": "Reword", "drop": "Cut"}, "edit": edit}
 
 
@@ -217,19 +212,6 @@ def build(folder, name, pages_by_source, which="unverified", with_panels=False, 
     jokes = [j for j in load_jokes(folder) if not j["confirmed"]]
     panel_svgs, comic_pages = render_panels(doc) if (jokes or with_panels or with_comic) else ({}, [])
     panels_by_id = {p["id"]: p for b in doc["beats"] for p in b["panels"]}
-    covered, strips = {}, {}
-    if jokes:
-        bare = copy.deepcopy(doc)
-        for b in bare["beats"]:
-            for p in b["panels"]:
-                for x in p.get("speech", []):  # cover each caption with blocks of the same shape, so the panel keeps its size and line breaks
-                    if x.get("kind") == "caption":
-                        x["text"] = re.sub(r"\S", "#", x["text"])
-        covered, _ = render_panels(bare)
-        for b in doc["beats"]:
-            ids = [p["id"] for p in b["panels"]]
-            for n, pid in enumerate(ids):  # a joke told over frames of one panel (a strip) is shown alone; otherwise the two panels before it come too
-                strips[pid] = [pid] if len((panels_by_id[pid].get("staging") or {}).get("split") or []) > 2 else ids[max(0, n - 2):n + 1]
     groups = []
     if pool:
         items = []
@@ -239,7 +221,7 @@ def build(folder, name, pages_by_source, which="unverified", with_panels=False, 
             items.append(claim_item(c, cited.get(c["id"], []), pages))
         groups.append((f"Claims ({which})", items))
     if jokes:
-        groups.append(("Jokes waiting for a person", [joke_item(j, panel_svgs, edit_for(panels_by_id[j["panel"]], doc), covered, strips.get(j["panel"], ())) for j in jokes if j["panel"] in panels_by_id]))
+        groups.append(("Jokes waiting for a person", [joke_item(j, panel_svgs, edit_for(panels_by_id[j["panel"]], doc)) for j in jokes if j["panel"] in panels_by_id]))
     if with_panels:
         items = [panel_item(b, p, story_claims, panel_svgs, edit_for(p, doc)) for b in doc["beats"] if not beats or b["id"] in beats for p in b["panels"]]
         groups.append(("Panels", items))

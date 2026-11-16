@@ -28,8 +28,8 @@ above the strip, like 927's header.
    two-cell split, and every panel that has no split, draws exactly as before.
 3. **Validator.** `cell` must be within the split's cell count, and its speaker must be staged in that cell. A strip of three or more cells
    on a `small` or `standard` panel gets a warning (it will be narrow): the fix is `weight: wide` or `full`.
-4. **Review page.** No new code: a joke panel is already shown as drawn and with its captions covered; for a strip that is the whole
-   strip. The "previous two panels" in the covered view stay for jokes spread over ordinary panels.
+4. **Review page.** No new code: a joke panel is shown as drawn, and a strip is one panel. (A second copy with the captions covered was tried
+   and dropped: the reader can judge the sixth question from the one picture.)
 5. **Docs and gallery.** `renderers/README.md`, the storyboard skill and the humour-pass skill say when to use a strip; the asset gallery
    and the review sheet each get a three-cell example.
 
