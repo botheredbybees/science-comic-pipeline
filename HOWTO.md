@@ -203,18 +203,41 @@ Jokes the agent proposes wait for a person. Read, reword and approve them with `
 ```
 
 Or review them on a web page, together with the claims and the panels as drawn (`scripts/review_comic.py`). Build the page, publish it as an Artifact
-with the `db` capability (or open the file in a browser: the answers then stay in that browser), and judge each item by clicking; each answer saves as you
+with the `db` capability (a file opened straight from disk only tries the page out: its answers stay in that browser and cannot be read back), and judge each item by clicking; each answer saves as you
 go. **Save and next** on each card moves to the next item you have not judged, and **Submit review** shows a confirmation and then the whole comic as it
 stands. Each joke and panel also has a collapsed **Change the words, scene, characters, props or actions** block: retype, remove or add a spoken line or caption, pick a new action, face, facing or held
 object for a character, a new kind or label for a prop (or remove it), add one prop or character, or retype the scene. `apply` writes those into the
 panel's beat file (a line that is not a one-line `{ ... }` mapping goes on the worklist) and rebuilds; added props and characters land at a default spot, so
-look at the redrawn panel. Every other word the picture draws (the label of each frame of a strip, a board's title and cards, a prop's label, axis labels) has its own box under **Words in the picture**. Retyped words show at once in the card's picture and in the full comic below the confirmation (re-wrapped to the width the renderer used); changes to figures, props and scenes show once `apply` has redrawn the panel. Then have Claude read the answers back and apply them:
+look at the redrawn panel. Every other word the picture draws (the label of each frame of a strip, a board's title and cards, a prop's label, axis labels) has its own box under **Words in the picture**. Retyped words show at once in the card's picture and in the full comic below the confirmation (re-wrapped to the width the renderer used); changes to figures, props and scenes show once `apply` has redrawn the panel. Then have Claude read the answers back and apply them.
 
-```
-.venv/bin/python scripts/review_comic.py build nester --pages-root sources -o output/review.html            # unverified claims + waiting jokes
-.venv/bin/python scripts/review_comic.py build nester --pages-root sources --claims cited --panels -o output/review.html   # also every cited claim and every panel
-.venv/bin/python scripts/review_comic.py apply nester <folder of answers> [--dry-run]    # Fair -> verified, Approve -> released; the rest is printed as a worklist
-```
+**The page needs a database, so it must be the published copy.** Only the Artifact's own link saves your answers. The built `.html` file opened from disk, or
+served by `python -m http.server`, has no database: its answers stay in that browser, `Submit review` cannot save them, and Claude cannot read them. This needs a
+Claude Code session with the `Artifact` and `ArtifactData` tools; nothing in the repo does the publishing or the reading itself.
+
+1. **Build** the page (private comics build into `output/`, which is not committed):
+
+   ```
+   .venv/bin/python scripts/review_comic.py build nester --pages-root sources -o output/review.html            # unverified claims + waiting jokes
+   .venv/bin/python scripts/review_comic.py build nester --pages-root sources --claims cited --panels -o output/review.html   # also every cited claim and every panel
+   ```
+
+2. **Publish** it: ask Claude to publish the file as an Artifact with the `db` capability (`capabilities: {db: {}}`). The Artifact is private, and you get a
+   claude.ai link; open that link, not the file. Republish the same file to the same link after any change (the answers already saved are kept). Do not
+   publish a private comic's page for anyone else: the page carries the paper's text.
+3. **Judge** on that page. Each answer saves as you go; **Submit review** is the last step. Say "submitted" to Claude.
+4. **Read back**: Claude lists the collection `review` of that Artifact with `ArtifactData` (`action: list`, `collection: review`, with `out_dir` set to a folder
+   in the scratchpad), which writes one `<item id>.json` per item: `{verdict, notes, checks, edit}`.
+5. **Apply**:
+
+   ```
+   .venv/bin/python scripts/review_comic.py apply nester <folder of answers> --dry-run    # read what it would do
+   .venv/bin/python scripts/review_comic.py apply nester <folder of answers>              # Fair -> verified, Approve -> released, picture and word edits; the rest is printed as a worklist
+   ```
+
+   Claude works the printed worklist (rewrites, scene and prop changes the form cannot do alone), re-runs the checks, re-exports the PDF, rebuilds
+   the page and republishes it. The review is finished when a rebuilt page lists nothing waiting.
+6. **Clear the answered items** if you want a clean page next time: `ArtifactData` `delete` on each document, which needs its `if_version` from the listing.
+   Leave them if you want the record.
 
 In `review`, **Enter accepts** (the default). `e` rewords a line and shows the joke again, so you can edit and then accept;
 `r` rejects: it deletes the joke's line (Enter picks the last character line; type numbers to choose others), or type `keep` to keep
