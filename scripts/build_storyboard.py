@@ -9,6 +9,7 @@ and the output keeps only the claims the panels actually cite, so a long ledger 
 comics. It reports any cited claim that is not `verified`, and lists verified claims that no panel cites.
 
     python scripts/build_storyboard.py examples/pauli-2021-krill-salps-diet
+    python scripts/build_storyboard.py examples/<slug>/overview --claims examples/<slug>/claims.yaml   # a short version, same ledger
 """
 import argparse
 import glob
@@ -30,14 +31,15 @@ def natural(path):
     return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", Path(path).name)]
 
 
-def build(folder):
+def build(folder, extra_ledgers=()):
+    """Assemble the document. `extra_ledgers` are more claims files (an overview reuses the full comic's ledger)."""
     folder = Path(folder)
     head = yaml.safe_load((folder / "head.yaml").read_text())
     beats = []
     for f in sorted(glob.glob(str(folder / "beats" / "B*.yaml")), key=natural):
         beats += yaml.safe_load(Path(f).read_text())
     ledger = {}
-    for f in sorted(glob.glob(str(folder / "claims*.yaml")) + glob.glob(str(folder / "claims" / "*.yaml"))):
+    for f in sorted(glob.glob(str(folder / "claims*.yaml")) + glob.glob(str(folder / "claims" / "*.yaml"))) + [str(x) for x in extra_ledgers]:
         for c in (yaml.safe_load(Path(f).read_text()) or {}).get("claims", []):
             if c["id"] in ledger:
                 raise ValueError(f"claim {c['id']} appears in more than one ledger file")
@@ -58,8 +60,10 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("folder")
     ap.add_argument("-o", "--out", help="default: <folder>/storyboard.yaml")
+    ap.add_argument("--claims", action="append", default=[], metavar="FILE",
+                    help="another ledger to draw claims from (repeatable); a one-page overview uses ../claims.yaml")
     args = ap.parse_args(argv)
-    doc, unverified, n_ledger, unused = build(args.folder)
+    doc, unverified, n_ledger, unused = build(args.folder, args.claims)
     out = Path(args.out or Path(args.folder) / "storyboard.yaml")
     out.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=200))
     panels = sum(len(b["panels"]) for b in doc["beats"])

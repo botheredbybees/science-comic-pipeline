@@ -1,6 +1,6 @@
 # Skills
 
-Agent skills for the steps that need judgement. Each is a plain Markdown file (`SKILL.md`) with no
+Agent skills for the steps that need judgement (five to make the comic, two optional ones after it). Each is a plain Markdown file (`SKILL.md`) with no
 dependence on one vendor's tools, so any capable model can follow it; the mechanical steps are scripts,
 so the skills stay short. Run them in this order.
 
@@ -11,6 +11,8 @@ so the skills stay short. Run them in this order.
 | 3 | [`storyboard`](storyboard/SKILL.md) | Writes the panels, dialogue, captions and staging, citing a claim for every fact | `beats/B*.yaml`, `storyboard.yaml` | `build_storyboard.py`, `validate_storyboard.py`, `preview_storyboard.py` |
 | 4 | [`humour-pass`](humour-pass/SKILL.md) | Proposes a few jokes that leave claims intact; flags each for a human | `humour` blocks | `validate_storyboard.py` |
 | 5 | [`visual-qa`](visual-qa/SKILL.md) | Renders, scans for overflow and overlap, reviews every page by eye, fixes the staging | `QA.md`, the PDF | `visual_qa.py`, `export_pdf.py` |
+| 6 | [`overview`](overview/SKILL.md) | Optional. A one-page version of the comic, reusing the same verified claims, with a link to the full one | `overview/` (a second storyboard and PDF) | `build_storyboard.py --claims`, `validate_storyboard.py`, `visual_qa.py`, `export_pdf.py` |
+| 7 | [`promote`](promote/SKILL.md) | Optional. An abstract, headlines and short posts that promote the comic, each resting on verified claims and none stronger than the paper | `PROMO.yaml`, `PROMO.md` | `check_post.py` |
 
 **Commands.** The skills write `python scripts/...`; use the repo's own interpreter, `.venv/bin/python` (set up as
 in the top-level README, so `jsonschema` and `pyyaml` are there). The pages are drawn in Patrick Hand, which the

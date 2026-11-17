@@ -13,6 +13,10 @@ Given a DOI, follow the five skills in `skills/`, in order, and finish with a PD
 4. `skills/humour-pass/SKILL.md`: a few flagged jokes at most.
 5. `skills/visual-qa/SKILL.md`: scan, look at every page, export the PDF, write `ATTRIBUTION.md`.
 
+Two optional steps follow, once the PDF is done and the user has decided the jokes: `skills/overview/SKILL.md` (a one-page version that links
+to the full comic) and `skills/promote/SKILL.md` (an abstract, headlines and short posts, held to the ledger by `scripts/check_post.py`).
+**A private comic is never promoted**, and the user approves every post as they approve every joke; never post anything yourself.
+
 Work in `examples/<slug>/` (or `private/<slug>/` if the licence is not confirmed). Sources go in `sources/<slug>/`.
 
 **Before step 2 and again before step 3, read `private/lore/COMIC-LORE.md` if it exists** (its "How to use" section, Part A: what this project has

@@ -1,0 +1,315 @@
+version: 2
+meta:
+  title: Does eDNA Agree With Itself? In Brief
+  audience: Marine-science students and curious non-specialists who have heard that DNA left in seawater can tell us which animals are there, and who want to know how far that answer can be trusted.
+  left_out:
+  - 'This is the one-page version of the full comic, which has the methods, most of the numbers, the plankton-recorder comparison and the authors'' recommendations: follow the link at the foot of the page.
+    Everything the full comic leaves out (its own list of omissions) is left out here too.'
+  sources:
+  - id: clarke-2021-antarctic-nearshore-edna
+    title: Environmental DNA metabarcoding for monitoring metazoan biodiversity in Antarctic nearshore ecosystems
+    authors:
+    - Laurence J Clarke
+    - Leonie Suter
+    - Bruce E Deagle
+    - Andrea M Polanowski
+    - Aleks Terauds
+    - Glenn J Johnstone
+    - Jonathan S Stark
+    year: 2021
+    doi: 10.7717/peerj.12458
+    url: https://doi.org/10.7717/peerj.12458
+    licence: CC BY 4.0
+    licence_checked: 'Europe PMC full-text XML (PMC8601059): ''This is an open access article distributed under the terms of the Creative Commons Attribution License'', read 2026-11-14 and re-read in sources/clarke-2021-antarctic-nearshore-edna/source.json
+      2026-11-16'
+  - id: nester-2024-southern-ocean-edna-transect
+    title: Long-distance Southern Ocean environmental DNA (eDNA) transect provides insights into spatial marine biota and invasion pathways for non-native species
+    authors:
+    - Georgia M. Nester
+    - Leonie Suter
+    - John A. Kitchener
+    - Michael Bunce
+    - Andrea M. Polanowski
+    - Johan Wasserman
+    - Bruce Deagle
+    year: 2024
+    doi: 10.1016/j.scitotenv.2024.175657
+    url: https://doi.org/10.1016/j.scitotenv.2024.175657
+    licence: CC BY 4.0
+    licence_checked: 'Article text, PDF page 2: ''This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/)''; Crossref and Elsevier metadata, 2026-11-14'
+    page_basis: PDF page index (the PDF's own page 1 is the first page)
+  - id: blanco-bercial-2026-mzg-ice-zooplankton
+    title: 'MetaZooGene Intercalibration Experiment (MZG-ICE): Metabarcoding Marine Zooplankton Diversity of the Global Ocean'
+    authors:
+    - Leocadio Blanco-Bercial
+    - Jennifer M Questel
+    - Paola G Batta-Lona
+    - Ruben Escribano
+    - Tone Falkenhaug
+    - Junya Hirai
+    - Jenny A Huggett
+    - Pedro Martinez Arbizu
+    - Katja T C A Peijnenburg
+    - Leonie Suter
+    - Agata Weydmann-Zwolicka
+    - Stacey Dubbeldam
+    - Elza Duijm
+    - Elizaveta Ershova-Menze
+    - Carolina E Gonzalez
+    - Ashrenee Govender
+    - Johan Groeneveld
+    - Sahar Khodami
+    - Anna J MacDonald
+    - Monika Mioduchowska
+    - Andrea M Polanowski
+    - Rocio Rodriguez-Perez
+    - Todd D O'Brien
+    - Ann Bucklin
+    year: 2026
+    doi: 10.1111/1755-0998.70090
+    url: https://doi.org/10.1111/1755-0998.70090
+    licence: CC BY 4.0
+    licence_checked: 'Europe PMC full-text XML (PMC12742283): ''This is an open access article under the terms of the ... CC BY 4.0 License'', read 2026-11-14 and re-read in sources/blanco-bercial-2026-mzg-ice-zooplankton/source.json
+      2026-11-16. Year 2026 is from the paper''s own reference line (Mol Ecol Resour 26(1): e70090); Europe PMC''s record says 2025.'
+  spine:
+    and: 'DNA left in seawater and sediment is now used to list what lives there, and using it for monitoring will need documented evidence of accuracy, reliability and reproducibility (Blanco-Bercial:
+      C26; Clarke: C1, C2; Nester: C14, C15).'
+    but: 'Nobody can take agreement for granted: two earlier studies found less than 10% overlap between sediment and benthic water samples (Clarke: C1), and the three studies here each change one thing
+      and ask whether the answer holds. Water and sediment gave similar numbers of taxa but different communities (Clarke: C6, C9); two filter set-ups shared 51 species yet one gave higher mean richness
+      (Nester: C19, C20); ten laboratories clustered samples by ocean region once contaminated samples were removed, but several samples did not cluster and the species level agreed least (Blanco-Bercial:
+      C33, C34, C35, C37).'
+    therefore: 'Where the three papers differ the comic puts them side by side and does not choose (Clarke: C6, C9; Nester: C19, C20). The authors themselves say what is still open: how to know an organism
+      detected with eDNA is really there (Clarke: C12), pairing eDNA with other methods (Clarke: C13; Nester: C24), further testing of filter volumes and pore sizes (Nester: C25), the effect of each protocol
+      step (Blanco-Bercial: C39) and species-level results (Blanco-Bercial: C40).'
+  more:
+    text: The full comic (methods, numbers and the authors' caveats)
+    url: https://github.com/botheredbybees/science-comic-pipeline/blob/main/examples/southern-ocean-edna-agreement/southern-ocean-edna-agreement.pdf
+cast:
+- id: ines
+  name: Ines
+  role: A scientist who guides the reader through the three studies (the comic's invention, not a person in any paper)
+  look: Stick figure with shoulder-length hair, glasses and a lab coat
+  appearance:
+    hair: shoulder
+    glasses: true
+    coat: true
+- id: otto
+  name: Otto
+  role: A sceptic who asks the awkward question (the comic's invention, not a person in any paper)
+  look: Stick figure in a flat cap
+  appearance:
+    hair: flatcap
+claims:
+- id: C6
+  text: Similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores at sites where both were collected (paired t-test, P = 0.67).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Species richness, paragraph 1
+    page: 24
+    quote: Similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores at sites where both were collected (paired t-test, t = 0.45, d.f. = 7, P = 0.67
+  status: verified
+- id: C9
+  text: Metazoan communities from water and sediment eDNA samples were significantly different (P < 0.001).
+  kind: result
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Results, Community composition, paragraph 2
+    page: 27
+    quote: Metazoan communities from water and sediment eDNA samples were significantly different (F1,64 = 9.59, R2 = 0.130, P < 0.001
+  status: verified
+- id: C12
+  text: 'Non-invasive, ''capture-free'' approaches like eDNA also raise the question: how do we know an organism detected with eDNA is really there?'
+  kind: caveat
+  source:
+    ref: clarke-2021-antarctic-nearshore-edna
+    locator: Conclusions, paragraph 2
+    page: 49
+    quote: 'Non-invasive, “capture-free” approaches like eDNA also raise the question: how do we know an organism detected with eDNA is really there?'
+  status: verified
+- id: C20
+  text: The overlap of detected species was large, with 51 species detected with both sampling methods. However, LargeVF detected 14 additional species, primarily arthropod (8 species) and chordate species
+    (4 species).
+  kind: result
+  source:
+    ref: nester-2024-southern-ocean-edna-transect
+    locator: 3.1.2 Comparing eDNA sampling strategies, PDF page 7
+    page: 7
+    quote: The overlap of detected species was large, with 51 species detected with both sampling methods. However, LargeVF detected 14 additional species (Fig. 2b), primarily arthropod (8 species) and
+      chordate species (4 species; Fig. 2c)
+  status: verified
+- id: C33
+  text: Based on nMDS graphical analyses, samples from most MZG-ICE groups clustered by ocean region and biome.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 4
+    page: 35
+    quote: samples from most MZG‐ICE groups clustered by ocean region and biome
+  status: verified
+- id: C34
+  text: However, several samples for each gene marker did not cluster with samples from the same collection location.
+  kind: result
+  source:
+    ref: blanco-bercial-2026-mzg-ice-zooplankton
+    locator: Results, paragraph 4
+    page: 35
+    quote: However, several samples for each gene marker did not cluster with samples from the same collection location.
+  status: verified
+beats:
+- id: B1
+  title: Three studies, one question
+  act: problem
+  panels:
+  - id: B1.1
+    weight: small
+    frame: borderless
+    word_picture: duo-specific
+    scene: A balance with level pans, one labelled water and one labelled sediment (top section).
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: In Clarke's study, at sites where both were collected, similar numbers of taxa were detected in water eDNA samples and the top section of sediment cores (paired t-test, P = 0.67).
+    claim_ids:
+    - C6
+    staging:
+      props:
+      - kind: scales
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        tilt: level
+        items:
+        - label: water
+        - label: sediment, top section
+    height: short
+  - id: B1.2
+    weight: small
+    frame: outlined
+    transition: aspect-to-aspect
+    word_picture: duo-specific
+    scene: Two separate groups of dots, one labelled water and one labelled sediment.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: But in Clarke's study metazoan communities from water and sediment eDNA samples were significantly different (P < 0.001).
+    claim_ids:
+    - C9
+    staging:
+      props:
+      - kind: clusters
+        x: 0.08
+        y: 0.05
+        w: 0.84
+        h: 0.9
+        items:
+        - label: water
+        - label: sediment
+    height: short
+  - id: B1.3
+    weight: small
+    frame: outlined
+    transition: subject-to-subject
+    word_picture: interdependent
+    scene: 'A stacked column: a block for the species found with both methods and a smaller block for the extra species of LargeVF.'
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'In Nester''s survey the overlap of detected species was large: 51 species were detected with both sampling methods. However, LargeVF detected 14 additional species, primarily arthropod (8 species)
+        and chordate species (4 species).'
+    claim_ids:
+    - C20
+    staging:
+      props:
+      - kind: stack
+        x: 0.1
+        y: 0.05
+        w: 0.8
+        h: 0.9
+        title: species detected
+        items:
+        - label: with both methods
+          value: 51
+        - label: extra with LargeVF
+          value: 14
+    height: short
+  - id: B1.4
+    weight: small
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: duo-specific
+    scene: Clusters of dots, one dot out of place, and Ines beside them.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: Based on nMDS graphical analyses, samples from most MZG-ICE groups clustered by ocean region and biome. However, several samples for each gene marker did not cluster with samples from the same
+        collection location.
+    - speaker: ines
+      text: Most. Not all.
+    claim_ids:
+    - C33
+    - C34
+    staging:
+      props:
+      - kind: clusters
+        x: 0.02
+        y: 0.04
+        w: 0.62
+        h: 0.8
+        label: nMDS
+      characters:
+      - id: ines
+        x: 0.82
+        pose: point
+        face: neutral
+        facing: left
+        scale: 0.8
+    height: short
+  - id: B1.5
+    weight: small
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: parallel
+    scene: Ines, close up, with a puzzled face.
+    speech:
+    - speaker: narrator
+      kind: caption
+      text: 'Clarke''s team ask: how do we know an organism detected with eDNA is really there?'
+    claim_ids:
+    - C12
+    staging:
+      shot: close
+      characters:
+      - id: ines
+        x: 0.5
+        pose: think
+        face: puzzled
+        facing: right
+    height: short
+  - id: B1.6
+    weight: small
+    height: short
+    frame: outlined
+    transition: scene-to-scene
+    word_picture: additive
+    scene: Ines points at a book labelled 'the full comic'.
+    speech:
+    - speaker: ines
+      text: The full comic is linked below.
+    claim_ids: []
+    staging:
+      props:
+      - kind: book
+        x: 0.5
+        y: 0.3
+        w: 0.42
+        h: 0.6
+        label: the full comic
+      characters:
+      - id: ines
+        x: 0.2
+        pose: point
+        face: smile
+        facing: right
+        scale: 0.8

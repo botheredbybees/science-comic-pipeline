@@ -948,6 +948,8 @@ def build_items(doc, cast, k=0.55):
                  if len(srcs) > 1 else " This paper is not under an open licence: keep this comic private and do not publish it.")
     colo = wrap(note, usable, 15)
     links = []
+    if doc["meta"].get("more") and not doc["meta"].get("private"):
+        links.append((f'{doc["meta"]["more"]["text"]}: {doc["meta"]["more"]["url"]}', doc["meta"]["more"]["url"]))
     if not doc["meta"].get("gallery"):
         for s in srcs:
             paper = s.get("url") or (f'https://doi.org/{s["doi"]}' if s.get("doi") else "")
@@ -963,13 +965,27 @@ def build_items(doc, cast, k=0.55):
             return esc(line).replace(PIPELINE_NAME, f'<a href="{PIPELINE_URL}" target="_blank"><tspan style="text-decoration:underline" font-weight="normal">{PIPELINE_NAME}</tspan></a>')
         spans = "".join(f'<tspan x="{MARGIN:.1f}" dy="{(15 if i == 0 else 18):.1f}">{inline(t)}</tspan>' for i, t in enumerate(c))
         out = [f'<text x="{MARGIN:.1f}" y="{y + 6:.1f}" font-size="15" font-weight="normal" fill="{MID}">{spans}</text>']
-        for i, (label, href) in enumerate(ls):
-            ly = y + 6 + block_h(c, 15) + 4 + i * 15 * 1.3
+        ly = y + 6 + block_h(c, 15) + 4
+        for label, href in ls:
+            lines = link_lines(label)
             out.append(f'<a href="{esc(href)}" target="_blank">'
-                       + text(MARGIN, ly, [label], 15, fill=MID).replace("<text ", '<text style="text-decoration:underline" ', 1) + "</a>")
+                       + text(MARGIN, ly, lines, 15, fill=MID).replace("<text ", '<text style="text-decoration:underline" ', 1) + "</a>")
+            ly += len(lines) * 15 * 1.3
         return "".join(out)
 
-    items.append({"kind": "colophon", "h": block_h(colo, 15) + len(links) * 15 * 1.3 + 16, "draw": draw_colophon})
+    def link_lines(label):
+        """A link's lines. A long address has no spaces to wrap at, so it is broken after a slash."""
+        per = max(4, int(usable / (15 * CHAR_W)))
+        lines = []
+        for ln in wrap(label, usable, 15):
+            while len(ln) > per:
+                cut = ln.rfind("/", 0, per) + 1 or per
+                lines.append(ln[:cut])
+                ln = ln[cut:]
+            lines.append(ln)
+        return lines
+
+    items.append({"kind": "colophon", "h": block_h(colo, 15) + sum(len(link_lines(l)) for l, _ in links) * 15 * 1.3 + 16, "draw": draw_colophon})
     return items
 
 

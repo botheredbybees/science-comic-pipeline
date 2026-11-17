@@ -1,0 +1,68 @@
+version: 1
+link: "https://github.com/botheredbybees/science-comic-pipeline/blob/main/examples/southern-ocean-edna-agreement/southern-ocean-edna-agreement.pdf"
+overview: "https://github.com/botheredbybees/science-comic-pipeline/blob/main/examples/southern-ocean-edna-agreement/overview/southern-ocean-edna-agreement-overview.pdf"
+abstract:
+  approved: false
+  claims: [C6, C9, C12, C16, C19, C20, C26, C27, C33, C34, C37]
+  text: >-
+    Using environmental DNA to list what lives in the ocean will need documented evidence of accuracy, reliability
+    and reproducibility. Three studies each changed one thing and asked whether the answer held. In Antarctic
+    nearshore samples, water and sediment eDNA detected similar numbers of taxa but significantly different
+    communities. On a transect from Hobart to Davis Station, two filter set-ups shared 51 species, yet the
+    large-volume filter gave higher mean species richness and 14 additional species. Ten laboratories analysed
+    shared aliquots of DNA from zooplankton samples with their own protocols: most groups clustered samples by ocean region, several
+    samples did not cluster with their collection location, and for COI the similarity among groups fell from orders
+    to genera to species. The authors also ask the question that is still open: how do we know an organism detected
+    with eDNA is really there?
+headlines:
+  - { format: contrast, claims: [C6, C9], text: "Similar numbers of taxa, different communities: water against sediment eDNA" }
+  - { format: question, claims: [C27, C29], text: "Ten laboratories, one set of zooplankton DNA: where did they agree?" }
+  - { format: contrast, claims: [C19, C20], text: "51 species in common, but one filter found more" }
+  - { format: question, claims: [C12], text: "How do we know an organism detected with eDNA is really there?" }
+  - { format: question, claims: [C26], text: "Does eDNA agree with itself? A comic about three studies" }
+posts:
+  - id: P1
+    kind: micro
+    type: contrast
+    approved: false
+    link: true
+    panel: B2.5
+    claims: [C2, C6, C9]
+    text: "Similar numbers of taxa, different communities. In the Vestfold Hills, East Antarctica, water and sediment eDNA detected similar numbers of taxa but significantly different communities."
+  - id: P2
+    kind: micro
+    type: micro-story
+    approved: false
+    link: true
+    claims: [C16, C19, C20]
+    text: "Two ways to filter seawater on a transect from Hobart to Davis Station shared 51 species. The large-volume filter still detected 14 additional species, primarily arthropods and chordates, and had higher mean species richness."
+  - id: P3
+    kind: micro
+    type: lens
+    approved: false
+    link: true
+    claims: [C27, C29, C33, C34, C37]
+    text: "Ten laboratories ran shared aliquots of zooplankton DNA through their own protocols. Most groups clustered samples by ocean region; several samples did not cluster with their collection location. For COI, similarity fell from orders to genera to species."
+  - id: P4
+    kind: micro
+    type: question
+    approved: false
+    link: true
+    claims: [C2, C12, C13]
+    text: "A Vestfold Hills eDNA study asks how we know an organism detected with eDNA is really there. The authors say an understanding of eDNA's spatial distribution should be paired with careful cataloguing of the actual biodiversity, using other methods."
+  - id: P5
+    kind: long
+    type: reframe
+    approved: false
+    link: true
+    claims: [C2, C6, C9, C16, C19, C20, C22, C23, C26, C27, C33, C34, C37, C12]
+    text: |-
+      Using environmental DNA to list what lives in the ocean will need documented evidence of accuracy, reliability and reproducibility. A comic about three studies that each changed one thing.
+
+      Water or mud, Vestfold Hills, East Antarctica: similar numbers of taxa, but significantly different communities.
+
+      Two filters, Hobart to Davis Station: 51 species in common, yet the large-volume filter gave higher mean species richness and 14 additional species. The authors recognise that the difference between their pore sizes is large and that different volumes introduce bias, and that findings from open ocean may not apply to coastal environments.
+
+      Ten laboratories, shared aliquots of zooplankton DNA: most groups clustered samples by ocean region, several samples did not, and for COI similarity fell from orders to genera to species.
+
+      Still open, in the authors' words: how do we know an organism detected with eDNA is really there?

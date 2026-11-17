@@ -90,7 +90,7 @@ several places). Set a claim's `status` to `abstract_only` and the validator war
 | `renderers/` | One folder per drawing style. `xkcd/` draws stick-figure A4 pages from a panel's `staging` |
 | `HOWTO.md`, `AGENTS.md` | How to run it end to end in your AI environment (including one paper or several); the briefing every agent reads first |
 | `docs/SETUP.md`, `.env.example` | Setting up your own machine: the core install, choosing an agent, and choosing a model and hardware for the optional card tools |
-| `skills/` | Five agent skills for the judgement steps, in order: source-to-claims, story-spine, storyboard, humour-pass, visual-qa |
+| `skills/` | Agent skills for the judgement steps, in order: source-to-claims, story-spine, storyboard, humour-pass, visual-qa; then, optionally, overview (a one-page version) and promote (checked posts) |
 | `docs/superpowers/` | Design and plans |
 
 ## Licences

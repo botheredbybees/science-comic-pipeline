@@ -10,3 +10,8 @@ Each example records its own source and licence in `examples/<name>/ATTRIBUTION.
 The comic style this project aims at borrows ideas from xkcd (outlined and borderless
 panels, a wobble on straight lines, a short line from text to speaker instead of a
 speech bubble). It does not copy any xkcd artwork or text.
+
+The promotion skill (`skills/promote/`) adapts ideas from [online-writing-skills](https://github.com/DonHeidi/online-writing-skills)
+by Sebastian Heitmann (MIT licence, copyright 2026): the "deliverability gate" for headlines, the rules for short posts and
+abstracts, and the list of stock phrases. The text of the skill and `scripts/check_post.py` are our own, and rest on a claims
+ledger, which that project does not have.

@@ -172,6 +172,15 @@ A person reads the comic. The scripts check that the numbers match the quotes; t
    licence. A comic from a CC BY-SA paper must itself be CC BY-SA.
 5. **Tell the authors** (courtesy, not a requirement). The footer already says they did not write or endorse it.
 
+### Telling people about it (optional)
+
+Two more skills make the comic easier to find. **`skills/overview`** builds a one-page version (`examples/<slug>/overview/`)
+from the same verified claims, with a link to the full comic printed in its footer: `build_storyboard.py <folder>/overview
+--claims <folder>/claims.yaml`, then the usual checks and `export_pdf.py`. **`skills/promote`** writes `PROMO.yaml`, an abstract,
+headline candidates and short posts, each naming the claims it rests on; `scripts/check_post.py <folder>` rejects a number no
+claim has, wording stronger than the paper's, engagement bait and an unapproved joke, and `--write` makes `PROMO.md` with each
+post's evidence and a credit line. You read it against the quotes and approve each item; the scripts never post anything.
+
 ## 6. When something goes wrong
 
 | Symptom | Cause and fix |
@@ -269,7 +278,7 @@ renderer's version and the validator's counts, so you can see what changed since
 ## 9. What next
 
 - Add a drawing style: a renderer reads `storyboard.yaml` and never the paper. `renderers/xkcd/` is the model.
-- Improve a skill: they are plain Markdown. Each of the three cold runs found faults in them; the notes are in
+- Improve a skill: they are plain Markdown (the promotion rules draw on [online-writing-skills](https://github.com/DonHeidi/online-writing-skills), MIT). Each of the three cold runs found faults in them; the notes are in
   `skills/README.md` and in the Pauli example's `SKILL-FEEDBACK.md`.
 - Send what you made: open an issue or a pull request with the new `examples/<slug>/` folder (the claims ledger, the
   storyboard, `ATTRIBUTION.md` and the PDF; never the paper's text).
