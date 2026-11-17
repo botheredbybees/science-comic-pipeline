@@ -182,7 +182,7 @@ def build():
 
     beats.append({"id": "B8", "title": "Shots: how far away the view is", "act": "method", "panels": [
         shot_panel(1, "Mid (the default): no `shot`, the figure as placed.", None, [{"id": "extra", "x": 0.5, "face": "smile"}]),
-        shot_panel(2, "`shot: close`: the head about two thirds of the panel, cropped at the neck. For a reaction or the payoff.", "close", [{"id": "extra", "face": "surprised"}]),
+        shot_panel(2, "`shot: close`: the head over half the panel, cropped at the neck. For a reaction or the payoff.", "close", [{"id": "extra", "face": "surprised"}]),
         shot_panel(3, "`shot: close` with two figures: half the panel each.", "close", [{"id": "extra", "face": "worry"}, {"id": "extra", "face": "smile", "facing": "left"}]),
         shot_panel(4, "`shot: wide`: small figures with a ground line. For where it happens.", "wide", [{"id": "extra", "x": 0.35}, {"id": "extra", "x": 0.55, "facing": "left"}],
                    [{"kind": "easel", "x": 0.68, "y": 0.12, "w": 0.2, "h": 0.62}]),

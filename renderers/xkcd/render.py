@@ -480,10 +480,14 @@ def prop(pen, x, y, w, h, p, cast, fs):
     return "".join(o)
 
 
+CLOSE_HEAD = (0.54, 0.42)  # a close shot's head as a share of the scene's height: one figure, two
+CLOSE_CHIN = 0.86  # where the chin sits, as a share of the scene's height: below it the neck and shoulders are cropped
+
+
 def shot_characters(st, cast, w, h, base_s):
     """Fill in the scale and place of each figure from the staging's `shot`, for whatever the author left out.
 
-    `close` makes the head about two thirds of the scene's height (one figure) or just under half (two), low enough to leave room above it for speech, cropped at the shoulders; `wide` makes the
+    `close` makes the head a little over half of the scene's height (one figure) or just over two fifths (two), with the chin clear of the scene's foot and the neck and shoulders cropped there (the paper's caption sits under the scene, so nothing may spill past it); `wide` makes the
     figures small and sets them a little above the foot of the panel with a ground line under them. A figure's own `scale`, `x` or
     `y` always wins, and no `shot` (or `mid`) leaves every figure exactly as it was."""
     chars = st.get("characters", [])
@@ -502,7 +506,7 @@ def shot_characters(st, cast, w, h, base_s):
             across = 0.5 if len(chars) == 1 else 0.3 + 0.4 * i / max(len(chars) - 1, 1)
             c.setdefault("x", round(across, 3))
             if "scale" not in c:
-                c["scale"] = (0.64 if len(open_slots) == 1 else 0.46) * h / (30 * hs * base_s)
+                c["scale"] = CLOSE_HEAD[len(open_slots) != 1] * h / (30 * hs * base_s)
             if "y" not in c:
                 body = c.get("body") or app.get("body") or "stick"
                 if body == "stick":  # the head's centre sits this many units above the feet (legs, body and the head's radius)
@@ -510,7 +514,7 @@ def shot_characters(st, cast, w, h, base_s):
                 else:  # animals and diatoms: the point figure() returns for the head, at scale 1
                     _, (_hx, hy) = figure(Pen(0), 0.0, 0.0, 1.0, c.get("pose", "stand"), "neutral", "right", None, {**app, "body": body})
                     up = -hy
-                c["y"] = (0.64 * h + up * base_s * c["scale"]) / h
+                c["y"] = (CLOSE_CHIN - CLOSE_HEAD[len(open_slots) != 1] / 2) + up * base_s * c["scale"] / h
         out.append(c)
     return out
 
@@ -852,7 +856,11 @@ def draw_panel(panel, plan, w, h, cast):
     heads = {}
     if "staging" in panel:
         svg, heads = stage(pen, PAD, scene_y, w - 2 * PAD, scene_h, panel["staging"], cast, fs)
-        o.append(svg)
+        # A close shot is cropped at the shoulders: crop at the picture's own foot, or the figure runs over the caption under it.
+        # Only the bottom is cut; props and heads may still reach up into the speech room above.
+        sid = "scene-" + pid.replace(".", "-")
+        o.append(f'<clipPath id="{sid}"><rect x="-4" y="-4" width="{w + 8:.1f}" height="{scene_y + scene_h + 4:.1f}"/></clipPath>'
+                 f'<g clip-path="url(#{sid})">{svg}</g>')
     else:
         lines = wrap(panel["scene"], w - 2 * PAD - 12, fs * 0.9)
         o.append(text(w / 2, scene_y + scene_h / 2 - block_h(lines, fs * 0.9) / 2, lines, fs * 0.9, anchor="middle", fill=MID))

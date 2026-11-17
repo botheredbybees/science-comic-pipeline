@@ -847,6 +847,32 @@ def test_the_caption_sits_below_the_picture_not_above_it():
     assert cap_y > pic_y
 
 
+@pytest.mark.parametrize("shot", ["close", "mid"])
+def test_a_figure_is_cropped_at_the_pictures_foot_and_never_runs_over_the_caption_under_it(shot):
+    cast = {"ines": {"id": "ines", "name": "Ines", "appearance": {}}}
+    panel = {"id": "T5", "scene": "Ines.", "speech": [{"speaker": "narrator", "kind": "caption", "text": "However, several samples did not cluster."},
+                                                    {"speaker": "ines", "text": "Most. Not all."}],
+             "staging": {"shot": shot, "characters": [{"id": "ines", "x": 0.5, "pose": "stand", "face": "puzzled", "facing": "right",
+                                                        **({"scale": 1.6} if shot == "mid" else {})}]}}
+    plan = R.plan_panel(panel, 300, 0.55, cast)
+    svg = R.draw_panel(panel, plan, 300, plan["nat_h"], cast)
+    cap_y = float(re.search(r'<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="[\d.]+" fill="#eceef2"/>', svg).group(1))
+    clip = re.search(r'<clipPath id="scene-T5"><rect x="-4" y="-4" width="[\d.]+" height="([\d.]+)"/>', svg)
+    assert clip and 'clip-path="url(#scene-T5)"' in svg
+    assert float(clip.group(1)) - 4 <= cap_y  # the clip's foot (the rect starts at -4) is above the caption's top
+
+
+def test_a_close_shot_keeps_the_whole_face_inside_the_picture():
+    assert R.CLOSE_CHIN + 0.04 <= 0.9 and all(0 < d < 0.7 for d in R.CLOSE_HEAD)
+    cast = {"ines": {"id": "ines", "name": "Ines", "appearance": {}}}
+    c = R.shot_characters({"shot": "close", "characters": [{"id": "ines"}]}, cast, 300, 200, 0.55)[0]
+    up = 48 + 46 + 15 * R.HEAD_SCALE  # the head's centre above the feet, in drawing units (stick body)
+    centre = c["y"] * 200 - up * 0.55 * c["scale"]
+    radius = 15 * R.HEAD_SCALE * 0.55 * c["scale"]
+    assert centre + radius <= 0.9 * 200  # the chin clears the foot of the scene
+    assert centre - radius >= 0.2 * 200  # and the top leaves room for the speech above it
+
+
 def test_bridge_block_labels_fit_inside_their_blocks_even_in_a_short_box():
     import props as P
     for label in ("instrument A", "another lab's method", "A"):
