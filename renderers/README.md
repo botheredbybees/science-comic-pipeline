@@ -61,7 +61,7 @@ that never sets it renders as before.
 
 | `shot` | What it does | Use it for |
 |---|---|---|
-| `close` | One figure: the head fills about two thirds of the scene's height, centred and low enough to leave room above it for speech, cropped at the neck. Two figures: just under half the height each, side by side. | A reaction, or the payoff. The faces do the work, so pick the expression with care. |
+| `close` | One figure: the head fills a little over half of the scene's height, low enough to leave room above it for speech, with the neck cropped at the picture's foot (the caption sits under the picture; every picture is cropped there, so nothing runs over it). Two figures: just over two fifths of the height each, side by side. | A reaction, or the payoff. The faces do the work, so pick the expression with care. |
 | `wide` | Small figures (scale 0.45), a little above the foot of the panel, with a ground line under them. `ground: false` leaves the line off when a prop is the ground (sea ice, a floor). | An establishing view where the place matters: the gallery room, the ship, the ice. |
 
 The preset fills in only what the author left out: a figure's own `scale`, `x` or `y` always wins. A close-up shows one or two figures;
