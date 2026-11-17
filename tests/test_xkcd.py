@@ -993,3 +993,19 @@ def test_each_head_in_a_strip_is_recorded_under_its_frame_as_well_as_under_its_n
     _, heads = R.stage(R.Pen("t"), 14, 0, 672, 300, st, {}, 18)
     assert {"otto", "ines", "otto@1", "otto@2", "ines@3"} <= set(heads)
     assert heads["otto"] == heads["otto@1"] and heads["otto@2"][0] > heads["otto@1"][0]
+
+
+@pytest.mark.parametrize("n", [2, 3])
+def test_the_crop_at_the_pictures_foot_keeps_the_bottom_stroke_of_a_split_screens_frames(n):
+    """A split screen's frames end exactly at the picture's foot: the crop must leave room for half of their 2.4-unit stroke,
+    and still end above the caption box (6 below the foot)."""
+    cast = {}
+    sub = {"props": [{"kind": "bottle", "x": 0.2, "y": 0.1, "w": 0.6, "h": 0.8}]}
+    panel = {"id": "T6", "scene": "frames", "speech": [{"speaker": "narrator", "kind": "caption", "text": "A caption under the frames."}],
+             "staging": {"split": [sub] * n}}
+    plan = R.plan_panel(panel, 600, 0.55, cast)
+    svg = R.draw_panel(panel, plan, 600, plan["nat_h"], cast)
+    clip = float(re.search(r'<clipPath id="scene-T6"><rect x="-4" y="-4" width="[\d.]+" height="([\d.]+)"/>', svg).group(1)) - 4
+    cap_y = float(re.search(r'<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="[\d.]+" fill="#eceef2"/>', svg).group(1))
+    foot = cap_y - 6  # the picture's foot, where the frames end
+    assert foot + 1.2 + 0.5 <= clip <= cap_y

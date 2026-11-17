@@ -582,6 +582,7 @@ def stage(pen, x, y, w, h, st, cast, fs):
 
 # ---------------------------------------------------------------- panels
 PAD = 14
+CLIP_BELOW = 3  # the picture is cut this far below its foot (the caption box starts 6 below it): a frame that ends at the foot keeps its bottom stroke
 
 
 FONT_SIZE = 18  # one size for every caption and speech line, so nothing is harder to read than the rest
@@ -859,7 +860,7 @@ def draw_panel(panel, plan, w, h, cast):
         # A close shot is cropped at the shoulders: crop at the picture's own foot, or the figure runs over the caption under it.
         # Only the bottom is cut; props and heads may still reach up into the speech room above.
         sid = "scene-" + pid.replace(".", "-")
-        o.append(f'<clipPath id="{sid}"><rect x="-4" y="-4" width="{w + 8:.1f}" height="{scene_y + scene_h + 4:.1f}"/></clipPath>'
+        o.append(f'<clipPath id="{sid}"><rect x="-4" y="-4" width="{w + 8:.1f}" height="{scene_y + scene_h + CLIP_BELOW + 4:.1f}"/></clipPath>'
                  f'<g clip-path="url(#{sid})">{svg}</g>')
     else:
         lines = wrap(panel["scene"], w - 2 * PAD - 12, fs * 0.9)
