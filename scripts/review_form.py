@@ -4,7 +4,8 @@
 A page made here shows, for each item, its pictures, a list of things to check, a keep / fix / drop verdict and a notes box, and saves
 each answer as it is given. Published as an Artifact with the `db` capability, the answers are stored in the artifact's database under the
 collection `review` (or `collection=`; one document per item id, plus `general`, and `_submitted` when the Submit button is pressed), where Claude can read them back with the ArtifactData tool.
-Open the same file in a plain browser and it still works, keeping answers in that browser only.
+Served by `review_comic.py serve`, the same page saves each answer to a folder on your own machine (one `<item id>.json` per item) and needs no Claude and no network.
+Open the file straight from disk and it still works, keeping answers in that browser only.
 
     from review_form import build_html
     html = build_html("Asset review", "what to do", groups)
@@ -73,7 +74,7 @@ def edit_html(e):
     rows.append('<div class="erow" data-addchar>' + _sel("id", "Add a character", [c["id"] for c in e["cast"]], "", "(none)")
                 + _sel("pose", "Action", v["poses"], "", "(default)") + _sel("face", "Face", v["faces"], "", "(default)") + _sel("facing", "Facing", v["facings"], "", "(default)") + "</div>")
     return ('<details class="edit"><summary>Change the words, scene, characters, props or actions</summary>'
-            '<p class="meta">Pick what should be different. Claude applies it to the storyboard and redraws; added props and characters are placed at a default spot, so look at the new picture.</p>'
+            '<p class="meta">Pick what should be different. `review_comic.py apply` writes it into the storyboard and redraws; added props and characters are placed at a default spot, so look at the new picture.</p>'
             + "".join(rows) + "</details>")
 
 
@@ -201,7 +202,7 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 <main>
 <h1>%%TITLE%%</h1>
 <p class="intro">%%INTRO%%</p>
-<section id="thanks" class="thanks hide" role="status" tabindex="-1"><h2 id="thanks-h">Review submitted</h2><p id="thanks-sum"></p><p class="mute" id="thanks-more">Claude can now read your answers. You can keep editing and submit again.</p><button class="next" id="thanks-back" type="button">Back to the review</button></section>
+<section id="thanks" class="thanks hide" role="status" tabindex="-1"><h2 id="thanks-h">Review submitted</h2><p id="thanks-sum"></p><p class="mute" id="thanks-more">Your answers are saved and ready to apply. You can keep editing and submit again.</p><button class="next" id="thanks-back" type="button">Back to the review</button></section>
 %%AFTER%%
 <div class="bar" role="region" aria-label="Progress">
   <div class="prog"><span><b id="done">0</b> of %%N%% judged</span> &middot; <span id="tally"></span><div class="meter" aria-hidden="true"><i class="k"></i><i class="f"></i><i class="d"></i></div></div>
@@ -210,16 +211,16 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
 </div>
 <div id="banner" class="banner hide" role="status"></div>
 %%BODY%%
-<section class="end"><button class="submit big" type="button">Submit review</button><div class="saved" id="submit-note" aria-live="polite">Everything saves as you go. Submit tells Claude you are finished.</div></section>
+<section class="end"><button class="submit big" type="button">Submit review</button><div class="saved" id="submit-note" aria-live="polite">Everything saves as you go. Submit says you are finished.</div></section>
 <section class="general"><h2>Anything else</h2><textarea id="general" rows="4" placeholder="Anything not tied to one asset" aria-label="General notes"></textarea><div class="saved" id="general-saved" aria-live="polite"></div></section>
 </main>
 <script>
 (function(){
-  var IDS=%%IDS%%, LS="%%STORE%%", W=%%TALLY%%, state={}, db=null, timers={}, busy={}, dirty={}, pending={}, lastWritten={};
+  var IDS=%%IDS%%, LS="%%STORE%%", W=%%TALLY%%, state={}, db=null, where="", timers={}, busy={}, dirty={}, pending={}, lastWritten={};
   function card(id){return document.getElementById("item-"+id)}
   function hasKeys(o){return !!o&&Object.keys(o).length>0}
   /* Live preview: retyped words are put into every copy of the panel on the page (the card's picture and the full comic), wrapped to the width
-     the renderer used (data-wrap). Changes to figures, props and scenes cannot be drawn here; they show once Claude applies the review. */
+     the renderer used (data-wrap). Changes to figures, props and scenes cannot be drawn here; they show once the review is applied. */
   var SVGNS="http://www.w3.org/2000/svg",QL="\u201c",QR="\u201d";
   function norm(s){return String(s).replace(/\s+/g," ").trim()}
   function wrapJS(txt,ww,fs){var per=Math.max(4,Math.floor(ww/(fs*0.46))),lines=[],cur="";
@@ -330,19 +331,31 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
   var banner=document.getElementById("banner");
   function show(t){banner.textContent=t;banner.classList.toggle("hide",!t)}
   var slow=setTimeout(function(){show("The saved answers can't be reached yet. What you enter is kept in this browser and saved when the connection returns.")},10000);
+  function useDb(d){
+    db=d;
+    db.collection("%%COLL%%").onSnapshot(function(snap){
+      if(!snap.metadata.fromCache){clearTimeout(slow);show("")}
+      snap.docs.forEach(function(s){var id=s.id,o=s.data();if(!o||(s.metadata&&s.metadata.hasPendingWrites))return;
+        if(id==="general"){if(document.activeElement!==g)g.value=o.notes||"";return}
+        if(IDS.indexOf(id)<0||busy[id]||dirty[id]||pending[id])return;if(o.updated&&lastWritten[id]&&o.updated<lastWritten[id])return;state[id]={checks:o.checks||{},notes:o.notes||"",verdict:o.verdict||"",edit:o.edit||{}};paint(id,state[id])});
+      tally();
+    },function(e){clearTimeout(slow);show("Saved answers could not be loaded ("+((e&&e.code)||"error")+"). What you enter is kept in this browser.")});
+  }
+  // The same two calls the Artifact database answers (`doc(path).set(body)` and `collection(name).onSnapshot`), over `review_comic.py serve`'s own address.
+  function serverDb(all){
+    return {doc:function(path){var id=path.split("/").pop();
+        return {set:function(body){return fetch("/answers/"+encodeURIComponent(id),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+          .then(function(r){if(!r.ok)throw new Error("the server answered "+r.status)})}}},
+      collection:function(){return {onSnapshot:function(ok){ok({metadata:{fromCache:false},docs:Object.keys(all).map(function(id){return {id:id,data:function(){return all[id]},metadata:{}}})})}}}}}
   function connect(){
-    if(!(window.claude&&window.claude.use))return show("Answers are kept in this browser only; they are not shared with Claude.");
-    window.claude.use("db").then(function(d){
-      if(!d){clearTimeout(slow);return show("Answers are kept in this browser only (sign in to the artifact to save them where Claude can read them).")}
-      db=d;
-      db.collection("%%COLL%%").onSnapshot(function(snap){
-        if(!snap.metadata.fromCache){clearTimeout(slow);show("")}
-        snap.docs.forEach(function(s){var id=s.id,o=s.data();if(!o||(s.metadata&&s.metadata.hasPendingWrites))return;
-          if(id==="general"){if(document.activeElement!==g)g.value=o.notes||"";return}
-          if(IDS.indexOf(id)<0||busy[id]||dirty[id]||pending[id])return;if(o.updated&&lastWritten[id]&&o.updated<lastWritten[id])return;state[id]={checks:o.checks||{},notes:o.notes||"",verdict:o.verdict||"",edit:o.edit||{}};paint(id,state[id])});
-        tally();
-      },function(e){clearTimeout(slow);show("Saved answers could not be loaded ("+((e&&e.code)||"error")+"). What you enter is kept in this browser.")});
-    },function(){clearTimeout(slow);show("Answers are kept in this browser only.")});
+    if(window.claude&&window.claude.use){
+      window.claude.use("db").then(function(d){
+        if(!d){clearTimeout(slow);return show("Answers are kept in this browser only (sign in to the artifact to save them where Claude can read them).")}
+        where="the artifact";useDb(d);
+      },function(){clearTimeout(slow);show("Answers are kept in this browser only.")});
+      return}
+    fetch("/answers",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("no answers folder");return r.json()}).then(function(all){where="the answers folder";useDb(serverDb(all))},
+      function(){clearTimeout(slow);show("Answers are kept in this browser only. To save them in a folder, run `review_comic.py serve` and open the address it prints.")});
   }
   var armed=false,armTimer=null;
   function setBtn(t){document.querySelectorAll(".submit").forEach(function(b){b.textContent=t})}
@@ -363,12 +376,12 @@ textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px
     IDS.forEach(function(id){if(pending[id])flush(id)});
     var body={at:new Date().toISOString(),keep:k,fix:f,drop:d,unjudged:un};
     var when=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),sum=k+" "+W[0]+", "+f+" "+W[1]+", "+d+" "+W[2]+", "+un+" not judged";
-    if(!db){setNote("Not submitted: answers are only in this browser, so Claude cannot see them.");
-      notice(false,"Not submitted","This copy of the page cannot send your answers anywhere, so Claude cannot see them. They are kept in this browser only. Open the page from its claude.ai link and submit there.");return}
+    if(!db){setNote("Not submitted: answers are only in this browser.");
+      notice(false,"Not submitted","This copy of the page cannot save your answers anywhere, so nothing can apply them. They are kept in this browser only. Run `review_comic.py serve` and open the address it prints (or open the page from its claude.ai link) and submit there.");return}
     setNote("Submitting...");
     db.doc("%%COLL%%/_submitted").set(body).then(function(){setNote("Submitted at "+when+" ("+sum+"). You can still change answers and submit again.");setBtn("Submit again");
       var np=pendingPictures();
-      notice(true,"Review submitted","Submitted at "+when+": "+sum+".","Claude can now read your answers. "+(np?"Retyped words already show in the comic below; changes to figures, props and scenes ("+np+" panel"+(np>1?"s":"")+") appear once Claude applies the review. ":"Retyped words already show in the comic below. ")+"You can keep editing and submit again.")},
+      notice(true,"Review submitted","Submitted at "+when+": "+sum+".","Your answers are saved in "+where+" and are ready to apply. "+(np?"Retyped words already show in the comic below; changes to figures, props and scenes ("+np+" panel"+(np>1?"s":"")+") appear once the review is applied. ":"Retyped words already show in the comic below. ")+"You can keep editing and submit again.")},
       function(e){var m=(e&&e.message)||"error";setNote("Not submitted: "+m);notice(false,"Not submitted","The answers could not be saved ("+m+"). Nothing has been lost: they are kept in this browser. Try Submit again.")})}
   document.querySelectorAll(".submit").forEach(function(b){b.addEventListener("click",submitReview)});
   document.getElementById("thanks-back").addEventListener("click",function(){document.getElementById("thanks").classList.add("hide");var cm=document.getElementById("comic");if(cm)cm.classList.add("hide");var n=IDS.filter(function(x){return !(state[x]||{}).verdict})[0];go(n?card(n):document.querySelector("main"))});

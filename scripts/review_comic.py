@@ -3,10 +3,13 @@
 
     python scripts/review_comic.py build tortell --pages-dir sources/tortell-2023-st-chlf/pages -o output/review.html
     python scripts/review_comic.py build nester --pages-root sources --claims all --panels
-    python scripts/review_comic.py apply tortell answers.json [--dry-run]
+    python scripts/review_comic.py serve tortell --pages-dir sources/tortell-2023-st-chlf/pages
+    python scripts/review_comic.py apply tortell output/tortell-answers [--dry-run]
 
-`build` writes one self-contained web page. Publish it as an Artifact with the `db` capability (the page saves each answer as it is given, one
-document per item in the collection `review`) or open it in a browser, where the answers stay in that browser. Three kinds of item:
+`serve` is the way to review on any platform: it serves the page on your own machine (127.0.0.1 only) and saves each answer as it is given to a folder
+(`output/<comic>-answers/<item id>.json`), which `apply` reads. It needs only Python. `build` writes the same page as one self-contained file: publish
+it as an Artifact with the `db` capability (the answers then go to the artifact's database, one document per item in the collection `review`, for a
+Claude session to read back) or open it from disk, where the answers stay in that browser and cannot be applied. Three kinds of item:
 
   * a **claim**: the claim, its quote and the page text around the quote (the quote marked), with three things to check; Fair / Reword / Drop;
   * a **joke**: the panel drawn, the lines that carry the joke, its note, and the six questions of skills/humour-pass (the last: it still lands if the reader skips the caption); Approve / Reword / Cut;
@@ -593,19 +596,119 @@ def apply(folder, answers, dry_run=False):
     return out
 
 
+ANSWER_ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")  # an item id (`joke-B4_2`), `general` or `_submitted`; never a path
+
+
+def answer_files(answers_dir):
+    return {f.stem: json.loads(f.read_text()) for f in sorted(Path(answers_dir).glob("*.json"))}
+
+
+def make_handler(render_page, answers_dir):
+    """The request handler for `serve`: the page at `/`, the saved answers at `/answers`, one answer written by `PUT /answers/<id>`."""
+    from http.server import BaseHTTPRequestHandler
+
+    answers_dir = Path(answers_dir)
+
+    class Handler(BaseHTTPRequestHandler):
+        server_version = "ReviewServe"
+
+        def log_message(self, *a):  # one line per saved answer would bury the address; stay quiet
+            pass
+
+        def _send(self, code, body=b"", ctype="text/plain; charset=utf-8"):
+            if isinstance(body, str):
+                body = body.encode()
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+
+        def _local(self):  # a page on another site must not be able to read or write the answers (DNS rebinding)
+            host = (self.headers.get("Host") or "").rsplit(":", 1)[0].strip("[]")
+            if host not in ("127.0.0.1", "localhost", "::1"):
+                self._send(403, "Only reachable as localhost.")
+                return False
+            return True
+
+        def do_GET(self):
+            if not self._local():
+                return
+            path = self.path.split("?")[0]
+            if path in ("/", "/index.html"):
+                try:
+                    self._send(200, render_page(), "text/html; charset=utf-8")  # built afresh, so a reload shows what `apply` has changed
+                except Exception as e:  # a broken storyboard should say so in the browser, not drop the connection
+                    self._send(500, f"The page could not be built: {e}")
+            elif path == "/answers":
+                self._send(200, json.dumps(answer_files(answers_dir)), "application/json")
+            else:
+                self._send(404, "Not found.")
+
+        def do_PUT(self):
+            if not self._local():
+                return
+            m = re.fullmatch(r"/answers/([^/?]+)", self.path.split("?")[0])
+            if not m or not ANSWER_ID.match(m.group(1)):
+                return self._send(400, "Not an answer id.")
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > 2_000_000:
+                return self._send(413, "Too large.")
+            if "json" not in (self.headers.get("Content-Type") or ""):
+                return self._send(415, "Send JSON.")
+            try:
+                body = json.loads(self.rfile.read(n))
+                assert isinstance(body, dict)
+            except (ValueError, AssertionError):
+                return self._send(400, "Not a JSON object.")
+            answers_dir.mkdir(parents=True, exist_ok=True)
+            tmp = answers_dir / f".{m.group(1)}.tmp"
+            tmp.write_text(json.dumps(body, ensure_ascii=False, indent=1))
+            tmp.replace(answers_dir / f"{m.group(1)}.json")  # whole file or nothing: `apply` may be reading the folder
+            self._send(204)
+
+    return Handler
+
+
+def serve(render_page, answers_dir, port=8765):
+    from http.server import ThreadingHTTPServer
+
+    return ThreadingHTTPServer(("127.0.0.1", port), make_handler(render_page, answers_dir))
+
+
+def load_page_sets(args):
+    pages = {}
+    if args.pages_dir:
+        pages[None] = load_pages(args.pages_dir)
+    elif args.pages_root:
+        for d in Path(args.pages_root).glob("*/pages"):
+            pages[d.parent.name] = load_pages(d)
+    return pages
+
+
+def add_page_options(p):
+    g = p.add_mutually_exclusive_group()
+    g.add_argument("--pages-dir", help="the page files (pNNN.txt) of a one-paper comic")
+    g.add_argument("--pages-root", help="a folder holding <source id>/pages, for a topic comic")
+    p.add_argument("--claims", choices=("unverified", "cited", "all"), default="unverified")
+    p.add_argument("--panels", action="store_true", help="also list every panel, drawn, for a layout review")
+    p.add_argument("--beats", help="with --panels: only these beats, comma separated (B2,B3)")
+    p.add_argument("--no-comic", action="store_true", help="leave out the full comic that appears after Submit")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     b = sub.add_parser("build", help="write the review page")
     b.add_argument("comic")
     b.add_argument("-o", "--out", required=True)
-    g = b.add_mutually_exclusive_group()
-    g.add_argument("--pages-dir", help="the page files (pNNN.txt) of a one-paper comic")
-    g.add_argument("--pages-root", help="a folder holding <source id>/pages, for a topic comic")
-    b.add_argument("--claims", choices=("unverified", "cited", "all"), default="unverified")
-    b.add_argument("--panels", action="store_true", help="also list every panel, drawn, for a layout review")
-    b.add_argument("--beats", help="with --panels: only these beats, comma separated (B2,B3)")
-    b.add_argument("--no-comic", action="store_true", help="leave out the full comic that appears after Submit")
+    add_page_options(b)
+    v = sub.add_parser("serve", help="serve the review page on this machine and save the answers to a folder")
+    v.add_argument("comic")
+    add_page_options(v)
+    v.add_argument("--answers", help="where the answers are saved (default: output/<comic>-answers)")
+    v.add_argument("--port", type=int, default=8765)
     a = sub.add_parser("apply", help="apply a finished review's answers")
     a.add_argument("comic")
     a.add_argument("answers")
@@ -613,17 +716,32 @@ def main(argv=None):
     args = ap.parse_args(argv)
     name, folder = pick(ROOT, args.comic)
     folder = Path(folder)
-    if args.cmd == "build":
-        pages = {}
-        if args.pages_dir:
-            pages[None] = load_pages(args.pages_dir)
-        elif args.pages_root:
-            for d in Path(args.pages_root).glob("*/pages"):
-                pages[d.parent.name] = load_pages(d)
-        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-        html = build(folder, name, pages, args.claims, args.panels, set(args.beats.split(",")) if args.beats else None, not args.no_comic)
-        Path(args.out).write_text(html)
-        print(f"wrote {args.out} ({len(html) // 1024} KB)")
+    if args.cmd in ("build", "serve"):
+        pages = load_page_sets(args)
+        beats = set(args.beats.split(",")) if args.beats else None
+
+        def page():
+            return build(folder, name, pages, args.claims, args.panels, beats, not args.no_comic)
+
+        if args.cmd == "build":
+            html = page()
+            Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.out).write_text(html)
+            print(f"wrote {args.out} ({len(html) // 1024} KB)")
+            return 0
+        answers = Path(args.answers) if args.answers else ROOT / "output" / f"{name}-answers"
+        answers.mkdir(parents=True, exist_ok=True)
+        try:
+            httpd = serve(page, answers, args.port)
+        except OSError as e:
+            print(f"Could not listen on port {args.port} ({e}); try --port.", file=sys.stderr)
+            return 1
+        print(f"Review page: http://127.0.0.1:{httpd.server_address[1]}/   (this machine only)\nAnswers are saved in {answers}\n"
+              f"When you have pressed Submit review, stop this (Ctrl+C) and run:\n  python scripts/review_comic.py apply {args.comic} {answers} --dry-run", flush=True)
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\nStopped.")
         return 0
     res = apply(folder, load_answers(args.answers), args.dry_run)
     for k, title in (("done", "Applied"), ("warnings", "Check these"), ("todo", "Worklist")):

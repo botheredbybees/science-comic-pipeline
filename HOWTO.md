@@ -208,36 +208,40 @@ go. **Save and next** on each card moves to the next item you have not judged, a
 stands. Each joke and panel also has a collapsed **Change the words, scene, characters, props or actions** block: retype, remove or add a spoken line or caption, pick a new action, face, facing or held
 object for a character, a new kind or label for a prop (or remove it), add one prop or character, or retype the scene. `apply` writes those into the
 panel's beat file (a line that is not a one-line `{ ... }` mapping goes on the worklist) and rebuilds; added props and characters land at a default spot, so
-look at the redrawn panel. Every other word the picture draws (the label of each frame of a strip, a board's title and cards, a prop's label, axis labels) has its own box under **Words in the picture**. Retyped words show at once in the card's picture and in the full comic below the confirmation (re-wrapped to the width the renderer used); changes to figures, props and scenes show once `apply` has redrawn the panel. Then have Claude read the answers back and apply them.
+look at the redrawn panel. Every other word the picture draws (the label of each frame of a strip, a board's title and cards, a prop's label, axis labels) has its own box under **Words in the picture**. Retyped words show at once in the card's picture and in the full comic below the confirmation (re-wrapped to the width the renderer used); changes to figures, props and scenes show once `apply` has redrawn the panel. Then apply the answers. There are two ways to host the page; the first needs only Python and works with any AI tool or none.
 
-**The page needs a database, so it must be the published copy.** Only the Artifact's own link saves your answers. The built `.html` file opened from disk, or
-served by `python -m http.server`, has no database: its answers stay in that browser, `Submit review` cannot save them, and Claude cannot read them. This needs a
-Claude Code session with the `Artifact` and `ArtifactData` tools; nothing in the repo does the publishing or the reading itself.
+**A. On your own machine (any platform).** `serve` shows the page at an address on this machine only (127.0.0.1) and saves each answer, as you give it, to a
+folder of plain JSON files (one `<item id>.json` per item; `output/<comic>-answers/` unless you give `--answers`):
 
-1. **Build** the page (private comics build into `output/`, which is not committed):
+```
+.venv/bin/python scripts/review_comic.py serve nester --pages-root sources              # then open the address it prints
+.venv/bin/python scripts/review_comic.py serve nester --pages-root sources --claims cited --panels   # also every cited claim and every panel
+```
 
-   ```
-   .venv/bin/python scripts/review_comic.py build nester --pages-root sources -o output/review.html            # unverified claims + waiting jokes
-   .venv/bin/python scripts/review_comic.py build nester --pages-root sources --claims cited --panels -o output/review.html   # also every cited claim and every panel
-   ```
+Judge in the browser; **Submit review** is the last step. Stop the server (Ctrl+C), then:
 
-2. **Publish** it: ask Claude to publish the file as an Artifact with the `db` capability (`capabilities: {db: {}}`). The Artifact is private, and you get a
-   claude.ai link; open that link, not the file. Republish the same file to the same link after any change (the answers already saved are kept). Do not
-   publish a private comic's page for anyone else: the page carries the paper's text.
-3. **Judge** on that page. Each answer saves as you go; **Submit review** is the last step. Say "submitted" to Claude.
-4. **Read back**: Claude lists the collection `review` of that Artifact with `ArtifactData` (`action: list`, `collection: review`, with `out_dir` set to a folder
-   in the scratchpad), which writes one `<item id>.json` per item: `{verdict, notes, checks, edit}`.
-5. **Apply**:
+```
+.venv/bin/python scripts/review_comic.py apply nester output/nester-answers --dry-run    # read what it would do
+.venv/bin/python scripts/review_comic.py apply nester output/nester-answers              # Fair -> verified, Approve -> released, picture and word edits; the rest is printed as a worklist
+```
 
-   ```
-   .venv/bin/python scripts/review_comic.py apply nester <folder of answers> --dry-run    # read what it would do
-   .venv/bin/python scripts/review_comic.py apply nester <folder of answers>              # Fair -> verified, Approve -> released, picture and word edits; the rest is printed as a worklist
-   ```
+Whoever or whatever is driving (you, or an AI tool) then works the printed worklist (rewrites, scene and prop changes the form cannot do alone), re-runs the
+checks and re-exports the PDF. Reload the page to see the comic as it now stands: it is rebuilt on every load, and your saved answers fill in again. You can stop
+and start the server at any time; the answers stay in the folder. Delete a file there to forget that answer. The page works only on the address `serve`
+prints: a file opened straight from disk has no folder to save to, so its answers stay in that browser and cannot be applied.
 
-   Claude works the printed worklist (rewrites, scene and prop changes the form cannot do alone), re-runs the checks, re-exports the PDF, rebuilds
-   the page and republishes it. The review is finished when a rebuilt page lists nothing waiting.
-6. **Clear the answered items** if you want a clean page next time: `ArtifactData` `delete` on each document, which needs its `if_version` from the listing.
-   Leave them if you want the record.
+**B. As a Claude Artifact (a hosted page, in a Claude Code session).** Build the page and have Claude publish it as a private Artifact with the `db`
+capability; the answers then go to a database claude.ai keeps, and Claude reads them back. Nothing in the repo does the publishing or the reading, so this
+needs a session with the `Artifact` and `ArtifactData` tools.
+
+1. `.venv/bin/python scripts/review_comic.py build nester --pages-root sources -o output/review.html` (add `--claims cited --panels` for more), then ask
+   Claude to publish the file with `capabilities: {db: {}}`. You get a claude.ai link: open that, not the file. Republish the same file to the same link after any change; saved answers are kept.
+2. Judge on that page, press Submit review and say "submitted".
+3. Claude lists the collection `review` with `ArtifactData` (`action: list`, `collection: review`, `out_dir` set to a folder), which writes the same one-file-per-item folder as A, and then runs `apply` on it as above.
+4. Optionally clear the answered items (`ArtifactData` `delete`, with each document's `if_version`).
+
+Use B when you want to review from another device, or share the page with someone you have given access to. Do not publish a private comic's page for anyone
+else: it carries the paper's text.
 
 In `review`, **Enter accepts** (the default). `e` rewords a line and shows the joke again, so you can edit and then accept;
 `r` rejects: it deletes the joke's line (Enter picks the last character line; type numbers to choose others), or type `keep` to keep
